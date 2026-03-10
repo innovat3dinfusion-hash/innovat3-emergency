@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>innovat3. — Beta Registration</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --orange: #F97316;
+  --teal: #0ED2C8;
+  --black: #0A0A0A;
+  --card: #141414;
+  --border: #222;
+  --text: #e5e5e5;
+  --muted: #666;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Exo 2', sans-serif; background: var(--black); color: var(--text); min-height: 100vh; }
+
+/* ── HEADER ── */
+.header {
+  background: linear-gradient(180deg, #1a0800 0%, var(--black) 100%);
+  border-bottom: 1px solid #1a1a1a;
+  padding: 32px 20px 28px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--orange), var(--teal), var(--orange), transparent);
+}
+.logo-text {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--orange);
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+}
+.logo-text span { color: #fff; }
+.header-sub { font-size: 13px; color: var(--muted); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 20px; }
+.beta-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--orange), #ea6a05);
+  color: #fff;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+}
+.header h1 { font-family: 'Orbitron', sans-serif; font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+.header p { font-size: 14px; color: #999; max-width: 400px; margin: 0 auto; line-height: 1.6; }
+
+/* ── PROGRESS ── */
+.progress-bar {
+  background: #111;
+  border-bottom: 1px solid var(--border);
+  padding: 16px 20px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  align-items: center;
+}
+.step {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: color 0.3s;
+}
+.step.active { color: var(--orange); }
+.step.done { color: var(--teal); }
+.step-num {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 900;
+  flex-shrink: 0;
+}
+.step-line { width: 20px; height: 1px; background: var(--border); flex-shrink: 0; }
+
+/* ── WRAP ── */
+.wrap { max-width: 540px; margin: 0 auto; padding: 24px 16px 60px; }
+
+/* ── SECTION ── */
+.section { display: none; }
+.section.active { display: block; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+.section-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--orange);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #1a1a1a;
+}
+
+/* ── FORM ELEMENTS ── */
+.field { margin-bottom: 18px; }
+.field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #888;
+  margin-bottom: 8px;
+}
+.field label span { color: var(--orange); }
+.field input, .field select, .field textarea {
+  width: 100%;
+  background: #0f0f0f;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 14px;
+  color: #fff;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  -webkit-appearance: none;
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  border-color: var(--orange);
+  box-shadow: 0 0 0 3px rgba(249,115,22,0.1);
+}
+.field textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+.field select option { background: #1a1a1a; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.hint { font-size: 11px; color: var(--muted); margin-top: 6px; line-height: 1.5; }
+
+/* Blood type grid */
+.blood-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+.blood-opt { display: none; }
+.blood-opt + label {
+  display: flex; align-items: center; justify-content: center;
+  background: #0f0f0f;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 8px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.blood-opt:checked + label {
+  border-color: #EF4444;
+  background: #2a0000;
+  color: #fff;
+  box-shadow: 0 0 0 3px rgba(239,68,68,0.15);
+}
+
+/* Plan grid */
+.plan-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 20px; }
+.plan-opt { display: none; }
+.plan-opt + label {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: #0f0f0f;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+.plan-opt:checked + label { border-color: var(--orange); background: #1a0800; }
+.plan-name { font-family: 'Orbitron', sans-serif; font-size: 11px; font-weight: 700; color: var(--orange); margin-bottom: 4px; letter-spacing: 1px; }
+.plan-price { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+.plan-members { font-size: 10px; color: var(--muted); }
+
+/* Tag colour grid */
+.colour-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
+.colour-opt { display: none; }
+.colour-opt + label {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  background: #0f0f0f;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+.colour-opt:checked + label { border-color: var(--teal); background: #001a18; }
+.colour-swatch { width: 32px; height: 32px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.1); }
+.colour-name { font-size: 10px; font-weight: 600; color: #888; letter-spacing: 0.5px; }
+
+/* Contact block */
+.contact-block {
+  background: #0f0f0f;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.contact-block-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--teal);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+/* Telegram notice */
+.telegram-notice {
+  background: #001a18;
+  border: 1px solid var(--teal);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.telegram-notice .icon { font-size: 24px; flex-shrink: 0; }
+.telegram-notice .title { font-size: 13px; font-weight: 700; color: var(--teal); margin-bottom: 4px; }
+.telegram-notice .body { font-size: 12px; color: #6ee7e0; line-height: 1.5; }
+
+/* Buttons */
+.btn-row { display: flex; gap: 10px; margin-top: 28px; }
+.btn-next {
+  flex: 1;
+  background: var(--orange);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 16px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-next:hover { background: #ea6a05; transform: translateY(-1px); }
+.btn-back {
+  background: #1a1a1a;
+  color: #888;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-back:hover { color: #fff; border-color: #444; }
+
+/* Success */
+.success-screen {
+  text-align: center;
+  padding: 40px 20px;
+}
+.success-icon { font-size: 72px; margin-bottom: 20px; animation: pop 0.5s ease; }
+@keyframes pop { 0%{transform:scale(0)} 80%{transform:scale(1.1)} 100%{transform:scale(1)} }
+.success-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--teal);
+  margin-bottom: 12px;
+}
+.success-sub { font-size: 14px; color: #999; line-height: 1.7; margin-bottom: 28px; }
+.success-tag {
+  background: #001a18;
+  border: 2px solid var(--teal);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  display: inline-block;
+  min-width: 240px;
+}
+.success-tag .lbl { font-size: 10px; font-weight: 700; letter-spacing: 2px; color: var(--teal); margin-bottom: 6px; }
+.success-tag .val { font-family: 'Orbitron', sans-serif; font-size: 20px; font-weight: 900; color: #fff; }
+
+.error-msg { color: #EF4444; font-size: 12px; margin-top: 6px; display: none; }
+.submitting { opacity: 0.6; pointer-events: none; }
+.alert-checks { display: flex; gap: 16px; flex-wrap: wrap; }
+.check-opt { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text); cursor: pointer; padding: 10px 16px; background: #0f0f0f; border: 1px solid var(--border); border-radius: 8px; transition: all 0.2s; }
+.check-opt:has(input:checked) { border-color: var(--teal); background: #001a18; }
+.check-opt input { width: 16px; height: 16px; accent-color: var(--teal); cursor: pointer; }
+</style>
+</head>
+<body>
+
+<script>
+var TELEGRAM_TOKEN   = '8785184944:AAEEPwzWgfVRaGqEfrCpr4Mf9Yy7qp2Lx2k';
+var TELEGRAM_CHAT_ID = '8737168646';
+var GAS_URL          = 'https://script.google.com/macros/s/AKfycbwbeveDTjJNNjqrDXBoEUTdorFj36wkOPIU-OLZnFid4QOW3cPPmZzyK8YLtWD1p4JD/exec';
+var BETA_LIMIT       = 10;
+</script>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo-text">innovat3<span>.</span></div>
+  <div class="header-sub">Smart NFC Emergency Tags</div>
+  <div class="beta-badge">BETA PROGRAMME</div>
+  <h1>Join the First 10</h1>
+  <p>Get your free beta tag — be among the first to test South Africa's smartest emergency ID system.</p>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-bar" id="progressBar">
+  <div class="step active" id="step1"><div class="step-num">1</div> Personal</div>
+  <div class="step-line"></div>
+  <div class="step" id="step2"><div class="step-num">2</div> Medical</div>
+  <div class="step-line"></div>
+  <div class="step" id="step3"><div class="step-num">3</div> Contacts</div>
+  <div class="step-line"></div>
+  <div class="step" id="step4"><div class="step-num">4</div> Tag</div>
+</div>
+
+<div class="wrap">
+
+  <!-- ── SECTION 1: PERSONAL ── -->
+  <div class="section active" id="sec1">
+    <div class="section-title">01 — Personal Details</div>
+
+    <div class="telegram-notice">
+      <div class="icon">📲</div>
+      <div>
+        <div class="title">Alerts via Telegram</div>
+        <div class="body">When your tag is scanned, we'll send an instant Telegram alert to your registered number. Make sure you have Telegram installed — it's free and works on all phones.</div>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>First Name <span>*</span></label>
+        <input type="text" id="firstName" placeholder="Emma">
+      </div>
+      <div class="field">
+        <label>Last Name <span>*</span></label>
+        <input type="text" id="lastName" placeholder="Johnson">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Email Address <span>*</span></label>
+      <input type="email" id="email" placeholder="emma@example.com">
+    </div>
+
+    <div class="field">
+      <label>WhatsApp / Cell Number <span>*</span></label>
+      <input type="tel" id="phone" placeholder="0821234567">
+      <div class="hint">South African number — we'll use this for your Telegram alerts</div>
+    </div>
+
+    <div class="field">
+      <label>Telegram Username</label>
+      <input type="text" id="telegram" placeholder="@yourusername">
+      <div class="hint">Optional but recommended — allows direct Telegram alerts to you</div>
+    </div>
+
+    <div class="field">
+      <label>Plan <span>*</span></label>
+      <div class="plan-grid">
+        <div>
+          <input class="plan-opt" type="radio" name="plan" id="planSolo" value="Solo">
+          <label for="planSolo">
+            <div class="plan-name">Solo</div>
+            <div class="plan-price">R89<small style="font-size:11px;color:#888">/mo</small></div>
+            <div class="plan-members">1 person</div>
+          </label>
+        </div>
+        <div>
+          <input class="plan-opt" type="radio" name="plan" id="planFamily" value="Family" checked>
+          <label for="planFamily">
+            <div class="plan-name">Family</div>
+            <div class="plan-price">R149<small style="font-size:11px;color:#888">/mo</small></div>
+            <div class="plan-members">Up to 4</div>
+          </label>
+        </div>
+        <div>
+          <input class="plan-opt" type="radio" name="plan" id="planCare" value="Care">
+          <label for="planCare">
+            <div class="plan-name">Care</div>
+            <div class="plan-price">R199<small style="font-size:11px;color:#888">/mo</small></div>
+            <div class="plan-members">Up to 6</div>
+          </label>
+        </div>
+      </div>
+      <div class="hint">Beta testers get 3 months FREE — no payment needed now</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-next" onclick="goTo(2)">Next — Medical Info →</button>
+    </div>
+  </div>
+
+  <!-- ── SECTION 2: MEDICAL ── -->
+  <div class="section" id="sec2">
+    <div class="section-title">02 — Medical Information</div>
+
+    <div class="field">
+      <label>Blood Type <span>*</span></label>
+      <div class="blood-grid">
+        <div><input class="blood-opt" type="radio" name="blood" id="bAp" value="A+"><label for="bAp">A+</label></div>
+        <div><input class="blood-opt" type="radio" name="blood" id="bAn" value="A-"><label for="bAn">A-</label></div>
+        <div><input class="blood-opt" type="radio" name="blood" id="bBp" value="B+"><label for="bBp">B+</label></div>
+        <div><input class="blood-opt" type="radio" name="blood" id="bBn" value="B-"><label for="bBn">B-</label></div>
+        <div><input class="blood-opt" type="radio" name="blood" id="bOp" value="O+"><label for="bOp">O+</label></div>
+        <div><input class="blood-opt" type="radio" name="blood" id="bOn" value="O-"><label for="bOn">O-</label></div>
+        <div><input class="blood-opt" type="radio" name="blood" id="bABp" value="AB+"><label for="bABp">AB+</label></div>
+        <div><input class="blood-opt" type="radio" name="blood" id="bABn" value="AB-"><label for="bABn">AB-</label></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Medical Conditions / Alerts <span>*</span></label>
+      <textarea id="medical" placeholder="e.g. Penicillin allergy, Mild asthma, Type 2 Diabetes...&#10;&#10;This is shown prominently to paramedics and first responders."></textarea>
+      <div class="hint">Be specific — this could save your life</div>
+    </div>
+
+    <div class="field">
+      <label>Current Medications</label>
+      <textarea id="meds" placeholder="e.g. Ventolin inhaler (as needed), Metformin 500mg twice daily..."></textarea>
+    </div>
+
+    <div class="field">
+      <label>Home Address</label>
+      <input type="text" id="address" placeholder="14 Rosebank Avenue, Johannesburg, 2196">
+    </div>
+
+    <div class="field">
+      <label>Notes for Finder</label>
+      <textarea id="notes" placeholder="e.g. Child aged 8. Speaks English and Zulu. Please stay calm and call family immediately."></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo(1)">← Back</button>
+      <button class="btn-next" onclick="goTo(3)">Next — Emergency Contacts →</button>
+    </div>
+  </div>
+
+  <!-- ── SECTION 3: CONTACTS ── -->
+  <div class="section" id="sec3">
+    <div class="section-title">03 — Emergency Contacts</div>
+
+    <div class="telegram-notice">
+      <div class="icon">🔔</div>
+      <div>
+        <div class="title">Telegram + WhatsApp Alerts</div>
+        <div class="body">When your tag is scanned, contacts will be alerted via Telegram and/or WhatsApp — whichever they use. Tick which platforms each contact has installed.</div>
+      </div>
+    </div>
+
+    <!-- Contact 1 -->
+    <div class="contact-block">
+      <div class="contact-block-title">Contact 1 — Primary <span style="color:#EF4444">*</span></div>
+      <div class="field-row">
+        <div class="field">
+          <label>Full Name</label>
+          <input type="text" id="c1name" placeholder="Sarah Johnson">
+        </div>
+        <div class="field">
+          <label>Relationship</label>
+          <input type="text" id="c1rel" placeholder="Mother">
+        </div>
+      </div>
+      <div class="field">
+        <label>Phone Number <span>*</span></label>
+        <input type="tel" id="c1phone" placeholder="0821234567">
+      </div>
+      <div class="field">
+        <label>Alert via</label>
+        <div class="alert-checks">
+          <label class="check-opt"><input type="checkbox" id="c1wa" checked> 💬 WhatsApp</label>
+          <label class="check-opt"><input type="checkbox" id="c1tg"> 📲 Telegram</label>
+        </div>
+      </div>
+      <div class="field" id="c1tgField" style="display:none">
+        <label>Telegram Username</label>
+        <input type="text" id="c1telegram" placeholder="@sarah">
+      </div>
+    </div>
+
+    <!-- Contact 2 -->
+    <div class="contact-block">
+      <div class="contact-block-title">Contact 2</div>
+      <div class="field-row">
+        <div class="field">
+          <label>Full Name</label>
+          <input type="text" id="c2name" placeholder="David Johnson">
+        </div>
+        <div class="field">
+          <label>Relationship</label>
+          <input type="text" id="c2rel" placeholder="Father">
+        </div>
+      </div>
+      <div class="field">
+        <label>Phone Number</label>
+        <input type="tel" id="c2phone" placeholder="0834567890">
+      </div>
+      <div class="field">
+        <label>Alert via</label>
+        <div class="alert-checks">
+          <label class="check-opt"><input type="checkbox" id="c2wa" checked> 💬 WhatsApp</label>
+          <label class="check-opt"><input type="checkbox" id="c2tg"> 📲 Telegram</label>
+        </div>
+      </div>
+      <div class="field" id="c2tgField" style="display:none">
+        <label>Telegram Username</label>
+        <input type="text" id="c2telegram" placeholder="@david">
+      </div>
+    </div>
+
+    <!-- Contact 3 -->
+    <div class="contact-block">
+      <div class="contact-block-title">Contact 3</div>
+      <div class="field-row">
+        <div class="field">
+          <label>Full Name</label>
+          <input type="text" id="c3name" placeholder="Dr Smith">
+        </div>
+        <div class="field">
+          <label>Relationship</label>
+          <input type="text" id="c3rel" placeholder="Doctor">
+        </div>
+      </div>
+      <div class="field">
+        <label>Phone Number</label>
+        <input type="tel" id="c3phone" placeholder="0111234567">
+      </div>
+      <div class="field">
+        <label>Alert via</label>
+        <div class="alert-checks">
+          <label class="check-opt"><input type="checkbox" id="c3wa" checked> 💬 WhatsApp</label>
+          <label class="check-opt"><input type="checkbox" id="c3tg"> 📲 Telegram</label>
+        </div>
+      </div>
+      <div class="field" id="c3tgField" style="display:none">
+        <label>Telegram Username</label>
+        <input type="text" id="c3telegram" placeholder="@drsmith">
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo(2)">← Back</button>
+      <button class="btn-next" onclick="goTo(4)">Next — Tag Preferences →</button>
+    </div>
+  </div>
+
+  <!-- ── SECTION 4: TAG PREFERENCES ── -->
+  <div class="section" id="sec4">
+    <div class="section-title">04 — Tag Preferences</div>
+
+    <div class="field">
+      <label>Tag Colour</label>
+      <div class="colour-grid">
+        <div>
+          <input class="colour-opt" type="radio" name="colour" id="cBlack" value="Black" checked>
+          <label for="cBlack">
+            <div class="colour-swatch" style="background:#1a1a1a;border-color:#555"></div>
+            <div class="colour-name">Black</div>
+          </label>
+        </div>
+        <div>
+          <input class="colour-opt" type="radio" name="colour" id="cOrange" value="Orange">
+          <label for="cOrange">
+            <div class="colour-swatch" style="background:#F97316"></div>
+            <div class="colour-name">Orange</div>
+          </label>
+        </div>
+        <div>
+          <input class="colour-opt" type="radio" name="colour" id="cBlue" value="Glow Blue">
+          <label for="cBlue">
+            <div class="colour-swatch" style="background:#4DBBFF"></div>
+            <div class="colour-name">Glow Blue</div>
+          </label>
+        </div>
+        <div>
+          <input class="colour-opt" type="radio" name="colour" id="cGreen" value="Glitter Green">
+          <label for="cGreen">
+            <div class="colour-swatch" style="background:#39FF6A"></div>
+            <div class="colour-name">Glow Green</div>
+          </label>
+        </div>
+        <div>
+          <input class="colour-opt" type="radio" name="colour" id="cRed" value="Red">
+          <label for="cRed">
+            <div class="colour-swatch" style="background:#EF4444"></div>
+            <div class="colour-name">Red</div>
+          </label>
+        </div>
+        <div>
+          <input class="colour-opt" type="radio" name="colour" id="cTeal" value="Teal">
+          <label for="cTeal">
+            <div class="colour-swatch" style="background:#0ED2C8"></div>
+            <div class="colour-name">Teal</div>
+          </label>
+        </div>
+        <div>
+          <input class="colour-opt" type="radio" name="colour" id="cWhite" value="White">
+          <label for="cWhite">
+            <div class="colour-swatch" style="background:#e5e5e5"></div>
+            <div class="colour-name">White</div>
+          </label>
+        </div>
+        <div>
+          <input class="colour-opt" type="radio" name="colour" id="cSurprise" value="Surprise Me">
+          <label for="cSurprise">
+            <div class="colour-swatch" style="background:linear-gradient(135deg,#F97316,#0ED2C8,#EF4444,#22C55E)"></div>
+            <div class="colour-name">Surprise!</div>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Tag Form Factor</label>
+      <select id="formFactor">
+        <option value="Keyring Fob">Keyring Fob (most popular)</option>
+        <option value="Disc Tag">Disc Tag (flat, stick anywhere)</option>
+        <option value="Wristband Insert">Wristband Insert</option>
+        <option value="Pendant">Pendant / Necklace</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Delivery Address</label>
+      <textarea id="delivery" placeholder="Where should we send your tag?&#10;Street, City, Postal Code"></textarea>
+    </div>
+
+    <div class="field">
+      <label>Anything else we should know?</label>
+      <textarea id="extraNotes" placeholder="Special requirements, questions, feedback..."></textarea>
+    </div>
+
+    <div id="submitError" class="error-msg">Something went wrong — please try again.</div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo(3)">← Back</button>
+      <button class="btn-next" id="submitBtn" onclick="submitForm()">🚀 Submit Registration</button>
+    </div>
+  </div>
+
+  <!-- ── SUCCESS ── -->
+  <div class="section" id="secSuccess">
+    <div class="success-screen">
+      <div class="success-icon">🎉</div>
+      <div class="success-title">You're In!</div>
+      <div class="success-sub">
+        Welcome to the Innovat3 beta programme.<br>
+        Your tag is being prepared and will be shipped to you shortly.<br><br>
+        We'll be in touch on Telegram with your tag ID and setup instructions.
+      </div>
+      <div class="success-tag">
+        <div class="lbl">YOUR TAG ID</div>
+        <div class="val" id="assignedTagId">—</div>
+      </div>
+      <br>
+      <div style="font-size:13px;color:#666;line-height:1.7">
+        📲 Install Telegram if you haven't already<br>
+        🏷️ Your tag will arrive within 5–7 days<br>
+        📋 Keep your subscriber card safe
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+var currentStep = 1;
+
+// Show/hide Telegram username fields based on checkbox
+[1,2,3].forEach(function(i) {
+  var tgBox = document.getElementById('c'+i+'tg');
+  if (tgBox) {
+    tgBox.addEventListener('change', function() {
+      document.getElementById('c'+i+'tgField').style.display = this.checked ? 'block' : 'none';
+    });
+  }
+});
+
+function goTo(step) {
+  if (step > currentStep && !validate(currentStep)) return;
+
+  document.getElementById('sec' + currentStep).classList.remove('active');
+  document.getElementById('sec' + step).classList.add('active');
+
+  for (var i = 1; i <= 4; i++) {
+    var el = document.getElementById('step' + i);
+    el.classList.remove('active', 'done');
+    if (i < step) el.classList.add('done');
+    if (i === step) el.classList.add('active');
+  }
+
+  currentStep = step;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function validate(step) {
+  if (step === 1) {
+    if (!v('firstName')) return err('firstName', 'Required');
+    if (!v('lastName'))  return err('lastName',  'Required');
+    if (!v('email'))     return err('email',      'Required');
+    if (!v('phone'))     return err('phone',      'Required');
+    if (!document.querySelector('input[name="plan"]:checked')) {
+      alert('Please select a plan'); return false;
+    }
+  }
+  if (step === 2) {
+    if (!document.querySelector('input[name="blood"]:checked')) {
+      alert('Please select your blood type'); return false;
+    }
+    if (!v('medical')) return err('medical', 'Please enter at least one medical alert');
+  }
+  if (step === 3) {
+    if (!v('c1name'))  return err('c1name',  'Required');
+    if (!v('c1phone')) return err('c1phone', 'Required');
+  }
+  return true;
+}
+
+function v(id) { return document.getElementById(id).value.trim(); }
+function err(id, msg) {
+  document.getElementById(id).focus();
+  document.getElementById(id).style.borderColor = '#EF4444';
+  setTimeout(function(){ document.getElementById(id).style.borderColor = ''; }, 2000);
+  return false;
+}
+
+function formatPhone(raw) {
+  var num = raw.replace(/\D/g, '');
+  if (num.startsWith('0')) num = '27' + num.slice(1);
+  if (!num.startsWith('27')) num = '27' + num;
+  return num;
+}
+
+function generateTagId() {
+  var year = new Date().getFullYear();
+  var num  = Math.floor(Math.random() * 90 + 10);
+  return 'IN3-' + year + '-B0' + num;
+}
+
+async function submitForm() {
+  if (!validate(4)) return;
+
+  var btn = document.getElementById('submitBtn');
+  btn.textContent = 'Submitting...';
+  btn.classList.add('submitting');
+
+  var tagId     = generateTagId();
+  var timestamp = new Date().toLocaleString('en-ZA', { timeZone: 'Africa/Johannesburg' });
+  var plan      = document.querySelector('input[name="plan"]:checked').value;
+  var blood     = document.querySelector('input[name="blood"]:checked').value;
+  var colour    = document.querySelector('input[name="colour"]:checked').value;
+
+  var data = {
+    type:       'REGISTRATION',
+    tagId:      tagId,
+    timestamp:  timestamp,
+    firstName:  v('firstName'),
+    lastName:   v('lastName'),
+    name:       v('firstName') + ' ' + v('lastName'),
+    email:      v('email'),
+    phone:      formatPhone(v('phone')),
+    telegram:   v('telegram'),
+    plan:       plan,
+    blood:      blood,
+    medical:    v('medical'),
+    meds:       v('meds'),
+    address:    v('address'),
+    notes:      v('notes'),
+    colour:     colour,
+    formFactor: document.getElementById('formFactor').value,
+    delivery:   v('delivery'),
+    extraNotes: v('extraNotes'),
+    contacts: [
+      v('c1name') ? { name: v('c1name'), rel: v('c1rel'), phone: formatPhone(v('c1phone')), wa: document.getElementById('c1wa').checked, telegram: v('c1telegram'), tg: document.getElementById('c1tg').checked } : null,
+      v('c2name') ? { name: v('c2name'), rel: v('c2rel'), phone: formatPhone(v('c2phone')), wa: document.getElementById('c2wa').checked, telegram: v('c2telegram'), tg: document.getElementById('c2tg').checked } : null,
+      v('c3name') ? { name: v('c3name'), rel: v('c3rel'), phone: formatPhone(v('c3phone')), wa: document.getElementById('c3wa').checked, telegram: v('c3telegram'), tg: document.getElementById('c3tg').checked } : null,
+    ].filter(Boolean)
+  };
+
+  // Send Telegram alert to owner
+  var msg =
+    '🆕 *NEW BETA REGISTRATION*\n\n' +
+    '*' + data.name + '*\n' +
+    '📧 ' + data.email + '\n' +
+    '📱 +' + data.phone + '\n' +
+    (data.telegram ? '💬 Telegram: ' + data.telegram + '\n' : '') +
+    '\n🏷️ Tag: *' + tagId + '*\n' +
+    '📦 Plan: ' + plan + '\n' +
+    '🎨 Colour: ' + colour + ' — ' + document.getElementById('formFactor').value + '\n' +
+    '🩸 Blood: ' + blood + '\n' +
+    '⚠️ Medical: ' + data.medical + '\n\n' +
+    '👥 Contacts:\n' +
+    data.contacts.map(function(c){ 
+      var alerts = [];
+      if (c.wa) alerts.push('💬 WA');
+      if (c.tg) alerts.push('📲 TG' + (c.telegram ? ' ' + c.telegram : ''));
+      return '• ' + c.name + ' (' + c.rel + '): +' + c.phone + (alerts.length ? ' — ' + alerts.join(', ') : '');
+    }).join('\n') + '\n\n' +
+    '📍 Delivery: ' + (data.delivery || 'Not provided') + '\n' +
+    '🕐 ' + timestamp;
+
+  try {
+    await fetch('https://api.telegram.org/bot' + TELEGRAM_TOKEN + '/sendMessage', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: msg, parse_mode: 'Markdown', disable_web_page_preview: true })
+    });
+  } catch(e) {}
+
+  // Send to GAS / Google Sheets
+  try {
+    fetch(GAS_URL, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+  } catch(e) {}
+
+  // Show success
+  document.getElementById('assignedTagId').textContent = tagId;
+  document.getElementById('sec4').classList.remove('active');
+  document.getElementById('progressBar').style.display = 'none';
+  document.getElementById('secSuccess').classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>
