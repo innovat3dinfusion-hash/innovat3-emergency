@@ -2,624 +2,343 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>🚨 Innovat3 Emergency Tag</title>
-<!-- Live at: https://innovat3dinfusion-hash.github.io/innovat3-emergency/e/ -->
-<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-
-<!-- ============================================================
-  INNOVAT3 EMERGENCY TAG PAGE
-  ============================================================
-  HOW THIS WORKS:
-  1. Someone scans NFC tag → opens this page
-  2. Page reads tag ID from the URL  (e.g. /e/IN3-2024-0001)
-  3. Looks up subscriber profile from the SUBSCRIBERS object
-  4. Captures finder's GPS location
-  5. Reverse-geocodes GPS to a readable street address
-  6. POSTs everything to your Google Apps Script backend
-  7. GAS logs to Google Sheets + sends email + WhatsApp alerts
-  8. Page also sends a direct Telegram message as backup
-  9. Finder sees subscriber info + call/WhatsApp buttons
-
-  TO ADD A NEW SUBSCRIBER:
-  1. Add their profile to the SUBSCRIBERS object below
-  2. Program their NFC tag URL to: YOUR_DOMAIN/e/IN3-YYYY-XXXX
-  3. Done — no other changes needed
-
-  SETUP CHECKLIST:
-  ✅ Replace GAS_URL with your deployed Google Apps Script URL
-  ✅ Replace OWNER_EMAIL with your email address
-  ✅ Telegram bot token and chat ID are already configured
-  ✅ Add your subscribers to the SUBSCRIBERS object
-  ✅ Host this file on GitHub Pages or your domain
-  ✅ Program NFC tags with the correct URLs
-  ============================================================ -->
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Innovat3 Emergency</title>
 <style>
-/* ── RESET & BASE ── */
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{min-height:100%;font-family:'Exo 2',system-ui,sans-serif;background:#0f0f0f;color:#f0f0f0;-webkit-font-smoothing:antialiased}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, sans-serif; background: #111; color: #fff; }
 
-/* ── CSS VARIABLES ── */
-:root{
-  --orange:#F97316;
-  --orange-dim:#7C3800;
-  --red:#EF4444;
-  --red-dim:#7F1D1D;
-  --green:#22C55E;
-  --green-dim:#14532D;
-  --blue:#3B82F6;
-  --teal:#0ED2C8;
-  --yellow:#EAB308;
-  --bg:#0f0f0f;
-  --card:#1a1a1a;
-  --card2:#222222;
-  --border:#2a2a2a;
-  --muted:#6B7280;
-  --light:#D1D5DB;
-  --white:#ffffff;
-}
+.header { background: #7f0000; padding: 24px 20px; text-align: center; border-bottom: 3px solid #F97316; }
+.header h1 { font-size: 26px; font-weight: 900; margin-bottom: 6px; }
+.header p { font-size: 14px; color: #ffaaaa; }
+.sos { font-size: 64px; margin-bottom: 10px; }
 
-/* ── ANIMATIONS ── */
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-@keyframes ring{0%{transform:scale(.9);opacity:.8}100%{transform:scale(2.2);opacity:0}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
-@keyframes glow{0%,100%{box-shadow:0 0 12px rgba(249,115,22,.3)}50%{box-shadow:0 0 28px rgba(249,115,22,.7)}}
+.wrap { max-width: 500px; margin: 0 auto; padding: 20px 16px 40px; }
 
-/* ── HEADER ── */
-.hdr{background:linear-gradient(160deg,#1a0000 0%,#2d0000 100%);border-bottom:2px solid var(--red);padding:24px 20px 28px;text-align:center;position:relative;overflow:hidden}
-.hdr::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 14px,rgba(255,255,255,.02) 14px,rgba(255,255,255,.02) 28px);pointer-events:none}
-.hdr-brand{font-size:10px;font-weight:700;letter-spacing:4px;color:rgba(255,255,255,.4);text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:8px}
-.hdr-brand::before,.hdr-brand::after{content:'';flex:1;max-width:60px;height:1px;background:rgba(255,255,255,.15)}
-.sos-wrap{position:relative;display:inline-flex;align-items:center;justify-content:center;margin-bottom:16px}
-.sos-ring{position:absolute;inset:-6px;border-radius:50%;border:2px solid rgba(239,68,68,.5);animation:ring 2s ease-out infinite}
-.sos-ring:nth-child(2){animation-delay:.7s}
-.sos-btn{width:80px;height:80px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:40px;position:relative;z-index:1;animation:glow 2.5s ease-in-out infinite}
-.hdr h1{font-size:24px;font-weight:900;color:var(--white);letter-spacing:.5px;margin-bottom:6px}
-.hdr-sub{font-size:13px;color:rgba(255,255,255,.6);font-weight:400}
+.status-box { background: #1a1a1a; border: 1px solid #333; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; display: flex; align-items: center; gap: 12px; }
+.dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+.dot.yellow { background: #EAB308; animation: pulse 1s infinite; }
+.dot.green  { background: #22C55E; }
+.dot.red    { background: #EF4444; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+.status-text { font-size: 14px; font-weight: 700; }
+.status-sub  { font-size: 12px; color: #888; margin-top: 3px; }
 
-/* ── LAYOUT ── */
-.wrap{max-width:480px;margin:0 auto;padding:20px 16px 48px}
+.blood-row { display: flex; gap: 12px; margin-bottom: 14px; }
+.blood-box { background: #2a0000; border: 2px solid #EF4444; border-radius: 12px; padding: 14px; text-align: center; width: 100px; flex-shrink: 0; }
+.blood-box .lbl { font-size: 9px; font-weight: 700; letter-spacing: 1px; color: #EF4444; margin-bottom: 6px; }
+.blood-box .val { font-size: 36px; font-weight: 900; color: #fff; line-height: 1; }
+.medical-box { background: #1a0e00; border: 2px solid #F97316; border-radius: 12px; padding: 14px; flex: 1; }
+.medical-box .lbl { font-size: 9px; font-weight: 700; letter-spacing: 1px; color: #F97316; margin-bottom: 6px; }
+.medical-box .val { font-size: 13px; color: #fff; line-height: 1.5; }
 
-/* ── STATUS BAR ── */
-.status{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 16px;margin-bottom:16px;animation:fadeUp .4s ease both}
-.status-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;transition:background .3s}
-.status-dot.working{background:var(--yellow);animation:pulse 1s infinite}
-.status-dot.ok{background:var(--green)}
-.status-dot.fail{background:var(--red)}
-.status-text{font-size:13px;font-weight:700;color:var(--light)}
-.status-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.tab { border-radius: 10px; padding: 14px; margin-bottom: 10px; border-left: 4px solid; }
+.tab .lbl { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+.tab .val { font-size: 13px; line-height: 1.6; color: #ddd; }
+.tab.teal  { background: #001a18; border-color: #0ED2C8; } .tab.teal  .lbl { color: #0ED2C8; }
+.tab.green { background: #001a08; border-color: #22C55E; } .tab.green .lbl { color: #22C55E; }
+.tab.blue  { background: #000d1a; border-color: #3B82F6; } .tab.blue  .lbl { color: #3B82F6; }
 
-/* ── PERSON CARD ── */
-.person-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:14px;animation:fadeUp .4s .1s ease both}
-.person-header{display:flex;align-items:center;gap:14px;padding-bottom:16px;border-bottom:1px solid var(--border);margin-bottom:16px}
-.person-avatar{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;border:3px solid var(--border)}
-.person-name{font-size:21px;font-weight:900;color:var(--white)}
-.person-tag-id{font-size:11px;color:var(--muted);font-family:monospace;margin-top:3px}
-.person-plan-badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.5px;padding:3px 10px;border-radius:100px;border:1px solid var(--orange);color:var(--orange);background:rgba(249,115,22,.1);margin-top:5px}
+.gps-box { background: #001a08; border: 1px solid #22C55E; border-radius: 12px; padding: 16px; margin-bottom: 14px; }
+.gps-box .lbl { font-size: 10px; font-weight: 700; letter-spacing: 1px; color: #22C55E; margin-bottom: 10px; }
+.gps-address { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+.gps-coords  { font-size: 11px; color: #22C55E; font-family: monospace; margin-bottom: 12px; }
+.maps-btn { display: block; background: #15803D; color: #fff; text-align: center; padding: 12px; border-radius: 8px; font-weight: 700; font-size: 14px; text-decoration: none; }
+.gps-loading { color: #22C55E; font-size: 13px; font-weight: 600; }
+.gps-denied  { color: #22C55E; font-size: 13px; }
 
-/* ── INFO TABS ── */
-.tab{border-radius:10px;padding:13px 14px;margin-bottom:10px;border-left:3px solid var(--border)}
-.tab-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px;display:flex;align-items:center;gap:5px}
-.tab-value{font-size:14px;font-weight:600;line-height:1.55;color:var(--light)}
-.tab.blood{background:#1f0808;border-color:var(--red)}
-.tab.blood .tab-label{color:var(--red)}
-.blood-big{font-size:36px;font-weight:900;color:var(--white);line-height:1}
-.tab.medical{background:#1f1200;border-color:var(--orange)}
-.tab.medical .tab-label{color:var(--orange)}
-.tab.meds{background:#001f1e;border-color:var(--teal)}
-.tab.meds .tab-label{color:var(--teal)}
-.tab.addr{background:#001f0a;border-color:var(--green)}
-.tab.addr .tab-label{color:var(--green)}
-.tab.notes{background:#0d0f1f;border-color:var(--blue)}
-.tab.notes .tab-label{color:var(--blue)}
+.alert-sent { background: #001a08; border: 1px solid #22C55E; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; display: flex; align-items: center; gap: 12px; }
+.alert-sent .icon { font-size: 30px; }
+.alert-sent .title { font-size: 13px; font-weight: 800; color: #22C55E; }
+.alert-sent .sub   { font-size: 11px; color: #16A34A; margin-top: 2px; }
 
-/* ── GPS CARD ── */
-.gps-card{background:var(--card);border:1px solid #166534;border-radius:16px;padding:18px;margin-bottom:14px;animation:fadeUp .4s .2s ease both}
-.gps-header{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);margin-bottom:12px;display:flex;align-items:center;gap:6px}
-.gps-loading{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;color:#4ADE80}
-.spinner{width:20px;height:20px;border:3px solid rgba(74,222,128,.25);border-top-color:var(--green);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
-.gps-address{font-size:14px;font-weight:700;color:var(--white);line-height:1.4;margin-bottom:4px}
-.gps-coords{font-size:11px;color:var(--muted);font-family:monospace;margin-bottom:12px}
-.gps-map-btn{display:flex;align-items:center;justify-content:center;gap:8px;background:#15803D;color:white;padding:12px;border-radius:10px;font-weight:700;font-size:14px;text-decoration:none}
-.gps-map-btn:hover{background:#166534}
-.gps-no-location{font-size:13px;color:#4ADE80;font-weight:600;line-height:1.5}
+.contacts-card { background: #1a1a1a; border: 1px solid #333; border-radius: 12px; padding: 18px; margin-bottom: 14px; }
+.contacts-title { font-size: 11px; font-weight: 700; letter-spacing: 1px; color: #888; text-transform: uppercase; margin-bottom: 14px; }
+.contact { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #2a2a2a; }
+.contact:last-child { border: none; padding-bottom: 0; }
+.contact-name { font-size: 14px; font-weight: 700; color: #fff; }
+.contact-rel  { font-size: 11px; color: #888; margin-top: 2px; }
+.contact-num  { font-size: 12px; color: #3B82F6; font-family: monospace; margin-top: 3px; }
+.contact-btns { display: flex; gap: 8px; flex-shrink: 0; }
+.btn-call { background: #15803D; color: #fff; border: none; border-radius: 8px; padding: 9px 14px; font-size: 12px; font-weight: 700; text-decoration: none; display: inline-block; }
+.btn-wa   { background: #16A34A; color: #fff; border: none; border-radius: 8px; padding: 9px 12px; font-size: 12px; font-weight: 700; text-decoration: none; display: inline-block; }
 
-/* ── ALERT SENT ── */
-.alert-confirmed{display:flex;align-items:center;gap:12px;background:#052e16;border:1px solid #166534;border-radius:12px;padding:14px 16px;margin-bottom:14px;animation:pop .5s ease both}
-.alert-confirmed-icon{font-size:30px;flex-shrink:0}
-.alert-confirmed-title{font-size:13px;font-weight:800;color:#4ADE80}
-.alert-confirmed-sub{font-size:11px;color:#16A34A;margin-top:2px}
+.emergency-strip { background: #0a0a0a; border-radius: 12px; padding: 16px; margin-bottom: 14px; }
+.emergency-strip .title { font-size: 10px; font-weight: 700; letter-spacing: 2px; color: #555; text-transform: uppercase; margin-bottom: 12px; }
+.e-nums { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+.e-num { background: #1a1a1a; border-radius: 8px; padding: 12px 8px; text-align: center; }
+.e-num .e-lbl { font-size: 10px; color: #666; margin-bottom: 4px; }
+.e-num .e-val { font-size: 20px; font-weight: 900; }
+.e-num .e-val a { color: #fff; text-decoration: none; }
 
-/* ── CONTACTS ── */
-.contacts-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:14px;animation:fadeUp .4s .3s ease both}
-.contacts-title{font-size:12px;font-weight:700;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px}
-.contact-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
-.contact-row:last-child{border:none;padding-bottom:0}
-.contact-name{font-size:14px;font-weight:700;color:var(--white)}
-.contact-relation{font-size:11px;color:var(--muted);margin-top:2px}
-.contact-phone{font-size:12px;color:var(--blue);font-family:monospace;margin-top:3px;font-weight:600}
-.contact-actions{display:flex;gap:8px;flex-shrink:0}
-.btn-call{background:#15803D;color:white;border:none;border-radius:8px;padding:9px 14px;font-size:12px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:4px;font-family:'Exo 2',sans-serif}
-.btn-wa{background:#16A34A;color:white;border:none;border-radius:8px;padding:9px 12px;font-size:12px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:4px;font-family:'Exo 2',sans-serif}
+.footer { text-align: center; padding: 10px; font-size: 11px; color: #444; font-weight: 700; letter-spacing: 2px; }
 
-/* ── SA EMERGENCY STRIP ── */
-.emergency-strip{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px;animation:fadeUp .4s .4s ease both}
-.emergency-strip-title{font-size:10px;font-weight:700;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:12px}
-.e-nums{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.e-num{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 8px;text-align:center}
-.e-num-emoji{font-size:18px;margin-bottom:6px}
-.e-num-val{font-size:22px;font-weight:900;color:var(--white)}
-.e-num-val a{color:inherit;text-decoration:none}
-.e-num-label{font-size:10px;color:var(--muted);margin-top:3px}
+.error-card { background: #2a0000; border: 2px solid #EF4444; border-radius: 12px; padding: 24px; text-align: center; }
+.error-card h3 { font-size: 18px; font-weight: 900; color: #EF4444; margin-bottom: 10px; }
+.error-card p  { font-size: 13px; color: #ffaaaa; line-height: 1.6; }
 
-/* ── FOOTER ── */
-.page-footer{text-align:center;padding:10px 0 4px}
-.footer-brand{font-size:11px;color:#374151;font-weight:700;letter-spacing:2px}
-
-/* ── ERROR CARD ── */
-.error-card{background:#1f0808;border:1px solid var(--red);border-radius:16px;padding:24px;text-align:center;animation:fadeUp .4s ease both}
-.error-card h3{font-size:18px;font-weight:900;color:var(--red);margin-bottom:8px}
-.error-card p{font-size:13px;color:#FCA5A5;line-height:1.6}
-
-/* ── UTILS ── */
-.hidden{display:none!important}
+.hidden { display: none !important; }
 </style>
 </head>
 <body>
 
-<!-- ▓▓ CONFIGURATION — FILL THESE IN ▓▓ -->
 <script>
-const CONFIG = {
-  // ▼▼▼ PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE ▼▼▼
-  GAS_URL: 'https://script.google.com/macros/s/YOUR_SCRIPT_ID_HERE/exec',
+var TELEGRAM_TOKEN   = '8785184944:AAEEPwzWgfVRaGqEfrCpr4Mf9Yy7qp2Lx2k';
+var TELEGRAM_CHAT_ID = '8737168646';
+var GAS_URL          = 'YOUR_GOOGLE_APPS_SCRIPT_URL';
 
-  // Telegram bot credentials (primary alert method)
-  TELEGRAM_BOT_TOKEN: '8785184944:AAEEPwzWgfVRaGqEfrCpr4Mf9Yy7qp2Lx2k',
-  TELEGRAM_CHAT_ID:   '8737168646',
-};
-</script>
-
-<!-- ▓▓ SUBSCRIBER DATABASE — ADD EACH CUSTOMER HERE ▓▓ -->
-<script>
-const SUBSCRIBERS = {
-
-  // ── TEMPLATE — copy and fill in for each new subscriber ──
-  // 'IN3-YYYY-XXXX': {
-  //   name:          'Full Name',
-  //   emoji:         '👤',               // avatar emoji (👧 👴 🏃 💊 👶)
-  //   plan:          'Solo',             // Solo / Family / Care
-  //   tagColour:     '#F97316',          // hex colour of their physical tag
-  //   bloodType:     'A+',
-  //   medicalAlerts: 'Any allergies or conditions',
-  //   medications:   'Medication list',
-  //   address:       'Home address',
-  //   notes:         'Instructions for the finder',
-  //   contacts: [
-  //     { name: 'Contact Name', relation: 'Mother', phone: '27820000000', wa: true },
-  //   ]
-  // },
-
+var SUBSCRIBERS = {
   'IN3-2024-0001': {
-    name:          'Emma Johnson',
-    emoji:         '👧',
-    plan:          'Family',
-    tagColour:     '#EF4444',
-    bloodType:     'A+',
-    medicalAlerts: 'Penicillin allergy · Mild asthma · carry inhaler at all times',
-    medications:   'Ventolin inhaler (as needed) · Cetirizine 10mg daily',
-    address:       '14 Rosebank Avenue, Johannesburg, 2196',
-    notes:         'Child aged 8. Speaks English and Zulu. Please stay calm and call family immediately.',
+    name: 'Emma Johnson', plan: 'Family', color: '#EF4444',
+    blood: 'A+',
+    medical: 'Penicillin allergy · Mild asthma · Carry inhaler at ALL times',
+    meds: 'Ventolin inhaler (as needed) · Cetirizine 10mg daily',
+    address: '14 Rosebank Avenue, Johannesburg, 2196',
+    notes: 'Child aged 8. Speaks English and Zulu. Please stay calm and call family immediately.',
     contacts: [
-      { name: 'Sarah Johnson',   relation: 'Mother',        phone: '27823456789', wa: true  },
-      { name: 'David Johnson',   relation: 'Father',        phone: '27834567890', wa: true  },
-      { name: 'Dr Priya Naidoo', relation: 'Paediatrician', phone: '27112345678', wa: false },
+      { name: 'Sarah Johnson',   rel: 'Mother',        phone: '27823456789', wa: true  },
+      { name: 'David Johnson',   rel: 'Father',        phone: '27834567890', wa: true  },
+      { name: 'Dr Priya Naidoo', rel: 'Paediatrician', phone: '27112345678', wa: false }
     ]
   },
-
   'IN3-2024-0002': {
-    name:          'Johannes van der Merwe',
-    emoji:         '👴',
-    plan:          'Care',
-    tagColour:     '#EAB308',
-    bloodType:     'O-',
-    medicalAlerts: 'Early Alzheimer\'s · Type 2 Diabetes · Do NOT give food without checking blood sugar first',
-    medications:   'Metformin 500mg twice daily · Donepezil 10mg evening',
-    address:       '7 Pretoria Street, Centurion, 0046',
-    notes:         'May be confused or disoriented. Speak calmly. Primarily Afrikaans speaking.',
+    name: 'Johannes van der Merwe', plan: 'Care', color: '#EAB308',
+    blood: 'O-',
+    medical: 'Early Alzheimers · Type 2 Diabetes · Do NOT give food without checking blood sugar',
+    meds: 'Metformin 500mg twice daily · Donepezil 10mg evening',
+    address: '7 Pretoria Street, Centurion, 0046',
+    notes: 'May be confused or disoriented. Speak calmly. Primarily Afrikaans speaking.',
     contacts: [
-      { name: 'Pieter van der Merwe',  relation: 'Son',      phone: '27821112222', wa: true  },
-      { name: 'Anri Botha',            relation: 'Daughter', phone: '27833334444', wa: true  },
-      { name: 'Dr Kobus Engelbrecht',  relation: 'GP',       phone: '27123456789', wa: false },
+      { name: 'Pieter van der Merwe', rel: 'Son',      phone: '27821112222', wa: true  },
+      { name: 'Anri Botha',           rel: 'Daughter', phone: '27833334444', wa: true  },
+      { name: 'Dr Kobus Engelbrecht', rel: 'GP',       phone: '27123456789', wa: false }
     ]
   },
-
   'IN3-2024-0003': {
-    name:          'Thabo Khumalo',
-    emoji:         '🏃',
-    plan:          'Solo',
-    tagColour:     '#22C55E',
-    bloodType:     'B+',
-    medicalAlerts: 'Cardiac history · Coronary stent fitted 2022 · Inform paramedics immediately',
-    medications:   'Aspirin 100mg daily · Atorvastatin 40mg nightly · Bisoprolol 5mg',
-    address:       '32 Soweto Highway, Soweto, 1804',
-    notes:         'Trail runner. If found collapsed check pulse first. Cardiac history is critical.',
+    name: 'Thabo Khumalo', plan: 'Solo', color: '#22C55E',
+    blood: 'B+',
+    medical: 'Cardiac history · Coronary stent 2022 · Inform paramedics IMMEDIATELY',
+    meds: 'Aspirin 100mg daily · Atorvastatin 40mg nightly · Bisoprolol 5mg',
+    address: '32 Soweto Highway, Soweto, 1804',
+    notes: 'Trail runner. If found collapsed check pulse first. Cardiac history is critical.',
     contacts: [
-      { name: 'Nomsa Khumalo',   relation: 'Wife',        phone: '27827778888', wa: true  },
-      { name: 'Dr Fatima Patel', relation: 'Cardiologist',phone: '27118765432', wa: false },
-      { name: 'Sipho Khumalo',   relation: 'Brother',     phone: '27839990000', wa: true  },
+      { name: 'Nomsa Khumalo',   rel: 'Wife',         phone: '27827778888', wa: true  },
+      { name: 'Dr Fatima Patel', rel: 'Cardiologist', phone: '27118765432', wa: false },
+      { name: 'Sipho Khumalo',   rel: 'Brother',      phone: '27839990000', wa: true  }
     ]
-  },
-
+  }
 };
-// ──────────────────────────────────────────────────────────────
 </script>
 
-<!-- ▓▓ HTML ▓▓ -->
-
-<header class="hdr">
-  <div class="hdr-brand">innovat3. · NFC Emergency System</div>
-  <div class="sos-wrap">
-    <div class="sos-ring"></div>
-    <div class="sos-ring"></div>
-    <div class="sos-btn">🆘</div>
-  </div>
+<div class="header">
+  <div class="sos">🆘</div>
   <h1>Emergency Alert</h1>
-  <p class="hdr-sub">This person needs your help — please read below</p>
-</header>
+  <p>This person needs your help — please read below</p>
+</div>
 
 <div class="wrap">
 
-  <!-- Status bar -->
-  <div class="status" id="statusBar">
-    <div class="status-dot working" id="statusDot"></div>
+  <div class="status-box" id="statusBox">
+    <div class="dot yellow" id="statusDot"></div>
     <div>
-      <div class="status-text" id="statusText">Loading profile…</div>
-      <div class="status-sub"  id="statusSub">Please wait a moment</div>
+      <div class="status-text" id="statusText">Loading profile...</div>
+      <div class="status-sub"  id="statusSub">Please wait</div>
     </div>
   </div>
 
-  <!-- Person card -->
-  <div class="person-card hidden" id="personCard">
-    <div class="person-header">
-      <div class="person-avatar" id="personAvatar">👤</div>
-      <div>
-        <div class="person-name"  id="personName">—</div>
-        <div class="person-tag-id" id="personTagId">—</div>
-        <div class="person-plan-badge" id="personPlan">—</div>
+  <div class="hidden" id="personCard">
+    <div class="blood-row">
+      <div class="blood-box">
+        <div class="lbl">BLOOD TYPE</div>
+        <div class="val" id="blood">—</div>
+      </div>
+      <div class="medical-box">
+        <div class="lbl">⚠ MEDICAL ALERTS — TELL PARAMEDICS</div>
+        <div class="val" id="medical">—</div>
       </div>
     </div>
-
-    <div class="tab blood">
-      <div class="tab-label">🩸 Blood Type</div>
-      <div class="blood-big" id="bloodType">—</div>
-    </div>
-    <div class="tab medical">
-      <div class="tab-label">⚠️ Medical Alerts — Tell paramedics immediately</div>
-      <div class="tab-value" id="medicalAlerts">—</div>
-    </div>
-    <div class="tab meds">
-      <div class="tab-label">💊 Current Medications</div>
-      <div class="tab-value" id="medications">—</div>
-    </div>
-    <div class="tab addr">
-      <div class="tab-label">🏠 Home Address</div>
-      <div class="tab-value" id="homeAddress">—</div>
-    </div>
-    <div class="tab notes">
-      <div class="tab-label">📋 Notes for Finder</div>
-      <div class="tab-value" id="notes">—</div>
-    </div>
+    <div class="tab teal">  <div class="lbl">💊 Medications</div>   <div class="val" id="meds">—</div>    </div>
+    <div class="tab green"> <div class="lbl">🏠 Home Address</div>  <div class="val" id="address">—</div> </div>
+    <div class="tab blue">  <div class="lbl">📋 Notes for Finder</div> <div class="val" id="notes">—</div> </div>
   </div>
 
-  <!-- GPS card -->
-  <div class="gps-card" id="gpsCard">
-    <div class="gps-header">📍 Your Location — sent to family</div>
-    <div id="gpsLoading" class="gps-loading">
-      <div class="spinner"></div>
-      Detecting your location…
-    </div>
-    <div id="gpsResult" class="hidden">
+  <div class="gps-box" id="gpsBox">
+    <div class="lbl">📍 YOUR LOCATION — SENT TO FAMILY</div>
+    <div class="gps-loading" id="gpsLoading">Detecting your location...</div>
+    <div class="hidden" id="gpsResult">
       <div class="gps-address" id="gpsAddress">—</div>
       <div class="gps-coords"  id="gpsCoords">—</div>
-      <a class="gps-map-btn" id="gpsMapsBtn" href="#" target="_blank">
-        🗺️ &nbsp;Open in Google Maps
-      </a>
+      <a class="maps-btn" id="mapsBtn" href="#" target="_blank">🗺️ Open in Google Maps</a>
     </div>
-    <div id="gpsDenied" class="gps-no-location hidden">
-      Location not shared — family will still be notified.<br>
-      Please share your location if possible so they can reach you faster.
-    </div>
+    <div class="hidden gps-denied" id="gpsDenied">Location not shared — family will still be notified.</div>
   </div>
 
-  <!-- Alert sent confirmation -->
-  <div class="alert-confirmed hidden" id="alertConfirmed">
-    <div class="alert-confirmed-icon">✅</div>
+  <div class="alert-sent hidden" id="alertSent">
+    <div class="icon">✅</div>
     <div>
-      <div class="alert-confirmed-title">Family alerted — help is on the way</div>
-      <div class="alert-confirmed-sub" id="alertConfirmedSub">WhatsApp + email sent with your GPS location</div>
+      <div class="title">Family has been alerted</div>
+      <div class="sub" id="alertSub">Telegram alert sent with your GPS location</div>
     </div>
   </div>
 
-  <!-- Contacts -->
   <div class="contacts-card hidden" id="contactsCard">
-    <div class="contacts-title">📞 Emergency Contacts — call now</div>
+    <div class="contacts-title">📞 Emergency Contacts — Call Now</div>
     <div id="contactsList"></div>
   </div>
 
-  <!-- SA emergency numbers -->
   <div class="emergency-strip">
-    <div class="emergency-strip-title">SA Emergency Numbers</div>
+    <div class="title">SA Emergency Numbers</div>
     <div class="e-nums">
-      <div class="e-num">
-        <div class="e-num-emoji">🚔</div>
-        <div class="e-num-val"><a href="tel:10111">10111</a></div>
-        <div class="e-num-label">SAPS Police</div>
-      </div>
-      <div class="e-num">
-        <div class="e-num-emoji">🚑</div>
-        <div class="e-num-val"><a href="tel:10177">10177</a></div>
-        <div class="e-num-label">Ambulance</div>
-      </div>
-      <div class="e-num">
-        <div class="e-num-emoji">🆘</div>
-        <div class="e-num-val"><a href="tel:112">112</a></div>
-        <div class="e-num-label">All Emergencies</div>
-      </div>
+      <div class="e-num"><div class="e-lbl">🚔 Police</div>    <div class="e-val"><a href="tel:10111">10111</a></div></div>
+      <div class="e-num"><div class="e-lbl">🚑 Ambulance</div> <div class="e-val"><a href="tel:10177">10177</a></div></div>
+      <div class="e-num"><div class="e-lbl">🆘 Emergency</div> <div class="e-val"><a href="tel:112">112</a></div></div>
     </div>
   </div>
 
-  <!-- Error state -->
   <div class="error-card hidden" id="errorCard">
     <h3>Tag Not Recognised</h3>
-    <p>Tag ID <strong id="errorTagId" style="font-family:monospace"></strong> was not found.<br><br>
-       Please contact <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4a222f2626250a232424253c2b3e7964292564302b">[email&#160;protected]</a></strong> or call<br>
-       your emergency services immediately.</p>
+    <p>Tag ID <strong id="errorId"></strong> was not found.<br><br>
+    Please call emergency services immediately.<br><br>
+    Contact: <strong>hello@innovat3.co.za</strong></p>
   </div>
 
-  <div class="page-footer">
-    <div class="footer-brand">INNOVAT3 · SMART NFC EMERGENCY TAGS</div>
-  </div>
+  <div class="footer">INNOVAT3 · SMART NFC EMERGENCY TAGS</div>
+
 </div>
 
-<!-- ▓▓ JAVASCRIPT — FULL END-TO-END FLOW ▓▓ -->
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-(async () => {
+<script>
+(async function() {
 
-  // ══════════════════════════════════════════════════════
-  // STEP 1 — READ TAG ID FROM URL
-  // Supports:
-  //   https://innovat3.co.za/e/IN3-2024-0001       (path)
-  //   https://innovat3.co.za/e/?tag=IN3-2024-0001  (query)
-  //   file://emergency-page.html?tag=IN3-2024-0001  (testing)
-  // ══════════════════════════════════════════════════════
-  // Read tag ID from URL query string: ?tag=IN3-2024-0001
-  // Live URL: https://innovat3dinfusion-hash.github.io/innovat3-emergency/e/?tag=IN3-2024-0001
-  const tagId =
-    new URLSearchParams(window.location.search).get('tag') ||
-    new URLSearchParams(window.location.search).get('id') ||
-    window.location.pathname.replace(/\/$/, '').split('/').pop() ||
-    'IN3-2024-0001'; // fallback for testing
+  var params = new URLSearchParams(window.location.search);
+  var tagId  = params.get('tag') || params.get('id') || 'IN3-2024-0001';
 
-  setStatus('working', `Loading tag ${tagId}…`, 'Looking up subscriber profile');
+  setStatus('yellow', 'Loading tag ' + tagId, 'Please wait...');
 
-  // ══════════════════════════════════════════════════════
-  // STEP 2 — LOOK UP SUBSCRIBER
-  // ══════════════════════════════════════════════════════
-  const sub = SUBSCRIBERS[tagId];
+  var sub = SUBSCRIBERS[tagId];
   if (!sub) {
-    setStatus('fail', 'Tag not recognised', tagId);
+    setStatus('red', 'Tag not recognised', tagId);
     show('errorCard');
-    document.getElementById('errorTagId').textContent = tagId;
+    document.getElementById('errorId').textContent = tagId;
     return;
   }
 
-  // Populate person card
-  const av = document.getElementById('personAvatar');
-  av.textContent   = sub.emoji;
-  av.style.background    = sub.tagColour + '33'; // transparent tint
-  av.style.borderColor   = sub.tagColour;
-
-  setText('personName',     sub.name);
-  setText('personTagId',    tagId);
-  setText('personPlan',     sub.plan + ' Plan');
-  setText('bloodType',      sub.bloodType);
-  setText('medicalAlerts',  sub.medicalAlerts);
-  setText('medications',    sub.medications);
-  setText('homeAddress',    sub.address);
-  setText('notes',          sub.notes);
+  document.getElementById('blood').textContent   = sub.blood;
+  document.getElementById('medical').textContent = sub.medical;
+  document.getElementById('meds').textContent    = sub.meds;
+  document.getElementById('address').textContent = sub.address;
+  document.getElementById('notes').textContent   = sub.notes;
   show('personCard');
 
-  // Build contact buttons
-  const list = document.getElementById('contactsList');
-  sub.contacts.forEach(c => {
-    const row = document.createElement('div');
-    row.className = 'contact-row';
-    row.innerHTML = `
-      <div>
-        <div class="contact-name">${esc(c.name)}</div>
-        <div class="contact-relation">${esc(c.relation)}</div>
-        <div class="contact-phone">+${esc(c.phone)}</div>
-      </div>
-      <div class="contact-actions">
-        <a href="tel:+${esc(c.phone)}" class="btn-call">📞 Call</a>
-        ${c.wa ? `<a href="https://wa.me/${esc(c.phone)}" class="btn-wa">💬 WA</a>` : ''}
-      </div>`;
+  var list = document.getElementById('contactsList');
+  sub.contacts.forEach(function(c) {
+    var row = document.createElement('div');
+    row.className = 'contact';
+    row.innerHTML =
+      '<div><div class="contact-name">' + c.name + '</div>' +
+      '<div class="contact-rel">' + c.rel + '</div>' +
+      '<div class="contact-num">+' + c.phone + '</div></div>' +
+      '<div class="contact-btns">' +
+      '<a href="tel:+' + c.phone + '" class="btn-call">📞 Call</a>' +
+      (c.wa ? '<a href="https://wa.me/' + c.phone + '" class="btn-wa">💬 WA</a>' : '') +
+      '</div>';
     list.appendChild(row);
   });
   show('contactsCard');
 
-  setStatus('working', 'Capturing your GPS location…', 'This helps family find you faster');
+  setStatus('yellow', 'Getting your location...', 'This helps family find you');
 
-  // ══════════════════════════════════════════════════════
-  // STEP 3 — CAPTURE GPS POSITION
-  // ══════════════════════════════════════════════════════
-  let lat = null, lng = null, address = 'Location not shared', mapsUrl = '';
+  var lat = null, lng = null, address = 'Location not shared', mapsUrl = '';
 
   try {
-    const pos = await getGPS();
-    lat  = pos.coords.latitude.toFixed(6);
-    lng  = pos.coords.longitude.toFixed(6);
-    mapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+    var pos = await getGPS();
+    lat     = pos.coords.latitude.toFixed(6);
+    lng     = pos.coords.longitude.toFixed(6);
+    mapsUrl = 'https://www.google.com/maps?q=' + lat + ',' + lng;
 
-    // Show GPS immediately before geocoding
-    document.getElementById('gpsMapsBtn').href = mapsUrl;
-    setText('gpsCoords', `GPS: ${lat}, ${lng}`);
+    document.getElementById('mapsBtn').href = mapsUrl;
+    document.getElementById('gpsCoords').textContent = 'GPS: ' + lat + ', ' + lng;
     hide('gpsLoading');
     show('gpsResult');
 
-    setStatus('working', 'Resolving street address…', `GPS: ${lat}, ${lng}`);
+    setStatus('yellow', 'Getting street address...', 'Almost done');
 
-    // ══════════════════════════════════════════════════
-    // STEP 4 — REVERSE GEOCODE (OpenStreetMap Nominatim)
-    // Free, no API key required
-    // ══════════════════════════════════════════════════
     try {
-      const r    = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`, {
-        headers: { 'Accept-Language': 'en', 'User-Agent': 'Innovat3EmergencySystem/1.0' }
-      });
-      const geo  = await r.json();
-      const raw  = geo.display_name || '';
-      // Keep first 5 segments for readability
-      address = raw.split(',').slice(0, 5).join(',').trim();
-      if (!address) address = `${lat}, ${lng}`;
-    } catch {
-      address = `GPS: ${lat}, ${lng}`;
+      var r   = await fetch('https://nominatim.openstreetmap.org/reverse?lat=' + lat + '&lon=' + lng + '&format=json');
+      var geo = await r.json();
+      address = (geo.display_name || '').split(',').slice(0,5).join(',').trim() || lat + ', ' + lng;
+      document.getElementById('gpsAddress').textContent = address;
+    } catch(e) {
+      address = 'GPS: ' + lat + ', ' + lng;
+      document.getElementById('gpsAddress').textContent = address;
     }
 
-    setText('gpsAddress', address);
-
-  } catch {
-    // GPS denied or unavailable
+  } catch(e) {
     hide('gpsLoading');
     show('gpsDenied');
-    setStatus('working', 'Sending alert without GPS…', 'Family will still be notified');
   }
 
-  // ══════════════════════════════════════════════════════
-  // STEP 5 — BUILD PAYLOAD
-  // ══════════════════════════════════════════════════════
-  const timestamp = new Date().toLocaleString('en-ZA', {
-    timeZone: 'Africa/Johannesburg',
-    dateStyle: 'medium',
-    timeStyle: 'short'
-  });
+  var timestamp = new Date().toLocaleString('en-ZA', { timeZone: 'Africa/Johannesburg' });
 
-  const payload = {
-    tagId,
-    name:          sub.name,
-    plan:          sub.plan,
-    bloodType:     sub.bloodType,
-    medicalAlerts: sub.medicalAlerts,
-    medications:   sub.medications,
-    homeAddress:   sub.address,
-    lat,
-    lng,
-    address,
-    mapsUrl,
-    timestamp,
-    scanType:      'NFC_SCAN',
-    contacts:      sub.contacts.map(c => ({
-      name:     c.name,
-      relation: c.relation,
-      phone:    c.phone,
-      wa:       c.wa
-    }))
-  };
-
-  // ══════════════════════════════════════════════════════
-  // STEP 6 — POST TO GOOGLE APPS SCRIPT
-  // GAS handles: Google Sheets logging + email + Telegram
-  // mode: 'no-cors' because GAS doesn't return CORS headers
-  // ══════════════════════════════════════════════════════
-  let gasSent = false;
-  if (!CONFIG.GAS_URL.includes('YOUR_SCRIPT_ID')) {
-    try {
-      await fetch(CONFIG.GAS_URL, {
-        method:  'POST',
-        mode:    'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify(payload)
-      });
-      gasSent = true;
-    } catch { /* silent — backup still runs */ }
-  }
-
-  // ══════════════════════════════════════════════════════
-  // STEP 7 — DIRECT TELEGRAM ALERT (BACKUP)
-  // Runs whether GAS succeeded or not — double safety net
-  // Telegram allows CORS from browser so we can await this
-  // ══════════════════════════════════════════════════════
+  // SEND TELEGRAM
   try {
-    const tgMsg =
-      `🚨 *INNOVAT3 EMERGENCY ALERT*\n\n` +
-      `*${sub.name}*'s tag was just scanned!\n\n` +
-      `🏷️ Tag: \`${tagId}\`  |  Plan: ${sub.plan}\n` +
-      `🩸 Blood Type: *${sub.bloodType}*\n` +
-      `⚠️ Medical: ${sub.medicalAlerts}\n\n` +
-      `📍 Location: ${address}\n` +
-      (mapsUrl ? `🗺️ [Open in Google Maps](${mapsUrl})\n` : '') +
-      `🕐 Time: ${timestamp}\n\n` +
-      `*Emergency Contacts:*\n` +
-      sub.contacts.map(c => `• ${c.name} (${c.relation}): +${c.phone}`).join('\n') +
-      `\n\nPlease contact the finder immediately.`;
+    var msg =
+      '🚨 *INNOVAT3 EMERGENCY ALERT*\n\n' +
+      '*' + sub.name + '* tag scanned!\n\n' +
+      '🩸 Blood: *' + sub.blood + '*\n' +
+      '⚠️ ' + sub.medical + '\n\n' +
+      '📍 ' + address + '\n' +
+      (mapsUrl ? '🗺️ ' + mapsUrl + '\n' : '') +
+      '🕐 ' + timestamp + '\n' +
+      '🏷️ Tag: ' + tagId + '\n\n' +
+      sub.contacts.map(function(c){ return '• ' + c.name + ' (' + c.rel + '): +' + c.phone; }).join('\n');
 
-    await fetch(
-      `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendMessage`,
-      {
-        method:  'POST',
+    await fetch('https://api.telegram.org/bot' + TELEGRAM_TOKEN + '/sendMessage', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: TELEGRAM_CHAT_ID,
+        text: msg,
+        parse_mode: 'Markdown',
+        disable_web_page_preview: true
+      })
+    });
+  } catch(e) {}
+
+  // SEND TO GOOGLE APPS SCRIPT (when set up)
+  if (GAS_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL') {
+    try {
+      fetch(GAS_URL, {
+        method: 'POST', mode: 'no-cors',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id:    CONFIG.TELEGRAM_CHAT_ID,
-          text:       tgMsg,
-          parse_mode: 'Markdown',
-          disable_web_page_preview: false
-        })
-      }
-    );
-  } catch(e) { /* silent */ }
+        body: JSON.stringify({ tagId: tagId, name: sub.name, blood: sub.blood,
+          medical: sub.medical, address: address, lat: lat, lng: lng,
+          mapsUrl: mapsUrl, timestamp: timestamp })
+      });
+    } catch(e) {}
+  }
 
-  // ══════════════════════════════════════════════════════
-  // STEP 8 — SHOW SUCCESS
-  // ══════════════════════════════════════════════════════
-  setStatus('ok', `${sub.name}'s family has been alerted`, `Sent at ${timestamp}`);
-  document.getElementById('alertConfirmedSub').textContent =
-    `WhatsApp + email dispatched at ${timestamp}`;
-  show('alertConfirmed');
+  setStatus('green', sub.name + ' — family alerted!', 'Sent at ' + timestamp);
+  document.getElementById('alertSub').textContent = 'Telegram sent at ' + timestamp;
+  show('alertSent');
 
 })();
 
-// ── UTILITIES ──────────────────────────────────────────────
-
-function setStatus(type, text, sub) {
-  const dot = document.getElementById('statusDot');
-  dot.className = 'status-dot ' + type;
-  setText('statusText', text);
-  setText('statusSub',  sub || '');
+function setStatus(color, text, sub) {
+  document.getElementById('statusDot').className = 'dot ' + color;
+  document.getElementById('statusText').textContent = text;
+  document.getElementById('statusSub').textContent  = sub || '';
 }
-
 function getGPS() {
-  return new Promise((resolve, reject) => {
-    if (!navigator.geolocation) { reject(new Error('GPS unavailable')); return; }
+  return new Promise(function(resolve, reject) {
+    if (!navigator.geolocation) { reject(new Error('No GPS')); return; }
     navigator.geolocation.getCurrentPosition(resolve, reject, {
-      enableHighAccuracy: true,
-      timeout:            12000,
-      maximumAge:         0
+      enableHighAccuracy: true, timeout: 12000, maximumAge: 0
     });
   });
 }
+function show(id) { document.getElementById(id).classList.remove('hidden'); }
+function hide(id) { document.getElementById(id).classList.add('hidden'); }
+</script>
 
-function setText(id, val) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = val;
-}
-
-function show(id) {
-  const el = document.getElementById(id);
-  if (el) el.classList.remove('hidden');
-}
-
-function hide(id) {
-  const el = documen
+</body>
+</html>
