@@ -85,7 +85,7 @@ body { font-family: Arial, sans-serif; background: #111; color: #fff; }
 <script>
 var TELEGRAM_TOKEN   = '8785184944:AAEEPwzWgfVRaGqEfrCpr4Mf9Yy7qp2Lx2k';
 var TELEGRAM_CHAT_ID = '8737168646';
-var GAS_URL          = 'https://script.google.com/macros/s/AKfycbzigzdWClPiUUca_EaBgg4_YaWX9e5azeE3xs95Fa8K5s2er7Pm0iGE1eEiTufnEIP1/exec';
+var GAS_URL          = 'https://script.google.com/macros/s/AKfycbwbeveDTjJNNjqrDXBoEUTdorFj36wkOPIU-OLZnFid4QOW3cPPmZzyK8YLtWD1p4JD/exec';
 
 var SUBSCRIBERS = {
   'IN3-2024-0001': {
@@ -305,7 +305,7 @@ var SUBSCRIBERS = {
   } catch(e) {}
 
   // SEND TO GOOGLE APPS SCRIPT (when set up)
-  if (GAS_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL') {
+  if (GAS_URL.includes('script.google.com')) {
     try {
       fetch(GAS_URL, {
         method: 'POST', mode: 'no-cors',
