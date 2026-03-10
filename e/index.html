@@ -225,7 +225,7 @@ var SUBSCRIBERS = {
       address = 'GPS: ' + lat + ', ' + lng;
       document.getElementById('gpsAddress').textContent = address;
     }
-  } catch(e) {
+  } catch(e) {f
     hide('gpsLoading');
     show('gpsDenied');
   }
@@ -240,7 +240,9 @@ var SUBSCRIBERS = {
   } catch(e) {}
   if (GAS_URL.indexOf('script.google.com') > -1) {
     try {
-      fetch(GAS_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tagId: tagId, name: sub.name, blood: sub.blood, medical: sub.medical, address: address, lat: lat, lng: lng, mapsUrl: mapsUrl, timestamp: timestamp }) });
+      fetch(GAS_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tagId: tagId, name: sub.name, blood: sub.blood,
+  medical: sub.medical, address: address, lat: lat, lng: lng,
+  mapsUrl: mapsUrl, timestamp: timestamp, contacts: sub.contacts }) });
     } catch(e) {}
   }
   setStatus('green', sub.name + ' - family alerted!', 'Sent at ' + timestamp);
