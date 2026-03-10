@@ -85,7 +85,7 @@ body { font-family: Arial, sans-serif; background: #111; color: #fff; }
 <script>
 var TELEGRAM_TOKEN   = '8785184944:AAEEPwzWgfVRaGqEfrCpr4Mf9Yy7qp2Lx2k';
 var TELEGRAM_CHAT_ID = '8737168646';
-var GAS_URL          = 'YOUR_GOOGLE_APPS_SCRIPT_URL';
+var GAS_URL          = 'https://script.google.com/macros/s/AKfycbzigzdWClPiUUca_EaBgg4_YaWX9e5azeE3xs95Fa8K5s2er7Pm0iGE1eEiTufnEIP1/exec';
 
 var SUBSCRIBERS = {
   'IN3-2024-0001': {
@@ -199,14 +199,14 @@ var SUBSCRIBERS = {
     <h3>Tag Not Recognised</h3>
     <p>Tag ID <strong id="errorId"></strong> was not found.<br><br>
     Please call emergency services immediately.<br><br>
-    Contact: <strong>hello@innovat3.co.za</strong></p>
+    Contact: <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5e363b3232311e37303031283f2a6d703d3170243f">[email&#160;protected]</a></strong></p>
   </div>
 
   <div class="footer">INNOVAT3 · SMART NFC EMERGENCY TAGS</div>
 
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 (async function() {
 
   var params = new URLSearchParams(window.location.search);
@@ -332,13 +332,4 @@ function getGPS() {
   return new Promise(function(resolve, reject) {
     if (!navigator.geolocation) { reject(new Error('No GPS')); return; }
     navigator.geolocation.getCurrentPosition(resolve, reject, {
-      enableHighAccuracy: true, timeout: 12000, maximumAge: 0
-    });
-  });
-}
-function show(id) { document.getElementById(id).classList.remove('hidden'); }
-function hide(id) { document.getElementById(id).classList.add('hidden'); }
-</script>
-
-</body>
-</html>
+      enableHighAccuracy: t
