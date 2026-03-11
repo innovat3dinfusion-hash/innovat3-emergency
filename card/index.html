@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Innovat3 — Subscriber Card</title>
+<title>Innovat3 — Emergency</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -16,16 +16,37 @@
 * { box-sizing:border-box; margin:0; padding:0; }
 body { font-family:'Exo 2',sans-serif; background:var(--black); color:var(--text); min-height:100vh; }
 
+/* LOADING */
 .loading-screen { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; gap:20px; }
 .spinner { width:52px; height:52px; border:3px solid #222; border-top-color:var(--orange); border-radius:50%; animation:spin 0.8s linear infinite; }
 @keyframes spin { to { transform:rotate(360deg); } }
 .loading-text { font-family:'Orbitron',sans-serif; font-size:11px; letter-spacing:3px; color:var(--muted); text-transform:uppercase; }
 
+/* ERROR */
 .error-screen { display:none; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; gap:16px; padding:40px; text-align:center; }
 .error-screen h2 { font-family:'Orbitron',sans-serif; color:var(--red); font-size:18px; }
-.error-screen p  { color:var(--muted); font-size:14px; line-height:1.6; }
+.error-screen p { color:var(--muted); font-size:14px; line-height:1.6; }
 
+/* CARD WRAP */
 .card-wrap { display:none; max-width:560px; margin:0 auto; padding-bottom:40px; }
+
+/* ALERT BANNER — shown while GPS fires */
+.alert-banner {
+  display:none; align-items:center; gap:12px;
+  padding:12px 16px; margin:0;
+  font-size:13px; font-weight:700;
+}
+.alert-banner.yellow { background:#2a2000; border-bottom:2px solid #EAB308; color:#EAB308; display:flex; }
+.alert-banner.green  { background:#0a2010; border-bottom:2px solid var(--green); color:var(--green); display:flex; }
+.alert-banner.red    { background:#1a0808; border-bottom:2px solid var(--red); color:var(--red); display:flex; }
+.alert-dot { width:10px; height:10px; border-radius:50%; background:currentColor; flex-shrink:0; animation:pulse 1s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* GPS BLOCK */
+.gps-block { background:#0d0d0d; padding:12px 16px; border-bottom:1px solid var(--border); display:none; }
+.gps-address { font-size:13px; font-weight:700; color:#fff; margin-bottom:4px; }
+.gps-coords  { font-size:10px; color:var(--muted); font-family:monospace; margin-bottom:8px; }
+.gps-btn { display:inline-block; background:var(--blue); color:#fff; font-size:12px; font-weight:700; padding:8px 16px; border-radius:8px; text-decoration:none; }
 
 /* HEADER */
 .sc-header { background:#111; position:relative; overflow:hidden; }
@@ -35,13 +56,15 @@ body { font-family:'Exo 2',sans-serif; background:var(--black); color:var(--text
 .sc-header-row1 { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
 .sc-brand { font-family:'Orbitron',sans-serif; font-size:15px; font-weight:900; color:var(--orange); }
 .sc-brand span { color:#fff; }
-.sc-sub-brand  { font-size:9px; color:var(--muted); letter-spacing:2px; text-transform:uppercase; margin-top:2px; }
-.sc-avatar { width:56px; height:56px; border-radius:50%; background:var(--card2); display:flex; align-items:center; justify-content:center; font-family:'Orbitron',sans-serif; font-size:18px; font-weight:900; color:#fff; flex-shrink:0; }
-.sc-name { font-family:'Orbitron',sans-serif; font-size:20px; font-weight:900; color:#fff; margin-bottom:7px; line-height:1.2; }
+.sc-sub-brand { font-size:9px; color:var(--muted); letter-spacing:2px; text-transform:uppercase; margin-top:2px; }
+.sc-avatar { width:56px; height:56px; border-radius:50%; background:var(--card2); display:flex; align-items:center; justify-content:center; font-family:'Orbitron',sans-serif; font-size:18px; font-weight:900; color:#fff; flex-shrink:0; overflow:hidden; }
+.sc-avatar img { width:100%; height:100%; object-fit:cover; }
+.sc-name { font-family:'Orbitron',sans-serif; font-size:20px; font-weight:900; color:#fff; margin-bottom:4px; line-height:1.2; }
+.sc-dob  { font-size:11px; color:var(--muted); margin-bottom:6px; }
 .sc-meta { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
 .sc-tagid { font-family:monospace; font-size:11px; color:var(--muted); letter-spacing:1px; }
 .pill { font-size:8px; font-weight:700; letter-spacing:1.5px; padding:3px 10px; border-radius:20px; text-transform:uppercase; }
-.pill-plan   { color:#fff; }
+.pill-plan { color:#fff; }
 .pill-active { background:#0d2e0d; color:var(--green); border:1px solid var(--green); }
 
 /* TOP ROW */
@@ -63,15 +86,9 @@ body { font-family:'Exo 2',sans-serif; background:var(--black); color:var(--text
 .tab-rule { border:none; border-top:1px solid var(--border); margin:10px 0 8px; }
 .tab-sub-lbl { font-size:7.5px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:6px; }
 .tab-sub-txt { font-size:12px; color:var(--muted); line-height:1.65; }
-
-.tab-alert { border:1px solid var(--orange); }  .tab-alert .tab-hdr { background:var(--orange); color:#000; }
-.tab-addr  { border:1px solid #14532D; }         .tab-addr  .tab-hdr { background:#14532D; color:#fff; }
-.tab-notes { border:1px solid #1E3A8A; }         .tab-notes .tab-hdr { background:#1E3A8A; color:#fff; }
-.tab-tag   { border:1px solid var(--teal); }     .tab-tag   .tab-hdr { background:var(--card2); color:var(--teal); border-bottom:1px solid var(--border); }
-
-.tag-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-.tag-item .k { font-size:9px; color:var(--muted); font-weight:700; letter-spacing:0.5px; text-transform:uppercase; margin-bottom:2px; }
-.tag-item .v { font-size:13px; color:#fff; font-weight:600; }
+.tab-alert { border:1px solid var(--orange); } .tab-alert .tab-hdr { background:var(--orange); color:#000; }
+.tab-addr  { border:1px solid #14532D; }       .tab-addr  .tab-hdr { background:#14532D; color:#fff; }
+.tab-notes { border:1px solid #1E3A8A; }       .tab-notes .tab-hdr { background:#1E3A8A; color:#fff; }
 
 /* CONTACTS */
 .contacts-section { padding:10px 12px 0; }
@@ -84,12 +101,18 @@ body { font-family:'Exo 2',sans-serif; background:var(--black); color:var(--text
 .ct-rel   { font-size:11px; margin:2px 0; }
 .ct-phone { font-size:11px; color:var(--muted); font-family:monospace; }
 .ct-btns  { display:flex; gap:6px; padding-right:12px; flex-shrink:0; }
-.btn-call { background:#15803D; color:#fff; border-radius:8px; padding:7px 10px; font-size:13px; text-decoration:none; display:inline-block; }
-.btn-wa   { background:#16A34A; color:#fff; border-radius:8px; padding:7px 10px; font-size:13px; text-decoration:none; display:inline-block; }
-.btn-tg   { background:#0088cc; color:#fff; border-radius:8px; padding:7px 10px; font-size:13px; text-decoration:none; display:inline-block; }
+.btn-call { background:#15803D; color:#fff; border-radius:8px; padding:8px 11px; font-size:14px; text-decoration:none; display:inline-block; }
+.btn-wa   { background:#16A34A; color:#fff; border-radius:8px; padding:8px 11px; font-size:14px; text-decoration:none; display:inline-block; }
+.btn-tg   { background:#0088cc; color:#fff; border-radius:8px; padding:8px 11px; font-size:14px; text-decoration:none; display:inline-block; }
+
+/* EMERGENCY NUMBERS */
+.e-nums { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; padding:12px; }
+.e-num { background:var(--card); border:1px solid var(--border); border-radius:12px; text-align:center; padding:12px 6px; text-decoration:none; }
+.e-num .lbl { font-size:9px; color:var(--muted); margin-bottom:4px; }
+.e-num .num { font-family:'Orbitron',sans-serif; font-size:16px; font-weight:900; color:#fff; }
 
 /* STRIP + FOOTER */
-.colour-strip { display:flex; height:6px; margin-top:14px; }
+.colour-strip { display:flex; height:6px; margin-top:12px; }
 .colour-strip div { flex:1; }
 .sc-footer { background:#0d0d0d; display:flex; border-top:1px solid var(--border); }
 .sc-fn { flex:1; text-align:center; padding:14px 8px; border-right:1px solid var(--border); }
@@ -105,23 +128,43 @@ body { font-family:'Exo 2',sans-serif; background:var(--black); color:var(--text
 <script>
 var SHEET_ID       = '1_ZvLT_SnRkIgP7xiYBdDJ5DRtn9lwPnc6V3dmb-bSVI';
 var REG_SHEET      = 'Registrations';
+var TELEGRAM_TOKEN = '8785184944:AAEEPwzWgfVRaGqEfrCpr4Mf9Yy7qp2Lx2k';
+var TELEGRAM_CHAT  = '8737168646';
+var GAS_URL        = 'https://script.google.com/macros/s/AKfycbwbeveDTjJNNjqrDXBoEUTdorFj36wkOPIU-OLZnFid4QOW3cPPmZzyK8YLtWD1p4JD/exec';
 var TAG_COLOURS    = { 'Black':'#555','Orange':'#F97316','Glow Blue':'#4DBBFF','Glitter Green':'#39FF6A','Red':'#EF4444','Teal':'#0ED2C8','White':'#ccc','Surprise Me':'#F97316' };
 var CONTACT_COLS   = ['#EF4444','#F97316','#22C55E','#3B82F6','#0ED2C8'];
 var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6','#A855F7'];
 </script>
 
+<!-- LOADING -->
 <div class="loading-screen" id="loadingScreen">
   <div class="spinner"></div>
-  <div class="loading-text">Loading subscriber card...</div>
+  <div class="loading-text">Loading emergency card...</div>
 </div>
 
+<!-- ERROR -->
 <div class="error-screen" id="errorScreen">
   <h2>Not Found</h2>
   <p id="errorMsg">Tag ID not found. Contact Innovat3 support.</p>
 </div>
 
+<!-- CARD -->
 <div class="card-wrap" id="cardWrap">
 
+  <!-- Alert status banner -->
+  <div class="alert-banner yellow" id="alertBanner">
+    <div class="alert-dot"></div>
+    <div id="alertMsg">Getting GPS location...</div>
+  </div>
+
+  <!-- GPS block -->
+  <div class="gps-block" id="gpsBlock">
+    <div class="gps-address" id="gpsAddress">—</div>
+    <div class="gps-coords"  id="gpsCoords">—</div>
+    <a href="#" id="mapsBtn" class="gps-btn" target="_blank">📍 Open in Maps</a>
+  </div>
+
+  <!-- Header -->
   <div class="sc-header">
     <div class="sc-top-stripe" id="topStripe"></div>
     <div class="sc-side-bar"   id="sideBar"></div>
@@ -134,14 +177,16 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
         <div class="sc-avatar" id="scAvatar">?</div>
       </div>
       <div class="sc-name" id="scName">—</div>
+      <div class="sc-dob"  id="scDob"></div>
       <div class="sc-meta">
         <div class="sc-tagid" id="scTagId">—</div>
         <div class="pill pill-plan" id="scPlan">—</div>
-        <div class="pill pill-active" id="scStatus">Active</div>
+        <div class="pill pill-active">Active</div>
       </div>
     </div>
   </div>
 
+  <!-- Blood + Medical Aid -->
   <div class="sc-top-row">
     <div class="sc-blood">
       <div class="lbl">BLOOD TYPE</div>
@@ -153,6 +198,7 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
     </div>
   </div>
 
+  <!-- Tabs -->
   <div class="tabs">
     <div class="tab tab-alert">
       <div class="tab-hdr">⚠&nbsp; Medical Alerts — Tell Paramedics</div>
@@ -163,37 +209,30 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
         <div class="tab-sub-txt" id="scMeds">—</div>
       </div>
     </div>
-
     <div class="tab tab-addr">
       <div class="tab-hdr">🏠&nbsp; Home Address</div>
       <div class="tab-body"><div class="tab-text" id="scAddress">—</div></div>
     </div>
-
     <div class="tab tab-notes">
       <div class="tab-hdr">📋&nbsp; Notes for Finder</div>
       <div class="tab-body"><div class="tab-text" id="scNotes">—</div></div>
     </div>
-
-    <div class="tab tab-tag">
-      <div class="tab-hdr">🏷️&nbsp; Tag Details</div>
-      <div class="tab-body">
-        <div class="tag-grid">
-          <div class="tag-item"><div class="k">Tag ID</div>      <div class="v" id="tdId">—</div></div>
-          <div class="tag-item"><div class="k">Colour</div>      <div class="v" id="tdColour">—</div></div>
-          <div class="tag-item"><div class="k">Form Factor</div> <div class="v" id="tdForm">—</div></div>
-          <div class="tag-item"><div class="k">Plan</div>        <div class="v" id="tdPlan">—</div></div>
-          <div class="tag-item"><div class="k">Registered</div>  <div class="v" id="tdDate">—</div></div>
-          <div class="tag-item"><div class="k">Status</div>      <div class="v" id="tdStatus">—</div></div>
-        </div>
-      </div>
-    </div>
   </div>
 
+  <!-- Emergency contacts -->
   <div class="contacts-section">
-    <div class="contacts-hdr">📞 Emergency Contacts</div>
+    <div class="contacts-hdr">📞 Emergency Contacts — Call Now</div>
     <div id="scContacts"></div>
   </div>
 
+  <!-- Quick dial emergency numbers -->
+  <div class="e-nums">
+    <a href="tel:10111" class="e-num"><div class="lbl">SAPS Police</div><div class="num">10111</div></a>
+    <a href="tel:10177" class="e-num"><div class="lbl">Ambulance</div><div class="num">10177</div></a>
+    <a href="tel:112"   class="e-num"><div class="lbl">Emergency</div><div class="num">112</div></a>
+  </div>
+
+  <!-- Colour strip -->
   <div class="colour-strip" id="colourStrip"></div>
 
   <div class="sc-footer">
@@ -206,103 +245,167 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
 </div>
 
 <script>
+var subData = null;
+
 (async function(){
   var params = new URLSearchParams(window.location.search);
   var tagId  = (params.get('tag') || params.get('id') || '').trim();
   if (!tagId) { showError('No tag ID in URL.'); return; }
 
+  // Load subscriber from sheet
   try {
     var url  = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent(REG_SHEET);
     var text = await (await fetch(url)).text();
     var json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/)[1]);
     var cols = json.table.cols.map(function(c){ return c.label; });
 
-    var sub = null;
     for (var i = 0; i < json.table.rows.length; i++) {
       var cells = json.table.rows[i].c;
       var rt = cells[cols.indexOf('Tag ID')] ? String(cells[cols.indexOf('Tag ID')].v||'') : '';
       if (rt.trim() === tagId) {
-        sub = {};
-        cols.forEach(function(col,idx){ sub[col] = cells[idx] ? String(cells[idx].v||'') : ''; });
+        subData = {};
+        cols.forEach(function(col,idx){ subData[col] = cells[idx] ? String(cells[idx].v||'') : ''; });
         break;
       }
     }
-    if (!sub) { showError('Tag "' + tagId + '" not found.'); return; }
+    if (!subData) { showError('Tag "' + tagId + '" not found.'); return; }
+  } catch(err) { showError('Could not load data.\n'+err.message); return; }
 
-    // Apply tag colour
-    var tc = TAG_COLOURS[sub['Tag Colour']] || '#F97316';
-    document.documentElement.style.setProperty('--tag-col', tc);
-    document.getElementById('topStripe').style.background = tc;
-    document.getElementById('sideBar').style.background   = tc;
+  // Apply tag colour
+  var tc = TAG_COLOURS[subData['Tag Colour']] || '#F97316';
+  document.documentElement.style.setProperty('--tag-col', tc);
+  document.getElementById('topStripe').style.background = tc;
+  document.getElementById('sideBar').style.background   = tc;
 
-    // Header
-    var fn = sub['First Name']||'', ln = sub['Last Name']||'';
-    document.getElementById('scAvatar').textContent        = ((fn[0]||'')+(ln[0]||'')).toUpperCase();
-    document.getElementById('scAvatar').style.borderColor  = tc;
-    document.getElementById('scName').textContent          = fn + ' ' + ln;
-    document.getElementById('scTagId').textContent         = tagId;
-    document.getElementById('scPlan').textContent          = (sub['Plan']||'Beta').toUpperCase() + ' PLAN';
-    document.getElementById('scPlan').style.background     = tc;
-    document.getElementById('scStatus').textContent        = sub['Status'] || 'Active';
-    document.title = 'Innovat3 — ' + fn + ' ' + ln;
+  // Header
+  var fn = subData['First Name']||'', ln = subData['Last Name']||'';
+  document.getElementById('scAvatar').textContent        = ((fn[0]||'')+(ln[0]||'')).toUpperCase();
+  document.getElementById('scAvatar').style.borderColor  = tc;
+  document.getElementById('scName').textContent          = fn + ' ' + ln;
+  document.getElementById('scTagId').textContent         = tagId;
+  document.getElementById('scPlan').textContent          = (subData['Plan']||'Beta').toUpperCase() + ' PLAN';
+  document.getElementById('scPlan').style.background     = tc;
+  document.title = '🚨 ' + fn + ' ' + ln + ' — Innovat3 Emergency';
 
-    // Top row
-    document.getElementById('scBlood').textContent = sub['Blood Type']||'—';
-    document.getElementById('scAid').textContent   = sub['Medical Aid']||sub['Medical Aid & Number']||'Not provided';
+  // DOB
+  var dob = subData['Date of Birth']||'';
+  if (dob) document.getElementById('scDob').textContent = 'DOB: ' + dob;
 
-    // Tabs
-    document.getElementById('scMedical').textContent = sub['Medical Alerts']||'—';
-    document.getElementById('scMeds').textContent    = sub['Medications']||'—';
-    document.getElementById('scAddress').textContent = sub['Home Address']||'—';
-    document.getElementById('scNotes').textContent   = sub['Notes for Finder']||'—';
+  // Top row
+  document.getElementById('scBlood').textContent = subData['Blood Type']||'—';
+  document.getElementById('scAid').textContent   = subData['Medical Aid']
+    ? subData['Medical Aid'] + (subData['Medical Aid Number'] ? ' · No: ' + subData['Medical Aid Number'] : '')
+    : 'Not provided';
 
-    // Tag details
-    document.getElementById('tdId').textContent     = tagId;
-    document.getElementById('tdColour').textContent = sub['Tag Colour']||'—';
-    document.getElementById('tdForm').textContent   = sub['Form Factor']||'—';
-    document.getElementById('tdPlan').textContent   = sub['Plan']||'—';
-    document.getElementById('tdDate').textContent   = sub['Timestamp']||'—';
-    document.getElementById('tdStatus').textContent = sub['Status']||'—';
+  // Tabs
+  document.getElementById('scMedical').textContent = subData['Medical Alerts']||'—';
+  document.getElementById('scMeds').textContent    = subData['Medications']||'—';
+  document.getElementById('scAddress').textContent = subData['Home Address']||'—';
+  document.getElementById('scNotes').textContent   = subData['Notes for Finder']||'—';
 
-    // Contacts
-    var cList = document.getElementById('scContacts');
-    [1,2,3].forEach(function(n){
-      var name  = sub['Contact '+n+' Name'];
-      var rel   = sub['Contact '+n+' Relation'];
-      var phone = sub['Contact '+n+' Phone'];
-      var wa    = sub['Contact '+n+' WA'];
-      var tg    = sub['Contact '+n+' Telegram']||sub['Contact '+n+' TG']||'';
-      if (!name) return;
-      var col   = CONTACT_COLS[(n-1)%CONTACT_COLS.length];
-      var clean = phone.replace(/\D/g,'');
-      if (clean.startsWith('0')) clean = '27'+clean.slice(1);
-      var div = document.createElement('div');
-      div.className = 'contact';
-      div.innerHTML =
-        '<div class="ct-bar" style="background:'+col+'"></div>'+
-        '<div class="ct-badge" style="background:'+col+'">'+n+'</div>'+
-        '<div class="ct-info">'+
-          '<div class="ct-name">'+name+'</div>'+
-          '<div class="ct-rel" style="color:'+col+'">'+(rel||'')+'</div>'+
-          '<div class="ct-phone">'+phone+'</div>'+
-        '</div>'+
-        '<div class="ct-btns">'+
-          '<a href="tel:+'+clean+'" class="btn-call">📞</a>'+
-          (wa&&wa!=='false'&&wa!==''?'<a href="https://wa.me/'+clean+'" class="btn-wa">💬</a>':'')+
-          (tg&&tg!=='false'&&tg!==''?'<a href="https://t.me/'+tg.replace('@','')+'" class="btn-tg">✈️</a>':'')+
-        '</div>';
-      cList.appendChild(div);
+  // Contacts
+  var cList = document.getElementById('scContacts');
+  [1,2,3].forEach(function(n){
+    var name  = subData['Contact '+n+' Name'];
+    var rel   = subData['Contact '+n+' Relation'];
+    var phone = subData['Contact '+n+' Phone'];
+    var wa    = subData['Contact '+n+' WA'];
+    var tg    = subData['Contact '+n+' Telegram']||'';
+    if (!name) return;
+    var col   = CONTACT_COLS[(n-1)%CONTACT_COLS.length];
+    var clean = phone.replace(/\D/g,'');
+    if (clean.startsWith('0')) clean = '27'+clean.slice(1);
+    var div = document.createElement('div');
+    div.className = 'contact';
+    div.innerHTML =
+      '<div class="ct-bar" style="background:'+col+'"></div>'+
+      '<div class="ct-badge" style="background:'+col+'">'+n+'</div>'+
+      '<div class="ct-info">'+
+        '<div class="ct-name">'+name+'</div>'+
+        '<div class="ct-rel" style="color:'+col+'">'+(rel||'')+'</div>'+
+        '<div class="ct-phone">'+phone+'</div>'+
+      '</div>'+
+      '<div class="ct-btns">'+
+        '<a href="tel:+'+clean+'" class="btn-call">📞</a>'+
+        (wa&&wa!=='false'&&wa!=='No'?'<a href="https://wa.me/'+clean+'" class="btn-wa">💬</a>':'')+
+        (tg&&tg!=='false'&&tg!==''?'<a href="https://t.me/'+tg.replace('@','')+'" class="btn-tg">✈️</a>':'')+
+      '</div>';
+    cList.appendChild(div);
+  });
+
+  // Colour strip
+  var strip = document.getElementById('colourStrip');
+  STRIP_COLS.forEach(function(sc){ var d=document.createElement('div'); d.style.background=sc; strip.appendChild(d); });
+
+  // Show card
+  document.getElementById('loadingScreen').style.display = 'none';
+  document.getElementById('cardWrap').style.display      = 'block';
+
+  // ── FIRE GPS + ALERTS ──
+  setAlert('yellow', 'Getting GPS location...');
+  var lat = null, lng = null, gpsAddress = 'Location not shared', mapsUrl = '';
+  var timestamp = new Date().toLocaleString('en-ZA', { timeZone:'Africa/Johannesburg' });
+
+  try {
+    var pos = await new Promise(function(res, rej){
+      navigator.geolocation.getCurrentPosition(res, rej, { timeout:10000, enableHighAccuracy:true });
     });
+    lat      = pos.coords.latitude.toFixed(6);
+    lng      = pos.coords.longitude.toFixed(6);
+    mapsUrl  = 'https://www.google.com/maps?q=' + lat + ',' + lng;
+    document.getElementById('gpsCoords').textContent  = 'GPS: ' + lat + ', ' + lng;
+    document.getElementById('mapsBtn').href           = mapsUrl;
+    document.getElementById('gpsBlock').style.display = 'block';
+    setAlert('yellow', 'Getting address...');
+    try {
+      var geo = await (await fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lng+'&format=json')).json();
+      gpsAddress = (geo.display_name||'').split(',').slice(0,4).join(',').trim() || lat+', '+lng;
+    } catch(e) { gpsAddress = 'GPS: ' + lat + ', ' + lng; }
+    document.getElementById('gpsAddress').textContent = gpsAddress;
+  } catch(e) { gpsAddress = 'Location not shared'; }
 
-    // Colour strip
-    var strip = document.getElementById('colourStrip');
-    STRIP_COLS.forEach(function(sc){ var d=document.createElement('div'); d.style.background=sc; strip.appendChild(d); });
+  // Build Telegram message
+  var name = (subData['First Name']||'') + ' ' + (subData['Last Name']||'');
+  var msg =
+    '🚨 *NFC TAG SCANNED — EMERGENCY*\n\n' +
+    '*' + name + '*\n' +
+    '🩸 Blood: ' + (subData['Blood Type']||'—') + '\n' +
+    '⚠️ ' + (subData['Medical Alerts']||'—') + '\n' +
+    '🏥 ' + (subData['Medical Aid'] ? subData['Medical Aid'] + ' · ' + (subData['Medical Aid Number']||'') : 'No medical aid') + '\n\n' +
+    (mapsUrl ? '📍 *Location:* ' + gpsAddress + '\n🗺️ ' + mapsUrl + '\n' : '📍 Location not shared\n') +
+    '🕐 ' + timestamp + '\n' +
+    '🏷️ Tag: ' + tagId;
 
-    document.getElementById('loadingScreen').style.display = 'none';
-    document.getElementById('cardWrap').style.display      = 'block';
+  // Send Telegram to owner
+  try {
+    await fetch('https://api.telegram.org/bot' + TELEGRAM_TOKEN + '/sendMessage', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ chat_id: TELEGRAM_CHAT, text: msg, parse_mode:'Markdown', disable_web_page_preview:true })
+    });
+  } catch(e) {}
 
-  } catch(err) { showError('Could not load data.\n'+err.message); }
+  // Log to Google Sheets
+  try {
+    fetch(GAS_URL, {
+      method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        tagId: tagId, name: name,
+        blood: subData['Blood Type']||'',
+        medical: subData['Medical Alerts']||'',
+        address: gpsAddress, lat: lat, lng: lng,
+        mapsUrl: mapsUrl, timestamp: timestamp
+      })
+    });
+  } catch(e) {}
+
+  setAlert('green', name + ' — family alerted! ✓');
 })();
+
+function setAlert(type, msg) {
+  var el = document.getElementById('alertBanner');
+  el.className = 'alert-banner ' + type;
+  document.getElementById('alertMsg').textContent = msg;
+}
 
 function showError(msg){
   document.getElementById('loadingScreen').style.display='none';
