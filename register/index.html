@@ -347,10 +347,28 @@ body { font-family: 'Exo 2', sans-serif; background: var(--black); color: var(--
 .sc-footer-num:last-child { border: none; }
 .sc-fn-label { font-size: 9px; color: #555; margin-bottom: 2px; }
 .sc-fn-num { font-family: 'Orbitron', sans-serif; font-size: 16px; font-weight: 900; color: #fff; }
-.alert-checks { display: flex; gap: 16px; flex-wrap: wrap; }
-.check-opt { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text); cursor: pointer; padding: 10px 16px; background: #0f0f0f; border: 1px solid var(--border); border-radius: 8px; transition: all 0.2s; }
-.check-opt:has(input:checked) { border-color: var(--teal); background: #001a18; }
-.check-opt input { width: 16px; height: 16px; accent-color: var(--teal); cursor: pointer; }
+.alert-checks { display: flex; gap: 12px; flex-wrap: wrap; }
+.check-opt { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); cursor: pointer; padding: 10px 16px; background: #0f0f0f; border: 2px solid var(--border); border-radius: 10px; transition: all 0.2s; position: relative; }
+.check-opt:has(input:checked) { border-color: var(--teal); background: #001a18; color: var(--text); }
+.check-opt input { display: none; }
+.check-opt .tick { width: 18px; height: 18px; border-radius: 4px; border: 2px solid var(--border); background: #111; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; }
+.check-opt:has(input:checked) .tick { background: var(--teal); border-color: var(--teal); }
+.check-opt:has(input:checked) .tick::after { content: "✓"; font-size: 11px; font-weight: 900; color: #000; line-height: 1; }
+
+/* Photo upload */
+.photo-upload-wrap { cursor: pointer; }
+.photo-preview {
+  width: 100px; height: 100px;
+  background: #0f0f0f;
+  border: 2px dashed var(--border);
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.2s;
+  text-align: center;
+}
+.photo-preview:hover { border-color: var(--orange); }
+.photo-preview.has-photo { border-style: solid; border-color: var(--orange); }
 </style>
 </head>
 <body>
@@ -408,6 +426,21 @@ var BETA_LIMIT       = 10;
     </div>
 
     <div class="field">
+      <label>Profile Photo</label>
+      <div class="photo-upload-wrap" onclick="document.getElementById('profilePhoto').click()">
+        <div class="photo-preview" id="photoPreview">
+          <div class="photo-placeholder" id="photoPlaceholder">
+            <div style="font-size:32px">📷</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:6px">Tap to upload photo</div>
+            <div style="font-size:10px;color:var(--muted2);margin-top:3px">JPG, PNG — shown on your card</div>
+          </div>
+          <img id="photoImg" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:10px" alt="Profile">
+        </div>
+        <input type="file" id="profilePhoto" accept="image/*" style="display:none" onchange="previewPhoto(this)">
+      </div>
+    </div>
+
+    <div class="field">
       <label>Email Address <span>*</span></label>
       <input type="email" id="email" placeholder="emma@example.com">
     </div>
@@ -447,8 +480,8 @@ var BETA_LIMIT       = 10;
           <input class="plan-opt" type="radio" name="plan" id="planCare" value="Care">
           <label for="planCare">
             <div class="plan-name">Care</div>
-            <div class="plan-price">R199<small style="font-size:11px;color:#888">/mo</small></div>
-            <div class="plan-members">Up to 6</div>
+            <div class="plan-price">R199<small style="font-size:11px;color:#888"> once</small></div>
+            <div class="plan-members" style="color:#0ED2C8;font-size:9px;font-weight:700">65+ Free monthly for life</div>
           </label>
         </div>
       </div>
@@ -487,6 +520,17 @@ var BETA_LIMIT       = 10;
     <div class="field">
       <label>Current Medications</label>
       <textarea id="meds" placeholder="e.g. Ventolin inhaler (as needed), Metformin 500mg twice daily..."></textarea>
+    </div>
+
+    <div class="field">
+      <label>Medical Aid Provider</label>
+      <input type="text" id="medicalAid" placeholder="e.g. Discovery Health, Bonitas, Momentum...">
+      <div class="hint">Leave blank if none</div>
+    </div>
+
+    <div class="field">
+      <label>Medical Aid Member Number</label>
+      <input type="text" id="medicalAidNumber" placeholder="e.g. 1234567890">
     </div>
 
     <div class="field">
@@ -537,8 +581,8 @@ var BETA_LIMIT       = 10;
       <div class="field">
         <label>Alert via</label>
         <div class="alert-checks">
-          <label class="check-opt"><input type="checkbox" id="c1wa" checked> 💬 WhatsApp</label>
-          <label class="check-opt"><input type="checkbox" id="c1tg"> 📲 Telegram</label>
+          <label class="check-opt"><input type="checkbox" id="c1wa" checked><span class="tick"></span> WhatsApp</label>
+          <label class="check-opt"><input type="checkbox" id="c1tg"><span class="tick"></span> Telegram</label>
         </div>
       </div>
       <div class="field" id="c1tgField" style="display:none">
@@ -567,8 +611,8 @@ var BETA_LIMIT       = 10;
       <div class="field">
         <label>Alert via</label>
         <div class="alert-checks">
-          <label class="check-opt"><input type="checkbox" id="c2wa" checked> 💬 WhatsApp</label>
-          <label class="check-opt"><input type="checkbox" id="c2tg"> 📲 Telegram</label>
+          <label class="check-opt"><input type="checkbox" id="c2wa" checked><span class="tick"></span> WhatsApp</label>
+          <label class="check-opt"><input type="checkbox" id="c2tg"><span class="tick"></span> Telegram</label>
         </div>
       </div>
       <div class="field" id="c2tgField" style="display:none">
@@ -597,8 +641,8 @@ var BETA_LIMIT       = 10;
       <div class="field">
         <label>Alert via</label>
         <div class="alert-checks">
-          <label class="check-opt"><input type="checkbox" id="c3wa" checked> 💬 WhatsApp</label>
-          <label class="check-opt"><input type="checkbox" id="c3tg"> 📲 Telegram</label>
+          <label class="check-opt"><input type="checkbox" id="c3wa" checked><span class="tick"></span> WhatsApp</label>
+          <label class="check-opt"><input type="checkbox" id="c3tg"><span class="tick"></span> Telegram</label>
         </div>
       </div>
       <div class="field" id="c3tgField" style="display:none">
@@ -618,59 +662,59 @@ var BETA_LIMIT       = 10;
     <div class="section-title">04 — Tag Preferences</div>
 
     <div class="field">
-      <label>Tag Colour</label>
+      <label>Tag Colour <span style="color:var(--muted);font-weight:400;font-size:10px">(choose up to 2)</span></label>
       <div class="colour-grid">
         <div>
-          <input class="colour-opt" type="radio" name="colour" id="cBlack" value="Black" checked>
+          <input class="colour-opt" type="checkbox" id="cBlack" value="Black" onchange="limitColours(this)">
           <label for="cBlack">
             <div class="colour-swatch" style="background:#1a1a1a;border-color:#555"></div>
             <div class="colour-name">Black</div>
           </label>
         </div>
         <div>
-          <input class="colour-opt" type="radio" name="colour" id="cOrange" value="Orange">
+          <input class="colour-opt" type="checkbox" id="cOrange" value="Orange" onchange="limitColours(this)">
           <label for="cOrange">
             <div class="colour-swatch" style="background:#F97316"></div>
             <div class="colour-name">Orange</div>
           </label>
         </div>
         <div>
-          <input class="colour-opt" type="radio" name="colour" id="cBlue" value="Glow Blue">
+          <input class="colour-opt" type="checkbox" id="cBlue" value="Glow Blue" onchange="limitColours(this)">
           <label for="cBlue">
             <div class="colour-swatch" style="background:#4DBBFF"></div>
             <div class="colour-name">Glow Blue</div>
           </label>
         </div>
         <div>
-          <input class="colour-opt" type="radio" name="colour" id="cGreen" value="Glitter Green">
+          <input class="colour-opt" type="checkbox" id="cGreen" value="Glitter Green" onchange="limitColours(this)">
           <label for="cGreen">
             <div class="colour-swatch" style="background:#39FF6A"></div>
             <div class="colour-name">Glow Green</div>
           </label>
         </div>
         <div>
-          <input class="colour-opt" type="radio" name="colour" id="cRed" value="Red">
+          <input class="colour-opt" type="checkbox" id="cRed" value="Red" onchange="limitColours(this)">
           <label for="cRed">
             <div class="colour-swatch" style="background:#EF4444"></div>
             <div class="colour-name">Red</div>
           </label>
         </div>
         <div>
-          <input class="colour-opt" type="radio" name="colour" id="cTeal" value="Teal">
+          <input class="colour-opt" type="checkbox" id="cTeal" value="Teal" onchange="limitColours(this)">
           <label for="cTeal">
             <div class="colour-swatch" style="background:#0ED2C8"></div>
             <div class="colour-name">Teal</div>
           </label>
         </div>
         <div>
-          <input class="colour-opt" type="radio" name="colour" id="cWhite" value="White">
+          <input class="colour-opt" type="checkbox" id="cWhite" value="White" onchange="limitColours(this)">
           <label for="cWhite">
             <div class="colour-swatch" style="background:#e5e5e5"></div>
             <div class="colour-name">White</div>
           </label>
         </div>
         <div>
-          <input class="colour-opt" type="radio" name="colour" id="cSurprise" value="Surprise Me">
+          <input class="colour-opt" type="checkbox" id="cSurprise" value="Surprise Me" onchange="limitColours(this)">
           <label for="cSurprise">
             <div class="colour-swatch" style="background:linear-gradient(135deg,#F97316,#0ED2C8,#EF4444,#22C55E)"></div>
             <div class="colour-name">Surprise!</div>
@@ -819,6 +863,40 @@ var BETA_LIMIT       = 10;
 <script>
 var currentStep = 1;
 
+function previewPhoto(input) {
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var img = document.getElementById('photoImg');
+      var placeholder = document.getElementById('photoPlaceholder');
+      var preview = document.getElementById('photoPreview');
+      img.src = e.target.result;
+      img.style.display = 'block';
+      placeholder.style.display = 'none';
+      preview.classList.add('has-photo');
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+function limitColours(el) {
+  var checked = document.querySelectorAll('.colour-opt:checked');
+  if (checked.length > 2) {
+    el.checked = false;
+  }
+  // Update visual border on colour labels
+  document.querySelectorAll('.colour-opt').forEach(function(cb) {
+    var lbl = cb.nextElementSibling;
+    if (cb.checked) {
+      lbl.style.borderColor = 'var(--teal)';
+      lbl.style.background  = '#001a18';
+    } else {
+      lbl.style.borderColor = '';
+      lbl.style.background  = '';
+    }
+  });
+}
+
 // Show/hide Telegram username fields based on checkbox
 [1,2,3].forEach(function(i) {
   var tgBox = document.getElementById('c'+i+'tg');
@@ -901,7 +979,8 @@ async function submitForm() {
   var timestamp = new Date().toLocaleString('en-ZA', { timeZone: 'Africa/Johannesburg' });
   var plan      = document.querySelector('input[name="plan"]:checked').value;
   var blood     = document.querySelector('input[name="blood"]:checked').value;
-  var colour    = document.querySelector('input[name="colour"]:checked').value;
+  var colourBoxes = Array.from(document.querySelectorAll('.colour-opt:checked')).map(function(cb){ return cb.value; });
+  var colour = colourBoxes.join(' + ') || 'Not selected';
 
   var data = {
     type:       'REGISTRATION',
@@ -919,6 +998,8 @@ async function submitForm() {
     meds:       v('meds'),
     address:    v('address'),
     notes:      v('notes'),
+    medicalAid: v('medicalAid'),
+    medicalAidNumber: v('medicalAidNumber'),
     colour:     colour,
     formFactor: document.getElementById('formFactor').value,
     delivery:   v('delivery'),
@@ -941,7 +1022,7 @@ async function submitForm() {
     '📦 Plan: ' + plan + '\n' +
     '🎨 Colour: ' + colour + ' — ' + document.getElementById('formFactor').value + '\n' +
     '🩸 Blood: ' + blood + '\n' +
-    '⚠️ Medical: ' + data.medical + '\n\n' +
+    '⚠️ Medical: ' + data.medical + '\n' + '💊 Meds: ' + (data.meds || 'None') + '\n' + '🏥 Medical Aid: ' + (data.medicalAid ? data.medicalAid + ' — No: ' + (data.medicalAidNumber || 'N/A') : 'None') + '\n\n' +
     '👥 Contacts:\n' +
     data.contacts.map(function(c){ 
       var alerts = [];
@@ -981,14 +1062,21 @@ async function submitForm() {
 
   document.getElementById('scTopBar').style.background    = tagCol;
   document.getElementById('scSideBar').style.background   = tagCol;
-  document.getElementById('scAvatar').textContent         = initials.toUpperCase();
   document.getElementById('scAvatar').style.borderColor   = tagCol;
+  // Show profile photo in avatar if uploaded
+  var photoImg = document.getElementById('photoImg');
+  var scAvatar = document.getElementById('scAvatar');
+  if (photoImg && photoImg.src && photoImg.style.display !== 'none') {
+    scAvatar.innerHTML = '<img src="' + photoImg.src + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';
+  } else {
+    scAvatar.textContent = initials.toUpperCase();
+  }
   document.getElementById('scName').textContent           = v('firstName') + ' ' + v('lastName');
   document.getElementById('scTagId').textContent          = tagId;
   document.getElementById('scPlanBadge').textContent      = plan.toUpperCase() + ' PLAN';
   document.getElementById('scPlanBadge').style.background = tagCol;
   document.getElementById('scBlood').textContent          = data.blood;
-  document.getElementById('scAid').textContent            = 'Not provided';
+  document.getElementById('scAid').textContent            = data.medicalAid ? data.medicalAid + (data.medicalAidNumber ? ' · No: ' + data.medicalAidNumber : '') : 'Not provided';
   document.getElementById('scMedical').textContent        = data.medical || '—';
   document.getElementById('scMeds').textContent           = data.meds   || '—';
   document.getElementById('scAddress').textContent        = data.address || '—';
