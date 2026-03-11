@@ -3,335 +3,312 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Innovat3 Subscriber Card</title>
+<title>Innovat3 — Subscriber Card</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --orange: #F97316;
-  --teal: #0ED2C8;
-  --black: #0A0A0A;
-  --card: #141414;
-  --border: #222;
-  --text: #e5e5e5;
-  --muted: #666;
+  --orange:#F97316; --teal:#0ED2C8; --black:#0A0A0A;
+  --card:#1A1A1A; --card2:#222; --border:#2a2a2a;
+  --text:#F0F0F0; --muted:#888; --muted2:#555;
+  --red:#EF4444; --green:#22C55E; --blue:#3B82F6;
+  --tag-col:#F97316;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Exo 2', sans-serif; background: var(--black); color: var(--text); min-height: 100vh; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:'Exo 2',sans-serif; background:var(--black); color:var(--text); min-height:100vh; }
 
-/* LOADING */
-.loading-screen {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  min-height: 100vh; gap: 20px;
-}
-.spinner {
-  width: 48px; height: 48px;
-  border: 3px solid #222;
-  border-top-color: var(--orange);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-.loading-text { font-family: 'Orbitron', sans-serif; font-size: 12px; letter-spacing: 2px; color: var(--muted); }
+.loading-screen { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; gap:20px; }
+.spinner { width:52px; height:52px; border:3px solid #222; border-top-color:var(--orange); border-radius:50%; animation:spin 0.8s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.loading-text { font-family:'Orbitron',sans-serif; font-size:11px; letter-spacing:3px; color:var(--muted); text-transform:uppercase; }
 
-/* ERROR */
-.error-screen {
-  display: none; flex-direction: column; align-items: center; justify-content: center;
-  min-height: 100vh; gap: 16px; padding: 40px;
-  text-align: center;
-}
-.error-screen h2 { font-family: 'Orbitron', sans-serif; color: #EF4444; font-size: 18px; }
-.error-screen p { color: var(--muted); font-size: 14px; line-height: 1.6; }
+.error-screen { display:none; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; gap:16px; padding:40px; text-align:center; }
+.error-screen h2 { font-family:'Orbitron',sans-serif; color:var(--red); font-size:18px; }
+.error-screen p  { color:var(--muted); font-size:14px; line-height:1.6; }
+
+.card-wrap { display:none; max-width:560px; margin:0 auto; padding-bottom:40px; }
 
 /* HEADER */
-.header {
-  background: linear-gradient(180deg, #1a0800 0%, var(--black) 100%);
-  border-bottom: 1px solid #1a1a1a;
-  padding: 24px 20px 20px;
-  text-align: center;
-  position: relative;
-}
-.header::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 3px;
-  background: linear-gradient(90deg, transparent, var(--orange), var(--teal), var(--orange), transparent);
-}
-.logo { font-family: 'Orbitron', sans-serif; font-size: 20px; font-weight: 900; color: var(--orange); letter-spacing: 2px; }
-.logo span { color: #fff; }
-.header-sub { font-size: 10px; color: var(--muted); letter-spacing: 3px; text-transform: uppercase; margin-top: 4px; }
+.sc-header { background:#111; position:relative; overflow:hidden; }
+.sc-top-stripe { height:4px; }
+.sc-side-bar   { position:absolute; left:0; top:0; bottom:0; width:6px; }
+.sc-header-inner { padding:18px 18px 16px 24px; }
+.sc-header-row1 { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
+.sc-brand { font-family:'Orbitron',sans-serif; font-size:15px; font-weight:900; color:var(--orange); }
+.sc-brand span { color:#fff; }
+.sc-sub-brand  { font-size:9px; color:var(--muted); letter-spacing:2px; text-transform:uppercase; margin-top:2px; }
+.sc-avatar { width:56px; height:56px; border-radius:50%; background:var(--card2); display:flex; align-items:center; justify-content:center; font-family:'Orbitron',sans-serif; font-size:18px; font-weight:900; color:#fff; flex-shrink:0; }
+.sc-name { font-family:'Orbitron',sans-serif; font-size:20px; font-weight:900; color:#fff; margin-bottom:7px; line-height:1.2; }
+.sc-meta { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.sc-tagid { font-family:monospace; font-size:11px; color:var(--muted); letter-spacing:1px; }
+.pill { font-size:8px; font-weight:700; letter-spacing:1.5px; padding:3px 10px; border-radius:20px; text-transform:uppercase; }
+.pill-plan   { color:#fff; }
+.pill-active { background:#0d2e0d; color:var(--green); border:1px solid var(--green); }
 
-/* WRAP */
-.wrap { max-width: 540px; margin: 0 auto; padding: 20px 16px 60px; display: none; }
+/* TOP ROW */
+.sc-top-row { display:flex; gap:10px; padding:12px; background:#0d0d0d; }
+.sc-blood { background:#1C0A0A; border:2px solid var(--red); border-radius:14px; padding:12px 10px; text-align:center; width:85px; flex-shrink:0; }
+.sc-blood .lbl { font-size:7.5px; font-weight:700; letter-spacing:1px; color:var(--red); margin-bottom:4px; }
+.sc-blood .val { font-family:'Orbitron',sans-serif; font-size:32px; font-weight:900; color:#fff; line-height:1; }
+.sc-aid { background:#1a0e00; border:2px solid var(--orange); border-radius:14px; padding:12px; flex:1; }
+.sc-aid .lbl { font-size:7.5px; font-weight:700; letter-spacing:1px; color:var(--orange); margin-bottom:6px; }
+.sc-aid .val { font-size:13px; color:var(--text); line-height:1.5; }
 
-/* PROFILE */
-.profile-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 20px;
-  margin-bottom: 14px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-.avatar {
-  width: 64px; height: 64px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 22px; font-weight: 900;
-  color: #fff;
-  flex-shrink: 0;
-  border: 3px solid var(--orange);
-}
-.profile-name { font-family: 'Orbitron', sans-serif; font-size: 16px; font-weight: 900; color: #fff; margin-bottom: 4px; }
-.profile-tag { font-size: 11px; color: var(--orange); font-family: monospace; letter-spacing: 1px; margin-bottom: 6px; }
-.plan-badge {
-  display: inline-block;
-  background: var(--orange);
-  color: #fff;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  padding: 3px 10px;
-  border-radius: 20px;
-  text-transform: uppercase;
-}
+/* TABS */
+.tabs { padding:10px 12px 0; display:flex; flex-direction:column; gap:10px; }
+.tab { border-radius:14px; overflow:hidden; }
+.tab-hdr { padding:9px 14px; font-size:8px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; }
+.tab-body { padding:13px 14px; background:var(--card); }
+.tab-main { font-size:13px; font-weight:700; color:#fff; line-height:1.65; }
+.tab-text { font-size:12px; color:var(--text); line-height:1.65; }
+.tab-rule { border:none; border-top:1px solid var(--border); margin:10px 0 8px; }
+.tab-sub-lbl { font-size:7.5px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:6px; }
+.tab-sub-txt { font-size:12px; color:var(--muted); line-height:1.65; }
 
-/* BLOOD + MEDICAL ROW */
-.blood-row { display: flex; gap: 12px; margin-bottom: 14px; }
-.blood-box {
-  background: #2a0000; border: 2px solid #EF4444; border-radius: 12px;
-  padding: 14px; text-align: center; width: 90px; flex-shrink: 0;
-}
-.blood-box .lbl { font-size: 9px; font-weight: 700; letter-spacing: 1px; color: #EF4444; margin-bottom: 6px; }
-.blood-box .val { font-size: 34px; font-weight: 900; color: #fff; font-family: 'Orbitron', sans-serif; line-height: 1; }
-.medical-box { background: #1a0e00; border: 2px solid var(--orange); border-radius: 12px; padding: 14px; flex: 1; }
-.medical-box .lbl { font-size: 9px; font-weight: 700; letter-spacing: 1px; color: var(--orange); margin-bottom: 6px; }
-.medical-box .val { font-size: 13px; color: #fff; line-height: 1.5; }
+.tab-alert { border:1px solid var(--orange); }  .tab-alert .tab-hdr { background:var(--orange); color:#000; }
+.tab-addr  { border:1px solid #14532D; }         .tab-addr  .tab-hdr { background:#14532D; color:#fff; }
+.tab-notes { border:1px solid #1E3A8A; }         .tab-notes .tab-hdr { background:#1E3A8A; color:#fff; }
+.tab-tag   { border:1px solid var(--teal); }     .tab-tag   .tab-hdr { background:var(--card2); color:var(--teal); border-bottom:1px solid var(--border); }
 
-/* INFO TABS */
-.tab { border-radius: 10px; padding: 14px; margin-bottom: 10px; border-left: 4px solid; }
-.tab .lbl { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
-.tab .val { font-size: 13px; line-height: 1.6; color: #ddd; }
-.tab.teal  { background: #001a18; border-color: var(--teal); } .tab.teal  .lbl { color: var(--teal); }
-.tab.green { background: #001a08; border-color: #22C55E; }    .tab.green .lbl { color: #22C55E; }
-.tab.blue  { background: #000d1a; border-color: #3B82F6; }    .tab.blue  .lbl { color: #3B82F6; }
+.tag-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.tag-item .k { font-size:9px; color:var(--muted); font-weight:700; letter-spacing:0.5px; text-transform:uppercase; margin-bottom:2px; }
+.tag-item .v { font-size:13px; color:#fff; font-weight:600; }
 
 /* CONTACTS */
-.contacts-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 14px; }
-.contacts-title { font-size: 11px; font-weight: 700; letter-spacing: 1px; color: var(--muted); text-transform: uppercase; margin-bottom: 14px; }
-.contact { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #1a1a1a; }
-.contact:last-child { border: none; padding-bottom: 0; }
-.contact-name { font-size: 14px; font-weight: 700; color: #fff; }
-.contact-rel  { font-size: 11px; color: var(--muted); margin-top: 2px; }
-.contact-num  { font-size: 12px; color: #3B82F6; font-family: monospace; margin-top: 3px; }
-.contact-btns { display: flex; gap: 6px; flex-shrink: 0; }
-.btn-call { background: #15803D; color: #fff; border-radius: 8px; padding: 8px 12px; font-size: 12px; font-weight: 700; text-decoration: none; display: inline-block; }
-.btn-wa   { background: #16A34A; color: #fff; border-radius: 8px; padding: 8px 10px; font-size: 12px; font-weight: 700; text-decoration: none; display: inline-block; }
-.btn-tg   { background: #0088cc; color: #fff; border-radius: 8px; padding: 8px 10px; font-size: 12px; font-weight: 700; text-decoration: none; display: inline-block; }
+.contacts-section { padding:10px 12px 0; }
+.contacts-hdr { font-size:9px; font-weight:700; letter-spacing:2px; color:var(--orange); text-transform:uppercase; padding:8px 2px; }
+.contact { display:flex; align-items:center; background:var(--card); border-radius:14px; overflow:hidden; border:1px solid var(--border); margin-bottom:8px; }
+.ct-bar   { width:5px; align-self:stretch; flex-shrink:0; }
+.ct-badge { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:900; color:#fff; flex-shrink:0; margin:0 10px; }
+.ct-info  { flex:1; padding:11px 0; }
+.ct-name  { font-size:14px; font-weight:700; color:#fff; }
+.ct-rel   { font-size:11px; margin:2px 0; }
+.ct-phone { font-size:11px; color:var(--muted); font-family:monospace; }
+.ct-btns  { display:flex; gap:6px; padding-right:12px; flex-shrink:0; }
+.btn-call { background:#15803D; color:#fff; border-radius:8px; padding:7px 10px; font-size:13px; text-decoration:none; display:inline-block; }
+.btn-wa   { background:#16A34A; color:#fff; border-radius:8px; padding:7px 10px; font-size:13px; text-decoration:none; display:inline-block; }
+.btn-tg   { background:#0088cc; color:#fff; border-radius:8px; padding:7px 10px; font-size:13px; text-decoration:none; display:inline-block; }
 
-/* TAG INFO */
-.tag-info { background: #001a18; border: 1px solid var(--teal); border-radius: 12px; padding: 16px; margin-bottom: 14px; }
-.tag-info .lbl { font-size: 10px; font-weight: 700; letter-spacing: 1px; color: var(--teal); margin-bottom: 10px; }
-.tag-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; padding: 6px 0; border-bottom: 1px solid #001a18; }
-.tag-row:last-child { border: none; }
-.tag-row .k { color: var(--muted); }
-.tag-row .v { color: #fff; font-weight: 600; }
-
-/* FOOTER */
-.footer { text-align: center; padding: 10px; font-size: 10px; color: #333; font-weight: 700; letter-spacing: 2px; font-family: 'Orbitron', sans-serif; }
-
-.hidden { display: none !important; }
+/* STRIP + FOOTER */
+.colour-strip { display:flex; height:6px; margin-top:14px; }
+.colour-strip div { flex:1; }
+.sc-footer { background:#0d0d0d; display:flex; border-top:1px solid var(--border); }
+.sc-fn { flex:1; text-align:center; padding:14px 8px; border-right:1px solid var(--border); }
+.sc-fn:last-child { border:none; }
+.sc-fn-lbl { font-size:8px; color:var(--muted2); margin-bottom:3px; }
+.sc-fn-num { font-family:'Orbitron',sans-serif; font-size:17px; font-weight:900; color:#fff; }
+.sc-footer-brand { text-align:center; padding:8px; background:#0a0a0a; font-family:'Orbitron',sans-serif; font-size:8px; color:var(--muted2); letter-spacing:2px; }
+.sc-footer-brand span { color:var(--orange); }
 </style>
 </head>
 <body>
 
 <script>
-var SHEET_ID = '1_ZvLT_SnRkIgP7xiYBdDJ5DRtn9lwPnc6V3dmb-bSVI';
-var REG_SHEET_NAME = 'Registrations';
+var SHEET_ID       = '1_ZvLT_SnRkIgP7xiYBdDJ5DRtn9lwPnc6V3dmb-bSVI';
+var REG_SHEET      = 'Registrations';
+var TAG_COLOURS    = { 'Black':'#555','Orange':'#F97316','Glow Blue':'#4DBBFF','Glitter Green':'#39FF6A','Red':'#EF4444','Teal':'#0ED2C8','White':'#ccc','Surprise Me':'#F97316' };
+var CONTACT_COLS   = ['#EF4444','#F97316','#22C55E','#3B82F6','#0ED2C8'];
+var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6','#A855F7'];
 </script>
 
-<!-- HEADER -->
-<div class="header">
-  <div class="logo">innovat3<span>.</span></div>
-  <div class="header-sub">Subscriber Card</div>
-</div>
-
-<!-- LOADING -->
 <div class="loading-screen" id="loadingScreen">
   <div class="spinner"></div>
-  <div class="loading-text">Loading subscriber data...</div>
+  <div class="loading-text">Loading subscriber card...</div>
 </div>
 
-<!-- ERROR -->
 <div class="error-screen" id="errorScreen">
-  <h2>Subscriber Not Found</h2>
-  <p id="errorMsg">This tag ID was not found in the system.<br>Please contact Innovat3 support.</p>
+  <h2>Not Found</h2>
+  <p id="errorMsg">Tag ID not found. Contact Innovat3 support.</p>
 </div>
 
-<!-- CARD -->
-<div class="wrap" id="cardWrap">
+<div class="card-wrap" id="cardWrap">
 
-  <div class="profile-card">
-    <div class="avatar" id="avatar">?</div>
-    <div>
-      <div class="profile-name" id="subName">—</div>
-      <div class="profile-tag" id="subTag">—</div>
-      <div class="plan-badge" id="subPlan">—</div>
+  <div class="sc-header">
+    <div class="sc-top-stripe" id="topStripe"></div>
+    <div class="sc-side-bar"   id="sideBar"></div>
+    <div class="sc-header-inner">
+      <div class="sc-header-row1">
+        <div>
+          <div class="sc-brand">innovat3<span>.</span></div>
+          <div class="sc-sub-brand">Smart NFC Emergency Tag</div>
+        </div>
+        <div class="sc-avatar" id="scAvatar">?</div>
+      </div>
+      <div class="sc-name" id="scName">—</div>
+      <div class="sc-meta">
+        <div class="sc-tagid" id="scTagId">—</div>
+        <div class="pill pill-plan" id="scPlan">—</div>
+        <div class="pill pill-active" id="scStatus">Active</div>
+      </div>
     </div>
   </div>
 
-  <div class="blood-row">
-    <div class="blood-box">
-      <div class="lbl">BLOOD</div>
-      <div class="val" id="blood">—</div>
+  <div class="sc-top-row">
+    <div class="sc-blood">
+      <div class="lbl">BLOOD TYPE</div>
+      <div class="val" id="scBlood">—</div>
     </div>
-    <div class="medical-box">
-      <div class="lbl">⚠ MEDICAL ALERTS</div>
-      <div class="val" id="medical">—</div>
+    <div class="sc-aid">
+      <div class="lbl">MEDICAL AID &amp; NUMBER</div>
+      <div class="val" id="scAid">—</div>
     </div>
   </div>
 
-  <div class="tab teal"><div class="lbl">💊 Medications</div><div class="val" id="meds">—</div></div>
-  <div class="tab green"><div class="lbl">🏠 Home Address</div><div class="val" id="address">—</div></div>
-  <div class="tab blue"><div class="lbl">📋 Notes</div><div class="val" id="notes">—</div></div>
+  <div class="tabs">
+    <div class="tab tab-alert">
+      <div class="tab-hdr">⚠&nbsp; Medical Alerts — Tell Paramedics</div>
+      <div class="tab-body">
+        <div class="tab-main" id="scMedical">—</div>
+        <hr class="tab-rule">
+        <div class="tab-sub-lbl" style="color:var(--teal)">Medications</div>
+        <div class="tab-sub-txt" id="scMeds">—</div>
+      </div>
+    </div>
 
-  <div class="contacts-card">
-    <div class="contacts-title">📞 Emergency Contacts</div>
-    <div id="contactsList"></div>
+    <div class="tab tab-addr">
+      <div class="tab-hdr">🏠&nbsp; Home Address</div>
+      <div class="tab-body"><div class="tab-text" id="scAddress">—</div></div>
+    </div>
+
+    <div class="tab tab-notes">
+      <div class="tab-hdr">📋&nbsp; Notes for Finder</div>
+      <div class="tab-body"><div class="tab-text" id="scNotes">—</div></div>
+    </div>
+
+    <div class="tab tab-tag">
+      <div class="tab-hdr">🏷️&nbsp; Tag Details</div>
+      <div class="tab-body">
+        <div class="tag-grid">
+          <div class="tag-item"><div class="k">Tag ID</div>      <div class="v" id="tdId">—</div></div>
+          <div class="tag-item"><div class="k">Colour</div>      <div class="v" id="tdColour">—</div></div>
+          <div class="tag-item"><div class="k">Form Factor</div> <div class="v" id="tdForm">—</div></div>
+          <div class="tag-item"><div class="k">Plan</div>        <div class="v" id="tdPlan">—</div></div>
+          <div class="tag-item"><div class="k">Registered</div>  <div class="v" id="tdDate">—</div></div>
+          <div class="tag-item"><div class="k">Status</div>      <div class="v" id="tdStatus">—</div></div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="tag-info">
-    <div class="lbl">🏷️ TAG DETAILS</div>
-    <div class="tag-row"><span class="k">Tag ID</span>     <span class="v" id="tdTagId">—</span></div>
-    <div class="tag-row"><span class="k">Colour</span>     <span class="v" id="tdColour">—</span></div>
-    <div class="tag-row"><span class="k">Form Factor</span><span class="v" id="tdForm">—</span></div>
-    <div class="tag-row"><span class="k">Plan</span>       <span class="v" id="tdPlan">—</span></div>
-    <div class="tag-row"><span class="k">Registered</span> <span class="v" id="tdDate">—</span></div>
-    <div class="tag-row"><span class="k">Status</span>     <span class="v" id="tdStatus">—</span></div>
+  <div class="contacts-section">
+    <div class="contacts-hdr">📞 Emergency Contacts</div>
+    <div id="scContacts"></div>
   </div>
 
-  <div class="footer">INNOVAT3 · SMART NFC EMERGENCY TAGS</div>
+  <div class="colour-strip" id="colourStrip"></div>
+
+  <div class="sc-footer">
+    <div class="sc-fn"><div class="sc-fn-lbl">SAPS Police</div>    <div class="sc-fn-num">10111</div></div>
+    <div class="sc-fn"><div class="sc-fn-lbl">Ambulance</div>      <div class="sc-fn-num">10177</div></div>
+    <div class="sc-fn"><div class="sc-fn-lbl">All Emergencies</div><div class="sc-fn-num">112</div></div>
+  </div>
+  <div class="sc-footer-brand"><span>innovat3.</span> &nbsp;·&nbsp; Smart NFC Emergency Tags &nbsp;·&nbsp; innovat3.co.za</div>
+
 </div>
 
 <script>
-(async function() {
-
+(async function(){
   var params = new URLSearchParams(window.location.search);
-  var tagId  = params.get('tag') || params.get('id');
-
-  if (!tagId) {
-    showError('No tag ID specified in URL.');
-    return;
-  }
-
-  // Fetch from Google Sheets JSON API
-  var url = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID +
-            '/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent(REG_SHEET_NAME);
+  var tagId  = (params.get('tag') || params.get('id') || '').trim();
+  if (!tagId) { showError('No tag ID in URL.'); return; }
 
   try {
-    var res  = await fetch(url);
-    var text = await res.text();
-
-    // Strip Google's JSON wrapper
+    var url  = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent(REG_SHEET);
+    var text = await (await fetch(url)).text();
     var json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/)[1]);
-    var rows = json.table.rows;
     var cols = json.table.cols.map(function(c){ return c.label; });
 
-    // Find the row matching our tag ID
     var sub = null;
-    for (var i = 0; i < rows.length; i++) {
-      var row = rows[i];
-      var cells = row.c;
-      var rowTagId = cells[cols.indexOf('Tag ID')] ? (cells[cols.indexOf('Tag ID')].v || '') : '';
-      if (rowTagId.toString().trim() === tagId.trim()) {
+    for (var i = 0; i < json.table.rows.length; i++) {
+      var cells = json.table.rows[i].c;
+      var rt = cells[cols.indexOf('Tag ID')] ? String(cells[cols.indexOf('Tag ID')].v||'') : '';
+      if (rt.trim() === tagId) {
         sub = {};
-        cols.forEach(function(col, idx) {
-          sub[col] = cells[idx] ? (cells[idx].v || '') : '';
-        });
+        cols.forEach(function(col,idx){ sub[col] = cells[idx] ? String(cells[idx].v||'') : ''; });
         break;
       }
     }
+    if (!sub) { showError('Tag "' + tagId + '" not found.'); return; }
 
-    if (!sub) {
-      showError('Tag ID "' + tagId + '" was not found in the Registrations sheet.');
-      return;
-    }
+    // Apply tag colour
+    var tc = TAG_COLOURS[sub['Tag Colour']] || '#F97316';
+    document.documentElement.style.setProperty('--tag-col', tc);
+    document.getElementById('topStripe').style.background = tc;
+    document.getElementById('sideBar').style.background   = tc;
 
-    // Populate card
-    var firstName = sub['First Name'] || '';
-    var lastName  = sub['Last Name']  || '';
-    var name      = firstName + ' ' + lastName;
-    var initials  = (firstName[0]||'') + (lastName[0]||'');
+    // Header
+    var fn = sub['First Name']||'', ln = sub['Last Name']||'';
+    document.getElementById('scAvatar').textContent        = ((fn[0]||'')+(ln[0]||'')).toUpperCase();
+    document.getElementById('scAvatar').style.borderColor  = tc;
+    document.getElementById('scName').textContent          = fn + ' ' + ln;
+    document.getElementById('scTagId').textContent         = tagId;
+    document.getElementById('scPlan').textContent          = (sub['Plan']||'Beta').toUpperCase() + ' PLAN';
+    document.getElementById('scPlan').style.background     = tc;
+    document.getElementById('scStatus').textContent        = sub['Status'] || 'Active';
+    document.title = 'Innovat3 — ' + fn + ' ' + ln;
 
-    document.getElementById('avatar').textContent   = initials.toUpperCase();
-    document.getElementById('subName').textContent  = name;
-    document.getElementById('subTag').textContent   = tagId;
-    document.getElementById('subPlan').textContent  = sub['Plan'] || 'Beta';
-    document.getElementById('blood').textContent    = sub['Blood Type'] || '—';
-    document.getElementById('medical').textContent  = sub['Medical Alerts'] || '—';
-    document.getElementById('meds').textContent     = sub['Medications'] || '—';
-    document.getElementById('address').textContent  = sub['Home Address'] || '—';
-    document.getElementById('notes').textContent    = sub['Notes for Finder'] || '—';
+    // Top row
+    document.getElementById('scBlood').textContent = sub['Blood Type']||'—';
+    document.getElementById('scAid').textContent   = sub['Medical Aid']||sub['Medical Aid & Number']||'Not provided';
 
-    // Avatar colour based on plan
-    var colours = { 'Solo': '#EF4444', 'Family': '#F97316', 'Care': '#0ED2C8', 'Beta': '#22C55E' };
-    document.getElementById('avatar').style.borderColor = colours[sub['Plan']] || '#F97316';
+    // Tabs
+    document.getElementById('scMedical').textContent = sub['Medical Alerts']||'—';
+    document.getElementById('scMeds').textContent    = sub['Medications']||'—';
+    document.getElementById('scAddress').textContent = sub['Home Address']||'—';
+    document.getElementById('scNotes').textContent   = sub['Notes for Finder']||'—';
 
     // Tag details
-    document.getElementById('tdTagId').textContent  = tagId;
-    document.getElementById('tdColour').textContent = sub['Tag Colour'] || '—';
-    document.getElementById('tdForm').textContent   = sub['Form Factor'] || '—';
-    document.getElementById('tdPlan').textContent   = sub['Plan'] || '—';
-    document.getElementById('tdDate').textContent   = sub['Timestamp'] || '—';
-    document.getElementById('tdStatus').textContent = sub['Status'] || 'Pending';
+    document.getElementById('tdId').textContent     = tagId;
+    document.getElementById('tdColour').textContent = sub['Tag Colour']||'—';
+    document.getElementById('tdForm').textContent   = sub['Form Factor']||'—';
+    document.getElementById('tdPlan').textContent   = sub['Plan']||'—';
+    document.getElementById('tdDate').textContent   = sub['Timestamp']||'—';
+    document.getElementById('tdStatus').textContent = sub['Status']||'—';
 
     // Contacts
-    var list = document.getElementById('contactsList');
-    [1,2,3].forEach(function(n) {
-      var cName  = sub['Contact ' + n + ' Name'];
-      var cRel   = sub['Contact ' + n + ' Relation'];
-      var cPhone = sub['Contact ' + n + ' Phone'];
-      var cWA    = sub['Contact ' + n + ' WA'];
-      var cTG    = sub['Contact ' + n + ' TG'];
-
-      if (!cName) return;
-
-      var phone = cPhone.replace(/\D/g,'');
-      if (phone.startsWith('0')) phone = '27' + phone.slice(1);
-
-      var row = document.createElement('div');
-      row.className = 'contact';
-      row.innerHTML =
-        '<div>' +
-          '<div class="contact-name">' + cName + '</div>' +
-          '<div class="contact-rel">'  + (cRel || '') + '</div>' +
-          '<div class="contact-num">'  + cPhone + '</div>' +
-        '</div>' +
-        '<div class="contact-btns">' +
-          '<a href="tel:+' + phone + '" class="btn-call">📞</a>' +
-          (cWA  ? '<a href="https://wa.me/' + phone + '" class="btn-wa">💬</a>' : '') +
-          (cTG  ? '<a href="https://t.me/' + (cTG||'').replace('@','') + '" class="btn-tg">✈️</a>' : '') +
+    var cList = document.getElementById('scContacts');
+    [1,2,3].forEach(function(n){
+      var name  = sub['Contact '+n+' Name'];
+      var rel   = sub['Contact '+n+' Relation'];
+      var phone = sub['Contact '+n+' Phone'];
+      var wa    = sub['Contact '+n+' WA'];
+      var tg    = sub['Contact '+n+' Telegram']||sub['Contact '+n+' TG']||'';
+      if (!name) return;
+      var col   = CONTACT_COLS[(n-1)%CONTACT_COLS.length];
+      var clean = phone.replace(/\D/g,'');
+      if (clean.startsWith('0')) clean = '27'+clean.slice(1);
+      var div = document.createElement('div');
+      div.className = 'contact';
+      div.innerHTML =
+        '<div class="ct-bar" style="background:'+col+'"></div>'+
+        '<div class="ct-badge" style="background:'+col+'">'+n+'</div>'+
+        '<div class="ct-info">'+
+          '<div class="ct-name">'+name+'</div>'+
+          '<div class="ct-rel" style="color:'+col+'">'+(rel||'')+'</div>'+
+          '<div class="ct-phone">'+phone+'</div>'+
+        '</div>'+
+        '<div class="ct-btns">'+
+          '<a href="tel:+'+clean+'" class="btn-call">📞</a>'+
+          (wa&&wa!=='false'&&wa!==''?'<a href="https://wa.me/'+clean+'" class="btn-wa">💬</a>':'')+
+          (tg&&tg!=='false'&&tg!==''?'<a href="https://t.me/'+tg.replace('@','')+'" class="btn-tg">✈️</a>':'')+
         '</div>';
-      list.appendChild(row);
+      cList.appendChild(div);
     });
 
-    // Show card
+    // Colour strip
+    var strip = document.getElementById('colourStrip');
+    STRIP_COLS.forEach(function(sc){ var d=document.createElement('div'); d.style.background=sc; strip.appendChild(d); });
+
     document.getElementById('loadingScreen').style.display = 'none';
-    document.getElementById('cardWrap').style.display = 'block';
+    document.getElementById('cardWrap').style.display      = 'block';
 
-  } catch(err) {
-    showError('Could not load subscriber data. Please check your internet connection.\n\n' + err.message);
-  }
-
+  } catch(err) { showError('Could not load data.\n'+err.message); }
 })();
 
-function showError(msg) {
-  document.getElementById('loadingScreen').style.display = 'none';
-  document.getElementById('errorScreen').style.display  = 'flex';
-  document.getElementById('errorMsg').textContent = msg;
+function showError(msg){
+  document.getElementById('loadingScreen').style.display='none';
+  document.getElementById('errorScreen').style.display='flex';
+  document.getElementById('errorMsg').textContent=msg;
 }
 </script>
-
 </body>
 </html>
