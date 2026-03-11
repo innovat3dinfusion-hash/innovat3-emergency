@@ -279,8 +279,13 @@ var subData = null;
 
   // Header
   var fn = subData['First Name']||'', ln = subData['Last Name']||'';
-  document.getElementById('scAvatar').textContent        = ((fn[0]||'')+(ln[0]||'')).toUpperCase();
-  document.getElementById('scAvatar').style.borderColor  = tc;
+  var scAvatar = document.getElementById('scAvatar');
+  if (subData['Photo URL'] && subData['Photo URL'].startsWith('http')) {
+    scAvatar.innerHTML = '<img src="' + subData['Photo URL'] + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';
+  } else {
+    scAvatar.textContent = ((fn[0]||'')+(ln[0]||'')).toUpperCase();
+  }
+  scAvatar.style.borderColor = tc;
   document.getElementById('scName').textContent          = fn + ' ' + ln;
   document.getElementById('scTagId').textContent         = tagId;
   document.getElementById('scPlan').textContent          = (subData['Plan']||'Beta').toUpperCase() + ' PLAN';
@@ -384,16 +389,65 @@ var subData = null;
     });
   } catch(e) {}
 
-  // Log to Google Sheets
+  // Open WhatsApp alert for each contact marked as WA
+  // We build the message and open wa.me links in background iframes
+  var waMsg = encodeURIComponent(
+    '🚨 EMERGENCY ALERT — Innovat3\n\n' +
+    name + '\'s NFC tag was just scanned.\n' +
+    '🩸 Blood: ' + (subData['Blood Type']||'—') + '\n' +
+    '⚠️ ' + (subData['Medical Alerts']||'—') + '\n\n' +
+    (mapsUrl ? '📍 Last seen location:\n' + mapsUrl : '📍 Location not available') + '\n\n' +
+    'Please check on them immediately.\n— Innovat3 Emergency System'
+  );
+  [1,2,3].forEach(function(n){
+    var waFlag = subData['Contact '+n+' WA'];
+    var phone  = (subData['Contact '+n+' Phone']||'').replace(/\D/g,'');
+    if (!phone) return;
+    if (phone.startsWith('0')) phone = '27' + phone.slice(1);
+    if (waFlag === 'Yes' || waFlag === 'true' || waFlag === 'TRUE') {
+      // Create hidden iframe to trigger WA — user must have WA web or app
+      var waUrl = 'https://wa.me/' + phone + '?text=' + waMsg;
+      // Store WA links on page for finder to tap
+      var existing = document.getElementById('waAlertLinks');
+      if (!existing) {
+        var waSection = document.createElement('div');
+        waSection.id = 'waAlertLinks';
+        waSection.style.cssText = 'padding:10px 12px 0';
+        waSection.innerHTML = '<div style="font-size:9px;font-weight:700;letter-spacing:2px;color:#16A34A;text-transform:uppercase;padding:8px 2px">💬 WhatsApp Alerts — Tap to Send</div>';
+        document.getElementById('scContacts').after(waSection);
+      }
+      var waBtn = document.createElement('a');
+      waBtn.href = waUrl;
+      waBtn.target = '_blank';
+      waBtn.style.cssText = 'display:flex;align-items:center;gap:10px;background:#0a1f0a;border:1px solid #16A34A;border-radius:12px;padding:12px 14px;margin-bottom:8px;text-decoration:none;color:#fff;font-size:13px;font-weight:700';
+      waBtn.innerHTML = '<span style="font-size:20px">💬</span><div><div>' + (subData['Contact '+n+' Name']||'Contact '+n) + '</div><div style="font-size:11px;color:#16A34A;margin-top:2px">Tap to send WhatsApp alert</div></div>';
+      document.getElementById('waAlertLinks').appendChild(waBtn);
+    }
+  });
+
+  // Log to Google Sheets — full subscriber details
   try {
     fetch(GAS_URL, {
       method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
-        tagId: tagId, name: name,
-        blood: subData['Blood Type']||'',
-        medical: subData['Medical Alerts']||'',
-        address: gpsAddress, lat: lat, lng: lng,
-        mapsUrl: mapsUrl, timestamp: timestamp
+        tagId:            tagId,
+        timestamp:        timestamp,
+        name:             name,
+        dob:              subData['Date of Birth']||'',
+        blood:            subData['Blood Type']||'',
+        medicalAid:       subData['Medical Aid']||'',
+        medicalAidNumber: subData['Medical Aid Number']||'',
+        medical:          subData['Medical Alerts']||'',
+        meds:             subData['Medications']||'',
+        homeAddress:      subData['Home Address']||'',
+        notes:            subData['Notes for Finder']||'',
+        gpsAddress:       gpsAddress,
+        lat:              lat,
+        lng:              lng,
+        mapsUrl:          mapsUrl,
+        c1name:  subData['Contact 1 Name']||'',  c1rel: subData['Contact 1 Relation']||'',  c1phone: subData['Contact 1 Phone']||'',  c1wa: subData['Contact 1 WA']||'',  c1tg: subData['Contact 1 Telegram']||'',
+        c2name:  subData['Contact 2 Name']||'',  c2rel: subData['Contact 2 Relation']||'',  c2phone: subData['Contact 2 Phone']||'',  c2wa: subData['Contact 2 WA']||'',  c2tg: subData['Contact 2 Telegram']||'',
+        c3name:  subData['Contact 3 Name']||'',  c3rel: subData['Contact 3 Relation']||'',  c3phone: subData['Contact 3 Phone']||'',  c3wa: subData['Contact 3 WA']||'',  c3tg: subData['Contact 3 Telegram']||''
       })
     });
   } catch(e) {}
