@@ -299,6 +299,54 @@ body { font-family: 'Exo 2', sans-serif; background: var(--black); color: var(--
 
 .error-msg { color: #EF4444; font-size: 12px; margin-top: 6px; display: none; }
 .submitting { opacity: 0.6; pointer-events: none; }
+
+/* ── SUBSCRIBER CARD ── */
+.sub-card { background: #111; border: 1px solid #222; border-radius: 16px; overflow: hidden; margin-bottom: 16px; }
+.sc-header { background: #111; position: relative; padding: 0; }
+.sc-header-top-bar { height: 4px; width: 100%; }
+.sc-header-side-bar { position: absolute; left: 0; top: 0; bottom: 0; width: 5px; }
+.sc-header-inner { padding: 16px 16px 14px 20px; }
+.sc-logo-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.sc-brand { font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 900; color: var(--orange); }
+.sc-brand span { color: #fff; }
+.sc-avatar { width: 48px; height: 48px; border-radius: 50%; background: #222; display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', sans-serif; font-size: 16px; font-weight: 900; color: #fff; border: 3px solid var(--orange); flex-shrink: 0; }
+.sc-name { font-family: 'Orbitron', sans-serif; font-size: 17px; font-weight: 900; color: #fff; margin-bottom: 6px; }
+.sc-meta-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.sc-tag-id { font-family: monospace; font-size: 11px; color: #666; }
+.sc-plan-badge { background: var(--orange); color: #fff; font-size: 9px; font-weight: 700; letter-spacing: 1px; padding: 3px 10px; border-radius: 20px; text-transform: uppercase; }
+
+.sc-top-row { display: flex; gap: 10px; padding: 12px; background: #0a0a0a; }
+.sc-blood-box { background: #1C0A0A; border: 2px solid #EF4444; border-radius: 12px; padding: 10px; text-align: center; width: 80px; flex-shrink: 0; }
+.sc-box-label { font-size: 8px; font-weight: 700; letter-spacing: 1px; margin-bottom: 4px; }
+.sc-blood-val { font-family: 'Orbitron', sans-serif; font-size: 28px; font-weight: 900; color: #fff; line-height: 1; }
+.sc-aid-box { background: #1a0e00; border: 2px solid var(--orange); border-radius: 12px; padding: 10px; flex: 1; }
+.sc-aid-val { font-size: 12px; color: #ddd; line-height: 1.5; margin-top: 4px; }
+
+.sc-tab { margin: 0 12px 10px; border-radius: 12px; overflow: hidden; border: 1px solid #222; }
+.sc-tab-header { padding: 8px 12px; font-size: 8px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+.sc-tab-body { background: #1a1a1a; padding: 12px; }
+.sc-tab-content { font-size: 12px; color: #ddd; line-height: 1.6; }
+.sc-alert-text { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 10px; }
+.sc-meds-text { color: #888; }
+.sc-sub-label { font-size: 8px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin: 8px 0 4px; padding-top: 8px; border-top: 1px solid #333; }
+
+.sc-contacts-header { font-size: 10px; font-weight: 700; letter-spacing: 1px; color: var(--orange); text-transform: uppercase; padding: 8px 12px 6px; background: #0a0a0a; }
+.sc-contact { display: flex; align-items: center; gap: 10px; margin: 0 12px 8px; background: #1a1a1a; border-radius: 12px; overflow: hidden; border: 1px solid #222; }
+.sc-contact-bar { width: 5px; align-self: stretch; flex-shrink: 0; }
+.sc-contact-num-badge { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; color: #fff; flex-shrink: 0; margin-left: 8px; }
+.sc-contact-info { padding: 10px 8px 10px 0; flex: 1; }
+.sc-contact-name { font-size: 13px; font-weight: 700; color: #fff; }
+.sc-contact-rel { font-size: 11px; margin: 1px 0; }
+.sc-contact-phone { font-size: 11px; color: #888; font-family: monospace; }
+
+.sc-strip { display: flex; height: 5px; margin-top: 12px; }
+.sc-strip div { flex: 1; }
+
+.sc-footer { background: #0a0a0a; display: flex; border-top: 1px solid #1a1a1a; }
+.sc-footer-num { flex: 1; text-align: center; padding: 12px 8px; border-right: 1px solid #1a1a1a; }
+.sc-footer-num:last-child { border: none; }
+.sc-fn-label { font-size: 9px; color: #555; margin-bottom: 2px; }
+.sc-fn-num { font-family: 'Orbitron', sans-serif; font-size: 16px; font-weight: 900; color: #fff; }
 .alert-checks { display: flex; gap: 16px; flex-wrap: wrap; }
 .check-opt { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text); cursor: pointer; padding: 10px 16px; background: #0f0f0f; border: 1px solid var(--border); border-radius: 8px; transition: all 0.2s; }
 .check-opt:has(input:checked) { border-color: var(--teal); background: #001a18; }
@@ -659,27 +707,111 @@ var BETA_LIMIT       = 10;
     </div>
   </div>
 
-  <!-- ── SUCCESS ── -->
+  <!-- ── SUCCESS / SUBSCRIBER CARD ── -->
   <div class="section" id="secSuccess">
-    <div class="success-screen">
-      <div class="success-icon">🎉</div>
-      <div class="success-title">You're In!</div>
-      <div class="success-sub">
-        Welcome to the Innovat3 beta programme.<br>
-        Your tag is being prepared and will be shipped to you shortly.<br><br>
-        We'll be in touch on Telegram with your tag ID and setup instructions.
-      </div>
-      <div class="success-tag">
-        <div class="lbl">YOUR TAG ID</div>
-        <div class="val" id="assignedTagId">—</div>
-      </div>
-      <br>
-      <div style="font-size:13px;color:#666;line-height:1.7">
-        📲 Install Telegram if you haven't already<br>
-        🏷️ Your tag will arrive within 5–7 days<br>
-        📋 Keep your subscriber card safe
-      </div>
+
+    <!-- Confetti banner -->
+    <div style="text-align:center;padding:20px 0 10px">
+      <div style="font-size:40px;animation:pop 0.5s ease">🎉</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;color:var(--teal);margin:8px 0 4px">You're In!</div>
+      <div style="font-size:13px;color:#666">Your subscriber card is ready. Screenshot or bookmark it!</div>
     </div>
+
+    <!-- ── SUBSCRIBER CARD ── -->
+    <div class="sub-card" id="subCard">
+
+      <!-- Card Header -->
+      <div class="sc-header" id="scHeader">
+        <div class="sc-header-top-bar" id="scTopBar"></div>
+        <div class="sc-header-side-bar" id="scSideBar"></div>
+        <div class="sc-header-inner">
+          <div class="sc-logo-row">
+            <div class="sc-brand">innovat3<span>.</span></div>
+            <div class="sc-avatar" id="scAvatar">?</div>
+          </div>
+          <div class="sc-name" id="scName">—</div>
+          <div class="sc-meta-row">
+            <div class="sc-tag-id" id="scTagId">—</div>
+            <div class="sc-plan-badge" id="scPlanBadge">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Blood + Medical Aid row -->
+      <div class="sc-top-row">
+        <div class="sc-blood-box">
+          <div class="sc-box-label" style="color:#EF4444">BLOOD TYPE</div>
+          <div class="sc-blood-val" id="scBlood">—</div>
+        </div>
+        <div class="sc-aid-box">
+          <div class="sc-box-label" style="color:var(--orange)">MEDICAL AID &amp; NUMBER</div>
+          <div class="sc-aid-val" id="scAid">Not provided</div>
+        </div>
+      </div>
+
+      <!-- Medical Alerts Tab -->
+      <div class="sc-tab sc-tab-orange">
+        <div class="sc-tab-header" style="background:var(--orange)">
+          <span style="color:#000">⚠&nbsp; MEDICAL ALERTS — TELL PARAMEDICS</span>
+        </div>
+        <div class="sc-tab-body">
+          <div class="sc-tab-content sc-alert-text" id="scMedical">—</div>
+          <div class="sc-sub-label" style="color:var(--teal)">MEDICATIONS</div>
+          <div class="sc-tab-content sc-meds-text" id="scMeds">—</div>
+        </div>
+      </div>
+
+      <!-- Address Tab -->
+      <div class="sc-tab sc-tab-green">
+        <div class="sc-tab-header" style="background:#14532D">
+          <span style="color:#fff">🏠&nbsp; HOME ADDRESS</span>
+        </div>
+        <div class="sc-tab-body">
+          <div class="sc-tab-content" id="scAddress">—</div>
+        </div>
+      </div>
+
+      <!-- Notes Tab -->
+      <div class="sc-tab sc-tab-blue">
+        <div class="sc-tab-header" style="background:#1E3A8A">
+          <span style="color:#fff">📋&nbsp; NOTES FOR FINDER</span>
+        </div>
+        <div class="sc-tab-body">
+          <div class="sc-tab-content" id="scNotes">—</div>
+        </div>
+      </div>
+
+      <!-- Emergency Contacts -->
+      <div class="sc-contacts-header">📞 EMERGENCY CONTACTS</div>
+      <div id="scContacts"></div>
+
+      <!-- Colour strip -->
+      <div class="sc-strip">
+        <div style="background:#EF4444"></div>
+        <div style="background:#F97316"></div>
+        <div style="background:#EAB308"></div>
+        <div style="background:#22C55E"></div>
+        <div style="background:#0ED2C8"></div>
+        <div style="background:#3B82F6"></div>
+        <div style="background:#A855F7"></div>
+      </div>
+
+      <!-- Footer -->
+      <div class="sc-footer">
+        <div class="sc-footer-num"><div class="sc-fn-label">SAPS Police</div><div class="sc-fn-num">10111</div></div>
+        <div class="sc-footer-num"><div class="sc-fn-label">Ambulance</div><div class="sc-fn-num">10177</div></div>
+        <div class="sc-footer-num"><div class="sc-fn-label">All Emergencies</div><div class="sc-fn-num">112</div></div>
+      </div>
+
+    </div>
+
+    <!-- Next steps -->
+    <div style="background:#111;border:1px solid #222;border-radius:12px;padding:16px;margin-top:16px;font-size:13px;color:#666;line-height:2">
+      📲 Install Telegram if you haven't already<br>
+      🏷️ Your tag will arrive within 5–7 days<br>
+      🔗 Your card link: <span id="scCardLink" style="color:var(--teal);font-size:12px;word-break:break-all">—</span>
+    </div>
+
   </div>
 
 </div>
@@ -837,8 +969,50 @@ async function submitForm() {
     });
   } catch(e) {}
 
-  // Show success
-  document.getElementById('assignedTagId').textContent = tagId;
+  // Populate subscriber card
+  var tagColours = {
+    'Black':'#333', 'Orange':'#F97316', 'Glow Blue':'#4DBBFF',
+    'Glitter Green':'#39FF6A', 'Red':'#EF4444', 'Teal':'#0ED2C8',
+    'White':'#e5e5e5', 'Surprise Me':'#F97316'
+  };
+  var tagCol = tagColours[colour] || '#F97316';
+  var initials = (v('firstName')[0]||'') + (v('lastName')[0]||'');
+  var cardLink = 'https://innovat3dinfusion-hash.github.io/innovat3-emergency/card/?tag=' + tagId;
+
+  document.getElementById('scTopBar').style.background    = tagCol;
+  document.getElementById('scSideBar').style.background   = tagCol;
+  document.getElementById('scAvatar').textContent         = initials.toUpperCase();
+  document.getElementById('scAvatar').style.borderColor   = tagCol;
+  document.getElementById('scName').textContent           = v('firstName') + ' ' + v('lastName');
+  document.getElementById('scTagId').textContent          = tagId;
+  document.getElementById('scPlanBadge').textContent      = plan.toUpperCase() + ' PLAN';
+  document.getElementById('scPlanBadge').style.background = tagCol;
+  document.getElementById('scBlood').textContent          = data.blood;
+  document.getElementById('scAid').textContent            = 'Not provided';
+  document.getElementById('scMedical').textContent        = data.medical || '—';
+  document.getElementById('scMeds').textContent           = data.meds   || '—';
+  document.getElementById('scAddress').textContent        = data.address || '—';
+  document.getElementById('scNotes').textContent          = data.notes   || '—';
+  document.getElementById('scCardLink').textContent       = cardLink;
+
+  var contactColours = ['#EF4444','#F97316','#22C55E','#3B82F6','#0ED2C8'];
+  var cList = document.getElementById('scContacts');
+  data.contacts.forEach(function(ct, i) {
+    var col = contactColours[i % contactColours.length];
+    var phone = ct.phone.startsWith('27') ? ct.phone : ct.phone;
+    var div = document.createElement('div');
+    div.className = 'sc-contact';
+    div.innerHTML =
+      '<div class="sc-contact-bar" style="background:' + col + '"></div>' +
+      '<div class="sc-contact-num-badge" style="background:' + col + '">' + (i+1) + '</div>' +
+      '<div class="sc-contact-info">' +
+        '<div class="sc-contact-name">' + ct.name + '</div>' +
+        '<div class="sc-contact-rel" style="color:' + col + '">' + ct.rel + '</div>' +
+        '<div class="sc-contact-phone">+' + ct.phone + '</div>' +
+      '</div>';
+    cList.appendChild(div);
+  });
+
   document.getElementById('sec4').classList.remove('active');
   document.getElementById('progressBar').style.display = 'none';
   document.getElementById('secSuccess').classList.add('active');
