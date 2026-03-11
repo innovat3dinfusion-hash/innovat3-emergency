@@ -377,6 +377,7 @@ body { font-family: 'Exo 2', sans-serif; background: var(--black); color: var(--
 var TELEGRAM_TOKEN   = '8785184944:AAEEPwzWgfVRaGqEfrCpr4Mf9Yy7qp2Lx2k';
 var TELEGRAM_CHAT_ID = '8737168646';
 var GAS_URL          = 'https://script.google.com/macros/s/AKfycbwbeveDTjJNNjqrDXBoEUTdorFj36wkOPIU-OLZnFid4QOW3cPPmZzyK8YLtWD1p4JD/exec';
+var IMGBB_KEY        = 'c95f5daba8da7ba6d1f63cbeb6326a88'; // replace with your imgbb.com API key
 var BETA_LIMIT       = 10;
 </script>
 
@@ -869,6 +870,20 @@ var BETA_LIMIT       = 10;
 <script>
 var currentStep = 1;
 
+async function uploadPhotoToImgbb(base64data) {
+  try {
+    // Strip data:image/...;base64, prefix
+    var b64 = base64data.split(',')[1];
+    var form = new FormData();
+    form.append('key', IMGBB_KEY);
+    form.append('image', b64);
+    var res  = await fetch('https://api.imgbb.com/1/upload', { method:'POST', body: form });
+    var json = await res.json();
+    if (json.success) return json.data.url;
+  } catch(e) {}
+  return '';
+}
+
 function previewPhoto(input) {
   if (input.files && input.files[0]) {
     var reader = new FileReader();
@@ -988,6 +1003,14 @@ async function submitForm() {
   var colourBoxes = Array.from(document.querySelectorAll('.colour-opt:checked')).map(function(cb){ return cb.value; });
   var colour = colourBoxes.join(' + ') || 'Not selected';
 
+  // Upload profile photo to imgbb if present
+  var photoUrl = '';
+  var photoImg = document.getElementById('photoImg');
+  if (photoImg && photoImg.src && photoImg.style.display !== 'none') {
+    btn.textContent = 'Uploading photo...';
+    photoUrl = await uploadPhotoToImgbb(photoImg.src);
+  }
+
   var data = {
     type:       'REGISTRATION',
     tagId:      tagId,
@@ -1011,6 +1034,7 @@ async function submitForm() {
     formFactor: document.getElementById('formFactor').value,
     delivery:   v('delivery'),
     extraNotes: v('extraNotes'),
+    photoUrl:  photoUrl,
     contacts: [
       v('c1name') ? { name: v('c1name'), rel: v('c1rel'), phone: formatPhone(v('c1phone')), wa: document.getElementById('c1wa').checked, telegram: v('c1telegram'), tg: document.getElementById('c1tg').checked } : null,
       v('c2name') ? { name: v('c2name'), rel: v('c2rel'), phone: formatPhone(v('c2phone')), wa: document.getElementById('c2wa').checked, telegram: v('c2telegram'), tg: document.getElementById('c2tg').checked } : null,
@@ -1072,9 +1096,10 @@ async function submitForm() {
   document.getElementById('scSideBar').style.background   = tagCol;
   document.getElementById('scAvatar').style.borderColor   = tagCol;
   // Show profile photo in avatar if uploaded
-  var photoImg = document.getElementById('photoImg');
   var scAvatar = document.getElementById('scAvatar');
-  if (photoImg && photoImg.src && photoImg.style.display !== 'none') {
+  if (data.photoUrl) {
+    scAvatar.innerHTML = '<img src="' + data.photoUrl + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';
+  } else if (photoImg && photoImg.src && photoImg.style.display !== 'none') {
     scAvatar.innerHTML = '<img src="' + photoImg.src + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';
   } else {
     scAvatar.textContent = initials.toUpperCase();
