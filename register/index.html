@@ -441,6 +441,12 @@ var BETA_LIMIT       = 10;
     </div>
 
     <div class="field">
+      <label>Date of Birth <span>*</span></label>
+      <input type="date" id="dob">
+      <div class="hint">Used on your emergency card for paramedics</div>
+    </div>
+
+    <div class="field">
       <label>Email Address <span>*</span></label>
       <input type="email" id="email" placeholder="emma@example.com">
     </div>
@@ -986,6 +992,7 @@ async function submitForm() {
     type:       'REGISTRATION',
     tagId:      tagId,
     timestamp:  timestamp,
+    dob:        v('dob'),
     firstName:  v('firstName'),
     lastName:   v('lastName'),
     name:       v('firstName') + ' ' + v('lastName'),
@@ -1019,6 +1026,7 @@ async function submitForm() {
     '📱 +' + data.phone + '\n' +
     (data.telegram ? '💬 Telegram: ' + data.telegram + '\n' : '') +
     '\n🏷️ Tag: *' + tagId + '*\n' +
+    '🎂 DOB: ' + (data.dob || 'Not provided') + '\n' +
     '📦 Plan: ' + plan + '\n' +
     '🎨 Colour: ' + colour + ' — ' + document.getElementById('formFactor').value + '\n' +
     '🩸 Blood: ' + blood + '\n' +
