@@ -347,27 +347,64 @@ var subData = null;
   document.getElementById('cardWrap').style.display      = 'block';
 
   // ── FIRE GPS + ALERTS ──
-  setAlert('yellow', 'Getting GPS location...');
   var lat = null, lng = null, gpsAddress = 'Location not shared', mapsUrl = '';
   var timestamp = new Date().toLocaleString('en-ZA', { timeZone:'Africa/Johannesburg' });
 
-  try {
-    var pos = await new Promise(function(res, rej){
-      navigator.geolocation.getCurrentPosition(res, rej, { timeout:10000, enableHighAccuracy:true });
+  // Accuracy threshold — reject anything worse than 100 metres
+  var MAX_ACCURACY_METRES = 100;
+  var MAX_ATTEMPTS        = 5;
+  var ATTEMPT_TIMEOUT_MS  = 8000;
+
+  async function getAccuratePosition() {
+    for (var attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+      setAlert('yellow', 'Getting GPS... (attempt ' + attempt + ' of ' + MAX_ATTEMPTS + ')');
+      try {
+        var pos = await new Promise(function(res, rej) {
+          navigator.geolocation.getCurrentPosition(res, rej, {
+            enableHighAccuracy: true,
+            timeout: ATTEMPT_TIMEOUT_MS,
+            maximumAge: 0   // never use cached position
+          });
+        });
+        var acc = pos.coords.accuracy;
+        setAlert('yellow', 'GPS accuracy: ' + Math.round(acc) + 'm — ' + (acc <= MAX_ACCURACY_METRES ? 'good ✓' : 'retrying...'));
+        if (acc <= MAX_ACCURACY_METRES) {
+          return pos; // accuracy is good enough
+        }
+        // Wait 2 seconds before retrying to allow GPS to settle
+        await new Promise(function(r){ setTimeout(r, 2000); });
+      } catch(err) {
+        if (attempt === MAX_ATTEMPTS) throw err;
+        await new Promise(function(r){ setTimeout(r, 1000); });
+      }
+    }
+    // All attempts done — return last position even if not perfect
+    return await new Promise(function(res, rej) {
+      navigator.geolocation.getCurrentPosition(res, rej, {
+        enableHighAccuracy: true, timeout: ATTEMPT_TIMEOUT_MS, maximumAge: 0
+      });
     });
+  }
+
+  try {
+    var pos = await getAccuratePosition();
+    var acc  = Math.round(pos.coords.accuracy);
     lat      = pos.coords.latitude.toFixed(6);
     lng      = pos.coords.longitude.toFixed(6);
     mapsUrl  = 'https://www.google.com/maps?q=' + lat + ',' + lng;
-    document.getElementById('gpsCoords').textContent  = 'GPS: ' + lat + ', ' + lng;
+    document.getElementById('gpsCoords').textContent  = 'GPS: ' + lat + ', ' + lng + '  (±' + acc + 'm)';
     document.getElementById('mapsBtn').href           = mapsUrl;
     document.getElementById('gpsBlock').style.display = 'block';
-    setAlert('yellow', 'Getting address...');
+    setAlert('yellow', 'Resolving address...');
     try {
       var geo = await (await fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lng+'&format=json')).json();
       gpsAddress = (geo.display_name||'').split(',').slice(0,4).join(',').trim() || lat+', '+lng;
     } catch(e) { gpsAddress = 'GPS: ' + lat + ', ' + lng; }
     document.getElementById('gpsAddress').textContent = gpsAddress;
-  } catch(e) { gpsAddress = 'Location not shared'; }
+  } catch(e) {
+    gpsAddress = 'Location not shared';
+    setAlert('red', 'GPS unavailable — please share location manually');
+  }
 
   // Build Telegram message
   var name = (subData['First Name']||'') + ' ' + (subData['Last Name']||'');
