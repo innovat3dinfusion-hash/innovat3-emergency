@@ -333,7 +333,7 @@ var photoUploadedUrl = '';
         </div>
         <div class="field">
           <label>Date of Birth <span class="req">*</span></label>
-          <input type="date" id="dob" max="2010-01-01">
+          <input type="date" id="dob" max="2010-01-01" onchange="onDobChange()">
           <div class="field-hint">Used to display your age on the emergency card</div>
         </div>
         <div class="field">
@@ -716,10 +716,53 @@ function selectBlood(el, val) {
 }
 
 // ── PLAN ──
+function getAgeFromDob() {
+  var dob = v('dob');
+  if (!dob) return null;
+  var d = new Date(dob);
+  if (isNaN(d.getTime())) return null;
+  var today = new Date();
+  var age = today.getFullYear() - d.getFullYear();
+  var m = today.getMonth() - d.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < d.getDate())) age--;
+  return age;
+}
+
 function selectPlan(el, val) {
+  if (val === 'Care') {
+    var age = getAgeFromDob();
+    if (age === null) {
+      alert('Please enter your Date of Birth on Step 1 first — the Care plan is only available for ages 65 and older.');
+      return;
+    }
+    if (age < 65) {
+      alert('The Innovat3 Care plan is only available for people aged 65 or older. You are ' + age + ' years old.');
+      return;
+    }
+  }
   document.querySelectorAll('.plan-card').forEach(c=>c.classList.remove('selected'));
   el.classList.add('selected');
   planSelected = val;
+}
+
+// Called when DOB changes — grey out Care plan if under 65
+function onDobChange() {
+  var age = getAgeFromDob();
+  var careCard = document.getElementById('planCare');
+  if (!careCard) return;
+  if (age !== null && age < 65) {
+    careCard.style.opacity = '0.35';
+    careCard.style.cursor = 'not-allowed';
+    careCard.title = 'Care plan is only available for ages 65+';
+    // If Care was selected, switch back to Beta
+    if (planSelected === 'Care') {
+      selectPlan(document.getElementById('planBeta'), 'Beta');
+    }
+  } else {
+    careCard.style.opacity = '1';
+    careCard.style.cursor = 'pointer';
+    careCard.title = '';
+  }
 }
 
 // ── TAG COLOUR ──
@@ -807,6 +850,39 @@ async function submitForm() {
   // Upload photo
   if (photoDataUrl) {
     photoUploadedUrl = await uploadPhotoToImgbb(photoDataUrl);
+  }
+
+  // Check for duplicate email in Sheets before submitting
+  btn.textContent = 'Checking...';
+  try {
+    var sheetUrl = 'https://docs.google.com/spreadsheets/d/1_ZvLT_SnRkIgP7xiYBdDJ5DRtn9lwPnc6V3dmb-bSVI/gviz/tq?tqx=out:json&sheet=Registrations';
+    var resp = await fetch(sheetUrl);
+    if (resp.ok) {
+      var text = await resp.text();
+      var si = text.indexOf('('), ei = text.lastIndexOf(')');
+      if (si !== -1 && ei !== -1) {
+        var json = JSON.parse(text.substring(si+1, ei));
+        if (json.table && json.table.cols) {
+          var cols = json.table.cols.map(function(c){ return c.label; });
+          var emailColIdx = cols.indexOf('Email');
+          var emailVal = v('email').toLowerCase();
+          if (emailColIdx !== -1) {
+            for (var ri=0; ri < json.table.rows.length; ri++) {
+              var cell = json.table.rows[ri].c[emailColIdx];
+              if (cell && String(cell.v||'').toLowerCase().trim() === emailVal) {
+                btn.textContent = '✓  Submit Registration';
+                btn.disabled = false;
+                alert('This email address is already registered! If you need help with your existing registration, please contact us at hello@innovat3.co.za');
+                return;
+              }
+            }
+          }
+        }
+      }
+    }
+  } catch(dupErr) {
+    // If duplicate check fails (e.g. sheet not public yet), allow submission to proceed
+    console.log('Duplicate check skipped:', dupErr.message);
   }
 
   var tagId     = genTagId();
