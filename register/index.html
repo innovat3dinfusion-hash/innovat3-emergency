@@ -3,372 +3,251 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>innovat3. — Beta Registration</title>
+<title>Innovat3 — Beta Registration</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --orange: #F97316;
-  --teal: #0ED2C8;
-  --black: #0A0A0A;
-  --card: #141414;
-  --border: #222;
-  --text: #e5e5e5;
-  --muted: #666;
+  --orange:#F97316; --teal:#0ED2C8; --black:#0A0A0A;
+  --card:#141414; --border:#222; --border2:#2a2a2a;
+  --text:#F0F0F0; --muted:#777; --muted2:#444;
+  --red:#EF4444; --green:#22C55E; --blue:#3B82F6;
+  --yellow:#EAB308;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body { font-family: 'Exo 2', sans-serif; background: var(--black); color: var(--text); min-height: 100vh; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:"Exo 2",sans-serif; background:#050505; color:var(--text); min-height:100vh; }
+.page { max-width:560px; margin:0 auto; padding-bottom:60px; }
 
-/* ── HEADER ── */
-.header {
-  background: linear-gradient(180deg, #1a0800 0%, var(--black) 100%);
-  border-bottom: 1px solid #1a1a1a;
-  padding: 32px 20px 28px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
+/* ── BANNER ── */
+.in3-banner {
+  background:linear-gradient(135deg,#0d0d0d 0%,#1a0a00 100%);
+  border-bottom:3px solid var(--orange);
+  padding:13px 18px; display:flex; align-items:center; gap:14px;
 }
-.header::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, var(--orange), var(--teal), var(--orange), transparent);
+.in3-logo { width:46px; height:46px; border-radius:11px; border:2px solid var(--orange); flex-shrink:0; overflow:hidden; box-shadow:0 0 18px rgba(249,115,22,0.45); }
+.in3-logo img { width:100%; height:100%; object-fit:cover; }
+.in3-brand-name { font-family:"Orbitron",sans-serif; font-size:20px; font-weight:900; color:var(--orange); line-height:1; }
+.in3-brand-name span { color:#fff; }
+.in3-brand-sub { font-size:8px; color:var(--muted); letter-spacing:3px; text-transform:uppercase; margin-top:4px; }
+.in3-beta-badge {
+  margin-left:auto; background:#0a1a00; border:2px solid var(--green); color:var(--green);
+  font-family:"Orbitron",sans-serif; font-size:7px; font-weight:900;
+  letter-spacing:1px; padding:6px 10px; border-radius:8px; text-transform:uppercase;
+  box-shadow:0 0 14px rgba(34,197,94,0.2);
 }
-.logo-text {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 28px;
-  font-weight: 900;
-  color: var(--orange);
-  letter-spacing: 2px;
-  margin-bottom: 6px;
+
+/* ── HERO ── */
+.hero {
+  background:linear-gradient(160deg,#0f0f0f,#080808);
+  padding:24px 18px 20px; border-bottom:1px solid var(--border);
+  text-align:center;
 }
-.logo-text span { color: #fff; }
-.header-sub { font-size: 13px; color: var(--muted); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 20px; }
-.beta-badge {
-  display: inline-block;
-  background: linear-gradient(135deg, var(--orange), #ea6a05);
-  color: #fff;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  padding: 6px 16px;
-  border-radius: 20px;
-  margin-bottom: 16px;
+.hero h1 { font-family:"Orbitron",sans-serif; font-size:18px; font-weight:900; color:#fff; margin-bottom:8px; }
+.hero h1 span { color:var(--orange); }
+.hero p { font-size:12px; color:var(--muted); line-height:1.7; max-width:380px; margin:0 auto; }
+.beta-spots {
+  display:inline-flex; align-items:center; gap:8px; margin-top:14px;
+  background:#0a1a00; border:1px solid var(--green); border-radius:20px;
+  padding:6px 14px; font-size:11px; color:var(--green); font-weight:700;
 }
-.header h1 { font-family: 'Orbitron', sans-serif; font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 8px; }
-.header p { font-size: 14px; color: #999; max-width: 400px; margin: 0 auto; line-height: 1.6; }
+.beta-dot { width:7px; height:7px; border-radius:50%; background:var(--green); animation:pd 1s infinite; }
+@keyframes pd { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
 /* ── PROGRESS ── */
-.progress-bar {
-  background: #111;
-  border-bottom: 1px solid var(--border);
-  padding: 16px 20px;
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  align-items: center;
-}
-.step {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--muted);
-  transition: color 0.3s;
-}
-.step.active { color: var(--orange); }
-.step.done { color: var(--teal); }
+.progress { display:flex; align-items:center; padding:16px 18px; background:#0a0a0a; border-bottom:1px solid var(--border); }
+.step-item { display:flex; flex-direction:column; align-items:center; gap:4px; flex:1; }
 .step-num {
-  width: 22px; height: 22px;
-  border-radius: 50%;
-  border: 2px solid currentColor;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 10px; font-weight: 900;
-  flex-shrink: 0;
+  width:28px; height:28px; border-radius:50%; border:2px solid var(--border2);
+  display:flex; align-items:center; justify-content:center;
+  font-family:"Orbitron",sans-serif; font-size:10px; font-weight:900; color:var(--muted2);
+  background:#111; transition:all 0.3s;
 }
-.step-line { width: 20px; height: 1px; background: var(--border); flex-shrink: 0; }
+.step-label { font-size:8px; color:var(--muted2); letter-spacing:1px; text-transform:uppercase; font-weight:700; transition:all 0.3s; }
+.step-item.active .step-num { border-color:var(--orange); color:var(--orange); background:#1a0800; box-shadow:0 0 12px rgba(249,115,22,0.3); }
+.step-item.active .step-label { color:var(--orange); }
+.step-item.done .step-num { border-color:var(--green); color:var(--green); background:#061209; }
+.step-item.done .step-label { color:var(--green); }
+.step-line { flex:1; height:1px; background:var(--border2); margin-bottom:18px; }
+.step-line.done { background:var(--green); }
 
-/* ── WRAP ── */
-.wrap { max-width: 540px; margin: 0 auto; padding: 24px 16px 60px; }
+/* ── SECTIONS ── */
+.section { display:none; padding:0 10px; }
+.section.active { display:block; }
 
-/* ── SECTION ── */
-.section { display: none; }
-.section.active { display: block; animation: fadeIn 0.3s ease; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-
-.section-title {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  color: var(--orange);
-  text-transform: uppercase;
-  margin-bottom: 20px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #1a1a1a;
+/* ── TABS (same as card) ── */
+.form-tab {
+  border-radius:14px; overflow:hidden;
+  box-shadow:0 2px 16px rgba(0,0,0,0.4);
+  margin-top:10px;
 }
-
-/* ── FORM ELEMENTS ── */
-.field { margin-bottom: 18px; }
-.field label {
-  display: block;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: #888;
-  margin-bottom: 8px;
+.form-tab-hdr {
+  padding:10px 16px; font-size:8px; font-weight:900;
+  letter-spacing:1.5px; text-transform:uppercase;
+  display:flex; align-items:center; gap:8px;
 }
-.field label span { color: var(--orange); }
+.form-tab-body { background:#111; padding:16px; }
+
+/* Tab colour variants */
+.tab-personal  { border:2px solid rgba(249,115,22,0.7); box-shadow:0 0 24px rgba(249,115,22,0.12); }
+.tab-personal  .form-tab-hdr { background:linear-gradient(90deg,#c45000,#f97316,#ffb347); color:#000; }
+.tab-medical   { border:1px solid rgba(239,68,68,0.4); }
+.tab-medical   .form-tab-hdr { background:linear-gradient(90deg,#7f1d1d,#ef4444); color:#fff; }
+.tab-contacts  { border:2px solid rgba(21,128,61,0.6); box-shadow:0 0 22px rgba(21,128,61,0.12); }
+.tab-contacts  .form-tab-hdr { background:linear-gradient(90deg,#082a16,#15803D,#22c55e); color:#fff; }
+.tab-tag       { border:1px solid rgba(14,210,200,0.4); }
+.tab-tag       .form-tab-hdr { background:linear-gradient(90deg,#064e4a,#0ED2C8); color:#000; }
+.tab-photo     { border:1px solid rgba(59,130,246,0.4); }
+.tab-photo     .form-tab-hdr { background:linear-gradient(90deg,#1e3a8a,#3B82F6); color:#fff; }
+.tab-address   { border:1px solid rgba(20,83,45,0.5); }
+.tab-address   .form-tab-hdr { background:linear-gradient(90deg,#0c2e1a,#14532D); color:#fff; }
+.tab-plan      { border:1px solid rgba(234,179,8,0.4); }
+.tab-plan      .form-tab-hdr { background:linear-gradient(90deg,#713f12,#EAB308); color:#000; }
+
+/* ── FORM FIELDS ── */
+.field { margin-bottom:14px; }
+.field:last-child { margin-bottom:0; }
+.field label { display:block; font-size:9px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+.field label .req { color:var(--orange); margin-left:2px; }
 .field input, .field select, .field textarea {
-  width: 100%;
-  background: #0f0f0f;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 14px 16px;
-  font-family: 'Exo 2', sans-serif;
-  font-size: 14px;
-  color: #fff;
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  -webkit-appearance: none;
+  width:100%; background:#0d0d0d; border:1px solid var(--border2);
+  border-radius:10px; color:var(--text); font-family:"Exo 2",sans-serif;
+  font-size:13px; padding:11px 14px; outline:none;
+  transition:border-color 0.2s, box-shadow 0.2s;
 }
 .field input:focus, .field select:focus, .field textarea:focus {
-  border-color: var(--orange);
-  box-shadow: 0 0 0 3px rgba(249,115,22,0.1);
+  border-color:var(--orange); box-shadow:0 0 0 3px rgba(249,115,22,0.1);
 }
-.field textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
-.field select option { background: #1a1a1a; }
-.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.field textarea { resize:vertical; min-height:70px; }
+.field select { appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23777' d='M1 1l5 5 5-5'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center; }
+.field-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.field-hint { font-size:10px; color:var(--muted); margin-top:5px; line-height:1.5; }
 
-.hint { font-size: 11px; color: var(--muted); margin-top: 6px; line-height: 1.5; }
+/* ── PHOTO UPLOAD ── */
+.photo-upload-area {
+  border:2px dashed var(--border2); border-radius:14px;
+  padding:20px; text-align:center; cursor:pointer;
+  transition:border-color 0.2s; background:#0d0d0d;
+}
+.photo-upload-area:hover { border-color:var(--blue); }
+.photo-upload-area.has-photo { border-style:solid; border-color:var(--blue); padding:10px; }
+#photoPreview { width:90px; height:90px; border-radius:50%; object-fit:cover; border:3px solid var(--blue); display:none; margin:0 auto 8px; }
+.photo-icon { font-size:32px; margin-bottom:8px; }
+.photo-label { font-size:12px; color:var(--muted); }
+.photo-sub { font-size:10px; color:var(--muted2); margin-top:4px; }
 
-/* Blood type grid */
-.blood-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
-.blood-opt { display: none; }
-.blood-opt + label {
-  display: flex; align-items: center; justify-content: center;
-  background: #0f0f0f;
-  border: 2px solid var(--border);
-  border-radius: 10px;
-  padding: 14px 8px;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  color: #555;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.blood-opt:checked + label {
-  border-color: #EF4444;
-  background: #2a0000;
-  color: #fff;
-  box-shadow: 0 0 0 3px rgba(239,68,68,0.15);
-}
+/* ── CHECKBOXES (custom) ── */
+.check-row { display:flex; align-items:center; gap:10px; margin-bottom:8px; cursor:pointer; }
+.check-row:last-child { margin-bottom:0; }
+.custom-check { width:18px; height:18px; border:2px solid var(--border2); border-radius:5px; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:all 0.15s; background:#0d0d0d; }
+.check-row input[type=checkbox] { display:none; }
+.check-row input[type=checkbox]:checked + .custom-check { background:var(--teal); border-color:var(--teal); }
+.check-row input[type=checkbox]:checked + .custom-check::after { content:"✓"; color:#000; font-size:11px; font-weight:900; }
+.check-text { font-size:12px; color:var(--text); }
 
-/* Plan grid */
-.plan-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 20px; }
-.plan-opt { display: none; }
-.plan-opt + label {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  background: #0f0f0f;
-  border: 2px solid var(--border);
-  border-radius: 12px;
-  padding: 16px 8px;
-  cursor: pointer;
-  transition: all 0.2s;
-  text-align: center;
+/* ── WA/TG TOGGLE ── */
+.ct-toggles { display:flex; gap:8px; margin-top:8px; }
+.ct-toggle {
+  display:flex; align-items:center; gap:6px; padding:7px 12px;
+  border-radius:8px; border:1px solid var(--border2); background:#0d0d0d;
+  cursor:pointer; font-size:11px; font-weight:700; transition:all 0.15s;
 }
-.plan-opt:checked + label { border-color: var(--orange); background: #1a0800; }
-.plan-name { font-family: 'Orbitron', sans-serif; font-size: 11px; font-weight: 700; color: var(--orange); margin-bottom: 4px; letter-spacing: 1px; }
-.plan-price { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 2px; }
-.plan-members { font-size: 10px; color: var(--muted); }
+.ct-toggle img { width:16px; height:16px; border-radius:3px; }
+.ct-toggle input { display:none; }
+.ct-toggle.wa-tog { color:#888; }
+.ct-toggle.tg-tog { color:#888; }
+.ct-toggle.active-wa { background:#071a0e; border-color:#25D366; color:#25D366; }
+.ct-toggle.active-tg { background:#001a2e; border-color:#29B6F6; color:#29B6F6; }
 
-/* Tag colour grid */
-.colour-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
-.colour-opt { display: none; }
-.colour-opt + label {
-  display: flex; flex-direction: column; align-items: center; gap: 6px;
-  background: #0f0f0f;
-  border: 2px solid var(--border);
-  border-radius: 10px;
-  padding: 14px 8px;
-  cursor: pointer;
-  transition: all 0.2s;
-  text-align: center;
+/* ── BLOOD TYPE GRID ── */
+.blood-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+.blood-btn {
+  padding:10px 4px; border-radius:10px; border:1px solid var(--border2);
+  background:#0d0d0d; color:var(--muted); font-family:"Orbitron",sans-serif;
+  font-size:12px; font-weight:900; text-align:center; cursor:pointer; transition:all 0.15s;
 }
-.colour-opt:checked + label { border-color: var(--teal); background: #001a18; }
-.colour-swatch { width: 32px; height: 32px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.1); }
-.colour-name { font-size: 10px; font-weight: 600; color: #888; letter-spacing: 0.5px; }
+.blood-btn.selected { background:#1a0505; border-color:var(--red); color:#fff; box-shadow:0 0 12px rgba(239,68,68,0.2); }
 
-/* Contact block */
-.contact-block {
-  background: #0f0f0f;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 12px;
+/* ── PLAN CARDS ── */
+.plan-grid { display:flex; flex-direction:column; gap:8px; }
+.plan-card {
+  background:#0d0d0d; border:1px solid var(--border2); border-radius:12px;
+  padding:14px; cursor:pointer; transition:all 0.15s;
+  display:flex; align-items:center; gap:14px;
 }
-.contact-block-title {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  color: var(--teal);
-  text-transform: uppercase;
-  margin-bottom: 14px;
-}
+.plan-card.selected { border-color:var(--orange); background:#150900; box-shadow:0 0 16px rgba(249,115,22,0.15); }
+.plan-icon { font-size:22px; flex-shrink:0; }
+.plan-name { font-family:"Orbitron",sans-serif; font-size:12px; font-weight:900; color:#fff; margin-bottom:3px; }
+.plan-name span { color:var(--orange); }
+.plan-desc { font-size:10px; color:var(--muted); line-height:1.5; }
+.plan-price { margin-left:auto; text-align:right; flex-shrink:0; }
+.plan-price .price { font-family:"Orbitron",sans-serif; font-size:14px; font-weight:900; color:var(--orange); }
+.plan-price .per { font-size:9px; color:var(--muted); }
+.plan-radio { display:none; }
 
-/* Telegram notice */
-.telegram-notice {
-  background: #001a18;
-  border: 1px solid var(--teal);
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 20px;
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
+/* ── TAG COLOUR GRID ── */
+.colour-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+.colour-swatch {
+  padding:10px 4px; border-radius:10px; border:2px solid transparent;
+  text-align:center; cursor:pointer; transition:all 0.15s; font-size:10px;
+  font-weight:700; color:#fff;
 }
-.telegram-notice .icon { font-size: 24px; flex-shrink: 0; }
-.telegram-notice .title { font-size: 13px; font-weight: 700; color: var(--teal); margin-bottom: 4px; }
-.telegram-notice .body { font-size: 12px; color: #6ee7e0; line-height: 1.5; }
+.colour-swatch.selected { border-color:#fff; transform:scale(1.05); }
 
-/* Buttons */
-.btn-row { display: flex; gap: 10px; margin-top: 28px; }
-.btn-next {
-  flex: 1;
-  background: var(--orange);
-  color: #fff;
-  border: none;
-  border-radius: 12px;
-  padding: 16px;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  cursor: pointer;
-  transition: all 0.2s;
+/* ── CONTACT CARD ── */
+.contact-card {
+  background:#0d0d0d; border:1px solid var(--border2); border-radius:12px;
+  padding:14px; margin-bottom:10px;
 }
-.btn-next:hover { background: #ea6a05; transform: translateY(-1px); }
+.contact-card:last-child { margin-bottom:0; }
+.contact-card-hdr { font-size:9px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:12px; }
+
+/* ── NAV BUTTONS ── */
+.nav-btns { display:flex; gap:10px; padding:14px 10px 0; }
 .btn-back {
-  background: #1a1a1a;
-  color: #888;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 16px 20px;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  cursor: pointer;
-  transition: all 0.2s;
+  flex:1; background:#111; border:1px solid var(--border2); color:var(--muted);
+  font-family:"Exo 2",sans-serif; font-size:13px; font-weight:700;
+  padding:13px; border-radius:12px; cursor:pointer; transition:all 0.15s;
 }
-.btn-back:hover { color: #fff; border-color: #444; }
-
-/* Success */
-.success-screen {
-  text-align: center;
-  padding: 40px 20px;
+.btn-back:hover { border-color:var(--orange); color:var(--text); }
+.btn-next {
+  flex:2; background:linear-gradient(135deg,#c45000,#f97316); color:#000;
+  font-family:"Orbitron",sans-serif; font-size:11px; font-weight:900;
+  letter-spacing:1px; padding:13px; border-radius:12px; cursor:pointer;
+  border:none; transition:all 0.15s; text-transform:uppercase;
+  box-shadow:0 4px 20px rgba(249,115,22,0.3);
 }
-.success-icon { font-size: 72px; margin-bottom: 20px; animation: pop 0.5s ease; }
-@keyframes pop { 0%{transform:scale(0)} 80%{transform:scale(1.1)} 100%{transform:scale(1)} }
-.success-title {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 22px;
-  font-weight: 900;
-  color: var(--teal);
-  margin-bottom: 12px;
+.btn-next:hover { box-shadow:0 4px 28px rgba(249,115,22,0.5); transform:translateY(-1px); }
+.btn-submit {
+  flex:2; background:linear-gradient(135deg,#0a6e22,#22c55e); color:#000;
+  font-family:"Orbitron",sans-serif; font-size:11px; font-weight:900;
+  letter-spacing:1px; padding:13px; border-radius:12px; cursor:pointer;
+  border:none; transition:all 0.15s; text-transform:uppercase;
+  box-shadow:0 4px 20px rgba(34,197,94,0.3);
 }
-.success-sub { font-size: 14px; color: #999; line-height: 1.7; margin-bottom: 28px; }
-.success-tag {
-  background: #001a18;
-  border: 2px solid var(--teal);
-  border-radius: 16px;
-  padding: 20px;
-  margin-bottom: 20px;
-  display: inline-block;
-  min-width: 240px;
+
+/* ── SUCCESS CARD ── */
+.success-screen { display:none; padding:20px 10px; }
+.success-tab {
+  border-radius:14px; overflow:hidden;
+  border:2px solid rgba(34,197,94,0.7);
+  box-shadow:0 0 28px rgba(34,197,94,0.18);
 }
-.success-tag .lbl { font-size: 10px; font-weight: 700; letter-spacing: 2px; color: var(--teal); margin-bottom: 6px; }
-.success-tag .val { font-family: 'Orbitron', sans-serif; font-size: 20px; font-weight: 900; color: #fff; }
+.success-tab-hdr { background:linear-gradient(90deg,#0a3320,#15803D,#22c55e); padding:12px 16px; font-family:"Orbitron",sans-serif; font-size:9px; font-weight:900; letter-spacing:1.5px; color:#fff; text-transform:uppercase; }
+.success-tab-body { background:#0a1a0a; padding:20px; text-align:center; }
+.success-avatar { width:80px; height:80px; border-radius:50%; background:#111; border:3px solid var(--green); display:flex; align-items:center; justify-content:center; font-family:"Orbitron",sans-serif; font-size:24px; font-weight:900; margin:0 auto 14px; overflow:hidden; }
+.success-avatar img { width:100%; height:100%; object-fit:cover; }
+.success-name { font-family:"Orbitron",sans-serif; font-size:16px; font-weight:900; color:#fff; margin-bottom:6px; }
+.success-tagid { font-family:monospace; font-size:11px; color:var(--muted); margin-bottom:14px; }
+.success-msg { font-size:12px; color:#aaa; line-height:1.7; margin-bottom:16px; }
+.success-steps { background:#0d0d0d; border-radius:10px; padding:12px; text-align:left; }
+.success-step { display:flex; align-items:flex-start; gap:10px; padding:6px 0; border-bottom:1px solid #1a1a1a; font-size:11px; color:#aaa; line-height:1.5; }
+.success-step:last-child { border:none; }
+.success-step-num { width:20px; height:20px; border-radius:50%; background:var(--orange); color:#000; font-size:9px; font-weight:900; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
 
-.error-msg { color: #EF4444; font-size: 12px; margin-top: 6px; display: none; }
-.submitting { opacity: 0.6; pointer-events: none; }
+/* ── ERROR MSG ── */
+.err-msg { font-size:11px; color:var(--red); margin-top:5px; display:none; }
 
-/* ── SUBSCRIBER CARD ── */
-.sub-card { background: #111; border: 1px solid #222; border-radius: 16px; overflow: hidden; margin-bottom: 16px; }
-.sc-header { background: #111; position: relative; padding: 0; }
-.sc-header-top-bar { height: 4px; width: 100%; }
-.sc-header-side-bar { position: absolute; left: 0; top: 0; bottom: 0; width: 5px; }
-.sc-header-inner { padding: 16px 16px 14px 20px; }
-.sc-logo-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-.sc-brand { font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 900; color: var(--orange); }
-.sc-brand span { color: #fff; }
-.sc-avatar { width: 48px; height: 48px; border-radius: 50%; background: #222; display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', sans-serif; font-size: 16px; font-weight: 900; color: #fff; border: 3px solid var(--orange); flex-shrink: 0; }
-.sc-name { font-family: 'Orbitron', sans-serif; font-size: 17px; font-weight: 900; color: #fff; margin-bottom: 6px; }
-.sc-meta-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.sc-tag-id { font-family: monospace; font-size: 11px; color: #666; }
-.sc-plan-badge { background: var(--orange); color: #fff; font-size: 9px; font-weight: 700; letter-spacing: 1px; padding: 3px 10px; border-radius: 20px; text-transform: uppercase; }
-
-.sc-top-row { display: flex; gap: 10px; padding: 12px; background: #0a0a0a; }
-.sc-blood-box { background: #1C0A0A; border: 2px solid #EF4444; border-radius: 12px; padding: 10px; text-align: center; width: 80px; flex-shrink: 0; }
-.sc-box-label { font-size: 8px; font-weight: 700; letter-spacing: 1px; margin-bottom: 4px; }
-.sc-blood-val { font-family: 'Orbitron', sans-serif; font-size: 28px; font-weight: 900; color: #fff; line-height: 1; }
-.sc-aid-box { background: #1a0e00; border: 2px solid var(--orange); border-radius: 12px; padding: 10px; flex: 1; }
-.sc-aid-val { font-size: 12px; color: #ddd; line-height: 1.5; margin-top: 4px; }
-
-.sc-tab { margin: 0 12px 10px; border-radius: 12px; overflow: hidden; border: 1px solid #222; }
-.sc-tab-header { padding: 8px 12px; font-size: 8px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
-.sc-tab-body { background: #1a1a1a; padding: 12px; }
-.sc-tab-content { font-size: 12px; color: #ddd; line-height: 1.6; }
-.sc-alert-text { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 10px; }
-.sc-meds-text { color: #888; }
-.sc-sub-label { font-size: 8px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin: 8px 0 4px; padding-top: 8px; border-top: 1px solid #333; }
-
-.sc-contacts-header { font-size: 10px; font-weight: 700; letter-spacing: 1px; color: var(--orange); text-transform: uppercase; padding: 8px 12px 6px; background: #0a0a0a; }
-.sc-contact { display: flex; align-items: center; gap: 10px; margin: 0 12px 8px; background: #1a1a1a; border-radius: 12px; overflow: hidden; border: 1px solid #222; }
-.sc-contact-bar { width: 5px; align-self: stretch; flex-shrink: 0; }
-.sc-contact-num-badge { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; color: #fff; flex-shrink: 0; margin-left: 8px; }
-.sc-contact-info { padding: 10px 8px 10px 0; flex: 1; }
-.sc-contact-name { font-size: 13px; font-weight: 700; color: #fff; }
-.sc-contact-rel { font-size: 11px; margin: 1px 0; }
-.sc-contact-phone { font-size: 11px; color: #888; font-family: monospace; }
-
-.sc-strip { display: flex; height: 5px; margin-top: 12px; }
-.sc-strip div { flex: 1; }
-
-.sc-footer { background: #0a0a0a; display: flex; border-top: 1px solid #1a1a1a; }
-.sc-footer-num { flex: 1; text-align: center; padding: 12px 8px; border-right: 1px solid #1a1a1a; }
-.sc-footer-num:last-child { border: none; }
-.sc-fn-label { font-size: 9px; color: #555; margin-bottom: 2px; }
-.sc-fn-num { font-family: 'Orbitron', sans-serif; font-size: 16px; font-weight: 900; color: #fff; }
-.alert-checks { display: flex; gap: 12px; flex-wrap: wrap; }
-.check-opt { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); cursor: pointer; padding: 10px 16px; background: #0f0f0f; border: 2px solid var(--border); border-radius: 10px; transition: all 0.2s; position: relative; }
-.check-opt:has(input:checked) { border-color: var(--teal); background: #001a18; color: var(--text); }
-.check-opt input { display: none; }
-.check-opt .tick { width: 18px; height: 18px; border-radius: 4px; border: 2px solid var(--border); background: #111; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; }
-.check-opt:has(input:checked) .tick { background: var(--teal); border-color: var(--teal); }
-.check-opt:has(input:checked) .tick::after { content: "✓"; font-size: 11px; font-weight: 900; color: #000; line-height: 1; }
-
-/* Photo upload */
-.photo-upload-wrap { cursor: pointer; }
-.photo-preview {
-  width: 100px; height: 100px;
-  background: #0f0f0f;
-  border: 2px dashed var(--border);
-  border-radius: 50%;
-  overflow: hidden;
-  display: flex; align-items: center; justify-content: center;
-  transition: border-color 0.2s;
-  text-align: center;
-}
-.photo-preview:hover { border-color: var(--orange); }
-.photo-preview.has-photo { border-style: solid; border-color: var(--orange); }
+/* ── SECTION SPACING ── */
+.section-spacer { height:10px; }
 </style>
 </head>
 <body>
@@ -377,767 +256,647 @@ body { font-family: 'Exo 2', sans-serif; background: var(--black); color: var(--
 var TELEGRAM_TOKEN   = '8785184944:AAEEPwzWgfVRaGqEfrCpr4Mf9Yy7qp2Lx2k';
 var TELEGRAM_CHAT_ID = '8737168646';
 var GAS_URL          = 'https://script.google.com/macros/s/AKfycbwbeveDTjJNNjqrDXBoEUTdorFj36wkOPIU-OLZnFid4QOW3cPPmZzyK8YLtWD1p4JD/exec';
-var IMGBB_KEY        = 'c95f5daba8da7ba6d1f63cbeb6326a88'; // replace with your imgbb.com API key
-var BETA_LIMIT       = 10;
+var IMGBB_KEY        = '81c9f0e0e2c9f3a7b6d2e4f5a8b1c3d0';
+var WA_IMG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyNUQzNjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMjQgMTAuNUMxNi41IDEwLjUgMTAuNSAxNi41IDEwLjUgMjRjMCAyLjQuNjUgNC43IDEuOCA2LjdMMTAuNSAzNy41bDYuOTUtMS44YzEuOTUgMS4wNSA0LjE1IDEuNjUgNi41NSAxLjY1IDcuNSAwIDEzLjUtNiAxMy41LTEzLjVTMzEuNSAxMC41IDI0IDEwLjV6Ii8+PC9zdmc+';
+var TG_IMG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyOUI2RjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMTAuNSAyMy41bDI3LTEwLjUtNCAyMi04LTctNCA0LTEtOCAxNC0xMi0xNiA5LjV6Ii8+PC9zdmc+';
+var currentStep      = 1;
+var bloodSelected    = '';
+var planSelected     = 'Solo';
+var coloursSelected  = [];
+var photoDataUrl     = '';
+var photoUploadedUrl = '';
 </script>
 
-<!-- HEADER -->
-<div class="header">
-  <div class="logo-text">innovat3<span>.</span></div>
-  <div class="header-sub">Smart NFC Emergency Tags</div>
-  <div class="beta-badge">BETA PROGRAMME</div>
-  <h1>Join the First 10</h1>
-  <p>Get your free beta tag — be among the first to test South Africa's smartest emergency ID system.</p>
-</div>
+<div class="page">
 
-<!-- PROGRESS -->
-<div class="progress-bar" id="progressBar">
-  <div class="step active" id="step1"><div class="step-num">1</div> Personal</div>
-  <div class="step-line"></div>
-  <div class="step" id="step2"><div class="step-num">2</div> Medical</div>
-  <div class="step-line"></div>
-  <div class="step" id="step3"><div class="step-num">3</div> Contacts</div>
-  <div class="step-line"></div>
-  <div class="step" id="step4"><div class="step-num">4</div> Tag</div>
-</div>
+  <!-- BANNER -->
+  <div class="in3-banner">
+    <div class="in3-logo"><img src="data:image/png;base64,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" alt="Innovat3"></div>
+    <div>
+      <div class="in3-brand-name">innovat3<span>.</span></div>
+      <div class="in3-brand-sub">Smart NFC Emergency Tag</div>
+    </div>
+    <div class="in3-beta-badge">Beta Programme</div>
+  </div>
 
-<div class="wrap">
+  <!-- HERO -->
+  <div class="hero">
+    <h1>Join the First <span>10</span> Beta Testers</h1>
+    <p>Get your free Innovat3 NFC emergency tag — 3 months free, no payment needed. Be first to test South Africa's smartest emergency ID system.</p>
+    <div class="beta-spots"><div class="beta-dot"></div> Limited beta spots available</div>
+  </div>
 
-  <!-- ── SECTION 1: PERSONAL ── -->
+  <!-- PROGRESS -->
+  <div class="progress" id="progressBar">
+    <div class="step-item active" id="stepItem1"><div class="step-num">1</div><div class="step-label">Personal</div></div>
+    <div class="step-line" id="stepLine1"></div>
+    <div class="step-item" id="stepItem2"><div class="step-num">2</div><div class="step-label">Medical</div></div>
+    <div class="step-line" id="stepLine2"></div>
+    <div class="step-item" id="stepItem3"><div class="step-num">3</div><div class="step-label">Contacts</div></div>
+    <div class="step-line" id="stepLine3"></div>
+    <div class="step-item" id="stepItem4"><div class="step-num">4</div><div class="step-label">Tag</div></div>
+  </div>
+
+  <!-- ── STEP 1: PERSONAL ── -->
   <div class="section active" id="sec1">
-    <div class="section-title">01 — Personal Details</div>
+    <div class="section-spacer"></div>
 
-    <div class="telegram-notice">
-      <div class="icon">📲</div>
-      <div>
-        <div class="title">Alerts via Telegram</div>
-        <div class="body">When your tag is scanned, we'll send an instant Telegram alert to your registered number. Make sure you have Telegram installed — it's free and works on all phones.</div>
-      </div>
-    </div>
-
-    <div class="field-row">
-      <div class="field">
-        <label>First Name <span>*</span></label>
-        <input type="text" id="firstName" placeholder="Emma">
-      </div>
-      <div class="field">
-        <label>Last Name <span>*</span></label>
-        <input type="text" id="lastName" placeholder="Johnson">
-      </div>
-    </div>
-
-    <div class="field">
-      <label>Profile Photo</label>
-      <div class="photo-upload-wrap" onclick="document.getElementById('profilePhoto').click()">
-        <div class="photo-preview" id="photoPreview">
-          <div class="photo-placeholder" id="photoPlaceholder">
-            <div style="font-size:32px">📷</div>
-            <div style="font-size:12px;color:var(--muted);margin-top:6px">Tap to upload photo</div>
-            <div style="font-size:10px;color:var(--muted2);margin-top:3px">JPG, PNG — shown on your card</div>
+    <!-- Photo -->
+    <div class="form-tab tab-photo">
+      <div class="form-tab-hdr">📷 &nbsp;Profile Photo <span style="font-size:9px;font-weight:400;opacity:0.7">(optional)</span></div>
+      <div class="form-tab-body">
+        <div class="photo-upload-area" id="photoArea" onclick="document.getElementById('photoInput').click()">
+          <img id="photoPreview" alt="Preview">
+          <div id="photoPlaceholder">
+            <div class="photo-icon">🤳</div>
+            <div class="photo-label">Tap to upload photo</div>
+            <div class="photo-sub">Shown on emergency card when your tag is scanned</div>
           </div>
-          <img id="photoImg" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:10px" alt="Profile">
         </div>
-        <input type="file" id="profilePhoto" accept="image/*" style="display:none" onchange="previewPhoto(this)">
+        <input type="file" id="photoInput" accept="image/*" style="display:none" onchange="handlePhoto(this)">
       </div>
     </div>
 
-    <div class="field">
-      <label>Date of Birth <span>*</span></label>
-      <input type="date" id="dob">
-      <div class="hint">Used on your emergency card for paramedics</div>
-    </div>
-
-    <div class="field">
-      <label>Email Address <span>*</span></label>
-      <input type="email" id="email" placeholder="emma@example.com">
-    </div>
-
-    <div class="field">
-      <label>WhatsApp / Cell Number <span>*</span></label>
-      <input type="tel" id="phone" placeholder="0821234567">
-      <div class="hint">South African number — we'll use this for your Telegram alerts</div>
-    </div>
-
-    <div class="field">
-      <label>Telegram Username</label>
-      <input type="text" id="telegram" placeholder="@yourusername">
-      <div class="hint">Optional but recommended — allows direct Telegram alerts to you</div>
-    </div>
-
-    <div class="field">
-      <label>Plan <span>*</span></label>
-      <div class="plan-grid">
-        <div>
-          <input class="plan-opt" type="radio" name="plan" id="planSolo" value="Solo">
-          <label for="planSolo">
-            <div class="plan-name">Solo</div>
-            <div class="plan-price">R89<small style="font-size:11px;color:#888">/mo</small></div>
-            <div class="plan-members">1 person</div>
-          </label>
+    <!-- Personal Info -->
+    <div class="form-tab tab-personal">
+      <div class="form-tab-hdr">👤 &nbsp;Personal Details</div>
+      <div class="form-tab-body">
+        <div class="field-row">
+          <div class="field">
+            <label>First Name <span class="req">*</span></label>
+            <input type="text" id="firstName" placeholder="Jan">
+          </div>
+          <div class="field">
+            <label>Last Name <span class="req">*</span></label>
+            <input type="text" id="lastName" placeholder="Steyn">
+          </div>
         </div>
-        <div>
-          <input class="plan-opt" type="radio" name="plan" id="planFamily" value="Family" checked>
-          <label for="planFamily">
-            <div class="plan-name">Family</div>
-            <div class="plan-price">R149<small style="font-size:11px;color:#888">/mo</small></div>
-            <div class="plan-members">Up to 4</div>
-          </label>
+        <div class="field">
+          <label>Date of Birth <span class="req">*</span></label>
+          <input type="date" id="dob" max="2010-01-01">
+          <div class="field-hint">Used to display your age on the emergency card</div>
         </div>
-        <div>
-          <input class="plan-opt" type="radio" name="plan" id="planCare" value="Care">
-          <label for="planCare">
-            <div class="plan-name">Care</div>
-            <div class="plan-price">R199<small style="font-size:11px;color:#888"> once</small></div>
-            <div class="plan-members" style="color:#0ED2C8;font-size:9px;font-weight:700">65+ Free monthly for life</div>
-          </label>
+        <div class="field">
+          <label>Email Address <span class="req">*</span></label>
+          <input type="email" id="email" placeholder="jan@example.com">
         </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Phone Number <span class="req">*</span></label>
+            <input type="tel" id="phone" placeholder="072 588 3875">
+          </div>
+          <div class="field">
+            <label>Telegram Username</label>
+            <input type="text" id="telegram" placeholder="@username">
+          </div>
+        </div>
+        <div id="err1" class="err-msg"></div>
       </div>
-      <div class="hint">Beta testers get 3 months FREE — no payment needed now</div>
     </div>
 
-    <div class="btn-row">
-      <button class="btn-next" onclick="goTo(2)">Next — Medical Info →</button>
+    <div class="nav-btns">
+      <button class="btn-next" onclick="goStep(2)">Next — Medical Info →</button>
     </div>
   </div>
 
-  <!-- ── SECTION 2: MEDICAL ── -->
+  <!-- ── STEP 2: MEDICAL ── -->
   <div class="section" id="sec2">
-    <div class="section-title">02 — Medical Information</div>
+    <div class="section-spacer"></div>
 
-    <div class="field">
-      <label>Blood Type <span>*</span></label>
-      <div class="blood-grid">
-        <div><input class="blood-opt" type="radio" name="blood" id="bAp" value="A+"><label for="bAp">A+</label></div>
-        <div><input class="blood-opt" type="radio" name="blood" id="bAn" value="A-"><label for="bAn">A-</label></div>
-        <div><input class="blood-opt" type="radio" name="blood" id="bBp" value="B+"><label for="bBp">B+</label></div>
-        <div><input class="blood-opt" type="radio" name="blood" id="bBn" value="B-"><label for="bBn">B-</label></div>
-        <div><input class="blood-opt" type="radio" name="blood" id="bOp" value="O+"><label for="bOp">O+</label></div>
-        <div><input class="blood-opt" type="radio" name="blood" id="bOn" value="O-"><label for="bOn">O-</label></div>
-        <div><input class="blood-opt" type="radio" name="blood" id="bABp" value="AB+"><label for="bABp">AB+</label></div>
-        <div><input class="blood-opt" type="radio" name="blood" id="bABn" value="AB-"><label for="bABn">AB-</label></div>
+    <!-- Blood Type -->
+    <div class="form-tab tab-medical">
+      <div class="form-tab-hdr">🩸 &nbsp;Blood Type</div>
+      <div class="form-tab-body">
+        <div class="blood-grid">
+          <div class="blood-btn" onclick="selectBlood(this,'A+')">A+</div>
+          <div class="blood-btn" onclick="selectBlood(this,'A-')">A-</div>
+          <div class="blood-btn" onclick="selectBlood(this,'B+')">B+</div>
+          <div class="blood-btn" onclick="selectBlood(this,'B-')">B-</div>
+          <div class="blood-btn" onclick="selectBlood(this,'AB+')">AB+</div>
+          <div class="blood-btn" onclick="selectBlood(this,'AB-')">AB-</div>
+          <div class="blood-btn" onclick="selectBlood(this,'O+')">O+</div>
+          <div class="blood-btn" onclick="selectBlood(this,'O-')">O-</div>
+        </div>
+        <div class="field" style="margin-top:10px">
+          <label>Unknown / Other</label>
+          <input type="text" id="bloodOther" placeholder="e.g. Unknown" oninput="bloodSelected=this.value; document.querySelectorAll('.blood-btn').forEach(b=>b.classList.remove('selected'))">
+        </div>
       </div>
     </div>
 
-    <div class="field">
-      <label>Medical Conditions / Alerts <span>*</span></label>
-      <textarea id="medical" placeholder="e.g. Penicillin allergy, Mild asthma, Type 2 Diabetes...&#10;&#10;This is shown prominently to paramedics and first responders."></textarea>
-      <div class="hint">Be specific — this could save your life</div>
+    <!-- Medical Alerts -->
+    <div class="form-tab tab-medical">
+      <div class="form-tab-hdr">⚠️ &nbsp;Medical Alerts — Tell Paramedics</div>
+      <div class="form-tab-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px">
+          <label class="check-row"><input type="checkbox" id="chk_heart"><div class="custom-check"></div><span class="check-text">Heart condition</span></label>
+          <label class="check-row"><input type="checkbox" id="chk_bp"><div class="custom-check"></div><span class="check-text">High blood pressure</span></label>
+          <label class="check-row"><input type="checkbox" id="chk_diabetes"><div class="custom-check"></div><span class="check-text">Diabetes</span></label>
+          <label class="check-row"><input type="checkbox" id="chk_epilepsy"><div class="custom-check"></div><span class="check-text">Epilepsy</span></label>
+          <label class="check-row"><input type="checkbox" id="chk_allergy"><div class="custom-check"></div><span class="check-text">Severe allergies</span></label>
+          <label class="check-row"><input type="checkbox" id="chk_asthma"><div class="custom-check"></div><span class="check-text">Asthma</span></label>
+          <label class="check-row"><input type="checkbox" id="chk_stroke"><div class="custom-check"></div><span class="check-text">Stroke risk</span></label>
+          <label class="check-row"><input type="checkbox" id="chk_dementia"><div class="custom-check"></div><span class="check-text">Dementia</span></label>
+        </div>
+        <div class="field">
+          <label>Additional Medical Alerts</label>
+          <textarea id="medical" placeholder="Any other conditions paramedics must know..."></textarea>
+        </div>
+        <div class="field">
+          <label>Medications</label>
+          <textarea id="meds" placeholder="Current medications and dosages..."></textarea>
+        </div>
+      </div>
     </div>
 
-    <div class="field">
-      <label>Current Medications</label>
-      <textarea id="meds" placeholder="e.g. Ventolin inhaler (as needed), Metformin 500mg twice daily..."></textarea>
+    <!-- Medical Aid -->
+    <div class="form-tab tab-medical">
+      <div class="form-tab-hdr">🏥 &nbsp;Medical Aid</div>
+      <div class="form-tab-body">
+        <div class="field-row">
+          <div class="field">
+            <label>Medical Aid Provider</label>
+            <input type="text" id="medicalAid" placeholder="e.g. Discovery Health">
+          </div>
+          <div class="field">
+            <label>Member Number</label>
+            <input type="text" id="medicalAidNumber" placeholder="e.g. 5585858DS">
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="field">
-      <label>Medical Aid Provider</label>
-      <input type="text" id="medicalAid" placeholder="e.g. Discovery Health, Bonitas, Momentum...">
-      <div class="hint">Leave blank if none</div>
+    <!-- Home Address + Notes -->
+    <div class="form-tab tab-address">
+      <div class="form-tab-hdr">🏠 &nbsp;Home Address &amp; Notes for Finder</div>
+      <div class="form-tab-body">
+        <div class="field">
+          <label>Home Address</label>
+          <input type="text" id="address" placeholder="10 Moerbei Street, Nigel, 1490">
+        </div>
+        <div class="field">
+          <label>Notes for Finder</label>
+          <textarea id="notes" placeholder="e.g. Only speaks Afrikaans. Has a pacemaker. Call family first."></textarea>
+        </div>
+      </div>
     </div>
 
-    <div class="field">
-      <label>Medical Aid Member Number</label>
-      <input type="text" id="medicalAidNumber" placeholder="e.g. 1234567890">
-    </div>
-
-    <div class="field">
-      <label>Home Address</label>
-      <input type="text" id="address" placeholder="14 Rosebank Avenue, Johannesburg, 2196">
-    </div>
-
-    <div class="field">
-      <label>Notes for Finder</label>
-      <textarea id="notes" placeholder="e.g. Child aged 8. Speaks English and Zulu. Please stay calm and call family immediately."></textarea>
-    </div>
-
-    <div class="btn-row">
-      <button class="btn-back" onclick="goTo(1)">← Back</button>
-      <button class="btn-next" onclick="goTo(3)">Next — Emergency Contacts →</button>
+    <div class="nav-btns">
+      <button class="btn-back" onclick="goStep(1)">← Back</button>
+      <button class="btn-next" onclick="goStep(3)">Next — Contacts →</button>
     </div>
   </div>
 
-  <!-- ── SECTION 3: CONTACTS ── -->
+  <!-- ── STEP 3: CONTACTS ── -->
   <div class="section" id="sec3">
-    <div class="section-title">03 — Emergency Contacts</div>
+    <div class="section-spacer"></div>
+    <div class="form-tab tab-contacts">
+      <div class="form-tab-hdr">📞 &nbsp;Emergency Contacts</div>
+      <div class="form-tab-body">
 
-    <div class="telegram-notice">
-      <div class="icon">🔔</div>
-      <div>
-        <div class="title">Telegram + WhatsApp Alerts</div>
-        <div class="body">When your tag is scanned, contacts will be alerted via Telegram and/or WhatsApp — whichever they use. Tick which platforms each contact has installed.</div>
+        <div class="contact-card">
+          <div class="contact-card-hdr" style="color:#EF4444">Contact 1 (Primary) <span class="req" style="color:var(--orange)">*</span></div>
+          <div class="field-row">
+            <div class="field"><label>Name</label><input type="text" id="c1name" placeholder="Jeanine Steyn"></div>
+            <div class="field"><label>Relation</label><input type="text" id="c1rel" placeholder="Wife"></div>
+          </div>
+          <div class="field"><label>Phone Number</label><input type="tel" id="c1phone" placeholder="072 588 3875"></div>
+          <div class="ct-toggles">
+            <label class="ct-toggle wa-tog" id="c1waToggle" onclick="toggleCt(this,'c1wa','wa')">
+              <input type="checkbox" id="c1wa">
+              <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyNUQzNjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMjQgMTAuNUMxNi41IDEwLjUgMTAuNSAxNi41IDEwLjUgMjRjMCAyLjQuNjUgNC43IDEuOCA2LjdMMTAuNSAzNy41bDYuOTUtMS44YzEuOTUgMS4wNSA0LjE1IDEuNjUgNi41NSAxLjY1IDcuNSAwIDEzLjUtNiAxMy41LTEzLjVTMzEuNSAxMC41IDI0IDEwLjV6Ii8+PC9zdmc+">WhatsApp
+            </label>
+            <label class="ct-toggle tg-tog" id="c1tgToggle" onclick="toggleCt(this,'c1tg','tg')">
+              <input type="checkbox" id="c1tg">
+              <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyOUI2RjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMTAuNSAyMy41bDI3LTEwLjUtNCAyMi04LTctNCA0LTEtOCAxNC0xMi0xNiA5LjV6Ii8+PC9zdmc+">Telegram
+            </label>
+          </div>
+          <div class="field" id="c1tgField" style="display:none;margin-top:10px">
+            <label>Telegram Username</label>
+            <input type="text" id="c1telegram" placeholder="@username">
+          </div>
+        </div>
+
+        <div class="contact-card">
+          <div class="contact-card-hdr" style="color:#F97316">Contact 2</div>
+          <div class="field-row">
+            <div class="field"><label>Name</label><input type="text" id="c2name" placeholder="Pieter Steyn"></div>
+            <div class="field"><label>Relation</label><input type="text" id="c2rel" placeholder="Son"></div>
+          </div>
+          <div class="field"><label>Phone Number</label><input type="tel" id="c2phone" placeholder="082 345 6789"></div>
+          <div class="ct-toggles">
+            <label class="ct-toggle wa-tog" id="c2waToggle" onclick="toggleCt(this,'c2wa','wa')">
+              <input type="checkbox" id="c2wa">
+              <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyNUQzNjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMjQgMTAuNUMxNi41IDEwLjUgMTAuNSAxNi41IDEwLjUgMjRjMCAyLjQuNjUgNC43IDEuOCA2LjdMMTAuNSAzNy41bDYuOTUtMS44YzEuOTUgMS4wNSA0LjE1IDEuNjUgNi41NSAxLjY1IDcuNSAwIDEzLjUtNiAxMy41LTEzLjVTMzEuNSAxMC41IDI0IDEwLjV6Ii8+PC9zdmc+">WhatsApp
+            </label>
+            <label class="ct-toggle tg-tog" id="c2tgToggle" onclick="toggleCt(this,'c2tg','tg')">
+              <input type="checkbox" id="c2tg">
+              <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyOUI2RjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMTAuNSAyMy41bDI3LTEwLjUtNCAyMi04LTctNCA0LTEtOCAxNC0xMi0xNiA5LjV6Ii8+PC9zdmc+">Telegram
+            </label>
+          </div>
+          <div class="field" id="c2tgField" style="display:none;margin-top:10px">
+            <label>Telegram Username</label>
+            <input type="text" id="c2telegram" placeholder="@username">
+          </div>
+        </div>
+
+        <div class="contact-card">
+          <div class="contact-card-hdr" style="color:#22C55E">Contact 3</div>
+          <div class="field-row">
+            <div class="field"><label>Name</label><input type="text" id="c3name" placeholder="Dr. A. Botha"></div>
+            <div class="field"><label>Relation</label><input type="text" id="c3rel" placeholder="GP"></div>
+          </div>
+          <div class="field"><label>Phone Number</label><input type="tel" id="c3phone" placeholder="011 234 5678"></div>
+          <div class="ct-toggles">
+            <label class="ct-toggle wa-tog" id="c3waToggle" onclick="toggleCt(this,'c3wa','wa')">
+              <input type="checkbox" id="c3wa">
+              <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyNUQzNjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMjQgMTAuNUMxNi41IDEwLjUgMTAuNSAxNi41IDEwLjUgMjRjMCAyLjQuNjUgNC43IDEuOCA2LjdMMTAuNSAzNy41bDYuOTUtMS44YzEuOTUgMS4wNSA0LjE1IDEuNjUgNi41NSAxLjY1IDcuNSAwIDEzLjUtNiAxMy41LTEzLjVTMzEuNSAxMC41IDI0IDEwLjV6Ii8+PC9zdmc+">WhatsApp
+            </label>
+            <label class="ct-toggle tg-tog" id="c3tgToggle" onclick="toggleCt(this,'c3tg','tg')">
+              <input type="checkbox" id="c3tg">
+              <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyOUI2RjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMTAuNSAyMy41bDI3LTEwLjUtNCAyMi04LTctNCA0LTEtOCAxNC0xMi0xNiA5LjV6Ii8+PC9zdmc+">Telegram
+            </label>
+          </div>
+          <div class="field" id="c3tgField" style="display:none;margin-top:10px">
+            <label>Telegram Username</label>
+            <input type="text" id="c3telegram" placeholder="@username">
+          </div>
+        </div>
+
+        <div id="err3" class="err-msg"></div>
       </div>
     </div>
 
-    <!-- Contact 1 -->
-    <div class="contact-block">
-      <div class="contact-block-title">Contact 1 — Primary <span style="color:#EF4444">*</span></div>
-      <div class="field-row">
-        <div class="field">
-          <label>Full Name</label>
-          <input type="text" id="c1name" placeholder="Sarah Johnson">
-        </div>
-        <div class="field">
-          <label>Relationship</label>
-          <input type="text" id="c1rel" placeholder="Mother">
-        </div>
-      </div>
-      <div class="field">
-        <label>Phone Number <span>*</span></label>
-        <input type="tel" id="c1phone" placeholder="0821234567">
-      </div>
-      <div class="field">
-        <label>Alert via</label>
-        <div class="alert-checks">
-          <label class="check-opt"><input type="checkbox" id="c1wa" checked><span class="tick"></span> WhatsApp</label>
-          <label class="check-opt"><input type="checkbox" id="c1tg"><span class="tick"></span> Telegram</label>
-        </div>
-      </div>
-      <div class="field" id="c1tgField" style="display:none">
-        <label>Telegram Username</label>
-        <input type="text" id="c1telegram" placeholder="@sarah">
-      </div>
-    </div>
-
-    <!-- Contact 2 -->
-    <div class="contact-block">
-      <div class="contact-block-title">Contact 2</div>
-      <div class="field-row">
-        <div class="field">
-          <label>Full Name</label>
-          <input type="text" id="c2name" placeholder="David Johnson">
-        </div>
-        <div class="field">
-          <label>Relationship</label>
-          <input type="text" id="c2rel" placeholder="Father">
-        </div>
-      </div>
-      <div class="field">
-        <label>Phone Number</label>
-        <input type="tel" id="c2phone" placeholder="0834567890">
-      </div>
-      <div class="field">
-        <label>Alert via</label>
-        <div class="alert-checks">
-          <label class="check-opt"><input type="checkbox" id="c2wa" checked><span class="tick"></span> WhatsApp</label>
-          <label class="check-opt"><input type="checkbox" id="c2tg"><span class="tick"></span> Telegram</label>
-        </div>
-      </div>
-      <div class="field" id="c2tgField" style="display:none">
-        <label>Telegram Username</label>
-        <input type="text" id="c2telegram" placeholder="@david">
-      </div>
-    </div>
-
-    <!-- Contact 3 -->
-    <div class="contact-block">
-      <div class="contact-block-title">Contact 3</div>
-      <div class="field-row">
-        <div class="field">
-          <label>Full Name</label>
-          <input type="text" id="c3name" placeholder="Dr Smith">
-        </div>
-        <div class="field">
-          <label>Relationship</label>
-          <input type="text" id="c3rel" placeholder="Doctor">
-        </div>
-      </div>
-      <div class="field">
-        <label>Phone Number</label>
-        <input type="tel" id="c3phone" placeholder="0111234567">
-      </div>
-      <div class="field">
-        <label>Alert via</label>
-        <div class="alert-checks">
-          <label class="check-opt"><input type="checkbox" id="c3wa" checked><span class="tick"></span> WhatsApp</label>
-          <label class="check-opt"><input type="checkbox" id="c3tg"><span class="tick"></span> Telegram</label>
-        </div>
-      </div>
-      <div class="field" id="c3tgField" style="display:none">
-        <label>Telegram Username</label>
-        <input type="text" id="c3telegram" placeholder="@drsmith">
-      </div>
-    </div>
-
-    <div class="btn-row">
-      <button class="btn-back" onclick="goTo(2)">← Back</button>
-      <button class="btn-next" onclick="goTo(4)">Next — Tag Preferences →</button>
+    <div class="nav-btns">
+      <button class="btn-back" onclick="goStep(2)">← Back</button>
+      <button class="btn-next" onclick="goStep(4)">Next — Tag Preferences →</button>
     </div>
   </div>
 
-  <!-- ── SECTION 4: TAG PREFERENCES ── -->
+  <!-- ── STEP 4: TAG ── -->
   <div class="section" id="sec4">
-    <div class="section-title">04 — Tag Preferences</div>
+    <div class="section-spacer"></div>
 
-    <div class="field">
-      <label>Tag Colour <span style="color:var(--muted);font-weight:400;font-size:10px">(choose up to 2)</span></label>
-      <div class="colour-grid">
-        <div>
-          <input class="colour-opt" type="checkbox" id="cBlack" value="Black" onchange="limitColours(this)">
-          <label for="cBlack">
-            <div class="colour-swatch" style="background:#1a1a1a;border-color:#555"></div>
-            <div class="colour-name">Black</div>
-          </label>
-        </div>
-        <div>
-          <input class="colour-opt" type="checkbox" id="cOrange" value="Orange" onchange="limitColours(this)">
-          <label for="cOrange">
-            <div class="colour-swatch" style="background:#F97316"></div>
-            <div class="colour-name">Orange</div>
-          </label>
-        </div>
-        <div>
-          <input class="colour-opt" type="checkbox" id="cBlue" value="Glow Blue" onchange="limitColours(this)">
-          <label for="cBlue">
-            <div class="colour-swatch" style="background:#4DBBFF"></div>
-            <div class="colour-name">Glow Blue</div>
-          </label>
-        </div>
-        <div>
-          <input class="colour-opt" type="checkbox" id="cGreen" value="Glitter Green" onchange="limitColours(this)">
-          <label for="cGreen">
-            <div class="colour-swatch" style="background:#39FF6A"></div>
-            <div class="colour-name">Glow Green</div>
-          </label>
-        </div>
-        <div>
-          <input class="colour-opt" type="checkbox" id="cRed" value="Red" onchange="limitColours(this)">
-          <label for="cRed">
-            <div class="colour-swatch" style="background:#EF4444"></div>
-            <div class="colour-name">Red</div>
-          </label>
-        </div>
-        <div>
-          <input class="colour-opt" type="checkbox" id="cTeal" value="Teal" onchange="limitColours(this)">
-          <label for="cTeal">
-            <div class="colour-swatch" style="background:#0ED2C8"></div>
-            <div class="colour-name">Teal</div>
-          </label>
-        </div>
-        <div>
-          <input class="colour-opt" type="checkbox" id="cWhite" value="White" onchange="limitColours(this)">
-          <label for="cWhite">
-            <div class="colour-swatch" style="background:#e5e5e5"></div>
-            <div class="colour-name">White</div>
-          </label>
-        </div>
-        <div>
-          <input class="colour-opt" type="checkbox" id="cSurprise" value="Surprise Me" onchange="limitColours(this)">
-          <label for="cSurprise">
-            <div class="colour-swatch" style="background:linear-gradient(135deg,#F97316,#0ED2C8,#EF4444,#22C55E)"></div>
-            <div class="colour-name">Surprise!</div>
-          </label>
+    <!-- Plan -->
+    <div class="form-tab tab-plan">
+      <div class="form-tab-hdr">⭐ &nbsp;Choose Your Plan</div>
+      <div class="form-tab-body">
+        <div class="plan-grid">
+          <div class="plan-card selected" id="planSolo" onclick="selectPlan(this,'Solo')">
+            <div class="plan-icon">👤</div>
+            <div>
+              <div class="plan-name">Innovat3 <span>Solo</span></div>
+              <div class="plan-desc">1 person · 1 tag</div>
+            </div>
+            <div class="plan-price"><div class="price">R89</div><div class="per">/month</div></div>
+          </div>
+          <div class="plan-card" id="planFamily" onclick="selectPlan(this,'Family')">
+            <div class="plan-icon">👨‍👩‍👧‍👦</div>
+            <div>
+              <div class="plan-name">Innovat3 <span>Family</span></div>
+              <div class="plan-desc">Up to 4 people</div>
+            </div>
+            <div class="plan-price"><div class="price">R149</div><div class="per">/month</div></div>
+          </div>
+          <div class="plan-card" id="planCare" onclick="selectPlan(this,'Care')">
+            <div class="plan-icon">💛</div>
+            <div>
+              <div class="plan-name">Innovat3 <span>Care</span></div>
+              <div class="plan-desc">65+ · Free monthly for life</div>
+            </div>
+            <div class="plan-price"><div class="price">R199</div><div class="per">once-off</div></div>
+          </div>
+          <div class="plan-card" id="planBeta" onclick="selectPlan(this,'Beta')">
+            <div class="plan-icon">🧪</div>
+            <div>
+              <div class="plan-name">Beta <span>Tester</span></div>
+              <div class="plan-desc">3 months free · No payment</div>
+            </div>
+            <div class="plan-price"><div class="price" style="color:var(--green)">FREE</div><div class="per">beta</div></div>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="field">
-      <label>Tag Form Factor</label>
-      <select id="formFactor">
-        <option value="Keyring Fob">Keyring Fob (most popular)</option>
-        <option value="Disc Tag">Disc Tag (flat, stick anywhere)</option>
-        <option value="Wristband Insert">Wristband Insert</option>
-        <option value="Pendant">Pendant / Necklace</option>
-      </select>
+    <!-- Tag Colour -->
+    <div class="form-tab tab-tag">
+      <div class="form-tab-hdr">🎨 &nbsp;Tag Colour <span style="font-size:9px;font-weight:400;opacity:0.7">(pick up to 2)</span></div>
+      <div class="form-tab-body">
+        <div class="colour-grid">
+          <div class="colour-swatch" style="background:#0a0a0a;border:1px solid #555" onclick="toggleColour(this,'Black')">Black</div>
+          <div class="colour-swatch" style="background:#F97316" onclick="toggleColour(this,'Orange')">Orange</div>
+          <div class="colour-swatch" style="background:#4DBBFF" onclick="toggleColour(this,'Glow Blue')">Glow Blue</div>
+          <div class="colour-swatch" style="background:#228B22" onclick="toggleColour(this,'Glitter Green')">Glitter Green</div>
+          <div class="colour-swatch" style="background:#EF4444" onclick="toggleColour(this,'Red')">Red</div>
+          <div class="colour-swatch" style="background:#0ED2C8;color:#000" onclick="toggleColour(this,'Teal')">Teal</div>
+          <div class="colour-swatch" style="background:#ccc;color:#000" onclick="toggleColour(this,'White')">White</div>
+          <div class="colour-swatch" style="background:linear-gradient(135deg,#F97316,#EF4444,#A855F7)" onclick="toggleColour(this,'Surprise Me')">Surprise</div>
+        </div>
+      </div>
     </div>
 
-    <div class="field">
-      <label>Delivery Address</label>
-      <textarea id="delivery" placeholder="Where should we send your tag?&#10;Street, City, Postal Code"></textarea>
+    <!-- Form Factor -->
+    <div class="form-tab tab-tag">
+      <div class="form-tab-hdr">🏷️ &nbsp;Tag Shape</div>
+      <div class="form-tab-body">
+        <div class="field">
+          <select id="formFactor">
+            <option value="Keyring Fob">Keyring Fob</option>
+            <option value="Disc Tag">Disc Tag (25mm)</option>
+            <option value="Card">Card (credit card size)</option>
+          </select>
+        </div>
+      </div>
     </div>
 
-    <div class="field">
-      <label>Anything else we should know?</label>
-      <textarea id="extraNotes" placeholder="Special requirements, questions, feedback..."></textarea>
+    <!-- Delivery -->
+    <div class="form-tab tab-address">
+      <div class="form-tab-hdr">📦 &nbsp;Delivery Address</div>
+      <div class="form-tab-body">
+        <div class="field">
+          <label>Delivery Address <span class="req">*</span></label>
+          <textarea id="delivery" placeholder="Street address, suburb, city, postal code"></textarea>
+        </div>
+        <div class="field">
+          <label>Extra Notes for Us</label>
+          <input type="text" id="extraNotes" placeholder="e.g. Gate code 1234, call before delivery">
+        </div>
+        <div id="err4" class="err-msg"></div>
+      </div>
     </div>
 
-    <div id="submitError" class="error-msg">Something went wrong — please try again.</div>
-
-    <div class="btn-row">
-      <button class="btn-back" onclick="goTo(3)">← Back</button>
-      <button class="btn-next" id="submitBtn" onclick="submitForm()">🚀 Submit Registration</button>
+    <div class="nav-btns">
+      <button class="btn-back" onclick="goStep(3)">← Back</button>
+      <button class="btn-submit" onclick="submitForm()">✓ &nbsp;Submit Registration</button>
     </div>
   </div>
 
-  <!-- ── SUCCESS / SUBSCRIBER CARD ── -->
-  <div class="section" id="secSuccess">
-
-    <!-- Confetti banner -->
-    <div style="text-align:center;padding:20px 0 10px">
-      <div style="font-size:40px;animation:pop 0.5s ease">🎉</div>
-      <div style="font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;color:var(--teal);margin:8px 0 4px">You're In!</div>
-      <div style="font-size:13px;color:#666">Your subscriber card is ready. Screenshot or bookmark it!</div>
+  <!-- SUCCESS -->
+  <div class="success-screen" id="successScreen">
+    <div class="success-tab">
+      <div class="success-tab-hdr">✅ &nbsp;Registration Received!</div>
+      <div class="success-tab-body">
+        <div class="success-avatar" id="successAvatar">?</div>
+        <div class="success-name" id="successName">—</div>
+        <div class="success-tagid" id="successTagId">—</div>
+        <div class="success-msg">Your beta registration is in! We will review and contact you within 24 hours to confirm your free tag.</div>
+        <div class="success-steps">
+          <div class="success-step"><div class="success-step-num">1</div><div>We review your registration and confirm your spot</div></div>
+          <div class="success-step"><div class="success-step-num">2</div><div>We program your NFC tag with your unique ID</div></div>
+          <div class="success-step"><div class="success-step-num">3</div><div>Tag is shipped to your delivery address</div></div>
+          <div class="success-step"><div class="success-step-num">4</div><div>Attach to keys or bag — you are protected 24/7</div></div>
+        </div>
+      </div>
     </div>
-
-    <!-- ── SUBSCRIBER CARD ── -->
-    <div class="sub-card" id="subCard">
-
-      <!-- Card Header -->
-      <div class="sc-header" id="scHeader">
-        <div class="sc-header-top-bar" id="scTopBar"></div>
-        <div class="sc-header-side-bar" id="scSideBar"></div>
-        <div class="sc-header-inner">
-          <div class="sc-logo-row">
-            <div class="sc-brand">innovat3<span>.</span></div>
-            <div class="sc-avatar" id="scAvatar">?</div>
-          </div>
-          <div class="sc-name" id="scName">—</div>
-          <div class="sc-meta-row">
-            <div class="sc-tag-id" id="scTagId">—</div>
-            <div class="sc-plan-badge" id="scPlanBadge">—</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Blood + Medical Aid row -->
-      <div class="sc-top-row">
-        <div class="sc-blood-box">
-          <div class="sc-box-label" style="color:#EF4444">BLOOD TYPE</div>
-          <div class="sc-blood-val" id="scBlood">—</div>
-        </div>
-        <div class="sc-aid-box">
-          <div class="sc-box-label" style="color:var(--orange)">MEDICAL AID &amp; NUMBER</div>
-          <div class="sc-aid-val" id="scAid">Not provided</div>
-        </div>
-      </div>
-
-      <!-- Medical Alerts Tab -->
-      <div class="sc-tab sc-tab-orange">
-        <div class="sc-tab-header" style="background:var(--orange)">
-          <span style="color:#000">⚠&nbsp; MEDICAL ALERTS — TELL PARAMEDICS</span>
-        </div>
-        <div class="sc-tab-body">
-          <div class="sc-tab-content sc-alert-text" id="scMedical">—</div>
-          <div class="sc-sub-label" style="color:var(--teal)">MEDICATIONS</div>
-          <div class="sc-tab-content sc-meds-text" id="scMeds">—</div>
-        </div>
-      </div>
-
-      <!-- Address Tab -->
-      <div class="sc-tab sc-tab-green">
-        <div class="sc-tab-header" style="background:#14532D">
-          <span style="color:#fff">🏠&nbsp; HOME ADDRESS</span>
-        </div>
-        <div class="sc-tab-body">
-          <div class="sc-tab-content" id="scAddress">—</div>
-        </div>
-      </div>
-
-      <!-- Notes Tab -->
-      <div class="sc-tab sc-tab-blue">
-        <div class="sc-tab-header" style="background:#1E3A8A">
-          <span style="color:#fff">📋&nbsp; NOTES FOR FINDER</span>
-        </div>
-        <div class="sc-tab-body">
-          <div class="sc-tab-content" id="scNotes">—</div>
-        </div>
-      </div>
-
-      <!-- Emergency Contacts -->
-      <div class="sc-contacts-header">📞 EMERGENCY CONTACTS</div>
-      <div id="scContacts"></div>
-
-      <!-- Colour strip -->
-      <div class="sc-strip">
-        <div style="background:#EF4444"></div>
-        <div style="background:#F97316"></div>
-        <div style="background:#EAB308"></div>
-        <div style="background:#22C55E"></div>
-        <div style="background:#0ED2C8"></div>
-        <div style="background:#3B82F6"></div>
-        <div style="background:#A855F7"></div>
-      </div>
-
-      <!-- Footer -->
-      <div class="sc-footer">
-        <div class="sc-footer-num"><div class="sc-fn-label">SAPS Police</div><div class="sc-fn-num">10111</div></div>
-        <div class="sc-footer-num"><div class="sc-fn-label">Ambulance</div><div class="sc-fn-num">10177</div></div>
-        <div class="sc-footer-num"><div class="sc-fn-label">All Emergencies</div><div class="sc-fn-num">112</div></div>
-      </div>
-
-    </div>
-
-    <!-- Next steps -->
-    <div style="background:#111;border:1px solid #222;border-radius:12px;padding:16px;margin-top:16px;font-size:13px;color:#666;line-height:2">
-      📲 Install Telegram if you haven't already<br>
-      🏷️ Your tag will arrive within 5–7 days<br>
-      🔗 Your card link: <span id="scCardLink" style="color:var(--teal);font-size:12px;word-break:break-all">—</span>
-    </div>
-
   </div>
 
 </div>
 
 <script>
-var currentStep = 1;
+// ── NAVIGATION ──
+function goStep(n) {
+  if (n > currentStep && !validateStep(currentStep)) return;
+  document.getElementById('sec'+currentStep).classList.remove('active');
+  document.getElementById('stepItem'+currentStep).classList.remove('active');
+  document.getElementById('stepItem'+currentStep).classList.add('done');
+  if (currentStep < 4) document.getElementById('stepLine'+currentStep).classList.add('done');
+  currentStep = n;
+  document.getElementById('sec'+n).classList.add('active');
+  document.getElementById('stepItem'+n).classList.remove('done');
+  document.getElementById('stepItem'+n).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
 
-async function uploadPhotoToImgbb(base64data) {
+function validateStep(s) {
+  var err = document.getElementById('err'+s);
+  if (s===1) {
+    var fn=v('firstName'),ln=v('lastName'),em=v('email'),ph=v('phone'),dob=v('dob');
+    if (!fn||!ln||!em||!ph||!dob) { if(err){err.textContent='Please fill in all required fields.';err.style.display='block';} return false; }
+    if (!/^[^@]+@[^@]+\.[^@]+$/.test(em)) { if(err){err.textContent='Please enter a valid email address.';err.style.display='block';} return false; }
+  }
+  if (s===3) {
+    if (!v('c1name')||!v('c1phone')) { if(err){err.textContent='Please add at least one emergency contact.';err.style.display='block';} return false; }
+  }
+  if (s===4) {
+    if (!v('delivery')) { var e4=document.getElementById('err4'); if(e4){e4.textContent='Please enter a delivery address.';e4.style.display='block';} return false; }
+  }
+  if (err) err.style.display='none';
+  return true;
+}
+
+// ── FORM HELPERS ──
+function v(id) { var el=document.getElementById(id); return el ? el.value.trim() : ''; }
+
+function formatPhone(p) {
+  var d = p.replace(/\D/g,'');
+  if (d.startsWith('0')) d = '27' + d.slice(1);
+  return d;
+}
+
+// Format DOB from date input (YYYY-MM-DD) to DD Month YYYY for sheets
+function formatDob(dobStr) {
+  if (!dobStr) return '';
   try {
-    // Strip data:image/...;base64, prefix
-    var b64 = base64data.split(',')[1];
-    var form = new FormData();
-    form.append('key', IMGBB_KEY);
-    form.append('image', b64);
-    var res  = await fetch('https://api.imgbb.com/1/upload', { method:'POST', body: form });
-    var json = await res.json();
+    var parts = dobStr.split('-');
+    if (parts.length !== 3) return dobStr;
+    var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    var day = parseInt(parts[2]);
+    var month = parseInt(parts[1]) - 1;
+    var year = parseInt(parts[0]);
+    return day + ' ' + months[month] + ' ' + year;
+  } catch(e) { return dobStr; }
+}
+
+// ── BLOOD TYPE ──
+function selectBlood(el, val) {
+  document.querySelectorAll('.blood-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  bloodSelected = val;
+  document.getElementById('bloodOther').value = '';
+}
+
+// ── PLAN ──
+function selectPlan(el, val) {
+  document.querySelectorAll('.plan-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  planSelected = val;
+}
+
+// ── TAG COLOUR ──
+function toggleColour(el, val) {
+  if (el.classList.contains('selected')) {
+    el.classList.remove('selected');
+    coloursSelected = coloursSelected.filter(function(c){return c!==val;});
+  } else {
+    if (coloursSelected.length >= 2) return;
+    el.classList.add('selected');
+    coloursSelected.push(val);
+  }
+}
+
+// ── PHOTO ──
+function handlePhoto(input) {
+  if (!input.files||!input.files[0]) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    photoDataUrl = e.target.result;
+    var preview = document.getElementById('photoPreview');
+    var placeholder = document.getElementById('photoPlaceholder');
+    preview.src = photoDataUrl;
+    preview.style.display = 'block';
+    placeholder.style.display = 'none';
+    document.getElementById('photoArea').classList.add('has-photo');
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+async function uploadPhotoToImgbb(dataUrl) {
+  try {
+    var base64 = dataUrl.split(',')[1];
+    var fd = new FormData();
+    fd.append('image', base64);
+    var resp = await fetch('https://api.imgbb.com/1/upload?key=' + IMGBB_KEY, { method:'POST', body:fd });
+    var json = await resp.json();
     if (json.success) return json.data.url;
   } catch(e) {}
   return '';
 }
 
-function previewPhoto(input) {
-  if (input.files && input.files[0]) {
-    var reader = new FileReader();
-    reader.onload = function(e) {
-      var img = document.getElementById('photoImg');
-      var placeholder = document.getElementById('photoPlaceholder');
-      var preview = document.getElementById('photoPreview');
-      img.src = e.target.result;
-      img.style.display = 'block';
-      placeholder.style.display = 'none';
-      preview.classList.add('has-photo');
-    };
-    reader.readAsDataURL(input.files[0]);
+// ── WA/TG TOGGLES ──
+function toggleCt(toggleEl, checkId, type) {
+  var cb = document.getElementById(checkId);
+  cb.checked = !cb.checked;
+  var n = checkId.charAt(1);
+  if (type === 'wa') {
+    toggleEl.classList.toggle('active-wa', cb.checked);
+  } else {
+    toggleEl.classList.toggle('active-tg', cb.checked);
+    var tgField = document.getElementById('c'+n+'tgField');
+    if (tgField) tgField.style.display = cb.checked ? 'block' : 'none';
   }
 }
 
-function limitColours(el) {
-  var checked = document.querySelectorAll('.colour-opt:checked');
-  if (checked.length > 2) {
-    el.checked = false;
-  }
-  // Update visual border on colour labels
-  document.querySelectorAll('.colour-opt').forEach(function(cb) {
-    var lbl = cb.nextElementSibling;
-    if (cb.checked) {
-      lbl.style.borderColor = 'var(--teal)';
-      lbl.style.background  = '#001a18';
-    } else {
-      lbl.style.borderColor = '';
-      lbl.style.background  = '';
-    }
+// ── BUILD MEDICAL STRING ──
+function buildMedical() {
+  var checks = ['heart','bp','diabetes','epilepsy','allergy','asthma','stroke','dementia'];
+  var labels = ['Heart condition','High blood pressure','Diabetes','Epilepsy','Severe allergies','Asthma','Stroke risk','Dementia'];
+  var sel = [];
+  checks.forEach(function(c,i){
+    if (document.getElementById('chk_'+c).checked) sel.push(labels[i]);
   });
+  var extra = v('medical');
+  if (extra) sel.push(extra);
+  return sel.join(' · ') || 'None';
 }
 
-// Show/hide Telegram username fields based on checkbox
-[1,2,3].forEach(function(i) {
-  var tgBox = document.getElementById('c'+i+'tg');
-  if (tgBox) {
-    tgBox.addEventListener('change', function() {
-      document.getElementById('c'+i+'tgField').style.display = this.checked ? 'block' : 'none';
-    });
-  }
-});
-
-function goTo(step) {
-  if (step > currentStep && !validate(currentStep)) return;
-
-  document.getElementById('sec' + currentStep).classList.remove('active');
-  document.getElementById('sec' + step).classList.add('active');
-
-  for (var i = 1; i <= 4; i++) {
-    var el = document.getElementById('step' + i);
-    el.classList.remove('active', 'done');
-    if (i < step) el.classList.add('done');
-    if (i === step) el.classList.add('active');
-  }
-
-  currentStep = step;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+// ── GENERATE TAG ID ──
+function genTagId() {
+  var y = new Date().getFullYear();
+  var n = String(Math.floor(Math.random()*9000)+1000);
+  return 'IN3-' + y + '-B' + n;
 }
 
-function validate(step) {
-  if (step === 1) {
-    if (!v('firstName')) return err('firstName', 'Required');
-    if (!v('lastName'))  return err('lastName',  'Required');
-    if (!v('email'))     return err('email',      'Required');
-    if (!v('phone'))     return err('phone',      'Required');
-    if (!document.querySelector('input[name="plan"]:checked')) {
-      alert('Please select a plan'); return false;
-    }
-  }
-  if (step === 2) {
-    if (!document.querySelector('input[name="blood"]:checked')) {
-      alert('Please select your blood type'); return false;
-    }
-    if (!v('medical')) return err('medical', 'Please enter at least one medical alert');
-  }
-  if (step === 3) {
-    if (!v('c1name'))  return err('c1name',  'Required');
-    if (!v('c1phone')) return err('c1phone', 'Required');
-  }
-  return true;
-}
-
-function v(id) { return document.getElementById(id).value.trim(); }
-function err(id, msg) {
-  document.getElementById(id).focus();
-  document.getElementById(id).style.borderColor = '#EF4444';
-  setTimeout(function(){ document.getElementById(id).style.borderColor = ''; }, 2000);
-  return false;
-}
-
-function formatPhone(raw) {
-  var num = raw.replace(/\D/g, '');
-  if (num.startsWith('0')) num = '27' + num.slice(1);
-  if (!num.startsWith('27')) num = '27' + num;
-  return num;
-}
-
-function generateTagId() {
-  var year = new Date().getFullYear();
-  var num  = Math.floor(Math.random() * 90 + 10);
-  return 'IN3-' + year + '-B0' + num;
-}
-
+// ── SUBMIT ──
 async function submitForm() {
-  if (!validate(4)) return;
+  if (!validateStep(4)) return;
 
-  var btn = document.getElementById('submitBtn');
-  btn.textContent = 'Submitting...';
-  btn.classList.add('submitting');
+  var btn = document.querySelector('.btn-submit');
+  btn.textContent = 'Uploading...';
+  btn.disabled = true;
 
-  var tagId     = generateTagId();
-  var timestamp = new Date().toLocaleString('en-ZA', { timeZone: 'Africa/Johannesburg' });
-  var plan      = document.querySelector('input[name="plan"]:checked').value;
-  var blood     = document.querySelector('input[name="blood"]:checked').value;
-  var colourBoxes = Array.from(document.querySelectorAll('.colour-opt:checked')).map(function(cb){ return cb.value; });
-  var colour = colourBoxes.join(' + ') || 'Not selected';
-
-  // Upload profile photo to imgbb if present
-  var photoUrl = '';
-  var photoImg = document.getElementById('photoImg');
-  if (photoImg && photoImg.src && photoImg.style.display !== 'none') {
-    btn.textContent = 'Uploading photo...';
-    photoUrl = await uploadPhotoToImgbb(photoImg.src);
+  // Upload photo
+  if (photoDataUrl) {
+    photoUploadedUrl = await uploadPhotoToImgbb(photoDataUrl);
   }
+
+  var tagId     = genTagId();
+  var timestamp = new Date().toLocaleString('en-ZA', {timeZone:'Africa/Johannesburg'});
+  var dobRaw    = v('dob');         // YYYY-MM-DD from date input
+  var dobFormatted = formatDob(dobRaw); // DD Month YYYY for display
+
+  var colour = coloursSelected.length > 0 ? coloursSelected.join(' + ') : 'Not selected';
+  var blood  = bloodSelected || v('bloodOther') || 'Unknown';
 
   var data = {
-    type:       'REGISTRATION',
-    tagId:      tagId,
-    timestamp:  timestamp,
-    dob:        v('dob'),
-    firstName:  v('firstName'),
-    lastName:   v('lastName'),
-    name:       v('firstName') + ' ' + v('lastName'),
-    email:      v('email'),
-    phone:      formatPhone(v('phone')),
-    telegram:   v('telegram'),
-    plan:       plan,
-    blood:      blood,
-    medical:    v('medical'),
-    meds:       v('meds'),
-    address:    v('address'),
-    notes:      v('notes'),
-    medicalAid: v('medicalAid'),
+    type:             'REGISTRATION',
+    tagId:            tagId,
+    timestamp:        timestamp,
+    dob:              dobFormatted,
+    firstName:        v('firstName'),
+    lastName:         v('lastName'),
+    name:             v('firstName') + ' ' + v('lastName'),
+    email:            v('email'),
+    phone:            formatPhone(v('phone')),
+    telegram:         v('telegram'),
+    plan:             planSelected,
+    blood:            blood,
+    medical:          buildMedical(),
+    meds:             v('meds'),
+    address:          v('address'),
+    notes:            v('notes'),
+    medicalAid:       v('medicalAid'),
     medicalAidNumber: v('medicalAidNumber'),
-    colour:     colour,
-    formFactor: document.getElementById('formFactor').value,
-    delivery:   v('delivery'),
-    extraNotes: v('extraNotes'),
-    photoUrl:  photoUrl,
+    colour:           colour,
+    formFactor:       document.getElementById('formFactor').value,
+    delivery:         v('delivery'),
+    extraNotes:       v('extraNotes'),
+    photoUrl:         photoUploadedUrl,
     contacts: [
-      v('c1name') ? { name: v('c1name'), rel: v('c1rel'), phone: formatPhone(v('c1phone')), wa: document.getElementById('c1wa').checked, telegram: v('c1telegram'), tg: document.getElementById('c1tg').checked } : null,
-      v('c2name') ? { name: v('c2name'), rel: v('c2rel'), phone: formatPhone(v('c2phone')), wa: document.getElementById('c2wa').checked, telegram: v('c2telegram'), tg: document.getElementById('c2tg').checked } : null,
-      v('c3name') ? { name: v('c3name'), rel: v('c3rel'), phone: formatPhone(v('c3phone')), wa: document.getElementById('c3wa').checked, telegram: v('c3telegram'), tg: document.getElementById('c3tg').checked } : null,
+      v('c1name') ? { name:v('c1name'), rel:v('c1rel'), phone:formatPhone(v('c1phone')), wa:document.getElementById('c1wa').checked, telegram:v('c1telegram') } : null,
+      v('c2name') ? { name:v('c2name'), rel:v('c2rel'), phone:formatPhone(v('c2phone')), wa:document.getElementById('c2wa').checked, telegram:v('c2telegram') } : null,
+      v('c3name') ? { name:v('c3name'), rel:v('c3rel'), phone:formatPhone(v('c3phone')), wa:document.getElementById('c3wa').checked, telegram:v('c3telegram') } : null,
     ].filter(Boolean)
   };
 
-  // Send Telegram alert to owner
+  // Telegram alert to owner
   var msg =
-    '🆕 *NEW BETA REGISTRATION*\n\n' +
-    '*' + data.name + '*\n' +
-    '📧 ' + data.email + '\n' +
-    '📱 +' + data.phone + '\n' +
-    (data.telegram ? '💬 Telegram: ' + data.telegram + '\n' : '') +
-    '\n🏷️ Tag: *' + tagId + '*\n' +
-    '🎂 DOB: ' + (data.dob || 'Not provided') + '\n' +
-    '📦 Plan: ' + plan + '\n' +
-    '🎨 Colour: ' + colour + ' — ' + document.getElementById('formFactor').value + '\n' +
-    '🩸 Blood: ' + blood + '\n' +
-    '⚠️ Medical: ' + data.medical + '\n' + '💊 Meds: ' + (data.meds || 'None') + '\n' + '🏥 Medical Aid: ' + (data.medicalAid ? data.medicalAid + ' — No: ' + (data.medicalAidNumber || 'N/A') : 'None') + '\n\n' +
-    '👥 Contacts:\n' +
-    data.contacts.map(function(c){ 
-      var alerts = [];
-      if (c.wa) alerts.push('💬 WA');
-      if (c.tg) alerts.push('📲 TG' + (c.telegram ? ' ' + c.telegram : ''));
-      return '• ' + c.name + ' (' + c.rel + '): +' + c.phone + (alerts.length ? ' — ' + alerts.join(', ') : '');
-    }).join('\n') + '\n\n' +
-    '📍 Delivery: ' + (data.delivery || 'Not provided') + '\n' +
-    '🕐 ' + timestamp;
+    "\ud83c\udd95 *NEW BETA REGISTRATION*\n\n" +
+    "*" + data.name + "*\n" +
+    "\ud83d\udce7 " + data.email + "\n" +
+    "\ud83d\udcf1 +" + data.phone + "\n" +
+    (data.telegram ? "\ud83d\udcac Telegram: " + data.telegram + "\n" : '') +
+    "\n\ud83c\udff7\ufe0f Tag: *" + tagId + "*\n" +
+    "\ud83c\udf82 DOB: " + dobFormatted + "\n" +
+    "\ud83d\udce6 Plan: " + planSelected + "\n" +
+    "\ud83c\udfa8 Colour: " + colour + "\n" +
+    "\ud83e\ude78 Blood: " + blood + "\n" +
+    "\u26a0\ufe0f Medical: " + data.medical + "\n" +
+    "\ud83d\udcc5 Timestamp: " + timestamp;
 
   try {
     await fetch('https://api.telegram.org/bot' + TELEGRAM_TOKEN + '/sendMessage', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: msg, parse_mode: 'Markdown', disable_web_page_preview: true })
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({chat_id: TELEGRAM_CHAT_ID, text: msg, parse_mode:'Markdown'})
     });
   } catch(e) {}
 
-  // Send to GAS / Google Sheets
+  // Send to Google Sheets via GAS
   try {
-    fetch(GAS_URL, {
-      method: 'POST', mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
+    await fetch(GAS_URL, {
+      method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'},
       body: JSON.stringify(data)
     });
   } catch(e) {}
 
-  // Populate subscriber card
-  var tagColours = {
-    'Black':'#333', 'Orange':'#F97316', 'Glow Blue':'#4DBBFF',
-    'Glitter Green':'#39FF6A', 'Red':'#EF4444', 'Teal':'#0ED2C8',
-    'White':'#e5e5e5', 'Surprise Me':'#F97316'
-  };
-  var tagCol = tagColours[colour] || '#F97316';
-  var initials = (v('firstName')[0]||'') + (v('lastName')[0]||'');
-  var cardLink = 'https://innovat3dinfusion-hash.github.io/innovat3-emergency/card/?tag=' + tagId;
-
-  document.getElementById('scTopBar').style.background    = tagCol;
-  document.getElementById('scSideBar').style.background   = tagCol;
-  document.getElementById('scAvatar').style.borderColor   = tagCol;
-  // Show profile photo in avatar if uploaded
-  var scAvatar = document.getElementById('scAvatar');
-  if (data.photoUrl) {
-    scAvatar.innerHTML = '<img src="' + data.photoUrl + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';
-  } else if (photoImg && photoImg.src && photoImg.style.display !== 'none') {
-    scAvatar.innerHTML = '<img src="' + photoImg.src + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';
-  } else {
-    scAvatar.textContent = initials.toUpperCase();
-  }
-  document.getElementById('scName').textContent           = v('firstName') + ' ' + v('lastName');
-  document.getElementById('scTagId').textContent          = tagId;
-  document.getElementById('scPlanBadge').textContent      = plan.toUpperCase() + ' PLAN';
-  document.getElementById('scPlanBadge').style.background = tagCol;
-  document.getElementById('scBlood').textContent          = data.blood;
-  document.getElementById('scAid').textContent            = data.medicalAid ? data.medicalAid + (data.medicalAidNumber ? ' · No: ' + data.medicalAidNumber : '') : 'Not provided';
-  document.getElementById('scMedical').textContent        = data.medical || '—';
-  document.getElementById('scMeds').textContent           = data.meds   || '—';
-  document.getElementById('scAddress').textContent        = data.address || '—';
-  document.getElementById('scNotes').textContent          = data.notes   || '—';
-  document.getElementById('scCardLink').textContent       = cardLink;
-
-  var contactColours = ['#EF4444','#F97316','#22C55E','#3B82F6','#0ED2C8'];
-  var cList = document.getElementById('scContacts');
-  data.contacts.forEach(function(ct, i) {
-    var col = contactColours[i % contactColours.length];
-    var phone = ct.phone.startsWith('27') ? ct.phone : ct.phone;
-    var div = document.createElement('div');
-    div.className = 'sc-contact';
-    div.innerHTML =
-      '<div class="sc-contact-bar" style="background:' + col + '"></div>' +
-      '<div class="sc-contact-num-badge" style="background:' + col + '">' + (i+1) + '</div>' +
-      '<div class="sc-contact-info">' +
-        '<div class="sc-contact-name">' + ct.name + '</div>' +
-        '<div class="sc-contact-rel" style="color:' + col + '">' + ct.rel + '</div>' +
-        '<div class="sc-contact-phone">+' + ct.phone + '</div>' +
-      '</div>';
-    cList.appendChild(div);
-  });
-
+  // Show success
   document.getElementById('sec4').classList.remove('active');
-  document.getElementById('progressBar').style.display = 'none';
-  document.getElementById('secSuccess').classList.add('active');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  document.getElementById('stepItem4').classList.remove('active');
+  document.getElementById('stepItem4').classList.add('done');
+  var ss = document.getElementById('successScreen');
+  ss.style.display = 'block';
+
+  var av = document.getElementById('successAvatar');
+  if (photoUploadedUrl) {
+    av.innerHTML = '<img src="' + photoUploadedUrl + '">';
+  } else if (photoDataUrl) {
+    av.innerHTML = '<img src="' + photoDataUrl + '">';
+  } else {
+    var fn = v('firstName'), ln = v('lastName');
+    av.textContent = ((fn[0]||'')+(ln[0]||'')).toUpperCase();
+  }
+  document.getElementById('successName').textContent  = data.name;
+  document.getElementById('successTagId').textContent = '\ud83c\udff7\ufe0f ' + tagId;
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 </script>
 
