@@ -342,8 +342,32 @@ var subData = null;
   document.getElementById('scTagId').textContent  = '🏷 ' + tagId;
   document.getElementById('scPlan').textContent   = (subData['Plan']||'Beta').toUpperCase();
   document.title = '🚨 ' + fn + ' ' + ln + ' — Emergency';
+  // Parse and display DOB + Age
   var dob = subData['Date of Birth']||'';
-  if (dob) document.getElementById('scDob').textContent = '📅 ' + dob;
+  if (dob) {
+    var dobDisplay = dob;
+    var ageStr = '';
+    try {
+      // Google Sheets stores dates as "Date(year,month,day)" or as a string like "1985-04-12" or "12/04/1985"
+      var d = null;
+      var dateMatch = dob.match(/Date\((\d+),(\d+),(\d+)\)/);
+      if (dateMatch) {
+        d = new Date(parseInt(dateMatch[1]), parseInt(dateMatch[2]), parseInt(dateMatch[3]));
+      } else {
+        d = new Date(dob);
+      }
+      if (!isNaN(d.getTime())) {
+        var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        dobDisplay = d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+        var today = new Date();
+        var age = today.getFullYear() - d.getFullYear();
+        var m = today.getMonth() - d.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < d.getDate())) age--;
+        ageStr = ' · Age ' + age;
+      }
+    } catch(e) {}
+    document.getElementById('scDob').textContent = '📅 ' + dobDisplay + ageStr;
+  }
 
   // Blood + Aid
   document.getElementById('scBlood').textContent = subData['Blood Type']||'—';
