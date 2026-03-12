@@ -278,20 +278,28 @@ var subData = null;
 
   try {
     var url  = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent(REG_SHEET);
-    var text = await (await fetch(url)).text();
-    var json = JSON.parse(text.substring(text.indexOf('(') + 1, text.lastIndexOf(')')));
+    var resp = await fetch(url);
+    if (!resp.ok) { showError('Sheet fetch failed: HTTP ' + resp.status + '. Check sheet is shared publicly.'); return; }
+    var text = await resp.text();
+    if (!text || text.length < 50) { showError('Sheet returned empty. Set sharing to Anyone with link can view.'); return; }
+    var si = text.indexOf('('), ei = text.lastIndexOf(')');
+    if (si === -1 || ei === -1) { showError('Bad sheet response: ' + text.substring(0,200)); return; }
+    var json = JSON.parse(text.substring(si + 1, ei));
+    if (!json.table || !json.table.cols) { showError('Sheet data missing. Status: ' + (json.status||'unknown')); return; }
     var cols = json.table.cols.map(function(c){ return c.label; });
+    var tagColIdx = cols.indexOf('Tag ID');
+    if (tagColIdx === -1) { showError('No Tag ID column found. Columns: ' + cols.join(', ')); return; }
     for (var i = 0; i < json.table.rows.length; i++) {
       var cells = json.table.rows[i].c;
-      var rt = cells[cols.indexOf('Tag ID')] ? String(cells[cols.indexOf('Tag ID')].v||'') : '';
+      var rt = cells[tagColIdx] ? String(cells[tagColIdx].v||'') : '';
       if (rt.trim() === tagId) {
         subData = {};
         cols.forEach(function(col,idx){ subData[col] = cells[idx] ? String(cells[idx].v||'') : ''; });
         break;
       }
     }
-    if (!subData) { showError('Tag "' + tagId + '" not found.'); return; }
-  } catch(err) { showError('Could not load data.\n'+err.message); return; }
+    if (!subData) { showError('Tag "' + tagId + '" not found. ' + json.table.rows.length + ' rows checked.'); return; }
+  } catch(err) { showError('Error: ' + err.message); return; }
 
   // Tag colour
   var tc = TAG_COLOURS[subData['Tag Colour']] || '#F97316';
