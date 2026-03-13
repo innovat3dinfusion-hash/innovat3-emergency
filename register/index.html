@@ -143,6 +143,48 @@ body { font-family:"Exo 2",sans-serif; background:#050505; color:var(--text); mi
 .check-row input[type=checkbox]:checked + .custom-check::after { content:"✓"; color:#000; font-size:11px; font-weight:900; }
 .check-text { font-size:12px; color:var(--text); }
 
+/* ── CONSENT SECTION ── */
+.consent-section {
+  margin:0 0 16px; background:#0a0a0a; border:2px solid rgba(249,115,22,0.35);
+  border-radius:14px; overflow:hidden;
+  box-shadow:0 0 24px rgba(249,115,22,0.08);
+}
+.consent-hdr {
+  background:linear-gradient(90deg,#2a0a00,#f97316 80%,#ffb347);
+  padding:12px 16px; font-family:"Orbitron",sans-serif; font-size:9px;
+  font-weight:900; letter-spacing:1.5px; text-transform:uppercase; color:#000;
+}
+.consent-body { padding:16px; display:flex; flex-direction:column; gap:14px; }
+.consent-row {
+  display:flex; align-items:flex-start; gap:12px;
+  padding:12px; border-radius:10px; background:#111;
+  border:1px solid rgba(249,115,22,0.18); cursor:pointer; transition:all 0.2s;
+}
+.consent-row:hover { border-color:rgba(249,115,22,0.45); background:#161616; }
+.consent-row.checked { border-color:var(--orange); background:#1a0d00; }
+.consent-check {
+  width:22px; height:22px; border:2px solid #444; border-radius:6px;
+  flex-shrink:0; display:flex; align-items:center; justify-content:center;
+  transition:all 0.2s; background:#0d0d0d; margin-top:1px;
+}
+.consent-row input[type=checkbox] { display:none; }
+.consent-row input[type=checkbox]:checked ~ .consent-check,
+.consent-row.checked .consent-check { background:var(--orange); border-color:var(--orange); }
+.consent-row input[type=checkbox]:checked ~ .consent-check::after,
+.consent-row.checked .consent-check::after { content:"✓"; color:#000; font-size:13px; font-weight:900; }
+.consent-text { font-size:12px; color:#ccc; line-height:1.65; }
+.consent-text strong { color:#fff; font-weight:700; }
+.consent-text a { color:var(--orange); text-decoration:underline; }
+.consent-req { color:var(--red); font-weight:700; margin-left:3px; }
+.consent-note {
+  font-size:10px; color:var(--muted); line-height:1.6;
+  padding:10px 14px; background:#0d0d0d; border-radius:8px;
+  border-left:3px solid var(--orange); margin-top:4px;
+}
+#consentErr { display:none; color:var(--red); font-size:11px; font-weight:700;
+  padding:8px 12px; background:#1a0505; border-radius:8px;
+  border:1px solid rgba(239,68,68,0.4); margin-top:4px; text-align:center; }
+
 /* ── WA/TG TOGGLE ── */
 .ct-toggles { display:flex; gap:8px; margin-top:8px; }
 .ct-toggle {
@@ -625,6 +667,61 @@ var photoUploadedUrl = '';
       </div>
     </div>
 
+    <!-- ✅ CONSENT CHECKBOXES -->
+    <div class="consent-section">
+      <div class="consent-hdr">📋 &nbsp;Legal Consent — Please Read &amp; Tick All Boxes</div>
+      <div class="consent-body">
+
+        <label class="consent-row" onclick="toggleConsent(this,'consent1')">
+          <input type="checkbox" id="consent1">
+          <div class="consent-check"></div>
+          <div class="consent-text">
+            <strong>Terms &amp; Conditions</strong><span class="consent-req">*</span><br>
+            I have read and agree to the <a href="https://innovat3dinfusion-hash.github.io/innovat3-emergency/terms/" target="_blank">innovat3. Terms and Conditions of Service</a>. I understand this is a legally binding agreement.
+          </div>
+        </label>
+
+        <label class="consent-row" onclick="toggleConsent(this,'consent2')">
+          <input type="checkbox" id="consent2">
+          <div class="consent-check"></div>
+          <div class="consent-text">
+            <strong>Privacy &amp; Data Processing (POPIA)</strong><span class="consent-req">*</span><br>
+            I consent to innovat3. collecting and processing my personal information, including special personal information (medical and health data), in accordance with the <a href="https://innovat3dinfusion-hash.github.io/innovat3-emergency/privacy/" target="_blank">innovat3. Privacy Policy</a> and POPIA.
+          </div>
+        </label>
+
+        <label class="consent-row" onclick="toggleConsent(this,'consent3')">
+          <input type="checkbox" id="consent3">
+          <div class="consent-check"></div>
+          <div class="consent-text">
+            <strong>Public Emergency Profile Disclosure</strong><span class="consent-req">*</span><br>
+            I understand and consent that my emergency profile — including my name, blood type, medical conditions, medications, and emergency contact details — will be <strong>visible to any person who scans my NFC Tag</strong>, including members of the public, paramedics, and emergency services.
+          </div>
+        </label>
+
+        <label class="consent-row" onclick="toggleConsent(this,'consent4')">
+          <input type="checkbox" id="consent4">
+          <div class="consent-check"></div>
+          <div class="consent-text">
+            <strong>GPS Location Capture</strong><span class="consent-req">*</span><br>
+            I consent to the GPS location of any person who scans my tag being automatically captured and sent as an emergency alert to my nominated emergency contacts via Telegram and WhatsApp.
+          </div>
+        </label>
+
+        <label class="consent-row" onclick="toggleConsent(this,'consent5')">
+          <input type="checkbox" id="consent5">
+          <div class="consent-check"></div>
+          <div class="consent-text">
+            <strong>Information Accuracy</strong><span class="consent-req">*</span><br>
+            I confirm that all information I have provided is accurate and complete. I accept full responsibility for keeping my emergency profile up to date and understand that innovat3. is not liable for harm arising from inaccurate or outdated profile information.
+          </div>
+        </label>
+
+        <div class="consent-note">⚠️ All five consent boxes must be ticked before submitting. These are required under South African law (POPIA) and for the safety of yourself and your emergency contacts.</div>
+        <div id="consentErr">Please tick all five consent boxes before submitting.</div>
+      </div>
+    </div>
+
     <div class="nav-btns">
       <button class="btn-back" onclick="goStep(3)">← Back</button>
       <button class="btn-submit" onclick="submitForm()">✓ &nbsp;Submit Registration</button>
@@ -679,6 +776,10 @@ function validateStep(s) {
   }
   if (s===4) {
     if (!v('delivery')) { var e4=document.getElementById('err4'); if(e4){e4.textContent='Please enter a delivery address.';e4.style.display='block';} return false; }
+    var allConsent = ['consent1','consent2','consent3','consent4','consent5'].every(function(id){ return document.getElementById(id) && document.getElementById(id).checked; });
+    var cErr = document.getElementById('consentErr');
+    if (!allConsent) { if(cErr){cErr.style.display='block';} return false; }
+    if (cErr) cErr.style.display='none';
   }
   if (err) err.style.display='none';
   return true;
@@ -686,6 +787,18 @@ function validateStep(s) {
 
 // ── FORM HELPERS ──
 function v(id) { var el=document.getElementById(id); return el ? el.value.trim() : ''; }
+
+function toggleConsent(rowEl, checkId) {
+  var cb = document.getElementById(checkId);
+  if (!cb) return;
+  cb.checked = !cb.checked;
+  rowEl.classList.toggle('checked', cb.checked);
+  // Hide error if all are now checked
+  if (['consent1','consent2','consent3','consent4','consent5'].every(function(id){ return document.getElementById(id) && document.getElementById(id).checked; })) {
+    var cErr = document.getElementById('consentErr');
+    if (cErr) cErr.style.display = 'none';
+  }
+}
 
 function formatPhone(p) {
   var d = p.replace(/\D/g,'');
@@ -917,6 +1030,7 @@ async function submitForm() {
     delivery:         v('delivery'),
     extraNotes:       v('extraNotes'),
     photoUrl:         photoUploadedUrl,
+    consentDate:      timestamp,
     contacts: [
       v('c1name') ? { name:v('c1name'), rel:v('c1rel'), phone:formatPhone(v('c1phone')), wa:document.getElementById('c1wa').checked, telegram:v('c1telegram') } : null,
       v('c2name') ? { name:v('c2name'), rel:v('c2rel'), phone:formatPhone(v('c2phone')), wa:document.getElementById('c2wa').checked, telegram:v('c2telegram') } : null,
