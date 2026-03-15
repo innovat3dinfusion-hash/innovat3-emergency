@@ -330,15 +330,8 @@ var subData = null;
   // Identity
   var fn = subData['First Name']||'', ln = subData['Last Name']||'';
   var scAvatar = document.getElementById('scAvatar');
-  var rawPhotoVal = subData['Photo URL'] || '';
-  // Strip any Google Sheets HYPERLINK formula wrapper if present
-  // e.g. =HYPERLINK("https://...","📷 View Photo") → extract the URL
-  var photoMatch = rawPhotoVal.match(/HYPERLINK\s*\(\s*"([^"]+)"/i);
-  var photoUrl   = photoMatch ? photoMatch[1] : rawPhotoVal.trim();
-  console.log('[IN3] Photo URL raw:', rawPhotoVal, '→ resolved:', photoUrl);
-  if (photoUrl && photoUrl.startsWith('http')) {
-    var initials = ((fn[0]||'')+(ln[0]||'')).toUpperCase();
-    scAvatar.innerHTML = '<img src="' + photoUrl + '" alt="' + fn + '" onerror="this.style.display=\'none\';this.parentElement.textContent=\''+initials+'\'">'; 
+  if (subData['Photo URL'] && subData['Photo URL'].startsWith('http')) {
+    scAvatar.innerHTML = '<img src="' + subData['Photo URL'] + '" alt="' + fn + '">';
   } else {
     scAvatar.textContent = ((fn[0]||'')+(ln[0]||'')).toUpperCase();
   }
