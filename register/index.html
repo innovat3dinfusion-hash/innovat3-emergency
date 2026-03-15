@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Innovat3 — Beta Registration</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -15,7 +15,7 @@
 }
 * { box-sizing:border-box; margin:0; padding:0; }
 body { font-family:"Exo 2",sans-serif; background:#050505; color:var(--text); min-height:100vh; }
-.page { max-width:560px; margin:0 auto; padding-bottom:60px; }
+.page { max-width:600px; margin:0 auto; padding:0 16px 60px; } @media(min-width:768px){ .page{ max-width:680px; padding:0 32px 80px; } body{ background:#050505; } }
 
 /* ── BANNER ── */
 .in3-banner {
@@ -199,6 +199,17 @@ body { font-family:"Exo 2",sans-serif; background:#050505; color:var(--text); mi
 .ct-toggle.active-wa { background:#071a0e; border-color:#25D366; color:#25D366; }
 .ct-toggle.active-tg { background:#001a2e; border-color:#29B6F6; color:#29B6F6; }
 
+/* ── DOB SELECTS ── */
+.dob-selects { display:grid; grid-template-columns:1fr 2fr 1.5fr; gap:8px; }
+.dob-selects select {
+  background:#0d0d0d; border:1px solid var(--border2); border-radius:10px;
+  color:var(--text); font-family:'Exo 2',sans-serif; font-size:13px;
+  padding:10px 10px; cursor:pointer; appearance:none; -webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right 10px center;
+}
+.dob-selects select:focus { outline:none; border-color:var(--orange); }
+
 /* ── BLOOD TYPE GRID ── */
 .blood-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
 .blood-btn {
@@ -290,6 +301,47 @@ body { font-family:"Exo 2",sans-serif; background:#050505; color:var(--text); mi
 
 /* ── SECTION SPACING ── */
 .section-spacer { height:10px; }
+
+/* ── CROP MODAL ── */
+.crop-modal {
+  display:none; position:fixed; inset:0; z-index:9999;
+  background:rgba(0,0,0,0.92); align-items:center; justify-content:center;
+  padding:20px;
+}
+.crop-modal.open { display:flex; }
+.crop-box {
+  background:#111; border-radius:18px; padding:20px;
+  width:100%; max-width:420px; border:1px solid #333;
+  display:flex; flex-direction:column; gap:16px;
+}
+.crop-title {
+  font-family:'Orbitron',sans-serif; font-size:11px; font-weight:900;
+  color:var(--blue); letter-spacing:1.5px; text-transform:uppercase; text-align:center;
+}
+.crop-canvas-wrap {
+  position:relative; width:100%; padding-top:100%;
+  overflow:hidden; border-radius:12px; background:#000; cursor:move;
+}
+#cropCanvas {
+  position:absolute; top:0; left:0; width:100%; height:100%;
+  touch-action:none;
+}
+.crop-circle-overlay {
+  position:absolute; inset:0; pointer-events:none;
+  background:radial-gradient(circle 47% at 50% 50%, transparent 47%, rgba(0,0,0,0.65) 47%);
+  border-radius:12px;
+}
+.crop-hint { font-size:11px; color:var(--muted); text-align:center; }
+.crop-zoom { display:flex; align-items:center; gap:10px; }
+.crop-zoom label { font-size:11px; color:var(--muted); white-space:nowrap; }
+.crop-zoom input[type=range] { flex:1; accent-color:var(--blue); }
+.crop-btns { display:flex; gap:10px; }
+.crop-btns button {
+  flex:1; padding:12px; border-radius:10px; font-family:'Orbitron',sans-serif;
+  font-size:10px; font-weight:900; letter-spacing:1px; cursor:pointer; border:none;
+}
+.btn-crop-cancel { background:#1a1a1a; color:var(--muted); border:1px solid #333; }
+.btn-crop-apply  { background:var(--blue); color:#fff; }
 </style>
 </head>
 <body>
@@ -366,16 +418,35 @@ var photoUploadedUrl = '';
         <div class="field-row">
           <div class="field">
             <label>First Name <span class="req">*</span></label>
-            <input type="text" id="firstName" placeholder="Jan">
+            <input type="text" id="firstName" placeholder="Name">
           </div>
           <div class="field">
             <label>Last Name <span class="req">*</span></label>
-            <input type="text" id="lastName" placeholder="Steyn">
+            <input type="text" id="lastName" placeholder="Last Name">
           </div>
         </div>
         <div class="field">
           <label>Date of Birth <span class="req">*</span></label>
-          <input type="date" id="dob" max="2010-01-01" onchange="onDobChange()">
+          <div class="dob-selects">
+            <select id="dobDay" onchange="onDobChange()">
+              <option value="">Day</option>
+              <script>for(var d=1;d<=31;d++) document.write('<option value="'+d+'">'+d+'</option>');</script>
+            </select>
+            <select id="dobMonth" onchange="onDobChange()">
+              <option value="">Month</option>
+              <option value="1">January</option><option value="2">February</option>
+              <option value="3">March</option><option value="4">April</option>
+              <option value="5">May</option><option value="6">June</option>
+              <option value="7">July</option><option value="8">August</option>
+              <option value="9">September</option><option value="10">October</option>
+              <option value="11">November</option><option value="12">December</option>
+            </select>
+            <select id="dobYear" onchange="onDobChange()">
+              <option value="">Year</option>
+              <script>for(var y=new Date().getFullYear()-10;y>=1920;y--) document.write('<option value="'+y+'">'+y+'</option>');</script>
+            </select>
+            <input type="hidden" id="dob">
+          </div>
           <div class="field-hint">Used to display your age on the emergency card</div>
         </div>
         <div class="field">
@@ -385,7 +456,7 @@ var photoUploadedUrl = '';
         <div class="field-row">
           <div class="field">
             <label>Phone Number <span class="req">*</span></label>
-            <input type="tel" id="phone" placeholder="072 588 3875">
+            <input type="tel" id="phone" placeholder="072 123 4567">
           </div>
           <div class="field">
             <label>Telegram Username</label>
@@ -499,10 +570,10 @@ var photoUploadedUrl = '';
         <div class="contact-card">
           <div class="contact-card-hdr" style="color:#EF4444">Contact 1 (Primary) <span class="req" style="color:var(--orange)">*</span></div>
           <div class="field-row">
-            <div class="field"><label>Name</label><input type="text" id="c1name" placeholder="Jeanine Steyn"></div>
+            <div class="field"><label>Name</label><input type="text" id="c1name" placeholder="Contact 01"></div>
             <div class="field"><label>Relation</label><input type="text" id="c1rel" placeholder="Wife"></div>
           </div>
-          <div class="field"><label>Phone Number</label><input type="tel" id="c1phone" placeholder="072 588 3875"></div>
+          <div class="field"><label>Phone Number</label><input type="tel" id="c1phone" placeholder="072 123 4567"></div>
           <div class="ct-toggles">
             <label class="ct-toggle wa-tog" id="c1waToggle" onclick="toggleCt(this,'c1wa','wa')">
               <input type="checkbox" id="c1wa">
@@ -522,10 +593,10 @@ var photoUploadedUrl = '';
         <div class="contact-card">
           <div class="contact-card-hdr" style="color:#F97316">Contact 2</div>
           <div class="field-row">
-            <div class="field"><label>Name</label><input type="text" id="c2name" placeholder="Pieter Steyn"></div>
+            <div class="field"><label>Name</label><input type="text" id="c2name" placeholder="Contact 02"></div>
             <div class="field"><label>Relation</label><input type="text" id="c2rel" placeholder="Son"></div>
           </div>
-          <div class="field"><label>Phone Number</label><input type="tel" id="c2phone" placeholder="082 345 6789"></div>
+          <div class="field"><label>Phone Number</label><input type="tel" id="c2phone" placeholder="072 123 4567"></div>
           <div class="ct-toggles">
             <label class="ct-toggle wa-tog" id="c2waToggle" onclick="toggleCt(this,'c2wa','wa')">
               <input type="checkbox" id="c2wa">
@@ -545,10 +616,10 @@ var photoUploadedUrl = '';
         <div class="contact-card">
           <div class="contact-card-hdr" style="color:#22C55E">Contact 3</div>
           <div class="field-row">
-            <div class="field"><label>Name</label><input type="text" id="c3name" placeholder="Dr. A. Botha"></div>
+            <div class="field"><label>Name</label><input type="text" id="c3name" placeholder="Contact 03"></div>
             <div class="field"><label>Relation</label><input type="text" id="c3rel" placeholder="GP"></div>
           </div>
-          <div class="field"><label>Phone Number</label><input type="tel" id="c3phone" placeholder="011 234 5678"></div>
+          <div class="field"><label>Phone Number</label><input type="tel" id="c3phone" placeholder="072 123 4567"></div>
           <div class="ct-toggles">
             <label class="ct-toggle wa-tog" id="c3waToggle" onclick="toggleCt(this,'c3wa','wa')">
               <input type="checkbox" id="c3wa">
@@ -677,7 +748,7 @@ var photoUploadedUrl = '';
           <div class="consent-check"></div>
           <div class="consent-text">
             <strong>Terms &amp; Conditions</strong><span class="consent-req">*</span><br>
-            I have read and agree to the <a href="https://innovat3dinfusion-hash.github.io/innovat3-emergency/terms/" target="_blank">innovat3. Terms and Conditions of Service</a>. I understand this is a legally binding agreement.
+            I have read and agree to the <a href="https://innovat3dinfusion-hash.github.io/innovat3-emergency/terms.html" target="_blank">innovat3. Terms and Conditions of Service</a>. I understand this is a legally binding agreement.
           </div>
         </label>
 
@@ -686,7 +757,7 @@ var photoUploadedUrl = '';
           <div class="consent-check"></div>
           <div class="consent-text">
             <strong>Privacy &amp; Data Processing (POPIA)</strong><span class="consent-req">*</span><br>
-            I consent to innovat3. collecting and processing my personal information, including special personal information (medical and health data), in accordance with the <a href="https://innovat3dinfusion-hash.github.io/innovat3-emergency/privacy/" target="_blank">innovat3. Privacy Policy</a> and POPIA.
+            I consent to innovat3. collecting and processing my personal information, including special personal information (medical and health data), in accordance with the <a href="https://innovat3dinfusion-hash.github.io/innovat3-emergency/privacy.html" target="_blank">innovat3. Privacy Policy</a> and POPIA.
           </div>
         </label>
 
@@ -767,7 +838,7 @@ function goStep(n) {
 function validateStep(s) {
   var err = document.getElementById('err'+s);
   if (s===1) {
-    var fn=v('firstName'),ln=v('lastName'),em=v('email'),ph=v('phone'),dob=v('dob');
+    var fn=v('firstName'),ln=v('lastName'),em=v('email'),ph=v('phone'),dob=getDobFromSelects();
     if (!fn||!ln||!em||!ph||!dob) { if(err){err.textContent='Please fill in all required fields.';err.style.display='block';} return false; }
     if (!/^[^@]+@[^@]+\.[^@]+$/.test(em)) { if(err){err.textContent='Please enter a valid email address.';err.style.display='block';} return false; }
   }
@@ -829,8 +900,19 @@ function selectBlood(el, val) {
 }
 
 // ── PLAN ──
+function getDobFromSelects() {
+  var day   = document.getElementById('dobDay')   ? document.getElementById('dobDay').value   : '';
+  var month = document.getElementById('dobMonth') ? document.getElementById('dobMonth').value : '';
+  var year  = document.getElementById('dobYear')  ? document.getElementById('dobYear').value  : '';
+  if (!day || !month || !year) return '';
+  // Build YYYY-MM-DD for hidden field
+  var mm = String(month).padStart(2,'0');
+  var dd = String(day).padStart(2,'0');
+  return year + '-' + mm + '-' + dd;
+}
+
 function getAgeFromDob() {
-  var dob = v('dob');
+  var dob = getDobFromSelects();
   if (!dob) return null;
   var d = new Date(dob);
   if (isNaN(d.getTime())) return null;
@@ -860,6 +942,10 @@ function selectPlan(el, val) {
 
 // Called when DOB changes — grey out Care plan if under 65
 function onDobChange() {
+  // Sync hidden dob field
+  var computed = getDobFromSelects();
+  var hiddenDob = document.getElementById('dob');
+  if (hiddenDob) hiddenDob.value = computed;
   var age = getAgeFromDob();
   var careCard = document.getElementById('planCare');
   if (!careCard) return;
@@ -891,19 +977,121 @@ function toggleColour(el, val) {
 }
 
 // ── PHOTO ──
+// ── CROP SYSTEM ──────────────────────────────────────────────────────
+var _cropImg = new Image();
+var _cropOffX = 0, _cropOffY = 0, _cropScale = 1;
+var _dragStart = null, _lastOff = {x:0,y:0};
+var _pinchStart = null, _pinchScale = 1;
+
 function handlePhoto(input) {
   if (!input.files||!input.files[0]) return;
   var reader = new FileReader();
   reader.onload = function(e) {
-    photoDataUrl = e.target.result;
-    var preview = document.getElementById('photoPreview');
-    var placeholder = document.getElementById('photoPlaceholder');
-    preview.src = photoDataUrl;
-    preview.style.display = 'block';
-    placeholder.style.display = 'none';
-    document.getElementById('photoArea').classList.add('has-photo');
+    _cropImg = new Image();
+    _cropImg.onload = function() {
+      _cropScale = 1; _cropOffX = 0; _cropOffY = 0;
+      document.getElementById('cropZoom').value = 1;
+      openCrop();
+    };
+    _cropImg.src = e.target.result;
   };
   reader.readAsDataURL(input.files[0]);
+}
+
+function openCrop() {
+  var modal = document.getElementById('cropModal');
+  modal.classList.add('open');
+  var canvas = document.getElementById('cropCanvas');
+  var wrap   = canvas.parentElement;
+  canvas.width  = wrap.offsetWidth  || 320;
+  canvas.height = wrap.offsetWidth  || 320;
+  cropDraw();
+  // Mouse drag
+  canvas.onmousedown = function(e) { _dragStart={x:e.clientX,y:e.clientY}; _lastOff={x:_cropOffX,y:_cropOffY}; };
+  window.onmousemove = function(e) {
+    if (!_dragStart) return;
+    _cropOffX = _lastOff.x + (e.clientX - _dragStart.x);
+    _cropOffY = _lastOff.y + (e.clientY - _dragStart.y);
+    cropDraw();
+  };
+  window.onmouseup = function() { _dragStart = null; };
+  // Touch drag + pinch
+  canvas.ontouchstart = function(e) {
+    if (e.touches.length === 1) {
+      _dragStart={x:e.touches[0].clientX,y:e.touches[0].clientY};
+      _lastOff={x:_cropOffX,y:_cropOffY};
+    } else if (e.touches.length === 2) {
+      _pinchStart = Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
+      _pinchScale = _cropScale;
+    }
+    e.preventDefault();
+  };
+  canvas.ontouchmove = function(e) {
+    if (e.touches.length === 1 && _dragStart) {
+      _cropOffX = _lastOff.x + (e.touches[0].clientX - _dragStart.x);
+      _cropOffY = _lastOff.y + (e.touches[0].clientY - _dragStart.y);
+      cropDraw();
+    } else if (e.touches.length === 2 && _pinchStart) {
+      var dist = Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
+      _cropScale = Math.min(4, Math.max(1, _pinchScale * (dist / _pinchStart)));
+      document.getElementById('cropZoom').value = _cropScale;
+      cropDraw();
+    }
+    e.preventDefault();
+  };
+  canvas.ontouchend = function() { _dragStart = null; };
+}
+
+function cropDraw() {
+  var canvas = document.getElementById('cropCanvas');
+  var ctx    = canvas.getContext('2d');
+  var size   = canvas.width;
+  _cropScale = parseFloat(document.getElementById('cropZoom').value) || 1;
+  var iw = _cropImg.width * _cropScale;
+  var ih = _cropImg.height * _cropScale;
+  // Centre image by default
+  var baseX = (size - iw) / 2 + _cropOffX;
+  var baseY = (size - ih) / 2 + _cropOffY;
+  ctx.clearRect(0, 0, size, size);
+  ctx.drawImage(_cropImg, baseX, baseY, iw, ih);
+}
+
+function applyCrop() {
+  var canvas = document.getElementById('cropCanvas');
+  var size   = canvas.width;
+  // Export as 400×400 circle crop
+  var out    = document.createElement('canvas');
+  out.width  = 400; out.height = 400;
+  var ctx    = out.getContext('2d');
+  // Scale from canvas size to 400
+  var ratio  = 400 / size;
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(200, 200, 200, 0, Math.PI*2);
+  ctx.clip();
+  // Draw scaled
+  var _cropScale2 = parseFloat(document.getElementById('cropZoom').value) || 1;
+  var iw = _cropImg.width * _cropScale2 * ratio;
+  var ih = _cropImg.height * _cropScale2 * ratio;
+  var baseX = ((size - _cropImg.width * _cropScale2) / 2 + _cropOffX) * ratio;
+  var baseY = ((size - _cropImg.height * _cropScale2) / 2 + _cropOffY) * ratio;
+  ctx.drawImage(_cropImg, baseX, baseY, iw, ih);
+  ctx.restore();
+  photoDataUrl = out.toDataURL('image/jpeg', 0.88);
+  var preview     = document.getElementById('photoPreview');
+  var placeholder = document.getElementById('photoPlaceholder');
+  preview.src     = photoDataUrl;
+  preview.style.display = 'block';
+  placeholder.style.display = 'none';
+  document.getElementById('photoArea').classList.add('has-photo');
+  closeCrop();
+}
+
+function closeCrop() {
+  document.getElementById('cropModal').classList.remove('open');
+  // Reset input so same file can be re-selected
+  var inp = document.getElementById('photoInput');
+  inp.value = '';
 }
 
 async function uploadPhotoToImgbb(dataUrl) {
@@ -1000,7 +1188,7 @@ async function submitForm() {
 
   var tagId     = genTagId();
   var timestamp = new Date().toLocaleString('en-ZA', {timeZone:'Africa/Johannesburg'});
-  var dobRaw    = v('dob');         // YYYY-MM-DD from date input
+  var dobRaw    = getDobFromSelects(); // YYYY-MM-DD from selects
   var dobFormatted = formatDob(dobRaw); // DD Month YYYY for display
 
   var colour = coloursSelected.length > 0 ? coloursSelected.join(' + ') : 'Not selected';
@@ -1090,5 +1278,25 @@ async function submitForm() {
 }
 </script>
 
+
+<!-- ── CROP MODAL ── -->
+<div class="crop-modal" id="cropModal">
+  <div class="crop-box">
+    <div class="crop-title">✂️ &nbsp;Crop Photo</div>
+    <div class="crop-canvas-wrap">
+      <canvas id="cropCanvas"></canvas>
+      <div class="crop-circle-overlay"></div>
+    </div>
+    <p class="crop-hint">Drag to reposition · Pinch or use slider to zoom</p>
+    <div class="crop-zoom">
+      <label>Zoom</label>
+      <input type="range" id="cropZoom" min="1" max="4" step="0.01" value="1" oninput="cropDraw()">
+    </div>
+    <div class="crop-btns">
+      <button class="btn-crop-cancel" onclick="closeCrop()">Cancel</button>
+      <button class="btn-crop-apply" onclick="applyCrop()">✓ &nbsp;Use Photo</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
