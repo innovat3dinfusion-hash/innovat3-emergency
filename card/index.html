@@ -472,19 +472,72 @@ var subData = null;
     el.target='_blank';
   });
 
-  // Telegram
+  // ── BUILD ALERT MESSAGE ──
   var msg='🚨 *NFC TAG SCANNED — EMERGENCY*\n\n*'+name+'*\n'+
     '🩸 Blood: '+(subData['Blood Type']||'—')+'\n'+
     '⚠️ '+(subData['Medical Alerts']||'—')+'\n'+
     '🏥 '+(subData['Medical Aid']?subData['Medical Aid']+' · '+(subData['Medical Aid Number']||''):'No medical aid')+'\n\n'+
     (mapsUrl?'📍 *Location:* '+gpsAddress+'\n🗺️ '+mapsUrl+'\n':'📍 Location not shared\n')+
     '🕐 '+timestamp+'\n🏷️ Tag: '+tagId;
+
+  // ── SEND TELEGRAM TO INNOVAT3 OWNER BOT ──
   try{
     await fetch('https://api.telegram.org/bot'+TELEGRAM_TOKEN+'/sendMessage',{
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({chat_id:TELEGRAM_CHAT,text:msg,parse_mode:'Markdown',disable_web_page_preview:true})
     });
   }catch(e){}
+
+  // ── AUTO-SEND TELEGRAM TO EACH CONTACT WITH A TELEGRAM HANDLE ──
+  // Build contact-specific message
+  var contacts=[
+    {name:subData['Contact 1 Name']||'',rel:subData['Contact 1 Relation']||'',tg:subData['Contact 1 Telegram']||'',wa:subData['Contact 1 WA']||'',phone:subData['Contact 1 Phone']||''},
+    {name:subData['Contact 2 Name']||'',rel:subData['Contact 2 Relation']||'',tg:subData['Contact 2 Telegram']||'',wa:subData['Contact 2 WA']||'',phone:subData['Contact 2 Phone']||''},
+    {name:subData['Contact 3 Name']||'',rel:subData['Contact 3 Relation']||'',tg:subData['Contact 3 Telegram']||'',wa:subData['Contact 3 WA']||'',phone:subData['Contact 3 Phone']||''}
+  ];
+
+  for(var ci=0;ci<contacts.length;ci++){
+    var ct=contacts[ci];
+    if(!ct.name) continue; // skip empty contacts
+    var tgHandle=(ct.tg||'').trim().replace(/^@/,'');
+    if(!tgHandle) continue;
+    var ctMsg='🚨 *EMERGENCY ALERT — Innovat3*\n\n'+
+      'Hi *'+ct.name+'*, this is an automated emergency alert.\n\n'+
+      '*'+name+'\'s* NFC emergency tag was just scanned.\n'+
+      (ct.rel?'You are listed as their *'+ct.rel+'*.\n':'')+'\n'+
+      '🩸 Blood Type: '+(subData['Blood Type']||'—')+'\n'+
+      '⚠️ Medical: '+(subData['Medical Alerts']||'—')+'\n\n'+
+      (mapsUrl?'📍 *Current Location:*\n'+gpsAddress+'\n🗺️ '+mapsUrl+'\n\n':'📍 Location not available\n\n')+
+      'Please respond immediately and contact emergency services if needed.\n'+
+      '📞 10177 (Ambulance) · 10111 (Police)\n\n'+
+      '— Innovat3 Emergency System\n🏷️ '+tagId;
+    try{
+      await fetch('https://api.telegram.org/bot'+TELEGRAM_TOKEN+'/sendMessage',{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({chat_id:'@'+tgHandle,text:ctMsg,parse_mode:'Markdown',disable_web_page_preview:true})
+      });
+    }catch(e){}
+  }
+
+  // ── AUTO-OPEN WHATSAPP FOR CONTACT 1 (immediate automated reach) ──
+  var c1=contacts[0];
+  if(c1&&c1.name&&c1.phone&&(subData['Contact 1 WA']||'').toLowerCase()==='yes'){
+    var c1WaText=encodeURIComponent(
+      '🚨 EMERGENCY — Innovat3 Alert\n\n'+
+      'Hi '+c1.name+', this is an automated emergency alert.\n\n'+
+      name+'\'s NFC tag was just scanned.\n'+
+      (c1.rel?'You are listed as their '+c1.rel+'.\n':'')+
+      '\n🩸 Blood: '+(subData['Blood Type']||'—')+
+      '\n⚠️ Medical: '+(subData['Medical Alerts']||'—')+
+      (mapsUrl?'\n\n📍 Location:\n'+mapsUrl:'\n\n📍 Location not available')+
+      '\n\nPlease respond immediately.\n— Innovat3 Emergency System'
+    );
+    var c1phone=(c1.phone||'').replace(/\D/g,'');
+    // Auto-open WhatsApp for Contact 1 — finder only needs to hit Send
+    setTimeout(function(){
+      window.open('https://wa.me/'+c1phone+'?text='+c1WaText,'_blank');
+    },1800); // slight delay so page has loaded
+  }
 
   // Log to Sheets
   try{
