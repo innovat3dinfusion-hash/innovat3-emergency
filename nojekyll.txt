@@ -1,0 +1,5 @@
+This file should be uploaded to the ROOT of your GitHub repo as:    .nojekyll
+(no extension, just .nojekyll)
+
+It is an empty file — no content needed.
+It tells GitHub Pages to skip Jekyll processing, which causes redirect loops on subfolders.
