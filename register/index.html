@@ -817,8 +817,8 @@ var photoUploadedUrl = '';
 <script>
 // ── NAVIGATION ──
 
-// Populate DOB selects on load — inline scripts inside <select> not reliable on iOS
-document.addEventListener('DOMContentLoaded', function() {
+// Populate DOB selects — script runs after DOM so execute immediately
+(function() {
   var dayEl  = document.getElementById('dobDay');
   var yearEl = document.getElementById('dobYear');
   if (dayEl) {
@@ -836,7 +836,7 @@ document.addEventListener('DOMContentLoaded', function() {
       yearEl.appendChild(oy);
     }
   }
-});
+})();
 
 function goStep(n) {
   if (n > currentStep && !validateStep(currentStep)) return;
