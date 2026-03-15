@@ -319,17 +319,13 @@ body { font-family:"Exo 2",sans-serif; background:#050505; color:var(--text); mi
   color:var(--blue); letter-spacing:1.5px; text-transform:uppercase; text-align:center;
 }
 .crop-canvas-wrap {
-  position:relative; width:100%; padding-top:100%;
-  overflow:hidden; border-radius:12px; background:#000; cursor:move;
+  position:relative; width:100%; aspect-ratio:1/1;
+  overflow:hidden; border-radius:50%; background:#111; cursor:move;
+  border:2px solid rgba(59,130,246,0.5);
 }
 #cropCanvas {
-  position:absolute; top:0; left:0; width:100%; height:100%;
-  touch-action:none;
-}
-.crop-circle-overlay {
-  position:absolute; inset:0; pointer-events:none;
-  background:radial-gradient(circle 47% at 50% 50%, transparent 47%, rgba(0,0,0,0.65) 47%);
-  border-radius:12px;
+  display:block; width:100%; height:100%;
+  touch-action:none; border-radius:50%;
 }
 .crop-hint { font-size:11px; color:var(--muted); text-align:center; }
 .crop-zoom { display:flex; align-items:center; gap:10px; }
@@ -978,132 +974,158 @@ function toggleColour(el, val) {
 
 // ── PHOTO ──
 // ── CROP SYSTEM ──────────────────────────────────────────────────────
-var _cropImg    = new Image();
-var _cropOffX   = 0, _cropOffY = 0;
-var _cropZoom   = 1;           // 1 = image fits canvas exactly
-var _fitScale   = 1;           // scale so image fills canvas at zoom=1
-var _dragStart  = null, _lastOff = {x:0, y:0};
-var _pinchStart = null, _pinchScaleStart = 1;
+// ── CROP SYSTEM ──────────────────────────────────────────────────────────
+var _ci         = new Image();   // source image
+var _cSize      = 320;           // canvas pixel size
+var _cFit       = 1;             // scale so image SHORT side = canvas (fills circle)
+var _cZoom      = 1;             // user zoom multiplier (1 = default fit)
+var _cX         = 0;             // offset from centre x
+var _cY         = 0;             // offset from centre y
+var _drag       = null;          // {x,y,ox,oy}
+var _pinch0     = 0;
+var _pinchZ0    = 1;
 
 function handlePhoto(input) {
   if (!input.files || !input.files[0]) return;
   var reader = new FileReader();
   reader.onload = function(e) {
-    _cropImg = new Image();
-    _cropImg.onload = function() {
+    var img = new Image();
+    img.onload = function() {
+      _ci = img;
+      // Size canvas to its rendered width
       var canvas = document.getElementById('cropCanvas');
       var wrap   = canvas.parentElement;
-      var size   = wrap.offsetWidth || 320;
-      canvas.width = canvas.height = size;
-      // fitScale: scale image so its shorter side fills the canvas
-      _fitScale = size / Math.min(_cropImg.width, _cropImg.height);
-      _cropZoom = 1;
-      _cropOffX = 0; _cropOffY = 0;
+      var sz     = Math.round(wrap.getBoundingClientRect().width) || 300;
+      _cSize     = sz;
+      canvas.width = canvas.height = sz;
+      // fitScale: fill the circle — shorter side = canvas
+      _cFit = sz / Math.min(img.naturalWidth, img.naturalHeight);
+      _cZoom = 1;
+      _cX = 0; _cY = 0;
       document.getElementById('cropZoom').value = 1;
-      openCrop();
+      document.getElementById('cropModal').classList.add('open');
+      _cDraw();
+      _cBindEvents();
     };
-    _cropImg.src = e.target.result;
+    img.src = e.target.result;
   };
   reader.readAsDataURL(input.files[0]);
 }
 
-function openCrop() {
-  document.getElementById('cropModal').classList.add('open');
-  cropDraw();
-  var canvas = document.getElementById('cropCanvas');
-
-  // Mouse
-  canvas.onmousedown = function(e) {
-    _dragStart = {x: e.clientX, y: e.clientY};
-    _lastOff   = {x: _cropOffX, y: _cropOffY};
-    e.preventDefault();
-  };
-  window.onmousemove = function(e) {
-    if (!_dragStart) return;
-    _cropOffX = _lastOff.x + (e.clientX - _dragStart.x);
-    _cropOffY = _lastOff.y + (e.clientY - _dragStart.y);
-    cropDraw();
-  };
-  window.onmouseup = function() { _dragStart = null; };
-
-  // Touch
-  canvas.ontouchstart = function(e) {
-    if (e.touches.length === 1) {
-      _dragStart = {x: e.touches[0].clientX, y: e.touches[0].clientY};
-      _lastOff   = {x: _cropOffX, y: _cropOffY};
-    } else if (e.touches.length === 2) {
-      _pinchStart      = Math.hypot(
-        e.touches[0].clientX - e.touches[1].clientX,
-        e.touches[0].clientY - e.touches[1].clientY
-      );
-      _pinchScaleStart = _cropZoom;
-    }
-    e.preventDefault();
-  };
-  canvas.ontouchmove = function(e) {
-    if (e.touches.length === 1 && _dragStart) {
-      _cropOffX = _lastOff.x + (e.touches[0].clientX - _dragStart.x);
-      _cropOffY = _lastOff.y + (e.touches[0].clientY - _dragStart.y);
-      cropDraw();
-    } else if (e.touches.length === 2 && _pinchStart) {
-      var dist  = Math.hypot(
-        e.touches[0].clientX - e.touches[1].clientX,
-        e.touches[0].clientY - e.touches[1].clientY
-      );
-      _cropZoom = Math.min(4, Math.max(0.5, _pinchScaleStart * (dist / _pinchStart)));
-      document.getElementById('cropZoom').value = _cropZoom;
-      cropDraw();
-    }
-    e.preventDefault();
-  };
-  canvas.ontouchend = function() { _dragStart = null; };
-}
-
-function cropDraw() {
+function _cDraw() {
   var canvas = document.getElementById('cropCanvas');
   var ctx    = canvas.getContext('2d');
-  var size   = canvas.width;
-  _cropZoom  = parseFloat(document.getElementById('cropZoom').value) || 1;
-
-  // Displayed image size = fit to canvas × zoom
-  var dw = _cropImg.width  * _fitScale * _cropZoom;
-  var dh = _cropImg.height * _fitScale * _cropZoom;
-
-  // Draw centred + offset
-  var x = (size - dw) / 2 + _cropOffX;
-  var y = (size - dh) / 2 + _cropOffY;
-
-  ctx.clearRect(0, 0, size, size);
-  // Dark background so cropped area is visible
-  ctx.fillStyle = '#0a0a0a';
-  ctx.fillRect(0, 0, size, size);
-  ctx.drawImage(_cropImg, x, y, dw, dh);
+  var sz     = _cSize;
+  var scale  = _cFit * _cZoom;
+  var dw     = _ci.naturalWidth  * scale;
+  var dh     = _ci.naturalHeight * scale;
+  var x      = (sz - dw) / 2 + _cX;
+  var y      = (sz - dh) / 2 + _cY;
+  ctx.clearRect(0, 0, sz, sz);
+  ctx.fillStyle = '#111';
+  ctx.fillRect(0, 0, sz, sz);
+  ctx.drawImage(_ci, x, y, dw, dh);
+  // Draw circle guide (semi-transparent outside)
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(0, 0, sz, sz);
+  ctx.arc(sz/2, sz/2, sz/2 - 2, 0, Math.PI*2, true);
+  ctx.fillStyle = 'rgba(0,0,0,0.55)';
+  ctx.fill();
+  // Circle border
+  ctx.beginPath();
+  ctx.arc(sz/2, sz/2, sz/2 - 2, 0, Math.PI*2);
+  ctx.strokeStyle = 'rgba(59,130,246,0.8)';
+  ctx.lineWidth   = 2;
+  ctx.stroke();
+  ctx.restore();
 }
 
-function applyCrop() {
+function _cBindEvents() {
   var canvas = document.getElementById('cropCanvas');
-  var size   = canvas.width;
+  // Remove old listeners by cloning
+  var fresh = canvas.cloneNode(true);
+  canvas.parentNode.replaceChild(fresh, canvas);
+  canvas = fresh;
 
-  // Render final crop at 400×400
-  var out = document.createElement('canvas');
-  out.width = out.height = 400;
-  var ctx   = out.getContext('2d');
-  var ratio = 400 / size;
+  // Mouse
+  canvas.addEventListener('mousedown', function(e) {
+    _drag = {x: e.clientX, y: e.clientY, ox: _cX, oy: _cY};
+    e.preventDefault();
+  });
+  canvas.addEventListener('mousemove', function(e) {
+    if (!_drag) return;
+    _cX = _drag.ox + (e.clientX - _drag.x);
+    _cY = _drag.oy + (e.clientY - _drag.y);
+    _cDraw(); e.preventDefault();
+  });
+  canvas.addEventListener('mouseup',   function() { _drag = null; });
+  canvas.addEventListener('mouseleave',function() { _drag = null; });
 
+  // Mouse wheel zoom
+  canvas.addEventListener('wheel', function(e) {
+    var delta = e.deltaY > 0 ? -0.08 : 0.08;
+    _cZoom = Math.min(4, Math.max(0.3, _cZoom + delta));
+    document.getElementById('cropZoom').value = _cZoom;
+    _cDraw(); e.preventDefault();
+  }, {passive: false});
+
+  // Touch drag + pinch
+  canvas.addEventListener('touchstart', function(e) {
+    if (e.touches.length === 1) {
+      _drag = {x: e.touches[0].clientX, y: e.touches[0].clientY, ox: _cX, oy: _cY};
+    } else if (e.touches.length === 2) {
+      _pinch0  = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      _pinchZ0 = _cZoom;
+    }
+    e.preventDefault();
+  }, {passive: false});
+
+  canvas.addEventListener('touchmove', function(e) {
+    if (e.touches.length === 1 && _drag) {
+      _cX = _drag.ox + (e.touches[0].clientX - _drag.x);
+      _cY = _drag.oy + (e.touches[0].clientY - _drag.y);
+      _cDraw();
+    } else if (e.touches.length === 2 && _pinch0) {
+      var dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      _cZoom = Math.min(4, Math.max(0.3, _pinchZ0 * (dist / _pinch0)));
+      document.getElementById('cropZoom').value = _cZoom;
+      _cDraw();
+    }
+    e.preventDefault();
+  }, {passive: false});
+
+  canvas.addEventListener('touchend', function() { _drag = null; });
+}
+
+function cropDraw() { _cDraw(); }   // called by zoom slider oninput
+
+function applyCrop() {
+  // Export a clean 400×400 circular crop
+  var out    = document.createElement('canvas');
+  out.width  = out.height = 400;
+  var ctx    = out.getContext('2d');
+  var ratio  = 400 / _cSize;
+  var scale  = _cFit * _cZoom;
+  var dw     = _ci.naturalWidth  * scale * ratio;
+  var dh     = _ci.naturalHeight * scale * ratio;
+  var x      = ((_cSize - _ci.naturalWidth  * scale) / 2 + _cX) * ratio;
+  var y      = ((_cSize - _ci.naturalHeight * scale) / 2 + _cY) * ratio;
   ctx.save();
   ctx.beginPath();
   ctx.arc(200, 200, 200, 0, Math.PI * 2);
   ctx.clip();
-
-  var dw = _cropImg.width  * _fitScale * _cropZoom * ratio;
-  var dh = _cropImg.height * _fitScale * _cropZoom * ratio;
-  var x  = ((size - _cropImg.width  * _fitScale * _cropZoom) / 2 + _cropOffX) * ratio;
-  var y  = ((size - _cropImg.height * _fitScale * _cropZoom) / 2 + _cropOffY) * ratio;
-
-  ctx.drawImage(_cropImg, x, y, dw, dh);
+  ctx.drawImage(_ci, x, y, dw, dh);
   ctx.restore();
 
   photoDataUrl = out.toDataURL('image/jpeg', 0.88);
+
   var preview     = document.getElementById('photoPreview');
   var placeholder = document.getElementById('photoPlaceholder');
   preview.src           = photoDataUrl;
@@ -1309,12 +1331,11 @@ async function submitForm() {
     <div class="crop-title">✂️ &nbsp;Crop Photo</div>
     <div class="crop-canvas-wrap">
       <canvas id="cropCanvas"></canvas>
-      <div class="crop-circle-overlay"></div>
-    </div>
-    <p class="crop-hint">Drag to position · Zoom out to remove unwanted area · Pinch on mobile</p>
+      </div>
+    <p class="crop-hint">Drag to position · Scroll or slider to zoom · Pinch on mobile</p>
     <div class="crop-zoom">
       <label>Zoom</label>
-      <input type="range" id="cropZoom" min="0.5" max="3" step="0.01" value="1" oninput="cropDraw()">
+      <input type="range" id="cropZoom" min="0.3" max="4" step="0.01" value="1" oninput="cropDraw()">
     </div>
     <div class="crop-btns">
       <button class="btn-crop-cancel" onclick="closeCrop()">Cancel</button>
