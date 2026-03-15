@@ -426,7 +426,6 @@ var photoUploadedUrl = '';
           <div class="dob-selects">
             <select id="dobDay" onchange="onDobChange()">
               <option value="">Day</option>
-              <script>for(var d=1;d<=31;d++) document.write('<option value="'+d+'">'+d+'</option>');</script>
             </select>
             <select id="dobMonth" onchange="onDobChange()">
               <option value="">Month</option>
@@ -439,7 +438,6 @@ var photoUploadedUrl = '';
             </select>
             <select id="dobYear" onchange="onDobChange()">
               <option value="">Year</option>
-              <script>for(var y=new Date().getFullYear();y>=1920;y--) document.write('<option value="'+y+'">'+y+'</option>');</script>
             </select>
             <input type="hidden" id="dob">
           </div>
@@ -818,6 +816,28 @@ var photoUploadedUrl = '';
 
 <script>
 // ── NAVIGATION ──
+
+// Populate DOB selects on load — inline scripts inside <select> not reliable on iOS
+document.addEventListener('DOMContentLoaded', function() {
+  var dayEl  = document.getElementById('dobDay');
+  var yearEl = document.getElementById('dobYear');
+  if (dayEl) {
+    for (var d = 1; d <= 31; d++) {
+      var od = document.createElement('option');
+      od.value = d; od.textContent = d;
+      dayEl.appendChild(od);
+    }
+  }
+  if (yearEl) {
+    var cur = new Date().getFullYear();
+    for (var y = cur; y >= 1920; y--) {
+      var oy = document.createElement('option');
+      oy.value = y; oy.textContent = y;
+      yearEl.appendChild(oy);
+    }
+  }
+});
+
 function goStep(n) {
   if (n > currentStep && !validateStep(currentStep)) return;
   document.getElementById('sec'+currentStep).classList.remove('active');
