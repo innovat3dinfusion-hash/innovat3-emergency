@@ -477,23 +477,7 @@ var subData = null;
     {name:subData['Contact 2 Name']||'',rel:subData['Contact 2 Relation']||'',wa:subData['Contact 2 WA']||'',phone:subData['Contact 2 Phone']||''},
     {name:subData['Contact 3 Name']||'',rel:subData['Contact 3 Relation']||'',wa:subData['Contact 3 WA']||'',phone:subData['Contact 3 Phone']||''}
   ];
-  var c1=contacts[0];
-  if(c1&&c1.name&&c1.phone&&(c1.wa||'').toLowerCase()==='yes'){
-    var c1WaText=encodeURIComponent(
-      '🚨 EMERGENCY — Innovat3 Alert\n\n'+
-      'Hi '+c1.name+', this is an automated emergency alert.\n\n'+
-      name+'\'s NFC tag was just scanned.\n'+
-      (c1.rel?'You are listed as their '+c1.rel+'.\n':'')+
-      '\n🦸 Blood: '+(subData['Blood Type']||'—')+
-      '\n⚠️ Medical: '+(subData['Medical Alerts']||'—')+
-      (mapsUrl?'\n\n📍 Location:\n'+mapsUrl:'\n\n📍 Location not available')+
-      '\n\nPlease respond immediately.\n— Innovat3 Emergency System'
-    );
-    var c1phone=(c1.phone||'').replace(/\D/g,'');
-    setTimeout(function(){
-      window.open('https://wa.me/'+c1phone+'?text='+c1WaText,'_blank');
-    },1800);
-  }
+  // WhatsApp buttons are pre-filled below — finder taps manually
 
   // Log to Sheets
   try{
