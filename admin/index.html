@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>innovat3 — Admin Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --orange: #F97316;
+    --orange-dim: #c45a0d;
+    --teal: #0ED2C8;
+    --teal-dim: #09a09a;
+    --black: #0A0A0A;
+    --surface: #111111;
+    --surface2: #1a1a1a;
+    --surface3: #222222;
+    --border: rgba(255,255,255,0.07);
+    --border-orange: rgba(249,115,22,0.25);
+    --border-teal: rgba(14,210,200,0.25);
+    --text: #f0f0f0;
+    --text-muted: #888;
+    --text-dim: #555;
+    --font-head: 'Orbitron', monospace;
+    --font-body: 'Exo 2', sans-serif;
+    --radius: 10px;
+    --radius-lg: 16px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 14px;
+    min-height: 100vh;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 220px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+  }
+  .sidebar-logo {
+    padding: 24px 20px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .logo-text {
+    font-family: var(--font-head);
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--orange);
+    letter-spacing: 2px;
+  }
+  .logo-sub {
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .nav {
+    flex: 1;
+    padding: 16px 0;
+    overflow-y: auto;
+  }
+  .nav-section {
+    padding: 6px 16px 2px;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-top: 12px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 20px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-muted);
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+    text-decoration: none;
+  }
+  .nav-item:hover { color: var(--text); background: var(--surface2); }
+  .nav-item.active {
+    color: var(--orange);
+    background: rgba(249,115,22,0.08);
+    border-left-color: var(--orange);
+  }
+  .nav-item .icon { font-size: 15px; width: 18px; text-align: center; }
+  .sidebar-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  .status-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--teal);
+    margin-right: 6px;
+    box-shadow: 0 0 6px var(--teal);
+  }
+
+  /* ── MAIN ── */
+  .main {
+    margin-left: 220px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    height: 60px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .page-title {
+    font-family: var(--font-head);
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: var(--text);
+  }
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .refresh-btn {
+    padding: 6px 14px;
+    border: 1px solid var(--border-orange);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--orange);
+    font-family: var(--font-body);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 1px;
+  }
+  .refresh-btn:hover { background: rgba(249,115,22,0.1); }
+  .last-updated {
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  .admin-badge {
+    font-size: 10px;
+    letter-spacing: 2px;
+    background: rgba(14,210,200,0.1);
+    color: var(--teal);
+    border: 1px solid var(--border-teal);
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  /* ── CONTENT ── */
+  .content {
+    padding: 28px;
+    flex: 1;
+  }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ── METRIC CARDS ── */
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .metric-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px 22px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .metric-card:hover { border-color: rgba(255,255,255,0.12); }
+  .metric-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+  }
+  .metric-card.orange::before { background: var(--orange); }
+  .metric-card.teal::before { background: var(--teal); }
+  .metric-card.gray::before { background: #444; }
+  .metric-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+  }
+  .metric-value {
+    font-family: var(--font-head);
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .metric-card.orange .metric-value { color: var(--orange); }
+  .metric-card.teal .metric-value { color: var(--teal); }
+  .metric-card.gray .metric-value { color: #ccc; }
+  .metric-sub {
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  .metric-badge {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+  }
+  .badge-green { background: rgba(16,185,129,0.15); color: #10b981; }
+  .badge-orange { background: rgba(249,115,22,0.15); color: var(--orange); }
+  .badge-teal { background: rgba(14,210,200,0.15); color: var(--teal); }
+  .badge-gray { background: rgba(255,255,255,0.06); color: #777; }
+
+  /* ── TWO-COL GRID ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; }
+  .three-col { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 20px; margin-bottom: 28px; }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .card-title {
+    font-family: var(--font-head);
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--text);
+  }
+  .card-body { padding: 20px; }
+  .card-badge {
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 10px;
+    letter-spacing: 1px;
+  }
+
+  /* ── TABLE ── */
+  .table-wrap { overflow-x: auto; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  th {
+    text-align: left;
+    padding: 10px 14px;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+    font-weight: 400;
+  }
+  td {
+    padding: 11px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    color: var(--text-muted);
+    vertical-align: middle;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); color: var(--text); }
+  .td-primary { color: var(--text) !important; font-weight: 500; }
+  .tag-id { font-family: var(--font-head); font-size: 11px; color: var(--orange); letter-spacing: 1px; }
+
+  /* ── STATUS PILL ── */
+  .pill {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  .pill-active   { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.25); }
+  .pill-beta     { background: rgba(14,210,200,0.12); color: var(--teal); border: 1px solid var(--border-teal); }
+  .pill-pending  { background: rgba(249,115,22,0.12); color: var(--orange); border: 1px solid var(--border-orange); }
+  .pill-inactive { background: rgba(255,255,255,0.05); color: #555; border: 1px solid var(--border); }
+  .pill-solo     { background: rgba(249,115,22,0.08); color: var(--orange); border: 1px solid var(--border-orange); }
+  .pill-family   { background: rgba(14,210,200,0.08); color: var(--teal); border: 1px solid var(--border-teal); }
+  .pill-care     { background: rgba(168,85,247,0.1); color: #a855f7; border: 1px solid rgba(168,85,247,0.2); }
+
+  /* ── PLAN BAR CHART ── */
+  .plan-bars { display: flex; flex-direction: column; gap: 12px; }
+  .plan-row { display: flex; align-items: center; gap: 12px; }
+  .plan-name { font-size: 12px; color: var(--text-muted); width: 80px; flex-shrink: 0; }
+  .bar-track { flex: 1; height: 6px; background: var(--surface3); border-radius: 3px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 3px; transition: width 0.8s ease; }
+  .bar-orange { background: var(--orange); }
+  .bar-teal   { background: var(--teal); }
+  .bar-gray   { background: #555; }
+  .plan-count { font-family: var(--font-head); font-size: 12px; color: var(--text); width: 24px; text-align: right; }
+
+  /* ── SCAN LOG ── */
+  .scan-entry {
+    display: flex;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .scan-entry:last-child { border-bottom: none; }
+  .scan-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-top: 5px;
+    flex-shrink: 0;
+  }
+  .scan-dot-orange { background: var(--orange); box-shadow: 0 0 6px var(--orange); }
+  .scan-dot-teal   { background: var(--teal);   box-shadow: 0 0 6px var(--teal); }
+  .scan-info { flex: 1; }
+  .scan-name { font-size: 13px; color: var(--text); font-weight: 500; }
+  .scan-meta { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .scan-time { font-size: 11px; color: var(--text-dim); text-align: right; }
+
+  /* ── SEARCH / FILTER ── */
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .search-box {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 8px 14px;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-box:focus { border-color: var(--border-orange); }
+  .search-box::placeholder { color: var(--text-dim); }
+  .filter-btn {
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface2);
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.5px;
+  }
+  .filter-btn:hover, .filter-btn.active { border-color: var(--border-orange); color: var(--orange); background: rgba(249,115,22,0.06); }
+
+  /* ── PENDING TASKS ── */
+  .task-list { display: flex; flex-direction: column; gap: 2px; }
+  .task-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  .task-item:hover { background: var(--surface2); }
+  .task-check {
+    width: 16px; height: 16px;
+    border: 1.5px solid var(--text-dim);
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .task-item.done .task-check {
+    background: var(--teal);
+    border-color: var(--teal);
+  }
+  .task-item.done .task-check::after {
+    content: '✓';
+    position: absolute;
+    top: -1px; left: 2px;
+    font-size: 11px;
+    color: var(--black);
+    font-weight: 700;
+  }
+  .task-text { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
+  .task-item.done .task-text { text-decoration: line-through; color: var(--text-dim); }
+  .task-tag {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 8px;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+  .tag-critical { background: rgba(239,68,68,0.12); color: #ef4444; }
+  .tag-revenue  { background: rgba(249,115,22,0.12); color: var(--orange); }
+  .tag-legal    { background: rgba(168,85,247,0.12); color: #a855f7; }
+  .tag-ops      { background: rgba(14,210,200,0.12); color: var(--teal); }
+  .tag-dev      { background: rgba(59,130,246,0.12); color: #3b82f6; }
+
+  /* ── REVENUE CARD ── */
+  .rev-split { display: flex; gap: 24px; align-items: flex-start; }
+  .rev-item { flex: 1; }
+  .rev-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; }
+  .rev-val { font-family: var(--font-head); font-size: 22px; color: var(--orange); }
+  .rev-sub { font-size: 11px; color: var(--text-dim); margin-top: 3px; }
+  .rev-divider { width: 1px; background: var(--border); align-self: stretch; }
+
+  /* ── LOADING ── */
+  .loading { text-align: center; padding: 40px; color: var(--text-dim); font-size: 13px; letter-spacing: 1px; }
+  .spinner {
+    display: inline-block;
+    width: 20px; height: 20px;
+    border: 2px solid var(--border);
+    border-top-color: var(--orange);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── TELEGRAM SECTION ── */
+  .chat-id-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .chat-id-row:last-child { border-bottom: none; }
+  .chat-avatar {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--surface3);
+    border: 1px solid var(--border-teal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: var(--teal);
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .chat-name { font-size: 13px; color: var(--text); }
+  .chat-id { font-family: var(--font-head); font-size: 10px; color: var(--text-dim); margin-top: 2px; }
+  .chat-status { margin-left: auto; }
+
+  /* ── ALERT BOX ── */
+  .alert-box {
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    margin-bottom: 16px;
+    border-left: 3px solid;
+  }
+  .alert-orange { background: rgba(249,115,22,0.08); border-color: var(--orange); color: #f5a96a; }
+  .alert-teal   { background: rgba(14,210,200,0.08); border-color: var(--teal);   color: #6edbd6; }
+  .alert-red    { background: rgba(239,68,68,0.08);  border-color: #ef4444;       color: #f87171; }
+
+  /* ── DONUT ── */
+  .donut-wrap { display: flex; align-items: center; gap: 24px; }
+  .donut-legend { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+  .legend-item { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text-muted); }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .legend-val { margin-left: auto; font-family: var(--font-head); font-size: 12px; color: var(--text); }
+
+  /* ── EMPTY STATE ── */
+  .empty {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-dim);
+    font-size: 13px;
+  }
+
+  /* ── ACTION BUTTONS ── */
+  .action-btn {
+    padding: 7px 14px;
+    border-radius: var(--radius);
+    font-family: var(--font-body);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.5px;
+    border: none;
+  }
+  .btn-orange { background: var(--orange); color: #fff; }
+  .btn-orange:hover { background: var(--orange-dim); }
+  .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-muted); }
+  .btn-outline:hover { border-color: var(--border-orange); color: var(--orange); }
+  .btn-teal { background: var(--teal); color: var(--black); }
+  .btn-teal:hover { background: var(--teal-dim); }
+
+  /* ── PAGINATION ── */
+  .pagination { display: flex; align-items: center; gap: 8px; margin-top: 16px; }
+  .page-btn {
+    padding: 5px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .page-btn:hover, .page-btn.active { border-color: var(--border-orange); color: var(--orange); }
+  .page-info { font-size: 12px; color: var(--text-dim); margin-left: auto; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .metric-grid { grid-template-columns: 1fr 1fr; }
+    .two-col, .three-col { grid-template-columns: 1fr; }
+    .sidebar { transform: translateX(-220px); }
+    .main { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-text">innovat3</div>
+    <div class="logo-sub">Admin Console</div>
+  </div>
+  <nav class="nav">
+    <div class="nav-section">Overview</div>
+    <a class="nav-item active" onclick="showSection('dashboard')">
+      <span class="icon">◈</span> Dashboard
+    </a>
+    <div class="nav-section">Subscribers</div>
+    <a class="nav-item" onclick="showSection('subscribers')">
+      <span class="icon">◉</span> All Subscribers
+    </a>
+    <a class="nav-item" onclick="showSection('family')">
+      <span class="icon">◎</span> Family Bundles
+    </a>
+    <div class="nav-section">Activity</div>
+    <a class="nav-item" onclick="showSection('scans')">
+      <span class="icon">◇</span> Scan Logs
+    </a>
+    <a class="nav-item" onclick="showSection('telegram')">
+      <span class="icon">◈</span> Telegram IDs
+    </a>
+    <div class="nav-section">System</div>
+    <a class="nav-item" onclick="showSection('tasks')">
+      <span class="icon">◻</span> Pending Tasks
+    </a>
+    <a class="nav-item" onclick="showSection('revenue')">
+      <span class="icon">◈</span> Revenue
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <span class="status-dot"></span>Systems live
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="page-title" id="page-title">DASHBOARD</div>
+    <div class="topbar-right">
+      <span class="last-updated" id="last-updated">Loading…</span>
+      <button class="refresh-btn" onclick="loadAll()">↺ Refresh</button>
+      <span class="admin-badge">ADMIN</span>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ════════════ DASHBOARD ════════════ -->
+    <div class="section active" id="section-dashboard">
+
+      <div class="metric-grid" id="metric-grid">
+        <div class="metric-card orange">
+          <div class="metric-label">Total Subscribers</div>
+          <div class="metric-value" id="m-total">—</div>
+          <div class="metric-sub"><span class="metric-badge badge-teal" id="m-beta-badge">— beta</span></div>
+        </div>
+        <div class="metric-card teal">
+          <div class="metric-label">Active Tags</div>
+          <div class="metric-value" id="m-active">—</div>
+          <div class="metric-sub" id="m-pending-sub">— pending</div>
+        </div>
+        <div class="metric-card orange">
+          <div class="metric-label">Total Scans</div>
+          <div class="metric-value" id="m-scans">—</div>
+          <div class="metric-sub">all time</div>
+        </div>
+        <div class="metric-card gray">
+          <div class="metric-label">Family Bundles</div>
+          <div class="metric-value" id="m-families">—</div>
+          <div class="metric-sub">registered</div>
+        </div>
+      </div>
+
+      <div class="three-col">
+        <!-- Recent Subscribers -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">RECENT SUBSCRIBERS</span>
+            <span class="card-badge badge-orange" id="recent-count">—</span>
+          </div>
+          <div class="card-body" style="padding:0">
+            <div class="table-wrap">
+              <table>
+                <thead><tr>
+                  <th>Tag ID</th>
+                  <th>Name</th>
+                  <th>Plan</th>
+                  <th>Status</th>
+                </tr></thead>
+                <tbody id="recent-table">
+                  <tr><td colspan="4"><div class="loading"><div class="spinner"></div><br>Loading…</div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Plan Breakdown -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">PLAN BREAKDOWN</span>
+          </div>
+          <div class="card-body">
+            <div class="plan-bars" id="plan-bars">
+              <div class="loading"><div class="spinner"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Scans -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">RECENT SCANS</span>
+          </div>
+          <div class="card-body" style="padding: 8px 16px" id="recent-scans">
+            <div class="loading"><div class="spinner"></div><br>Loading…</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pending tasks alert strip -->
+      <div class="alert-box alert-orange" id="pending-alert" style="display:none"></div>
+
+      <!-- Telegram status -->
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">TELEGRAM CONTACTS</span>
+            <span class="card-badge badge-teal" id="tg-count-badge">—</span>
+          </div>
+          <div class="card-body" style="padding: 8px 16px" id="tg-preview">
+            <div class="loading"><div class="spinner"></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">QUICK ACTIONS</span>
+          </div>
+          <div class="card-body">
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <button class="action-btn btn-outline" onclick="window.open('https://script.google.com/macros/s/AKfycbwW-OuPGWyhABKlaBU7_AEK5AQruZogbJ-RhCQwzFIIUbBxY9iKUSyAP7GSARtGe4fR/exec','_blank')">⚙ Open GAS Console</button>
+              <button class="action-btn btn-outline" onclick="window.open('https://docs.google.com/spreadsheets/d/1_ZvLT_SnRkIgP7xiYBdDJ5DRtn9lwPnc6V3dmb-bSVI','_blank')">📊 Open Google Sheet</button>
+              <button class="action-btn btn-outline" onclick="window.open('https://innovat3dinfusion-hash.github.io/innovat3-emergency/register/','_blank')">📝 Registration Form</button>
+              <button class="action-btn btn-orange" onclick="showSection('tasks')">✓ View All Tasks</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════ SUBSCRIBERS ════════════ -->
+    <div class="section" id="section-subscribers">
+      <div class="toolbar">
+        <input class="search-box" placeholder="Search by name, tag ID, email…" id="sub-search" oninput="filterSubscribers()"/>
+        <button class="filter-btn active" onclick="filterPlan(this,'all')">All</button>
+        <button class="filter-btn" onclick="filterPlan(this,'Solo')">Solo</button>
+        <button class="filter-btn" onclick="filterPlan(this,'Beta')">Beta</button>
+        <button class="filter-btn" onclick="filterPlan(this,'Family')">Family</button>
+        <button class="filter-btn" onclick="filterPlan(this,'Care')">Care</button>
+      </div>
+      <div class="card">
+        <div class="card-body" style="padding:0">
+          <div class="table-wrap">
+            <table>
+              <thead><tr>
+                <th>Tag ID</th>
+                <th>Name</th>
+                <th>Plan</th>
+                <th>Status</th>
+                <th>Blood Type</th>
+                <th>Medical Aid</th>
+                <th>Contacts</th>
+                <th>Registered</th>
+              </tr></thead>
+              <tbody id="sub-table">
+                <tr><td colspan="8"><div class="loading"><div class="spinner"></div><br>Loading…</div></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="pagination" style="padding:12px 16px">
+            <button class="page-btn" onclick="subPage(-1)">← Prev</button>
+            <span id="sub-page-info" class="page-info"></span>
+            <button class="page-btn" onclick="subPage(1)">Next →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════ FAMILY BUNDLES ════════════ -->
+    <div class="section" id="section-family">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">FAMILY BUNDLES</span>
+          <span class="card-badge badge-teal" id="fam-count-badge">—</span>
+        </div>
+        <div class="card-body" style="padding:0">
+          <div class="table-wrap">
+            <table>
+              <thead><tr>
+                <th>Bundle ID</th>
+                <th>Main Member</th>
+                <th>Plan</th>
+                <th>Members</th>
+                <th>Status</th>
+                <th>Annual Value</th>
+              </tr></thead>
+              <tbody id="fam-table">
+                <tr><td colspan="6"><div class="loading"><div class="spinner"></div><br>Loading…</div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════ SCAN LOGS ════════════ -->
+    <div class="section" id="section-scans">
+      <div class="toolbar">
+        <input class="search-box" placeholder="Search by name or tag ID…" id="scan-search" oninput="filterScans()"/>
+        <span class="metric-badge badge-orange" id="scan-total-badge">— scans</span>
+      </div>
+      <div class="card">
+        <div class="card-body" style="padding:0">
+          <div class="table-wrap">
+            <table>
+              <thead><tr>
+                <th>Time</th>
+                <th>Tag ID</th>
+                <th>Name</th>
+                <th>Location</th>
+                <th>GPS</th>
+              </tr></thead>
+              <tbody id="scan-table">
+                <tr><td colspan="5"><div class="loading"><div class="spinner"></div><br>Loading…</div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════ TELEGRAM ════════════ -->
+    <div class="section" id="section-telegram">
+      <div class="alert-box alert-teal">All emergency contacts must message the Telegram bot at least once to register their Chat ID for automatic scan alerts.</div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">REGISTERED CHAT IDs</span>
+            <span class="card-badge badge-teal" id="tg-count-badge2">—</span>
+          </div>
+          <div class="card-body" style="padding: 8px 16px" id="tg-list">
+            <div class="loading"><div class="spinner"></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">BOT INFO</span></div>
+          <div class="card-body">
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <div>
+                <div class="rev-label">Bot Token</div>
+                <div style="font-family:var(--font-head);font-size:11px;color:var(--teal);word-break:break-all">8785184944:AAEEPwzW…</div>
+              </div>
+              <div>
+                <div class="rev-label">Owner Chat ID</div>
+                <div style="font-family:var(--font-head);font-size:14px;color:var(--orange)">8737168646</div>
+              </div>
+              <div>
+                <div class="rev-label">Webhook URL</div>
+                <div style="font-size:11px;color:var(--text-dim);word-break:break-all">…AKfycbwW…/exec</div>
+              </div>
+              <button class="action-btn btn-teal" onclick="window.open('https://t.me/innovat3bot','_blank')">Open Telegram Bot</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════ TASKS ════════════ -->
+    <div class="section" id="section-tasks">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">PENDING TASKS</span>
+          <span class="card-badge badge-orange" id="tasks-remaining">— remaining</span>
+        </div>
+        <div class="card-body">
+          <div class="task-list" id="task-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════ REVENUE ════════════ -->
+    <div class="section" id="section-revenue">
+      <div class="metric-grid">
+        <div class="metric-card orange">
+          <div class="metric-label">MRR (if all paid)</div>
+          <div class="metric-value" id="r-mrr">—</div>
+          <div class="metric-sub">monthly recurring</div>
+        </div>
+        <div class="metric-card teal">
+          <div class="metric-label">ARR Potential</div>
+          <div class="metric-value" id="r-arr">—</div>
+          <div class="metric-sub">annual recurring</div>
+        </div>
+        <div class="metric-card orange">
+          <div class="metric-label">Tag Hardware Fees</div>
+          <div class="metric-value" id="r-hardware">—</div>
+          <div class="metric-sub">R199 per tag</div>
+        </div>
+        <div class="metric-card gray">
+          <div class="metric-label">Beta (free) subs</div>
+          <div class="metric-value" id="r-beta">—</div>
+          <div class="metric-sub">convert to Solo after 3mo</div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header"><span class="card-title">PRICING REFERENCE</span></div>
+          <div class="card-body" style="padding:0">
+            <table>
+              <thead><tr><th>Plan</th><th>Monthly</th><th>Annual</th><th>Saving</th></tr></thead>
+              <tbody>
+                <tr><td class="td-primary">Solo</td><td>R89/mo</td><td>R857/yr</td><td><span class="pill pill-active">20%</span></td></tr>
+                <tr><td class="td-primary">Family</td><td>R149/mo</td><td>R1,435/yr</td><td><span class="pill pill-active">20%</span></td></tr>
+                <tr><td class="td-primary">Care</td><td colspan="2">R199 once-off</td><td>—</td></tr>
+                <tr><td class="td-primary">Beta</td><td colspan="2">Free 3 months</td><td><span class="pill pill-beta">→ Solo</span></td></tr>
+                <tr><td class="td-primary">Tag Hardware</td><td colspan="2">R199 once-off</td><td>—</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">REVENUE BREAKDOWN</span></div>
+          <div class="card-body">
+            <div class="plan-bars" id="rev-bars">
+              <div class="loading"><div class="spinner"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── CONFIG ──
+const SHEET_ID = '1_ZvLT_SnRkIgP7xiYBdDJ5DRtn9lwPnc6V3dmb-bSVI';
+const GAS_URL  = 'https://script.google.com/macros/s/AKfycbwW-OuPGWyhABKlaBU7_AEK5AQruZogbJ-RhCQwzFIIUbBxY9iKUSyAP7GSARtGe4fR/exec';
+
+// ── STATE ──
+let allSubs = [], allScans = [], allTelegram = [], allFamilies = [];
+let subFilter = 'all', subPage = 0;
+const PAGE_SIZE = 20;
+
+// ── TASKS DATA ──
+const tasks = [
+  { text: 'Programme physical NFC tags with NFC Tools app', tag: 'ops',      done: false },
+  { text: 'Get custom domain innovat3.co.za → point to GitHub Pages', tag: 'ops', done: false },
+  { text: 'Set up PayFast/SnapScan payment + webhook → auto-set Status = Active', tag: 'revenue', done: false },
+  { text: 'Register as Information Officer at eservices.inforegulator.org.za', tag: 'legal', done: false },
+  { text: 'Attorney review of T&Cs before scaling', tag: 'legal', done: false },
+  { text: 'File provisional patent at iponline.cipc.co.za (~R900)', tag: 'legal', done: false },
+  { text: 'Register innovat3 trademark at CIPC (~R590)', tag: 'legal', done: false },
+  { text: 'Build admin dashboard', tag: 'dev', done: true },
+  { text: 'Remove 🧪 Autofill for Testing button before going live', tag: 'critical', done: false },
+  { text: 'Run formatAllSheets() in GAS after every redeployment', tag: 'ops', done: false },
+  { text: 'Run registerWebhook() once after each new GAS deployment', tag: 'ops', done: false },
+  { text: 'Have all emergency contacts message Telegram bot to register chat_id', tag: 'ops', done: false },
+  { text: 'Order first batch of NTAG215 inlays (~R750 for 50 tags)', tag: 'ops', done: false },
+  { text: 'Launch beta with first 10 subscribers', tag: 'ops', done: false },
+];
+
+// ── GVIZ QUERY ──
+async function gvizQuery(sheetName, query = 'select *') {
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}&tq=${encodeURIComponent(query)}`;
+  const res = await fetch(url);
+  const text = await res.text();
+  const json = JSON.parse(text.replace(/^[^(]+\(/, '').replace(/\);?\s*$/, ''));
+  const cols = json.table.cols.map(c => c.label);
+  const rows = (json.table.rows || []).map(r =>
+    Object.fromEntries(cols.map((c, i) => [c, r.c[i] ? r.c[i].v : '']))
+  );
+  return rows;
+}
+
+// ── LOAD ALL DATA ──
+async function loadAll() {
+  document.getElementById('last-updated').textContent = 'Refreshing…';
+  try {
+    [allSubs, allScans, allTelegram, allFamilies] = await Promise.all([
+      gvizQuery('Registrations'),
+      gvizQuery('Scan Logs'),
+      gvizQuery('Telegram Chat IDs'),
+      gvizQuery('Family Bundles'),
+    ]);
+    renderAll();
+    document.getElementById('last-updated').textContent = 'Updated ' + new Date().toLocaleTimeString('en-ZA');
+  } catch (e) {
+    console.error(e);
+    document.getElementById('last-updated').textContent = 'Error loading data';
+  }
+}
+
+function renderAll() {
+  renderMetrics();
+  renderRecentSubs();
+  renderPlanBars();
+  renderRecentScans();
+  renderSubscriberTable();
+  renderScanTable();
+  renderTelegram();
+  renderFamilies();
+  renderTasks();
+  renderRevenue();
+}
+
+// ── METRICS ──
+function renderMetrics() {
+  const total  = allSubs.length;
+  const active = allSubs.filter(r => (r['Status']||'').toLowerCase() === 'active').length;
+  const beta   = allSubs.filter(r => (r['Plan']||'').toLowerCase().includes('beta')).length;
+  const pend   = allSubs.filter(r => (r['Status']||'').toLowerCase() === 'pending').length;
+  const fams   = allFamilies.length;
+  const scans  = allScans.length;
+
+  document.getElementById('m-total').textContent = total;
+  document.getElementById('m-active').textContent = active;
+  document.getElementById('m-scans').textContent = scans;
+  document.getElementById('m-families').textContent = fams;
+  document.getElementById('m-beta-badge').textContent = beta + ' beta';
+  document.getElementById('m-pending-sub').textContent = pend + ' pending';
+
+  const pendTask = tasks.filter(t => !t.done).length;
+  if (pendTask > 0) {
+    const el = document.getElementById('pending-alert');
+    el.style.display = 'block';
+    el.textContent = `⚠ ${pendTask} pending tasks require attention — check the Tasks section`;
+  }
+}
+
+// ── RECENT SUBSCRIBERS ──
+function renderRecentSubs() {
+  const recent = [...allSubs].slice(-10).reverse();
+  document.getElementById('recent-count').textContent = allSubs.length;
+  document.getElementById('recent-table').innerHTML = recent.length ? recent.map(r => `
+    <tr>
+      <td><span class="tag-id">${r['Tag ID']||'—'}</span></td>
+      <td class="td-primary">${r['First Name']||''} ${r['Last Name']||''}</td>
+      <td>${planPill(r['Plan']||'')}</td>
+      <td>${statusPill(r['Status']||'')}</td>
+    </tr>`).join('') : '<tr><td colspan="4" class="empty">No subscribers yet</td></tr>';
+}
+
+// ── PLAN BARS ──
+function renderPlanBars() {
+  const plans = {};
+  allSubs.forEach(r => {
+    const p = (r['Plan']||'Unknown').split(' ')[0];
+    plans[p] = (plans[p]||0) + 1;
+  });
+  const total = allSubs.length || 1;
+  const colors = { Solo:'bar-orange', Beta:'bar-teal', Family:'bar-teal', Care:'bar-gray' };
+  document.getElementById('plan-bars').innerHTML = Object.entries(plans).map(([k,v]) => `
+    <div class="plan-row">
+      <div class="plan-name">${k}</div>
+      <div class="bar-track"><div class="bar-fill ${colors[k]||'bar-gray'}" style="width:${Math.round(v/total*100)}%"></div></div>
+      <div class="plan-count">${v}</div>
+    </div>`).join('');
+}
+
+// ── RECENT SCANS ──
+function renderRecentScans() {
+  const recent = [...allScans].slice(-6).reverse();
+  document.getElementById('recent-scans').innerHTML = recent.length ? recent.map((r,i) => `
+    <div class="scan-entry">
+      <div class="scan-dot ${i%2===0?'scan-dot-orange':'scan-dot-teal'}"></div>
+      <div class="scan-info">
+        <div class="scan-name">${r['Full Name']||r['First Name']||'Unknown'}</div>
+        <div class="scan-meta">${r['Tag ID']||''} · ${(r['GPS Address']||r['Address']||'No GPS').substring(0,40)}</div>
+      </div>
+      <div class="scan-time">${formatTime(r['Timestamp'])}</div>
+    </div>`).join('') : '<div class="empty">No scans yet</div>';
+}
+
+// ── SUBSCRIBER TABLE ──
+let subSearchTerm = '';
+let currentSubPage = 0;
+
+function renderSubscriberTable() {
+  let data = allSubs.filter(r => {
+    const name = `${r['First Name']||''} ${r['Last Name']||''}`.toLowerCase();
+    const tag = (r['Tag ID']||'').toLowerCase();
+    const email = (r['Email']||'').toLowerCase();
+    const match = name.includes(subSearchTerm) || tag.includes(subSearchTerm) || email.includes(subSearchTerm);
+    const planMatch = subFilter === 'all' || (r['Plan']||'').toLowerCase().includes(subFilter.toLowerCase());
+    return match && planMatch;
+  });
+  const total = data.length;
+  const start = currentSubPage * PAGE_SIZE;
+  const page  = data.slice(start, start + PAGE_SIZE);
+  document.getElementById('sub-table').innerHTML = page.length ? page.map(r => {
+    const contacts = [r['Contact 1 Name'], r['Contact 2 Name'], r['Contact 3 Name']].filter(Boolean).length;
+    return `<tr>
+      <td><span class="tag-id">${r['Tag ID']||'—'}</span></td>
+      <td class="td-primary">${r['First Name']||''} ${r['Last Name']||''}</td>
+      <td>${planPill(r['Plan']||'')}</td>
+      <td>${statusPill(r['Status']||'')}</td>
+      <td>${r['Blood Type']||'—'}</td>
+      <td style="font-size:11px;color:var(--text-dim)">${r['Medical Aid']||'—'}</td>
+      <td style="text-align:center">${contacts}</td>
+      <td style="font-size:11px;color:var(--text-dim)">${formatDate(r['Timestamp'])}</td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="8" class="empty">No results</td></tr>';
+  const totalPages = Math.ceil(total / PAGE_SIZE);
+  document.getElementById('sub-page-info').textContent = `${start+1}–${Math.min(start+PAGE_SIZE, total)} of ${total}`;
+}
+
+function filterSubscribers() {
+  subSearchTerm = document.getElementById('sub-search').value.toLowerCase();
+  currentSubPage = 0;
+  renderSubscriberTable();
+}
+
+function filterPlan(btn, plan) {
+  subFilter = plan;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentSubPage = 0;
+  renderSubscriberTable();
+}
+
+function subPage(dir) {
+  currentSubPage = Math.max(0, currentSubPage + dir);
+  renderSubscriberTable();
+}
+
+// ── SCAN TABLE ──
+let scanSearchTerm = '';
+function renderScanTable() {
+  let data = allScans.filter(r => {
+    const name = (r['Full Name']||r['First Name']||'').toLowerCase();
+    const tag = (r['Tag ID']||'').toLowerCase();
+    return name.includes(scanSearchTerm) || tag.includes(scanSearchTerm);
+  });
+  document.getElementById('scan-total-badge').textContent = data.length + ' scans';
+  document.getElementById('scan-table').innerHTML = data.length ? [...data].reverse().map(r => `
+    <tr>
+      <td style="font-size:11px;color:var(--text-dim)">${formatTime(r['Timestamp'])}</td>
+      <td><span class="tag-id">${r['Tag ID']||'—'}</span></td>
+      <td class="td-primary">${r['Full Name']||r['First Name']||'—'}</td>
+      <td style="font-size:11px;color:var(--text-muted)">${(r['GPS Address']||r['Address']||'—').substring(0,50)}</td>
+      <td>${r['GPS Lat'] ? `<a href="https://www.google.com/maps?q=${r['GPS Lat']},${r['GPS Lng']}" target="_blank" style="color:var(--teal);font-size:11px">📍 Map</a>` : '—'}</td>
+    </tr>`).join('') : '<tr><td colspan="5" class="empty">No scans yet</td></tr>';
+}
+
+function filterScans() {
+  scanSearchTerm = document.getElementById('scan-search').value.toLowerCase();
+  renderScanTable();
+}
+
+// ── TELEGRAM ──
+function renderTelegram() {
+  const count = allTelegram.length;
+  ['tg-count-badge','tg-count-badge2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = count + ' registered';
+  });
+  const html = count ? allTelegram.map(r => {
+    const name = r['First Name'] || r['Username'] || '?';
+    const initials = name.slice(0,2).toUpperCase();
+    return `<div class="chat-id-row">
+      <div class="chat-avatar">${initials}</div>
+      <div>
+        <div class="chat-name">${name}</div>
+        <div class="chat-id">@${r['Username']||'—'} · ID: ${r['Chat ID']||'—'}</div>
+      </div>
+      <div class="chat-status"><span class="pill pill-active">✓ Active</span></div>
+    </div>`;
+  }).join('') : '<div class="empty">No Telegram contacts registered yet</div>';
+  ['tg-preview','tg-list'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = html;
+  });
+}
+
+// ── FAMILIES ──
+function renderFamilies() {
+  const count = allFamilies.length;
+  document.getElementById('fam-count-badge').textContent = count + ' bundles';
+  document.getElementById('fam-table').innerHTML = count ? allFamilies.map(r => `
+    <tr>
+      <td><span class="tag-id">${r['Bundle ID']||'—'}</span></td>
+      <td class="td-primary">${r['Main Member Name']||'—'}</td>
+      <td>${planPill(r['Plan']||'Family')}</td>
+      <td style="text-align:center">${r['Total Members']||'—'}</td>
+      <td>${statusPill(r['Status']||'')}</td>
+      <td style="color:var(--orange);font-weight:500">${r['Annual Value']||'—'}</td>
+    </tr>`).join('') : '<tr><td colspan="6" class="empty">No family bundles yet</td></tr>';
+}
+
+// ── TASKS ──
+function renderTasks() {
+  const remaining = tasks.filter(t => !t.done).length;
+  document.getElementById('tasks-remaining').textContent = remaining + ' remaining';
+  document.getElementById('task-list').innerHTML = tasks.map((t,i) => `
+    <div class="task-item ${t.done?'done':''}" onclick="toggleTask(${i})">
+      <div class="task-check"></div>
+      <div class="task-text">${t.text}</div>
+      <span class="task-tag tag-${t.tag}">${t.tag}</span>
+    </div>`).join('');
+}
+
+function toggleTask(i) {
+  tasks[i].done = !tasks[i].done;
+  renderTasks();
+  const remaining = tasks.filter(t=>!t.done).length;
+  if (remaining > 0) {
+    const el = document.getElementById('pending-alert');
+    el.style.display = 'block';
+    el.textContent = `⚠ ${remaining} pending tasks require attention`;
+  }
+}
+
+// ── REVENUE ──
+function renderRevenue() {
+  const planRates = { 'Solo Monthly': 89, 'Solo Annual': 857/12, 'Family Monthly': 149, 'Family Annual': 1435/12, 'Care': 0, 'Beta': 0 };
+  let mrr = 0;
+  allSubs.forEach(r => {
+    const p = r['Plan']||'';
+    for (const [key, rate] of Object.entries(planRates)) {
+      if (p.toLowerCase().includes(key.toLowerCase())) { mrr += rate; break; }
+    }
+  });
+  const hardware = allSubs.length * 199;
+  const beta = allSubs.filter(r => (r['Plan']||'').toLowerCase().includes('beta')).length;
+  document.getElementById('r-mrr').textContent = 'R' + Math.round(mrr);
+  document.getElementById('r-arr').textContent = 'R' + Math.round(mrr * 12).toLocaleString();
+  document.getElementById('r-hardware').textContent = 'R' + hardware.toLocaleString();
+  document.getElementById('r-beta').textContent = beta;
+
+  const plans = {};
+  allSubs.forEach(r => {
+    const p = (r['Plan']||'Unknown').split(' ')[0];
+    plans[p] = (plans[p]||0) + 1;
+  });
+  const total = allSubs.length || 1;
+  const colors = { Solo:'bar-orange', Beta:'bar-gray', Family:'bar-teal', Care:'bar-gray' };
+  document.getElementById('rev-bars').innerHTML = Object.entries(plans).map(([k,v]) => `
+    <div class="plan-row">
+      <div class="plan-name">${k}</div>
+      <div class="bar-track"><div class="bar-fill ${colors[k]||'bar-gray'}" style="width:${Math.round(v/total*100)}%"></div></div>
+      <div class="plan-count">${v}</div>
+    </div>`).join('');
+}
+
+// ── HELPERS ──
+function planPill(plan) {
+  const p = plan.toLowerCase();
+  if (p.includes('solo'))   return `<span class="pill pill-solo">${plan}</span>`;
+  if (p.includes('family')) return `<span class="pill pill-family">${plan}</span>`;
+  if (p.includes('care'))   return `<span class="pill pill-care">${plan}</span>`;
+  if (p.includes('beta'))   return `<span class="pill pill-beta">${plan}</span>`;
+  return `<span class="pill pill-inactive">${plan||'—'}</span>`;
+}
+function statusPill(status) {
+  const s = status.toLowerCase();
+  if (s === 'active')  return `<span class="pill pill-active">Active</span>`;
+  if (s === 'pending') return `<span class="pill pill-pending">Pending</span>`;
+  return `<span class="pill pill-inactive">${status||'—'}</span>`;
+}
+function formatTime(ts) {
+  if (!ts) return '—';
+  try { return new Date(ts).toLocaleString('en-ZA', { dateStyle:'short', timeStyle:'short' }); }
+  catch { return ts; }
+}
+function formatDate(ts) {
+  if (!ts) return '—';
+  try { return new Date(ts).toLocaleDateString('en-ZA'); }
+  catch { return ts; }
+}
+
+// ── NAV ──
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('section-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  const titles = {
+    dashboard:'DASHBOARD', subscribers:'SUBSCRIBERS', family:'FAMILY BUNDLES',
+    scans:'SCAN LOGS', telegram:'TELEGRAM', tasks:'PENDING TASKS', revenue:'REVENUE'
+  };
+  document.getElementById('page-title').textContent = titles[id] || id.toUpperCase();
+}
+
+// ── INIT ──
+loadAll();
+</script>
+</body>
+</html>
