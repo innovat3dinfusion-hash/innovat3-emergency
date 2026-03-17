@@ -490,6 +490,9 @@ var IMGBB_KEY        = 'c95f5daba8da7ba6d1f63cbeb6326a88';
 var WA_IMG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyNUQzNjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMjQgMTAuNUMxNi41IDEwLjUgMTAuNSAxNi41IDEwLjUgMjRjMCAyLjQuNjUgNC43IDEuOCA2LjdMMTAuNSAzNy41bDYuOTUtMS44YzEuOTUgMS4wNSA0LjE1IDEuNjUgNi41NSAxLjY1IDcuNSAwIDEzLjUtNiAxMy41LTEzLjVTMzEuNSAxMC41IDI0IDEwLjV6Ii8+PC9zdmc+';
 var TG_IMG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyOUI2RjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMTAuNSAyMy41bDI3LTEwLjUtNCAyMi04LTctNCA0LTEtOCAxNC0xMi0xNiA5LjV6Ii8+PC9zdmc+';
 var currentStep      = 1;
+window.addEventListener('load', function() {
+  window.scrollTo({top: 0, behavior: 'instant'});
+});
 var bloodSelected    = '';
 var planSelected     = 'Solo';
 var billingCycle     = 'annual';  // 'annual' or 'monthly'
@@ -529,11 +532,6 @@ var photoUploadedUrl = '';
     <div class="step-item" id="stepItem4"><div class="step-num">4</div><div class="step-label">Contacts</div></div>
     <div class="step-line" id="stepLine4"></div>
     <div class="step-item" id="stepItem5"><div class="step-num">5</div><div class="step-label">Finish</div></div>
-  </div>
-
-  <!-- Testing autofill button -->
-  <div style="text-align:center;padding:8px 0 0;">
-    <button onclick="autofill()" style="background:#111;border:1px dashed #333;color:#555;font-size:10px;padding:6px 16px;border-radius:8px;cursor:pointer;font-family:'Exo 2',sans-serif;">🧪 Autofill for Testing</button>
   </div>
 
   <!-- ── STEP 1: PLAN SELECTION ── -->
@@ -661,6 +659,9 @@ var photoUploadedUrl = '';
     </div>
 
     <div class="nav-btns">
+      <div style="text-align:center;margin-bottom:12px;">
+        <button onclick="autofill()" style="background:#111;border:1px dashed #333;color:#555;font-size:10px;padding:6px 16px;border-radius:8px;cursor:pointer;font-family:'Exo 2',sans-serif;">🧪 Autofill for Testing</button>
+      </div>
       <button class="btn-next" onclick="goStep(2)">Next — Personal Info →</button>
     </div>
   </div>
