@@ -1108,9 +1108,6 @@ function goStep(n) {
   document.getElementById('stepItem'+n).classList.remove('done');
   document.getElementById('stepItem'+n).classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
-  // Show PayFast payment section
-  var tagCount = (planSelected === 'Family') ? (familyMembersData.length + 1) : 1;
-  showPaymentSection(tagId, v('firstName'), v('lastName'), v('email'), v('phone'), planSelected, billingCycle, tagCount);
 }
 
 function validateStep(s) {
@@ -2033,6 +2030,9 @@ async function submitForm() {
     if (bundleEl) { bundleEl.textContent = '👨\u200d👩\u200d👧\u200d👦 Bundle: ' + bundleId; bundleEl.style.display='block'; }
   }
   window.scrollTo({top:0,behavior:'smooth'});
+  // Show PayFast payment section
+  var tagCount = (planSelected === 'Family') ? (familyMembersData.length + 1) : 1;
+  showPaymentSection(tagId, v('firstName'), v('lastName'), v('email'), v('phone'), planSelected, billingCycle, tagCount);
 }
 </script>
 
