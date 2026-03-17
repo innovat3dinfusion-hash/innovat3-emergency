@@ -239,44 +239,21 @@ footer{background:#070707;border-top:1px solid var(--border);padding:60px 40px 3
   .nav-logo{width:44px;height:44px}
   .nav-name{font-size:18px}
 
-  /* HERO — centred, full-width on mobile */
-  .hero{
-    padding:100px 24px 60px;
-    justify-content:center;
-    min-height:100svh;
-  }
-  .hero-inner{
-    max-width:100%;
-    text-align:center;
-  }
+  /* HERO */
+  .hero{padding:100px 24px 60px;justify-content:center;min-height:100svh}
+  .hero-inner{max-width:100%;text-align:center}
   .hero-video{object-position:center center}
-  .hero-overlay{
-    background:linear-gradient(180deg,rgba(10,10,10,0.3) 0%,rgba(10,10,10,0.75) 60%,rgba(10,10,10,0.92) 100%)
-  }
+  .hero-overlay{background:linear-gradient(180deg,rgba(10,10,10,0.3) 0%,rgba(10,10,10,0.75) 60%,rgba(10,10,10,0.92) 100%)}
   .hero h1{font-size:clamp(30px,9vw,52px);margin-bottom:20px}
   .hero-pill{margin-bottom:20px;font-size:10px}
-  .hero-tagline-box{
-    margin:0 auto 28px;
-    max-width:100%;
-    padding:18px 20px;
-    text-align:left
-  }
+  .hero-tagline-box{margin:0 auto 28px;max-width:100%;padding:18px 20px;text-align:left}
   .hero-tagline{font-size:14px;line-height:1.65}
   .hero-actions{justify-content:center}
-  .hero-stats{
-    gap:20px;
-    padding:16px 20px;
-    flex-wrap:wrap;
-    justify-content:center;
-    width:100%
-  }
+  .hero-stats{gap:20px;padding:16px 20px;flex-wrap:wrap;justify-content:center;width:100%}
   .stat-n{font-size:22px}
 
-  /* SPECS */
-  .specs-row{grid-template-columns:1fr 1fr}
-  .spec-item{border-right:none;border-bottom:1px solid var(--border);padding:24px 20px}
-  .spec-item:nth-child(odd){border-right:1px solid var(--border)}
-  .spec-item:last-child{border-bottom:none}
+  /* SPECS — hidden on mobile */
+  .specs-strip{display:none}
 
   /* SECTIONS */
   section{padding:60px 20px}
@@ -284,23 +261,11 @@ footer{background:#070707;border-top:1px solid var(--border);padding:60px 40px 3
   .section-sub{font-size:14px;max-width:100%}
 
   /* HOW IT WORKS */
-  .how-tabs{
-    grid-template-columns:1fr;
-    border-radius:12px
-  }
-  .how-tab{
-    border-right:none;
-    border-bottom:1px solid var(--border);
-    padding:22px 18px;
-    flex-direction:row;
-    flex-wrap:wrap;
-    gap:12px;
-    align-items:flex-start
-  }
-  .how-tab-icon{flex-shrink:0}
+  .how-tabs{grid-template-columns:1fr;border-radius:12px}
+  .how-tab{border-right:none;border-bottom:1px solid var(--border);padding:22px 18px;flex-direction:row;flex-wrap:wrap;gap:12px;align-items:flex-start}
+  .how-tab-icon{flex-shrink:0;width:44px;height:44px}
   .how-tab-num,.how-tab-title,.how-tab-desc{flex:1 0 calc(100% - 60px)}
   .how-tab:last-child{border-bottom:none;border-left:none;border-top:2px solid rgba(249,115,22,0.4)}
-  .how-tab-icon{flex-shrink:0;width:44px;height:44px}
   .how-tab-num{font-size:20px}
   .how-tab-title{font-size:13px}
   .how-tab-desc{font-size:12px}
@@ -311,21 +276,44 @@ footer{background:#070707;border-top:1px solid var(--border);padding:60px 40px 3
   .stats-inner{grid-template-columns:1fr 1fr;gap:24px}
   .stat-num{font-size:32px}
 
-  /* VARIANTS */
-  .variant-grid{grid-template-columns:1fr}
+  /* VARIANTS — 3 columns side by side on mobile */
+  .variant-grid{grid-template-columns:repeat(3,1fr);gap:10px}
+  .variant-body{padding:18px 14px}
+  .variant-name{font-size:11px;margin-bottom:6px}
+  .variant-desc{font-size:11px;line-height:1.45}
+  .variant-dot{width:20px;height:20px;margin-bottom:10px}
 
-  /* PLANS */
+  /* PLANS — 3 columns side by side, compact */
   .billing-toggle{margin:0 auto 8px}
   .saving-note{text-align:center}
-  .plans-grid{grid-template-columns:1fr;gap:16px}
-  .plan{padding:28px 22px}
-  .plan-price-num{font-size:44px}
+  .plans-grid{grid-template-columns:repeat(3,1fr);gap:10px}
+  .plan{padding:18px 12px;border-radius:14px}
+  .plan-icon{font-size:20px;margin-bottom:8px}
+  .plan-name{font-size:10px;letter-spacing:0.5px;margin-bottom:8px}
+  .plan-was{font-size:9px;height:14px}
+  .plan-price-row sup{font-size:12px;margin-top:6px}
+  .plan-price-num{font-size:28px}
+  .plan-price-per{font-size:10px}
+  .plan-tag-note{font-size:10px;margin-bottom:14px;padding-bottom:12px}
+  .plan-features{gap:7px;margin-bottom:16px}
+  .plan-features li{font-size:10px;gap:6px;line-height:1.35}
+  .plan-btn{font-size:9px;padding:10px 6px;letter-spacing:0.5px}
 
   /* TESTIMONIALS */
   .testi-grid{grid-template-columns:1fr}
 
-  /* COMPETITORS */
+  /* COMPETITORS — compact table fitting all 4 columns */
   #competitors{padding:60px 20px}
+  #competitors .section-sub{display:none}
+  .comp-table-wrap{overflow-x:visible!important}
+  .comp-table-wrap table{font-size:10px!important;table-layout:fixed;width:100%!important}
+  .comp-table-wrap table th,
+  .comp-table-wrap table td{padding:8px 4px!important;font-size:10px!important;word-break:break-word}
+  .comp-table-wrap table th:first-child,
+  .comp-table-wrap table td:first-child{padding-left:8px!important;width:36%}
+  .comp-table-wrap table th:not(:first-child),
+  .comp-table-wrap table td:not(:first-child){width:16%;text-align:center}
+  .comp-table-wrap table td font-size{font-size:12px!important}
   .comp-badges{flex-direction:column}
   .comp-badge{min-width:100%}
 
@@ -357,10 +345,6 @@ footer{background:#070707;border-top:1px solid var(--border);padding:60px 40px 3
   .stat-n{font-size:20px}
   .stat-l{font-size:10px}
 
-  .specs-row{grid-template-columns:1fr}
-  .spec-item:nth-child(odd){border-right:none}
-  .spec-item{padding:20px 16px}
-
   .section-title{font-size:clamp(20px,8vw,32px)}
 
   .how-tab{padding:20px 16px}
@@ -368,8 +352,28 @@ footer{background:#070707;border-top:1px solid var(--border);padding:60px 40px 3
   .stats-inner{grid-template-columns:1fr 1fr}
   .stat-num{font-size:28px}
 
-  .plan{padding:24px 18px}
-  .plan-price-num{font-size:40px}
+  /* Variants — keep 3 cols but even more compact */
+  .variant-grid{gap:8px}
+  .variant-body{padding:14px 10px}
+  .variant-name{font-size:10px}
+  .variant-desc{font-size:10px}
+
+  /* Plans — keep 3 cols, tighter */
+  .plans-grid{gap:8px}
+  .plan{padding:14px 8px;border-radius:12px}
+  .plan-name{font-size:9px}
+  .plan-price-num{font-size:22px}
+  .plan-price-per{font-size:9px}
+  .plan-tag-note{font-size:9px}
+  .plan-features li{font-size:9px}
+  .plan-btn{font-size:8px;padding:8px 4px}
+
+  /* Competitor table even tighter */
+  .comp-table-wrap table{font-size:9px!important}
+  .comp-table-wrap table th,
+  .comp-table-wrap table td{padding:6px 3px!important;font-size:9px!important}
+  .comp-table-wrap table th:first-child,
+  .comp-table-wrap table td:first-child{width:38%}
 
   section{padding:50px 16px}
   #competitors{padding:50px 16px}
@@ -668,7 +672,7 @@ footer{background:#070707;border-top:1px solid var(--border);padding:60px 40px 3
     <div class="section-label">Competitive Landscape</div>
     <div class="section-title">The market exists.<br>Our execution sets us apart.</div>
     <p class="section-sub">Several players offer NFC medical tags globally — none combine real-time Telegram + WhatsApp owner alerts, 3D-printed South African hardware, and a live cloud profile in a single product.</p>
-    <div style="overflow-x:auto">
+    <div style="overflow-x:auto" class="comp-table-wrap">
       <table style="width:100%;border-collapse:collapse;font-family:'Exo 2',sans-serif;font-size:13px;">
         <thead><tr>
           <th style="text-align:left;padding:12px 16px;background:#1a1a1a;color:#777;font-weight:700;border:1px solid #222">Feature</th>
