@@ -1053,7 +1053,19 @@ async function gvizQuery(sheetName, query = 'select *') {
   const json = JSON.parse(text.replace(/^[^(]+\(/, '').replace(/\);?\s*$/, ''));
   const cols = json.table.cols.map(c => c.label);
   const rows = (json.table.rows || []).map(r =>
-    Object.fromEntries(cols.map((c, i) => [c, r.c[i] ? r.c[i].v : '']))
+    Object.fromEntries(cols.map((c, i) => {
+      const cell = r.c[i];
+      if (!cell || cell.v === null || cell.v === undefined) return [c, ''];
+      // For date/datetime values, gviz returns v as Date(...) object string — use f (formatted) instead
+      if (typeof cell.v === 'string' && cell.v.startsWith('Date(')) {
+        return [c, cell.f || ''];
+      }
+      // For actual JS Date objects returned by gviz
+      if (cell.v instanceof Object && cell.f) {
+        return [c, cell.f || ''];
+      }
+      return [c, cell.v];
+    }))
   );
   return rows;
 }
@@ -1341,33 +1353,24 @@ function statusPill(status) {
   if (s === 'pending') return `<span class="pill pill-pending">Pending</span>`;
   return `<span class="pill pill-inactive">${status||'—'}</span>`;
 }
-function parseGvizDate(ts) {
-  if (!ts) return null;
-  if (typeof ts === 'string') {
-    const m = ts.match(/Date\((\d+),(\d+),(\d+)(?:,(\d+),(\d+),(\d+))?\)/);
-    if (m) {
-      return new Date(+m[1], +m[2], +m[3], +(m[4]||0), +(m[5]||0), +(m[6]||0));
-    }
-  }
-  if (typeof ts === 'number') return new Date(ts);
-  const d = new Date(ts);
-  return isNaN(d) ? null : d;
-}
 function formatTime(ts) {
   if (!ts) return '—';
+  // gviz gives us pre-formatted strings after our parser fix — use directly
+  if (typeof ts === 'string' && ts.length > 0) return ts;
   try {
-    const d = parseGvizDate(ts);
-    if (!d) return ts;
+    const d = new Date(ts);
+    if (isNaN(d)) return String(ts);
     return d.toLocaleString('en-ZA', { dateStyle:'short', timeStyle:'short' });
-  } catch { return ts; }
+  } catch { return String(ts); }
 }
 function formatDate(ts) {
   if (!ts) return '—';
+  if (typeof ts === 'string' && ts.length > 0) return ts;
   try {
-    const d = parseGvizDate(ts);
-    if (!d) return ts;
+    const d = new Date(ts);
+    if (isNaN(d)) return String(ts);
     return d.toLocaleDateString('en-ZA');
-  } catch { return ts; }
+  } catch { return String(ts); }
 }
 
 // ── NAV ──
