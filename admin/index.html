@@ -851,9 +851,9 @@
             </table>
           </div>
           <div class="pagination" style="padding:12px 16px">
-            <button class="page-btn" onclick="subPage(-1)">← Prev</button>
+            <button class="page-btn" onclick="navSubPage(-1)">← Prev</button>
             <span id="sub-page-info" class="page-info"></span>
-            <button class="page-btn" onclick="subPage(1)">Next →</button>
+            <button class="page-btn" onclick="navSubPage(1)">Next →</button>
           </div>
         </div>
       </div>
@@ -1022,7 +1022,9 @@ const GAS_URL  = 'https://script.google.com/macros/s/AKfycbwW-OuPGWyhABKlaBU7_AE
 
 // ── STATE ──
 let allSubs = [], allScans = [], allTelegram = [], allFamilies = [];
-let subFilter = 'all', subPage = 0;
+let subFilter = 'all';
+let currentSubPage = 0;
+let subSearchTerm = '';
 const PAGE_SIZE = 20;
 
 // ── TASKS DATA ──
@@ -1156,8 +1158,6 @@ function renderRecentScans() {
 }
 
 // ── SUBSCRIBER TABLE ──
-let subSearchTerm = '';
-let currentSubPage = 0;
 
 function renderSubscriberTable() {
   let data = allSubs.filter(r => {
@@ -1202,7 +1202,7 @@ function filterPlan(btn, plan) {
   renderSubscriberTable();
 }
 
-function subPage(dir) {
+function navSubPage(dir) {
   currentSubPage = Math.max(0, currentSubPage + dir);
   renderSubscriberTable();
 }
