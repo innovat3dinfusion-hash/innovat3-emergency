@@ -1341,15 +1341,33 @@ function statusPill(status) {
   if (s === 'pending') return `<span class="pill pill-pending">Pending</span>`;
   return `<span class="pill pill-inactive">${status||'—'}</span>`;
 }
+function parseGvizDate(ts) {
+  if (!ts) return null;
+  if (typeof ts === 'string') {
+    const m = ts.match(/Date\((\d+),(\d+),(\d+)(?:,(\d+),(\d+),(\d+))?\)/);
+    if (m) {
+      return new Date(+m[1], +m[2], +m[3], +(m[4]||0), +(m[5]||0), +(m[6]||0));
+    }
+  }
+  if (typeof ts === 'number') return new Date(ts);
+  const d = new Date(ts);
+  return isNaN(d) ? null : d;
+}
 function formatTime(ts) {
   if (!ts) return '—';
-  try { return new Date(ts).toLocaleString('en-ZA', { dateStyle:'short', timeStyle:'short' }); }
-  catch { return ts; }
+  try {
+    const d = parseGvizDate(ts);
+    if (!d) return ts;
+    return d.toLocaleString('en-ZA', { dateStyle:'short', timeStyle:'short' });
+  } catch { return ts; }
 }
 function formatDate(ts) {
   if (!ts) return '—';
-  try { return new Date(ts).toLocaleDateString('en-ZA'); }
-  catch { return ts; }
+  try {
+    const d = parseGvizDate(ts);
+    if (!d) return ts;
+    return d.toLocaleDateString('en-ZA');
+  } catch { return ts; }
 }
 
 // ── NAV ──
