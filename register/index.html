@@ -338,6 +338,146 @@ body { font-family:"Exo 2",sans-serif; background:#050505; color:var(--text); mi
 }
 .btn-crop-cancel { background:#1a1a1a; color:var(--muted); border:1px solid #333; }
 .btn-crop-apply  { background:var(--blue); color:#fff; }
+
+/* ── BILLING TOGGLE ── */
+.billing-toggle {
+  display:flex; align-items:center; justify-content:center;
+  gap:0; background:#0d0d0d; border:1px solid var(--border2);
+  border-radius:30px; padding:4px; margin:0 auto 20px; width:fit-content;
+}
+.billing-btn {
+  padding:8px 20px; border-radius:26px; font-family:'Orbitron',sans-serif;
+  font-size:9px; font-weight:900; letter-spacing:1px; cursor:pointer;
+  border:none; background:transparent; color:var(--muted); transition:all 0.2s;
+}
+.billing-btn.active { background:var(--orange); color:#000; }
+.saving-badge {
+  display:inline-block; background:rgba(34,197,94,0.15); color:var(--green);
+  border:1px solid rgba(34,197,94,0.4); border-radius:20px;
+  font-size:9px; font-weight:700; padding:3px 10px; margin-left:8px;
+  vertical-align:middle;
+}
+
+/* ── PLAN CARDS REDESIGN ── */
+.plan-grid { display:grid; grid-template-columns:1fr; gap:10px; }
+.plan-card {
+  display:flex; align-items:flex-start; gap:14px; padding:16px;
+  border-radius:14px; border:2px solid var(--border2); background:#0d0d0d;
+  cursor:pointer; transition:all 0.2s; position:relative; overflow:hidden;
+}
+.plan-card.selected { border-color:var(--orange); background:#1a0d00; }
+.plan-card.selected::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg,var(--orange),#ffb347);
+}
+.plan-card.care-locked { opacity:0.4; cursor:not-allowed; }
+.plan-badge {
+  display:inline-block; font-size:8px; font-weight:900;
+  font-family:'Orbitron',sans-serif; letter-spacing:1px; padding:2px 8px;
+  border-radius:10px; text-transform:uppercase; margin-left:8px;
+  vertical-align:middle; flex-shrink:0;
+}
+.badge-popular { background:rgba(249,115,22,0.2); color:var(--orange); border:1px solid rgba(249,115,22,0.4); }
+.badge-free    { background:rgba(34,197,94,0.2);  color:var(--green);  border:1px solid rgba(34,197,94,0.4); }
+.badge-care    { background:rgba(14,210,200,0.2); color:var(--teal);   border:1px solid rgba(14,210,200,0.4); }
+.plan-icon-wrap { font-size:28px; flex-shrink:0; margin-top:2px; }
+.plan-info { flex:1; min-width:0; }
+.plan-name { font-family:'Orbitron',sans-serif; font-size:13px; font-weight:900; color:#fff; margin-bottom:4px; }
+.plan-name span { color:var(--orange); }
+.plan-features { font-size:11px; color:var(--muted); line-height:1.7; margin-bottom:6px; }
+.plan-features li { list-style:none; padding:0; }
+.plan-features li::before { content:'✓ '; color:var(--green); font-weight:700; }
+.plan-price-wrap { text-align:right; flex-shrink:0; }
+.plan-price-main { font-family:'Orbitron',sans-serif; font-size:18px; font-weight:900; color:var(--orange); line-height:1; }
+.plan-price-was  { font-size:10px; color:var(--muted); text-decoration:line-through; margin-bottom:2px; }
+.plan-price-per  { font-size:9px; color:var(--muted); margin-top:2px; }
+.plan-price-free { font-family:'Orbitron',sans-serif; font-size:18px; font-weight:900; color:var(--green); }
+.care-age-warn { font-size:10px; color:var(--teal); margin-top:4px; font-style:italic; }
+
+/* ── FAMILY MEMBERS ── */
+.family-members { display:none; margin-top:14px; }
+.family-members.show { display:block; }
+.family-member-row {
+  background:#111; border:1px solid var(--border2); border-radius:10px;
+  padding:12px; margin-bottom:8px;
+}
+.family-member-hdr {
+  font-family:'Orbitron',sans-serif; font-size:9px; font-weight:900;
+  color:var(--orange); letter-spacing:1px; text-transform:uppercase; margin-bottom:10px;
+}
+
+
+/* ── FAMILY MEMBER SUB-FORMS ── */
+.member-accordion {
+  border:1px solid rgba(249,115,22,0.3); border-radius:12px;
+  overflow:hidden; margin-bottom:10px; background:#0a0a0a;
+}
+.member-accordion-hdr {
+  display:flex; align-items:center; gap:10px; padding:12px 14px;
+  background:linear-gradient(90deg,#1a0800,#0d0d0d);
+  cursor:pointer; user-select:none;
+}
+.member-accordion-hdr .member-num {
+  width:26px; height:26px; border-radius:50%; background:var(--orange);
+  color:#000; font-family:'Orbitron',sans-serif; font-size:10px; font-weight:900;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.member-accordion-hdr .member-title { font-size:12px; font-weight:700; color:#fff; flex:1; }
+.member-accordion-hdr .member-chevron { color:var(--muted); font-size:14px; transition:transform 0.2s; }
+.member-accordion.open .member-chevron { transform:rotate(180deg); }
+.member-accordion-body { display:none; padding:14px; border-top:1px solid #1a1a1a; }
+.member-accordion.open .member-accordion-body { display:block; }
+.same-as-main {
+  display:flex; align-items:center; gap:10px; padding:10px 12px;
+  background:#111; border:1px solid rgba(249,115,22,0.2); border-radius:8px;
+  margin-bottom:12px; cursor:pointer;
+}
+.same-as-main input[type=checkbox] { display:none; }
+.same-as-main .same-check {
+  width:18px; height:18px; border:2px solid #444; border-radius:5px;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  transition:all 0.15s; background:#0d0d0d;
+}
+.same-as-main input:checked + .same-check { background:var(--orange); border-color:var(--orange); }
+.same-as-main input:checked + .same-check::after { content:"✓"; color:#000; font-size:11px; font-weight:900; }
+.same-as-main .same-label { font-size:11px; color:var(--muted); }
+.member-section-hdr {
+  font-family:'Orbitron',sans-serif; font-size:9px; font-weight:900;
+  color:var(--orange); letter-spacing:1.5px; text-transform:uppercase;
+  margin:14px 0 8px; padding-bottom:6px; border-bottom:1px solid #1a1a1a;
+}
+.member-fields-wrap { transition:all 0.2s; }
+.member-fields-wrap.hidden { display:none; }
+
+
+/* ── MEMBER COMPLETED STATE ── */
+.member-accordion.member-done {
+  border-color:var(--green) !important;
+  background:#061209 !important;
+}
+.member-accordion.member-done .member-accordion-hdr {
+  background:linear-gradient(90deg,#061209,#0a2e14);
+}
+.member-accordion.member-done .member-num {
+  background:var(--green) !important;
+}
+.member-accordion.member-done .member-title {
+  color:var(--green);
+}
+.btn-member-done {
+  width:100%; margin-top:14px; padding:12px;
+  background:linear-gradient(90deg,#0a2e14,#15803D);
+  border:1px solid var(--green); border-radius:10px;
+  color:var(--green); font-family:'Orbitron',sans-serif;
+  font-size:10px; font-weight:900; letter-spacing:1px;
+  cursor:pointer; transition:all 0.2s;
+}
+.btn-member-done:hover { background:#15803D; color:#000; }
+.member-done-label {
+  font-size:10px; color:var(--green); font-weight:700;
+  margin-left:6px;
+}
+
 </style>
 </head>
 <body>
@@ -352,7 +492,9 @@ var TG_IMG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcv
 var currentStep      = 1;
 var bloodSelected    = '';
 var planSelected     = 'Solo';
-var coloursSelected  = [];
+var billingCycle     = 'annual';  // 'annual' or 'monthly'
+var familyMembers    = [];
+var coloursSelected  = ['Surprise Me'];
 var photoDataUrl     = '';
 var photoUploadedUrl = '';
 </script>
@@ -378,17 +520,152 @@ var photoUploadedUrl = '';
 
   <!-- PROGRESS -->
   <div class="progress" id="progressBar">
-    <div class="step-item active" id="stepItem1"><div class="step-num">1</div><div class="step-label">Personal</div></div>
+    <div class="step-item active" id="stepItem1"><div class="step-num">1</div><div class="step-label">Plan</div></div>
     <div class="step-line" id="stepLine1"></div>
-    <div class="step-item" id="stepItem2"><div class="step-num">2</div><div class="step-label">Medical</div></div>
+    <div class="step-item" id="stepItem2"><div class="step-num">2</div><div class="step-label">Personal</div></div>
     <div class="step-line" id="stepLine2"></div>
-    <div class="step-item" id="stepItem3"><div class="step-num">3</div><div class="step-label">Contacts</div></div>
+    <div class="step-item" id="stepItem3"><div class="step-num">3</div><div class="step-label">Medical</div></div>
     <div class="step-line" id="stepLine3"></div>
-    <div class="step-item" id="stepItem4"><div class="step-num">4</div><div class="step-label">Tag</div></div>
+    <div class="step-item" id="stepItem4"><div class="step-num">4</div><div class="step-label">Contacts</div></div>
+    <div class="step-line" id="stepLine4"></div>
+    <div class="step-item" id="stepItem5"><div class="step-num">5</div><div class="step-label">Finish</div></div>
   </div>
 
-  <!-- ── STEP 1: PERSONAL ── -->
+  <!-- Testing autofill button -->
+  <div style="text-align:center;padding:8px 0 0;">
+    <button onclick="autofill()" style="background:#111;border:1px dashed #333;color:#555;font-size:10px;padding:6px 16px;border-radius:8px;cursor:pointer;font-family:'Exo 2',sans-serif;">🧪 Autofill for Testing</button>
+  </div>
+
+  <!-- ── STEP 1: PLAN SELECTION ── -->
   <div class="section active" id="sec1">
+    <div class="section-spacer"></div>
+
+    <!-- Billing Toggle -->
+    <div style="text-align:center;margin-bottom:6px">
+      <div class="billing-toggle">
+        <button class="billing-btn active" id="billAnnual" onclick="setBilling('annual')">Annual</button>
+        <button class="billing-btn" id="billMonthly" onclick="setBilling('monthly')">Monthly</button>
+      </div>
+      <div style="font-size:11px;color:var(--green);font-weight:700;" id="savingNote">💰 Save 20% with annual billing</div>
+    </div>
+
+    <!-- Plan Cards -->
+    <div class="form-tab" style="border:1px solid var(--border2);border-radius:14px;overflow:hidden;margin-bottom:12px;">
+      <div class="form-tab-hdr" style="background:linear-gradient(90deg,#1a0800,#f97316);color:#000;font-family:Orbitron,sans-serif;font-size:9px;font-weight:900;letter-spacing:1.5px;padding:12px 16px;">⭐ &nbsp;CHOOSE YOUR PLAN</div>
+      <div class="form-tab-body">
+        <div class="plan-grid">
+
+          <!-- SOLO -->
+          <div class="plan-card selected" id="planSolo" onclick="selectPlan(this,'Solo')">
+            <div class="plan-icon-wrap">👤</div>
+            <div class="plan-info">
+              <div class="plan-name">Innovat3 <span>Solo</span><div class="plan-badge badge-popular" style="display:inline-block">Popular</div></div>
+              <ul class="plan-features">
+                <li>1 person · 1 NFC tag</li>
+                <li>GPS emergency alerts</li>
+                <li>Telegram &amp; WhatsApp notifications</li>
+                <li>Live emergency profile</li>
+              </ul>
+            </div>
+            <div class="plan-price-wrap">
+              <div class="plan-price-was" id="soloWas"></div>
+              <div class="plan-price-main" id="soloPrice">R857</div>
+              <div class="plan-price-per" id="soloPer">/year</div>
+            </div>
+          </div>
+
+          <!-- FAMILY -->
+          <div class="plan-card" id="planFamily" onclick="selectPlan(this,'Family')">
+            <div class="plan-icon-wrap">👨‍👩‍👧‍👦</div>
+            <div class="plan-info">
+              <div class="plan-name">Innovat3 <span>Family</span></div>
+              <ul class="plan-features">
+                <li>Up to 4 people · 1 email</li>
+                <li>GPS emergency alerts per member</li>
+                <li>Telegram &amp; WhatsApp notifications</li>
+                <li>Shared family dashboard</li>
+              </ul>
+              <!-- Family member names -->
+              <div class="family-members" id="familyMembers">
+                <div style="font-size:10px;color:var(--muted);margin-bottom:10px;">Enter names to unlock each member's profile form:</div>
+                <div class="field" style="margin-bottom:8px;">
+                  <label>Member 1 (Main Member) <span class="req">*</span></label>
+                  <input type="text" id="fm1" placeholder="Full Name" oninput="onMemberNameChange(1)">
+                </div>
+                <div class="field" style="margin-bottom:8px;">
+                  <label>Member 2 <span class="req">*</span></label>
+                  <input type="text" id="fm2" placeholder="Full Name" oninput="onMemberNameChange(2)">
+                </div>
+                <div class="field" style="margin-bottom:8px;">
+                  <label>Member 3 <span style="color:var(--muted)">(optional)</span></label>
+                  <input type="text" id="fm3" placeholder="Full Name" oninput="onMemberNameChange(3)">
+                </div>
+                <div class="field" style="margin-bottom:10px;">
+                  <label>Member 4 <span style="color:var(--muted)">(optional)</span></label>
+                  <input type="text" id="fm4" placeholder="Full Name" oninput="onMemberNameChange(4)">
+                </div>
+                <!-- Member sub-forms — unlocked as names are entered -->
+              </div>
+            </div>
+            <div class="plan-price-wrap">
+              <div class="plan-price-was" id="familyWas"></div>
+              <div class="plan-price-main" id="familyPrice">R1,435</div>
+              <div class="plan-price-per" id="familyPer">/year</div>
+            </div>
+          </div>
+
+          <!-- CARE -->
+          <div class="plan-card" id="planCare" onclick="selectPlan(this,'Care')" style="border-color:rgba(14,210,200,0.4);">
+            <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--teal),#00fff7);border-radius:14px 14px 0 0;"></div>
+            <div class="plan-icon-wrap">💛</div>
+            <div class="plan-info">
+              <div class="plan-name" style="color:var(--teal);">Innovat3 <span style="color:var(--teal);">Care</span><div class="plan-badge badge-care" style="display:inline-block">55+</div></div>
+              <div style="font-size:11px;font-weight:700;color:var(--teal);margin-bottom:6px;background:rgba(14,210,200,0.08);border:1px solid rgba(14,210,200,0.25);border-radius:6px;padding:5px 8px;line-height:1.5;">
+                👴 Adults aged 55 &amp; older<br>
+                ♿ People with special needs or disabilities
+              </div>
+              <ul class="plan-features">
+                <li>Once-off lifetime payment — no monthly fees</li>
+                <li>GPS emergency alerts</li>
+                <li>Telegram &amp; WhatsApp notifications</li>
+                <li>Age or special needs verification required</li>
+              </ul>
+              <div class="care-age-warn" id="careAgeWarn"></div>
+            </div>
+            <div class="plan-price-wrap">
+              <div class="plan-price-main" style="color:var(--teal)">R199</div>
+              <div class="plan-price-per" style="color:var(--teal)">once-off</div>
+            </div>
+          </div>
+
+          <!-- BETA -->
+          <div class="plan-card" id="planBeta" onclick="selectPlan(this,'Beta')">
+            <div class="plan-icon-wrap">🧪</div>
+            <div class="plan-info">
+              <div class="plan-name">Beta <span>Tester</span><div class="plan-badge badge-free" style="display:inline-block">Free</div></div>
+              <ul class="plan-features">
+                <li>3 months free — no payment</li>
+                <li>All Solo features included</li>
+                <li>Standard Solo rates apply after</li>
+              </ul>
+            </div>
+            <div class="plan-price-wrap">
+              <div class="plan-price-free">FREE</div>
+              <div class="plan-price-per">3 months</div>
+            </div>
+          </div>
+
+        </div>
+        <div id="err1" class="err-msg"></div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn-next" onclick="goStep(2)">Next — Personal Info →</button>
+    </div>
+  </div>
+
+  <div class="section" id="sec2">
     <div class="section-spacer"></div>
 
     <!-- Photo -->
@@ -457,17 +734,17 @@ var photoUploadedUrl = '';
             <input type="text" id="telegram" placeholder="@username">
           </div>
         </div>
-        <div id="err1" class="err-msg"></div>
+        <div id="err2" class="err-msg"></div>
       </div>
     </div>
 
     <div class="nav-btns">
-      <button class="btn-next" onclick="goStep(2)">Next — Medical Info →</button>
+      <button class="btn-next" onclick="goStep(3)">Next — Medical Info →</button>
     </div>
   </div>
 
   <!-- ── STEP 2: MEDICAL ── -->
-  <div class="section" id="sec2">
+  <div class="section" id="sec3">
     <div class="section-spacer"></div>
 
     <!-- Blood Type -->
@@ -538,8 +815,8 @@ var photoUploadedUrl = '';
       <div class="form-tab-hdr">🏠 &nbsp;Home Address &amp; Notes for Finder</div>
       <div class="form-tab-body">
         <div class="field">
-          <label>Home Address</label>
-          <input type="text" id="address" placeholder="10 Moerbei Street, Nigel, 1490">
+          <label>Address</label>
+          <input type="text" id="address" placeholder="15 Oak Avenue, Sunridge Park, 6045">
         </div>
         <div class="field">
           <label>Notes for Finder</label>
@@ -549,13 +826,13 @@ var photoUploadedUrl = '';
     </div>
 
     <div class="nav-btns">
-      <button class="btn-back" onclick="goStep(1)">← Back</button>
-      <button class="btn-next" onclick="goStep(3)">Next — Contacts →</button>
+      <button class="btn-back" onclick="goStep(2)">← Back</button>
+      <button class="btn-next" onclick="goStep(4)">Next — Contacts →</button>
     </div>
   </div>
 
   <!-- ── STEP 3: CONTACTS ── -->
-  <div class="section" id="sec3">
+  <div class="section" id="sec4">
     <div class="section-spacer"></div>
     <div class="form-tab tab-contacts">
       <div class="form-tab-hdr">📞 &nbsp;Emergency Contacts</div>
@@ -635,72 +912,15 @@ var photoUploadedUrl = '';
     </div>
 
     <div class="nav-btns">
-      <button class="btn-back" onclick="goStep(2)">← Back</button>
-      <button class="btn-next" onclick="goStep(4)">Next — Tag Preferences →</button>
+      <button class="btn-back" onclick="goStep(3)">← Back</button>
+      <button class="btn-next" onclick="goStep(5)">Next — Finish →</button>
     </div>
   </div>
 
   <!-- ── STEP 4: TAG ── -->
-  <div class="section" id="sec4">
+  <div class="section" id="sec5">
     <div class="section-spacer"></div>
 
-    <!-- Plan -->
-    <div class="form-tab tab-plan">
-      <div class="form-tab-hdr">⭐ &nbsp;Choose Your Plan</div>
-      <div class="form-tab-body">
-        <div class="plan-grid">
-          <div class="plan-card selected" id="planSolo" onclick="selectPlan(this,'Solo')">
-            <div class="plan-icon">👤</div>
-            <div>
-              <div class="plan-name">Innovat3 <span>Solo</span></div>
-              <div class="plan-desc">1 person · 1 tag</div>
-            </div>
-            <div class="plan-price"><div class="price">R89</div><div class="per">/month</div></div>
-          </div>
-          <div class="plan-card" id="planFamily" onclick="selectPlan(this,'Family')">
-            <div class="plan-icon">👨‍👩‍👧‍👦</div>
-            <div>
-              <div class="plan-name">Innovat3 <span>Family</span></div>
-              <div class="plan-desc">Up to 4 people</div>
-            </div>
-            <div class="plan-price"><div class="price">R149</div><div class="per">/month</div></div>
-          </div>
-          <div class="plan-card" id="planCare" onclick="selectPlan(this,'Care')">
-            <div class="plan-icon">💛</div>
-            <div>
-              <div class="plan-name">Innovat3 <span>Care</span></div>
-              <div class="plan-desc">65+ · Free monthly for life</div>
-            </div>
-            <div class="plan-price"><div class="price">R199</div><div class="per">once-off</div></div>
-          </div>
-          <div class="plan-card" id="planBeta" onclick="selectPlan(this,'Beta')">
-            <div class="plan-icon">🧪</div>
-            <div>
-              <div class="plan-name">Beta <span>Tester</span></div>
-              <div class="plan-desc">3 months free · No payment</div>
-            </div>
-            <div class="plan-price"><div class="price" style="color:var(--green)">FREE</div><div class="per">beta</div></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tag Colour -->
-    <div class="form-tab tab-tag">
-      <div class="form-tab-hdr">🎨 &nbsp;Tag Colour <span style="font-size:9px;font-weight:400;opacity:0.7">(pick up to 2)</span></div>
-      <div class="form-tab-body">
-        <div class="colour-grid">
-          <div class="colour-swatch" style="background:#0a0a0a;border:1px solid #555" onclick="toggleColour(this,'Black')">Black</div>
-          <div class="colour-swatch" style="background:#F97316" onclick="toggleColour(this,'Orange')">Orange</div>
-          <div class="colour-swatch" style="background:#4DBBFF" onclick="toggleColour(this,'Glow Blue')">Glow Blue</div>
-          <div class="colour-swatch" style="background:#228B22" onclick="toggleColour(this,'Glitter Green')">Glitter Green</div>
-          <div class="colour-swatch" style="background:#EF4444" onclick="toggleColour(this,'Red')">Red</div>
-          <div class="colour-swatch" style="background:#0ED2C8;color:#000" onclick="toggleColour(this,'Teal')">Teal</div>
-          <div class="colour-swatch" style="background:#ccc;color:#000" onclick="toggleColour(this,'White')">White</div>
-          <div class="colour-swatch" style="background:linear-gradient(135deg,#F97316,#EF4444,#A855F7)" onclick="toggleColour(this,'Surprise Me')">Surprise</div>
-        </div>
-      </div>
-    </div>
 
     <!-- Form Factor -->
     <div class="form-tab tab-tag">
@@ -710,7 +930,6 @@ var photoUploadedUrl = '';
           <select id="formFactor">
             <option value="Keyring Fob">Keyring Fob</option>
             <option value="Disc Tag">Disc Tag (25mm)</option>
-            <option value="Card">Card (credit card size)</option>
           </select>
         </div>
       </div>
@@ -728,7 +947,18 @@ var photoUploadedUrl = '';
           <label>Extra Notes for Us</label>
           <input type="text" id="extraNotes" placeholder="e.g. Gate code 1234, call before delivery">
         </div>
-        <div id="err4" class="err-msg"></div>
+        <div id="err5" class="err-msg"></div>
+      </div>
+    </div>
+
+    <!-- Family Member Sub-Forms — shown only for Family plan -->
+    <div id="familyMemberFormsSection" style="display:none;margin-bottom:20px;">
+      <div class="form-tab" style="border:1px solid rgba(249,115,22,0.3);border-radius:14px;overflow:hidden;margin-bottom:12px;">
+        <div class="form-tab-hdr" style="background:linear-gradient(90deg,#1a0800,#f97316);color:#000;font-family:Orbitron,sans-serif;font-size:9px;font-weight:900;letter-spacing:1.5px;padding:12px 16px;">👨‍👩‍👧‍👦 &nbsp;FAMILY MEMBER PROFILES</div>
+        <div class="form-tab-body">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">Complete each member's emergency profile below. All tags are registered under your account.</div>
+          <div id="memberForms"></div>
+        </div>
       </div>
     </div>
 
@@ -788,7 +1018,7 @@ var photoUploadedUrl = '';
     </div>
 
     <div class="nav-btns">
-      <button class="btn-back" onclick="goStep(3)">← Back</button>
+      <button class="btn-back" onclick="goStep(4)">← Back</button>
       <button class="btn-submit" onclick="submitForm()">✓ &nbsp;Submit Registration</button>
     </div>
   </div>
@@ -801,6 +1031,7 @@ var photoUploadedUrl = '';
         <div class="success-avatar" id="successAvatar">?</div>
         <div class="success-name" id="successName">—</div>
         <div class="success-tagid" id="successTagId">—</div>
+        <div id="successBundleId" style="display:none;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:900;color:var(--orange);letter-spacing:1px;margin:4px 0 8px;padding:6px 14px;background:rgba(249,115,22,0.1);border:1px solid rgba(249,115,22,0.3);border-radius:8px;text-align:center;"></div>
         <div class="success-msg">Your beta registration is in! We will review and contact you within 24 hours to confirm your free tag.</div>
         <div class="success-steps">
           <div class="success-step"><div class="success-step-num">1</div><div>We review your registration and confirm your spot</div></div>
@@ -840,6 +1071,34 @@ var photoUploadedUrl = '';
 
 function goStep(n) {
   if (n > currentStep && !validateStep(currentStep)) return;
+  // When reaching step 5 — populate delivery, update member 1 summary
+  if (n === 5) {
+    // Auto-fill delivery from home address
+    var addrVal = document.getElementById('address') ? document.getElementById('address').value.trim() : '';
+    var delivEl = document.getElementById('delivery');
+    if (delivEl && !delivEl.value.trim() && addrVal) {
+      delivEl.value = addrVal;
+    }
+    // Update member 1 summary card with actual entered name and email
+    var m1Name  = document.getElementById('m1_summaryName');
+    var m1Email = document.getElementById('m1_summaryEmail');
+    if (m1Name) {
+      var fn = document.getElementById('firstName') ? document.getElementById('firstName').value.trim() : '';
+      var ln = document.getElementById('lastName')  ? document.getElementById('lastName').value.trim()  : '';
+      m1Name.textContent = fn + (ln ? ' ' + ln : '');
+    }
+    if (m1Email) {
+      m1Email.textContent = document.getElementById('email') ? document.getElementById('email').value.trim() : '';
+    }
+    // Auto-fill member delivery addresses from their address fields
+    [2,3,4].forEach(function(mi) {
+      var mAddr = document.getElementById('m'+mi+'_address');
+      var mDel  = document.getElementById('m'+mi+'_delivery');
+      if (mAddr && mDel && !mDel.value.trim() && mAddr.value.trim()) {
+        mDel.value = mAddr.value.trim();
+      }
+    });
+  }
   document.getElementById('sec'+currentStep).classList.remove('active');
   document.getElementById('stepItem'+currentStep).classList.remove('active');
   document.getElementById('stepItem'+currentStep).classList.add('done');
@@ -854,15 +1113,19 @@ function goStep(n) {
 function validateStep(s) {
   var err = document.getElementById('err'+s);
   if (s===1) {
+    // Plan must be selected (always is — default Solo)
+    if (!planSelected) { if(err){err.textContent='Please select a plan.';err.style.display='block';} return false; }
+  }
+  if (s===2) {
     var fn=v('firstName'),ln=v('lastName'),em=v('email'),ph=v('phone'),dob=getDobFromSelects();
     if (!fn||!ln||!em||!ph||!dob) { if(err){err.textContent='Please fill in all required fields.';err.style.display='block';} return false; }
     if (!/^[^@]+@[^@]+\.[^@]+$/.test(em)) { if(err){err.textContent='Please enter a valid email address.';err.style.display='block';} return false; }
   }
-  if (s===3) {
+  if (s===4) {
     if (!v('c1name')||!v('c1phone')) { if(err){err.textContent='Please add at least one emergency contact.';err.style.display='block';} return false; }
   }
-  if (s===4) {
-    if (!v('delivery')) { var e4=document.getElementById('err4'); if(e4){e4.textContent='Please enter a delivery address.';e4.style.display='block';} return false; }
+  if (s===5) {
+    if (!v('delivery')) { var e5=document.getElementById('err5'); if(e5){e5.textContent='Please enter a delivery address.';e5.style.display='block';} return false; }
     var allConsent = ['consent1','consent2','consent3','consent4','consent5'].every(function(id){ return document.getElementById(id) && document.getElementById(id).checked; });
     var cErr = document.getElementById('consentErr');
     if (!allConsent) { if(cErr){cErr.style.display='block';} return false; }
@@ -942,21 +1205,331 @@ function getAgeFromDob() {
 function selectPlan(el, val) {
   if (val === 'Care') {
     var age = getAgeFromDob();
+    // Guard: DOB must be entered
     if (age === null) {
-      alert('Please enter your Date of Birth on Step 1 first — the Care plan is only available for ages 65 and older.');
-      return;
-    }
-    if (age < 65) {
-      alert('The Innovat3 Care plan is only available for people aged 65 or older. You are ' + age + ' years old.');
-      return;
+      // Allow selection but show warning — DOB entered in step 2
+      // We validate age properly on submission
+      var warn = document.getElementById('careAgeWarn');
+      if (warn) warn.textContent = 'ℹ️ Age verification required — enter your DOB in Step 2.';
+    } else if (age < 55) {
+      alert('The Innovat3 Care plan is for people aged 55 and older, or those with verified special needs.\n\nYou appear to be ' + age + ' years old.\n\nIf you have special needs that qualify you for this plan, please contact us at hello@innovat3.co.za before registering.');
+      return; // Block selection
+    } else {
+      var warn = document.getElementById('careAgeWarn');
+      if (warn) warn.textContent = '✓ Age verified — you qualify for the Care plan.';
     }
   }
-  document.querySelectorAll('.plan-card').forEach(c=>c.classList.remove('selected'));
+  // Show family members name inputs in step 1
+  var fm = document.getElementById('familyMembers');
+  if (fm) fm.classList.toggle('show', val === 'Family');
+  // Show/hide the family member sub-form section in step 5
+  var fms = document.getElementById('familyMemberFormsSection');
+  if (fms) fms.style.display = (val === 'Family') ? 'block' : 'none';
+
+  document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
   planSelected = val;
 }
 
-// Called when DOB changes — grey out Care plan if under 65
+// ── BILLING TOGGLE ──────────────────────────────────────────────────────
+function setBilling(cycle) {
+  billingCycle = cycle;
+  document.getElementById('billAnnual').classList.toggle('active', cycle === 'annual');
+  document.getElementById('billMonthly').classList.toggle('active', cycle === 'monthly');
+  var note = document.getElementById('savingNote');
+
+  if (cycle === 'annual') {
+    // Annual prices (20% saving)
+    document.getElementById('soloPrice').textContent  = 'R857';
+    document.getElementById('soloPer').textContent    = '/year';
+    document.getElementById('soloWas').textContent    = 'R1,068/yr';
+    document.getElementById('familyPrice').textContent = 'R1,435';
+    document.getElementById('familyPer').textContent  = '/year';
+    document.getElementById('familyWas').textContent  = 'R1,788/yr';
+    if (note) { note.textContent = '💰 Save 20% with annual billing'; note.style.color = 'var(--green)'; }
+  } else {
+    // Monthly prices
+    document.getElementById('soloPrice').textContent  = 'R89';
+    document.getElementById('soloPer').textContent    = '/month';
+    document.getElementById('soloWas').textContent    = '';
+    document.getElementById('familyPrice').textContent = 'R149';
+    document.getElementById('familyPer').textContent  = '/month';
+    document.getElementById('familyWas').textContent  = '';
+    if (note) { note.textContent = 'Switch to annual and save 20%'; note.style.color = 'var(--muted)'; }
+  }
+}
+
+
+// ── FAMILY MEMBER DYNAMIC FORMS ─────────────────────────────────────────
+var familyMemberData = {};  // stores data per member index
+
+function onMemberNameChange(idx) {
+  var name = (document.getElementById('fm'+idx) || {}).value || '';
+  var container = document.getElementById('memberForms');
+  if (!container) return;
+
+  // Only show accordion for member if name is not empty
+  var existing = document.getElementById('memberAccordion'+idx);
+
+  if (!name.trim()) {
+    if (existing) existing.remove();
+    return;
+  }
+
+  if (existing) {
+    // Update title
+    var titleEl = existing.querySelector('.member-title');
+    if (titleEl) titleEl.textContent = 'Member ' + idx + ' — ' + name.trim();
+    // Update first/last name inputs if they exist
+    var trimmed  = name.trim();
+    var spaceIdx = trimmed.indexOf(' ');
+    var newFirst = spaceIdx > -1 ? trimmed.substring(0, spaceIdx) : trimmed;
+    var newLast  = spaceIdx > -1 ? trimmed.substring(spaceIdx + 1) : '';
+    var fnEl = document.getElementById('m'+idx+'_firstName');
+    var lnEl = document.getElementById('m'+idx+'_lastName');
+    if (fnEl) fnEl.value = newFirst;
+    if (lnEl) lnEl.value = newLast;
+    return;
+  }
+
+  // Build accordion
+  var isMain = idx === 1;
+  var html = buildMemberAccordion(idx, name.trim(), isMain);
+  container.insertAdjacentHTML('beforeend', html);
+}
+
+function buildMemberAccordion(idx, name, isMain) {
+  // Split full name into first + last — handle multi-word names correctly
+  var trimmed   = (name || '').trim();
+  var spaceIdx  = trimmed.indexOf(' ');
+  var autoFirst = spaceIdx > -1 ? trimmed.substring(0, spaceIdx) : trimmed;
+  var autoLast  = spaceIdx > -1 ? trimmed.substring(spaceIdx + 1) : '';
+
+  // Member 1 — show completed summary card; populated live when step 5 is shown
+  if (isMain) {
+    var h = '';
+    h += '<div class="member-accordion" id="memberAccordion1" style="border-color:var(--green);background:#061209;">';
+    h += '  <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;">';
+    h += '    <div style="width:28px;height:28px;border-radius:50%;background:var(--green);color:#000;font-size:14px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;">✓</div>';
+    h += '    <div style="flex:1;">';
+    h += '      <div style="font-family:Orbitron,sans-serif;font-size:10px;font-weight:900;color:var(--green);letter-spacing:1px;">MEMBER 1 (MAIN MEMBER) — PROFILE COMPLETE</div>';
+    h += '      <div id="m1_summaryName" style="font-size:12px;color:#fff;font-weight:700;margin-top:3px;"></div>';
+    h += '      <div id="m1_summaryEmail" style="font-size:10px;color:var(--muted);margin-top:2px;"></div>';
+    h += '    </div>';
+    h += '    <div style="font-size:10px;color:var(--green);font-weight:700;text-align:right;">Info captured<br>in main form ✓</div>';
+    h += '  </div>';
+    h += '</div>';
+    return h;
+  }
+
+
+  var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var monthOpts = months.map(function(m,i){ return '<option value="'+(i+1)+'">'+m+'</option>'; }).join('');
+
+  var sameRow = '<label class="same-as-main" onclick="toggleSameAsMain('+idx+',this)">'
+    + '<input type="checkbox" id="sameAs'+idx+'">'
+    + '<div class="same-check"></div>'
+    + '<div class="same-label">✓ Same as Member 1 from here onwards (Medical Aid, Address, Notes, Emergency Contact &amp; Delivery)</div>'
+    + '</label>';
+
+  var h = '';
+  h += '<div class="member-accordion" id="memberAccordion'+idx+'">';
+  h += '  <div class="member-accordion-hdr" onclick="toggleMemberAccordion('+idx+')">';
+  h += '    <div class="member-num">'+idx+'</div>';
+  h += '    <div class="member-title">Member '+idx+' — '+trimmed+'</div>';
+  h += '    <div class="member-chevron">▼</div>';
+  h += '  </div>';
+  h += '  <div class="member-accordion-body">';
+
+  // Photo
+  h += '    <div class="member-section-hdr">📷 Profile Photo</div>';
+  h += '    <div class="photo-upload-area" id="photoArea_m'+idx+'" onclick="document.getElementById(\'photoInput_m'+idx+'\').click()" style="max-width:160px;margin:0 auto 12px;">';
+  h += '      <img id="photoPreview_m'+idx+'" alt="Preview" style="width:70px;height:70px;border-radius:50%;object-fit:cover;border:2px solid var(--blue);display:none;margin:0 auto 6px;">';
+  h += '      <div id="photoPlaceholder_m'+idx+'"><div class="photo-icon" style="font-size:24px">🤳</div><div class="photo-label">Tap to upload</div></div>';
+  h += '    </div>';
+  h += '    <input type="file" id="photoInput_m'+idx+'" accept="image/*" style="display:none" onchange="handleMemberPhoto(this,'+idx+')">';
+
+  // Personal — full name auto-filled
+  h += '    <div class="member-section-hdr">👤 Personal Details</div>';
+  h += '    <div class="field-row">';
+  h += '      <div class="field"><label>First Name</label><input type="text" id="m'+idx+'_firstName" placeholder="Name" value="'+autoFirst+'"></div>';
+  h += '      <div class="field"><label>Last Name</label><input type="text" id="m'+idx+'_lastName" placeholder="Last Name" value="'+autoLast+'"></div>';
+  h += '    </div>';
+  h += '    <div class="field"><label>Date of Birth</label><div class="dob-selects">';
+  h += '      <select id="m'+idx+'_dobDay"><option value="">Day</option></select>';
+  h += '      <select id="m'+idx+'_dobMonth"><option value="">Month</option>'+monthOpts+'</select>';
+  h += '      <select id="m'+idx+'_dobYear"><option value="">Year</option></select>';
+  h += '    </div></div>';
+  h += '    <div class="field"><label>Phone Number</label><input type="tel" id="m'+idx+'_phone" placeholder="072 123 4567"></div>';
+  h += '    <div class="field"><label>Telegram Username</label><input type="text" id="m'+idx+'_telegram" placeholder="@username"></div>';
+
+  // Blood Type + Medical Alerts — always per member
+  h += '    <div class="member-section-hdr">🩺 Medical</div>';
+  h += '    <div class="field"><label>Blood Type</label><select id="m'+idx+'_blood">';
+  h += '      <option value="">Unknown</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option>';
+  h += '      <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>';
+  h += '    </select></div>';
+  h += '    <div class="field"><label>Medical Alerts</label><textarea id="m'+idx+'_medical" placeholder="Conditions, allergies..." style="min-height:60px;"></textarea></div>';
+
+  // Fields that copy from main member — starts with Medications
+  h += '    <div class="member-fields-wrap" id="memberExtra'+idx+'">';
+  h += '      <div class="field"><label>Medications</label><textarea id="m'+idx+'_meds" placeholder="Current medications..." style="min-height:60px;"></textarea></div>';
+
+  // Same as main toggle — below Medications, above Medical Aid
+  h += sameRow;
+
+  h += '      <div class="field-row">';
+  h += '        <div class="field"><label>Medical Aid</label><input type="text" id="m'+idx+'_medicalAid" placeholder="e.g. Discovery"></div>';
+  h += '        <div class="field"><label>Member No.</label><input type="text" id="m'+idx+'_medicalAidNumber" placeholder="123456"></div>';
+  h += '      </div>';
+  h += '      <div class="field"><label>Address</label><input type="text" id="m'+idx+'_address" placeholder="Street, Suburb, City" oninput="autoFillMemberDelivery('+idx+')"></div>';
+  h += '      <div class="field"><label>Notes for Finder</label><textarea id="m'+idx+'_notes" placeholder="Important info for emergency responders..." style="min-height:60px;"></textarea></div>';
+  h += '      <div class="member-section-hdr">🚨 Emergency Contact</div>';
+  h += '      <div class="field-row">';
+  h += '        <div class="field"><label>Contact Name</label><input type="text" id="m'+idx+'_c1name" placeholder="Contact 01"></div>';
+  h += '        <div class="field"><label>Relation</label><input type="text" id="m'+idx+'_c1rel" placeholder="e.g. Spouse"></div>';
+  h += '      </div>';
+  h += '      <div class="field"><label>Phone</label><input type="tel" id="m'+idx+'_c1phone" placeholder="072 123 4567"></div>';
+  h += '      <div class="field"><label>Telegram</label><input type="text" id="m'+idx+'_c1telegram" placeholder="@username"></div>';
+  h += '      <div class="member-section-hdr">📦 Tag Delivery Address</div>';
+  h += '      <div class="field"><label>Delivery Address <span class="req">*</span></label>';
+  h += '        <textarea id="m'+idx+'_delivery" placeholder="Street address, suburb, city, postal code" style="min-height:60px;"></textarea>';
+  h += '      </div>';
+  h += '    </div>';
+
+  h += '  <button class="btn-member-done" onclick="markMemberDone('+idx+')">✓ &nbsp;Member '+idx+' Profile Complete — Save &amp; Collapse</button>';
+  h += '  </div>';
+  h += '</div>';
+  return h;
+}
+
+function toggleMemberAccordion(idx) {
+  var el = document.getElementById('memberAccordion'+idx);
+  if (!el) return;
+  el.classList.toggle('open');
+  // Populate DOB selects if not done yet
+  populateMemberDob(idx);
+}
+
+function populateMemberDob(idx) {
+  var dayEl  = document.getElementById('m'+idx+'_dobDay');
+  var yearEl = document.getElementById('m'+idx+'_dobYear');
+  if (dayEl && dayEl.options.length <= 1) {
+    for (var d=1;d<=31;d++) { var o=document.createElement('option'); o.value=d; o.textContent=d; dayEl.appendChild(o); }
+  }
+  if (yearEl && yearEl.options.length <= 1) {
+    var cur = new Date().getFullYear();
+    for (var y=cur;y>=1920;y--) { var o=document.createElement('option'); o.value=y; o.textContent=y; yearEl.appendChild(o); }
+  }
+}
+
+function autoFillMemberDelivery(idx) {
+  var addrEl = document.getElementById('m'+idx+'_address');
+  var delEl  = document.getElementById('m'+idx+'_delivery');
+  if (addrEl && delEl && !delEl.value.trim()) {
+    delEl.value = addrEl.value;
+  }
+}
+
+function toggleSameAsMain(idx, labelEl) {
+  var cb    = document.getElementById('sameAs'+idx);
+  if (!cb) return;
+  cb.checked = !cb.checked;
+  labelEl.querySelector('.same-check').style.background = cb.checked ? 'var(--orange)' : '#0d0d0d';
+  labelEl.querySelector('.same-check').style.borderColor = cb.checked ? 'var(--orange)' : '#444';
+  labelEl.querySelector('.same-check').textContent = cb.checked ? '' : '';
+  var extraEl = document.getElementById('memberExtra'+idx);
+  if (extraEl) extraEl.classList.toggle('hidden', cb.checked);
+}
+
+function handleMemberPhoto(input, idx) {
+  if (!input.files||!input.files[0]) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var preview = document.getElementById('photoPreview_m'+idx);
+    var placeholder = document.getElementById('photoPlaceholder_m'+idx);
+    if (preview) { preview.src = e.target.result; preview.style.display='block'; }
+    if (placeholder) placeholder.style.display='none';
+    familyMemberData[idx] = familyMemberData[idx] || {};
+    familyMemberData[idx].photoDataUrl = e.target.result;
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function collectMemberData(idx) {
+  var gv = function(id) { var el=document.getElementById(id); return el ? el.value.trim() : ''; };
+  var sameAs = document.getElementById('sameAs'+idx);
+  var isSame = sameAs && sameAs.checked;
+  var name = gv('fm'+idx);
+  if (!name) return null;
+
+  var data = {
+    name:      name,
+    firstName: gv('m'+idx+'_firstName'),
+    lastName:  gv('m'+idx+'_lastName'),
+    phone:     gv('m'+idx+'_phone'),
+    telegram:  gv('m'+idx+'_telegram'),
+    photoDataUrl: (familyMemberData[idx]||{}).photoDataUrl || '',
+    sameAsMain: isSame
+  };
+
+  var dobD = gv('m'+idx+'_dobDay'), dobM = gv('m'+idx+'_dobMonth'), dobY = gv('m'+idx+'_dobYear');
+  data.dob = (dobD && dobM && dobY) ? dobY+'-'+String(dobM).padStart(2,'0')+'-'+String(dobD).padStart(2,'0') : '';
+
+  if (!isSame) {
+    data.blood           = gv('m'+idx+'_blood');
+    data.medical         = gv('m'+idx+'_medical');
+    data.meds            = gv('m'+idx+'_meds');
+    data.medicalAid      = gv('m'+idx+'_medicalAid');
+    data.medicalAidNumber= gv('m'+idx+'_medicalAidNumber');
+    data.address         = gv('m'+idx+'_address');
+    data.notes           = gv('m'+idx+'_notes');
+    data.c1name          = gv('m'+idx+'_c1name');
+    data.c1rel           = gv('m'+idx+'_c1rel');
+    data.c1phone         = gv('m'+idx+'_c1phone');
+    data.c1telegram      = gv('m'+idx+'_c1telegram');
+    data.delivery        = gv('m'+idx+'_delivery');
+  }
+  return data;
+}
+
+// ── AUTOFILL FOR TESTING ────────────────────────────────────────────────
+function autofill() {
+  // Step 1 — plan already defaulted to Solo
+  setBilling('annual');
+  // Step 2 — personal
+  document.getElementById('firstName').value = 'Test';
+  document.getElementById('lastName').value  = 'User';
+  document.getElementById('email').value     = 'test@innovat3.co.za';
+  document.getElementById('phone').value     = '0721234567';
+  document.getElementById('telegram').value  = '@testuser';
+  // DOB selects
+  document.getElementById('dobDay').value   = '15';
+  document.getElementById('dobMonth').value = '6';
+  document.getElementById('dobYear').value  = '1985';
+  onDobChange();
+  // Step 3 — medical
+  document.getElementById('address').value  = '10 Test Street, Nigel, 1490';
+  document.getElementById('notes').value    = 'Test note for finder';
+  // Step 4 — contacts
+  document.getElementById('c1name').value   = 'Contact 01';
+  document.getElementById('c1rel').value    = 'Spouse';
+  document.getElementById('c1phone').value  = '0721234567';
+  document.getElementById('c1telegram').value = '@contact01';
+  document.getElementById('c1wa').checked   = true;
+  // Step 5 — delivery
+  document.getElementById('delivery').value = '10 Test Street, Nigel, 1490';
+  // Tick all consents
+  ['consent1','consent2','consent3','consent4','consent5'].forEach(function(id) {
+    var cb = document.getElementById(id);
+    var row = cb ? cb.closest('.consent-row') : null;
+    if (cb) cb.checked = true;
+    if (row) row.classList.add('checked');
+  });
+  alert('✅ Autofill complete — all fields populated for testing.');
+}
+
+// Called when DOB changes — check Care plan eligibility
 function onDobChange() {
   // Sync hidden dob field
   var computed = getDobFromSelects();
@@ -965,18 +1538,21 @@ function onDobChange() {
   var age = getAgeFromDob();
   var careCard = document.getElementById('planCare');
   if (!careCard) return;
-  if (age !== null && age < 65) {
-    careCard.style.opacity = '0.35';
-    careCard.style.cursor = 'not-allowed';
-    careCard.title = 'Care plan is only available for ages 65+';
-    // If Care was selected, switch back to Beta
+  if (age !== null && age < 55) {
+    careCard.classList.add('care-locked');
+    careCard.title = 'Care plan is for ages 55+ or verified special needs';
+    var warn = document.getElementById('careAgeWarn');
+    if (warn) warn.textContent = '';
     if (planSelected === 'Care') {
       selectPlan(document.getElementById('planBeta'), 'Beta');
     }
   } else {
-    careCard.style.opacity = '1';
-    careCard.style.cursor = 'pointer';
+    careCard.classList.remove('care-locked');
     careCard.title = '';
+    if (age !== null) {
+      var warn = document.getElementById('careAgeWarn');
+      if (warn && planSelected === 'Care') warn.textContent = '✓ Age verified — you qualify.';
+    }
   }
 }
 
@@ -1206,9 +1782,74 @@ function genTagId() {
   return 'IN3-' + y + '-B' + n;
 }
 
+function genBundleId() {
+  var y = new Date().getFullYear();
+  var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  var code = '';
+  for (var i = 0; i < 6; i++) code += chars[Math.floor(Math.random()*chars.length)];
+  return 'FAM-' + y + '-' + code;
+}
+
 // ── SUBMIT ──
+
+// ── MARK FAMILY MEMBER AS COMPLETE ──────────────────────────────────────
+function markMemberDone(idx) {
+  var el = document.getElementById('memberAccordion'+idx);
+  if (!el) return;
+
+  // Get name for summary
+  var fn  = document.getElementById('m'+idx+'_firstName') ? document.getElementById('m'+idx+'_firstName').value.trim() : '';
+  var ln  = document.getElementById('m'+idx+'_lastName')  ? document.getElementById('m'+idx+'_lastName').value.trim()  : '';
+  var fullName = fn + (ln ? ' ' + ln : '') || document.getElementById('fm'+idx) ? document.getElementById('fm'+idx).value.trim() : 'Member '+idx;
+
+  // Close accordion and mark done
+  el.classList.remove('open');
+  el.classList.add('member-done');
+
+  // Update header to show green checkmark summary
+  var hdr = el.querySelector('.member-accordion-hdr');
+  if (hdr) {
+    hdr.innerHTML =
+      '<div style="width:28px;height:28px;border-radius:50%;background:var(--green);color:#000;font-size:14px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;">✓</div>' +
+      '<div style="flex:1;">' +
+        '<div style="font-family:Orbitron,sans-serif;font-size:9px;font-weight:900;color:var(--green);letter-spacing:1px;">MEMBER '+idx+' — PROFILE COMPLETE</div>' +
+        '<div style="font-size:11px;color:#fff;margin-top:2px;font-weight:700;">'+fullName+'</div>' +
+      '</div>' +
+      '<div style="font-size:10px;color:var(--green);font-weight:700;text-align:right;">✓ Done<br><span style="font-size:9px;color:var(--muted);cursor:pointer;" onclick="editMember('+idx+',event)">Edit</span></div>';
+    // Make header re-openable via Edit only
+    hdr.onclick = null;
+  }
+  // Scroll to next unfilled member or consent
+  var next = null;
+  for (var i = idx+1; i <= 4; i++) {
+    var nextEl = document.getElementById('memberAccordion'+i);
+    if (nextEl && !nextEl.classList.contains('member-done')) { next = nextEl; break; }
+  }
+  var target = next || document.getElementById('consentSection');
+  if (target) target.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function editMember(idx, e) {
+  if (e) e.stopPropagation();
+  var el = document.getElementById('memberAccordion'+idx);
+  if (!el) return;
+  el.classList.remove('member-done');
+  el.classList.add('open');
+  // Restore header
+  var hdr = el.querySelector('.member-accordion-hdr');
+  var nameEl = document.getElementById('fm'+idx);
+  var name = nameEl ? nameEl.value.trim() : 'Member '+idx;
+  if (hdr) {
+    hdr.innerHTML =
+      '<div class="member-num">'+idx+'</div>' +
+      '<div class="member-title">Member '+idx+' — '+name+'</div>' +
+      '<div class="member-chevron">▼</div>';
+    hdr.onclick = function() { toggleMemberAccordion(idx); };
+  }
+}
+
 async function submitForm() {
-  if (!validateStep(4)) return;
+  if (!validateStep(5)) return;
 
   var btn = document.querySelector('.btn-submit');
   btn.textContent = 'Uploading...';
@@ -1253,6 +1894,7 @@ async function submitForm() {
   }
 
   var tagId     = genTagId();
+  var bundleId  = (planSelected === 'Family') ? genBundleId() : '';
   var timestamp = new Date().toLocaleString('en-ZA', {timeZone:'Africa/Johannesburg'});
   var dobRaw    = getDobFromSelects(); // YYYY-MM-DD from selects
   var dobFormatted = formatDob(dobRaw); // DD Month YYYY for display
@@ -1271,7 +1913,7 @@ async function submitForm() {
     email:            v('email'),
     phone:            formatPhone(v('phone')),
     telegram:         v('telegram'),
-    plan:             planSelected,
+    plan:             planSelected + (billingCycle === 'annual' ? ' (Annual)' : ' (Monthly)'),
     blood:            blood,
     medical:          buildMedical(),
     meds:             v('meds'),
@@ -1285,12 +1927,25 @@ async function submitForm() {
     extraNotes:       v('extraNotes'),
     photoUrl:         photoUploadedUrl,
     consentDate:      timestamp,
+    bundleId:         bundleId,
     contacts: [
       v('c1name') ? { name:v('c1name'), rel:v('c1rel'), phone:formatPhone(v('c1phone')), wa:document.getElementById('c1wa').checked, telegram:v('c1telegram') } : null,
       v('c2name') ? { name:v('c2name'), rel:v('c2rel'), phone:formatPhone(v('c2phone')), wa:document.getElementById('c2wa').checked, telegram:v('c2telegram') } : null,
       v('c3name') ? { name:v('c3name'), rel:v('c3rel'), phone:formatPhone(v('c3phone')), wa:document.getElementById('c3wa').checked, telegram:v('c3telegram') } : null,
     ].filter(Boolean)
   };
+
+  // Collect family member data
+  var familyMembersData = [];
+  if (planSelected === 'Family') {
+    familyMembersData = [2,3,4].map(function(idx) {
+      return collectMemberData(idx);
+    }).filter(Boolean);
+    data.familyMembers = familyMembersData;
+    data.familyGroupEmail = v('email'); // ties all members to main account
+    data.familyCount = familyMembersData.length + 1; // include main member
+    data.bundleId = bundleId; // unique family bundle identifier
+  }
 
   // Telegram alert to owner
   var msg =
@@ -1314,7 +1969,7 @@ async function submitForm() {
     });
   } catch(e) {}
 
-  // Send to Google Sheets via GAS
+  // Send main member to Google Sheets via GAS
   try {
     await fetch(GAS_URL, {
       method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'},
@@ -1322,10 +1977,73 @@ async function submitForm() {
     });
   } catch(e) {}
 
-  // Show success
-  document.getElementById('sec4').classList.remove('active');
-  document.getElementById('stepItem4').classList.remove('active');
-  document.getElementById('stepItem4').classList.add('done');
+  // Send each family member as their own separate registration row
+  if (planSelected === 'Family' && familyMembersData.length > 0) {
+    for (var mi = 0; mi < familyMembersData.length; mi++) {
+      var md = familyMembersData[mi];
+      if (!md) continue;
+      var memberTagId = genTagId();
+      var isSame = md.sameAsMain;
+      // Build member registration — copy main member medical fields if sameAsMain
+      var memberReg = {
+        type:             'REGISTRATION',
+        tagId:            memberTagId,
+        timestamp:        timestamp,
+        dob:              md.dob ? formatDob(md.dob) : '',
+        firstName:        md.firstName || md.name.split(' ')[0] || '',
+        lastName:         md.lastName  || md.name.split(' ').slice(1).join(' ') || '',
+        name:             md.name,
+        email:            v('email'),             // tied to main member email
+        phone:            formatPhone(md.phone || v('phone')),
+        telegram:         md.telegram || '',
+        plan:             planSelected + ' (Family Member ' + (mi+2) + ') ' + (billingCycle === 'annual' ? '(Annual)' : '(Monthly)'),
+        blood:            md.blood            || (isSame ? data.blood            : 'Unknown'),
+        medical:          md.medical          || (isSame ? data.medical          : ''),
+        meds:             md.meds             || (isSame ? data.meds             : ''),
+        medicalAid:       md.medicalAid       || (isSame ? data.medicalAid       : ''),
+        medicalAidNumber: md.medicalAidNumber || (isSame ? data.medicalAidNumber : ''),
+        address:          md.address          || (isSame ? v('address')          : ''),
+        notes:            md.notes            || (isSame ? data.notes            : ''),
+        colour:           colour,
+        formFactor:       document.getElementById('formFactor').value,
+        delivery:         md.delivery         || (isSame ? v('delivery')         : ''),
+        extraNotes:       v('extraNotes'),
+        photoUrl:         '',
+        consentDate:      timestamp,
+        familyGroupEmail: v('email'),   // link back to main account
+        familyMainTagId:  tagId,        // reference to main member's tag
+        bundleId:         bundleId,     // family bundle identifier
+        contacts: isSame ? data.contacts : (md.c1name ? [{
+          name: md.c1name, rel: md.c1rel,
+          phone: formatPhone(md.c1phone || ''),
+          wa: false, telegram: md.c1telegram || ''
+        }] : data.contacts)
+      };
+      // Upload member photo if provided
+      if (md.photoDataUrl) {
+        try {
+          var mPhotoUrl = await uploadPhotoToImgbb(md.photoDataUrl);
+          memberReg.photoUrl = mPhotoUrl;
+        } catch(e) {}
+      }
+      try {
+        await fetch(GAS_URL, {
+          method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify(memberReg)
+        });
+      } catch(e) {}
+    }
+  }
+
+  // Hide all sections and show ONLY success screen
+  [1,2,3,4,5].forEach(function(n) {
+    var s = document.getElementById('sec'+n);
+    if (s) s.classList.remove('active');
+    var si = document.getElementById('stepItem'+n);
+    if (si) { si.classList.remove('active'); si.classList.add('done'); }
+  });
+  document.getElementById('progressBar').style.display = 'none';
+  document.querySelector('.page').style.paddingTop = '0';
   var ss = document.getElementById('successScreen');
   ss.style.display = 'block';
 
@@ -1340,6 +2058,10 @@ async function submitForm() {
   }
   document.getElementById('successName').textContent  = data.name;
   document.getElementById('successTagId').textContent = '\ud83c\udff7\ufe0f ' + tagId;
+  if (bundleId) {
+    var bundleEl = document.getElementById('successBundleId');
+    if (bundleEl) { bundleEl.textContent = '👨\u200d👩\u200d👧\u200d👦 Bundle: ' + bundleId; bundleEl.style.display='block'; }
+  }
   window.scrollTo({top:0,behavior:'smooth'});
 }
 </script>
