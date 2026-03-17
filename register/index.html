@@ -485,14 +485,11 @@ body { font-family:"Exo 2",sans-serif; background:#050505; color:var(--text); mi
 <script>
 var TELEGRAM_TOKEN   = '8785184944:AAEEPwzWgfVRaGqEfrCpr4Mf9Yy7qp2Lx2k';
 var TELEGRAM_CHAT_ID = '8737168646';
-var GAS_URL          = 'https://script.google.com/macros/s/AKfycbwW-OuPGWyhABKlaBU7_AEK5AQruZogbJ-RhCQwzFIIUbBxY9iKUSyAP7GSARtGe4fR/exec';
+var GAS_URL          = 'https://script.google.com/macros/s/AKfycbzOYlycETgR3CnEIByqnSfg4smXgf91ikKodhzyY94qWXXnP50xwu79qenduX0c_zfZ/exec';
 var IMGBB_KEY        = 'c95f5daba8da7ba6d1f63cbeb6326a88';
 var WA_IMG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyNUQzNjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMjQgMTAuNUMxNi41IDEwLjUgMTAuNSAxNi41IDEwLjUgMjRjMCAyLjQuNjUgNC43IDEuOCA2LjdMMTAuNSAzNy41bDYuOTUtMS44YzEuOTUgMS4wNSA0LjE1IDEuNjUgNi41NSAxLjY1IDcuNSAwIDEzLjUtNiAxMy41LTEzLjVTMzEuNSAxMC41IDI0IDEwLjV6Ii8+PC9zdmc+';
 var TG_IMG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyOUI2RjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMTAuNSAyMy41bDI3LTEwLjUtNCAyMi04LTctNCA0LTEtOCAxNC0xMi0xNiA5LjV6Ii8+PC9zdmc+';
 var currentStep      = 1;
-window.addEventListener('load', function() {
-  window.scrollTo({top: 0, behavior: 'instant'});
-});
 var bloodSelected    = '';
 var planSelected     = 'Solo';
 var billingCycle     = 'annual';  // 'annual' or 'monthly'
@@ -532,6 +529,11 @@ var photoUploadedUrl = '';
     <div class="step-item" id="stepItem4"><div class="step-num">4</div><div class="step-label">Contacts</div></div>
     <div class="step-line" id="stepLine4"></div>
     <div class="step-item" id="stepItem5"><div class="step-num">5</div><div class="step-label">Finish</div></div>
+  </div>
+
+  <!-- Testing autofill button -->
+  <div style="text-align:center;padding:8px 0 0;">
+    
   </div>
 
   <!-- ── STEP 1: PLAN SELECTION ── -->
@@ -659,9 +661,6 @@ var photoUploadedUrl = '';
     </div>
 
     <div class="nav-btns">
-      <div style="text-align:center;margin-bottom:12px;">
-        <button onclick="autofill()" style="background:#111;border:1px dashed #333;color:#555;font-size:10px;padding:6px 16px;border-radius:8px;cursor:pointer;font-family:'Exo 2',sans-serif;">🧪 Autofill for Testing</button>
-      </div>
       <button class="btn-next" onclick="goStep(2)">Next — Personal Info →</button>
     </div>
   </div>
@@ -1109,6 +1108,9 @@ function goStep(n) {
   document.getElementById('stepItem'+n).classList.remove('done');
   document.getElementById('stepItem'+n).classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
+  // Show PayFast payment section
+  var tagCount = (planSelected === 'Family') ? (familyMembersData.length + 1) : 1;
+  showPaymentSection(tagId, v('firstName'), v('lastName'), v('email'), v('phone'), planSelected, billingCycle, tagCount);
 }
 
 function validateStep(s) {
@@ -1495,40 +1497,7 @@ function collectMemberData(idx) {
 }
 
 // ── AUTOFILL FOR TESTING ────────────────────────────────────────────────
-function autofill() {
-  // Step 1 — plan already defaulted to Solo
-  setBilling('annual');
-  // Step 2 — personal
-  document.getElementById('firstName').value = 'Test';
-  document.getElementById('lastName').value  = 'User';
-  document.getElementById('email').value     = 'test@innovat3.co.za';
-  document.getElementById('phone').value     = '0721234567';
-  document.getElementById('telegram').value  = '@testuser';
-  // DOB selects
-  document.getElementById('dobDay').value   = '15';
-  document.getElementById('dobMonth').value = '6';
-  document.getElementById('dobYear').value  = '1985';
-  onDobChange();
-  // Step 3 — medical
-  document.getElementById('address').value  = '10 Test Street, Nigel, 1490';
-  document.getElementById('notes').value    = 'Test note for finder';
-  // Step 4 — contacts
-  document.getElementById('c1name').value   = 'Contact 01';
-  document.getElementById('c1rel').value    = 'Spouse';
-  document.getElementById('c1phone').value  = '0721234567';
-  document.getElementById('c1telegram').value = '@contact01';
-  document.getElementById('c1wa').checked   = true;
-  // Step 5 — delivery
-  document.getElementById('delivery').value = '10 Test Street, Nigel, 1490';
-  // Tick all consents
-  ['consent1','consent2','consent3','consent4','consent5'].forEach(function(id) {
-    var cb = document.getElementById(id);
-    var row = cb ? cb.closest('.consent-row') : null;
-    if (cb) cb.checked = true;
-    if (row) row.classList.add('checked');
-  });
-  alert('✅ Autofill complete — all fields populated for testing.');
-}
+
 
 // Called when DOB changes — check Care plan eligibility
 function onDobChange() {
@@ -2043,7 +2012,7 @@ async function submitForm() {
     var si = document.getElementById('stepItem'+n);
     if (si) { si.classList.remove('active'); si.classList.add('done'); }
   });
-  document.getElementById('progressBar').style.display = 'none';ss.style.display = 'block';
+  document.getElementById('progressBar').style.display = 'none';
   document.querySelector('.page').style.paddingTop = '0';
   var ss = document.getElementById('successScreen');
   ss.style.display = 'block';
@@ -2086,251 +2055,102 @@ async function submitForm() {
     </div>
   </div>
 </div>
-<!-- 
-  ═══════════════════════════════════════════════════════════════
-  INNOVAT3 — PayFast Payment Button (add to register/index.html)
-  ═══════════════════════════════════════════════════════════════
-  Replace YOUR_MERCHANT_ID and YOUR_MERCHANT_KEY with your real values.
-  The passphrase must match what you set in PayFast Settings > Security.
-  
-  ADD THIS at the end of Step 5 (Delivery) in the register form,
-  replacing the existing "Submit Registration" button.
-  ═══════════════════════════════════════════════════════════════
--->
 
-<!-- PayFast Payment Section -->
-<div class="payfast-section" id="payfastSection" style="display:none">
-  <div class="step-card">
-    <h3>💳 Complete Payment</h3>
-    <p style="color:var(--text-muted);font-size:14px;margin-bottom:20px">
-      Your registration is saved. Complete payment to activate your tag.
-    </p>
+<!-- ── PAYFAST PAYMENT SECTION ─────────────────────────────────── -->
+<div class="payfast-section" id="payfastSection" style="display:none;padding:20px">
+  <div class="step-card" style="background:#111;border:1px solid rgba(249,115,22,0.3);border-radius:20px;padding:32px 28px;max-width:520px;margin:0 auto">
+    <h3 style="font-family:'Orbitron',sans-serif;font-size:18px;color:#F97316;margin-bottom:8px">💳 Complete Payment</h3>
+    <p style="color:#888;font-size:14px;margin-bottom:24px">Your registration is saved. Complete payment to activate your tag.</p>
 
-    <div class="payment-summary" id="paymentSummary" style="
-      background:rgba(249,115,22,0.08);
-      border:1px solid rgba(249,115,22,0.3);
-      border-radius:12px;
-      padding:20px;
-      margin-bottom:20px
-    ">
-      <!-- Filled dynamically by JS -->
-    </div>
+    <div id="paymentSummary" style="background:rgba(249,115,22,0.08);border:1px solid rgba(249,115,22,0.3);border-radius:12px;padding:20px;margin-bottom:24px"></div>
 
-    <!-- PayFast form — hidden, submitted programmatically -->
-    <form id="payfastForm" action="https://www.payfast.co.za/eng/process" method="post">
-      <!-- Sandbox: use https://sandbox.payfast.co.za/eng/process when testing -->
-      <input type="hidden" name="merchant_id"   id="pf_merchant_id">
-      <input type="hidden" name="merchant_key"  id="pf_merchant_key">
-      <input type="hidden" name="return_url"    id="pf_return_url">
-      <input type="hidden" name="cancel_url"    id="pf_cancel_url">
-      <input type="hidden" name="notify_url"    id="pf_notify_url">
-      <input type="hidden" name="m_payment_id"  id="pf_m_payment_id">
-      <input type="hidden" name="amount"        id="pf_amount">
-      <input type="hidden" name="item_name"     id="pf_item_name">
+    <form id="payfastForm" action="https://sandbox.payfast.co.za/eng/process" method="post">
+      <input type="hidden" name="merchant_id"      id="pf_merchant_id"      value="34168603">
+      <input type="hidden" name="merchant_key"     id="pf_merchant_key"     value="frbiyqgqpun0a">
+      <input type="hidden" name="return_url"       id="pf_return_url"       value="https://innovat3.co.za/success.html">
+      <input type="hidden" name="cancel_url"       id="pf_cancel_url"       value="https://innovat3.co.za/register/">
+      <input type="hidden" name="notify_url"       id="pf_notify_url"       value="https://script.google.com/macros/s/AKfycbzOYlycETgR3CnEIByqnSfg4smXgf91ikKodhzyY94qWXXnP50xwu79qenduX0c_zfZ/exec">
+      <input type="hidden" name="m_payment_id"     id="pf_m_payment_id">
+      <input type="hidden" name="amount"           id="pf_amount">
+      <input type="hidden" name="item_name"        id="pf_item_name">
       <input type="hidden" name="item_description" id="pf_item_description">
-      <input type="hidden" name="name_first"    id="pf_name_first">
-      <input type="hidden" name="name_last"     id="pf_name_last">
-      <input type="hidden" name="email_address" id="pf_email_address">
-      <input type="hidden" name="cell_number"   id="pf_cell_number">
-      <input type="hidden" name="signature"     id="pf_signature">
+      <input type="hidden" name="name_first"       id="pf_name_first">
+      <input type="hidden" name="name_last"        id="pf_name_last">
+      <input type="hidden" name="email_address"    id="pf_email_address">
+      <input type="hidden" name="cell_number"      id="pf_cell_number">
     </form>
 
-    <!-- SnapScan QR alternative -->
-    <div id="snapscanSection" style="display:none;text-align:center;margin-bottom:20px">
-      <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px">Or pay via SnapScan:</p>
-      <img id="snapscanQR" src="" alt="SnapScan QR Code" style="width:180px;height:180px;border-radius:12px">
-      <p style="font-size:11px;color:var(--text-dim);margin-top:8px">Scan with SnapScan app</p>
-    </div>
-
     <div style="display:flex;flex-direction:column;gap:12px">
-      <button type="button" onclick="payWithPayFast()" class="btn-pay-primary" style="
-        background:#F97316;color:#fff;border:none;border-radius:12px;
-        padding:16px 24px;font-size:14px;font-weight:700;cursor:pointer;
-        font-family:'Exo 2',sans-serif;letter-spacing:1px;
-        box-shadow:0 4px 20px rgba(249,115,22,0.4);
-        transition:all 0.2s
-      ">
+      <button type="button" onclick="payWithPayFast()" style="background:#F97316;color:#fff;border:none;border-radius:12px;padding:16px 24px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Exo 2',sans-serif;letter-spacing:1px;box-shadow:0 4px 20px rgba(249,115,22,0.4)">
         💳 Pay with PayFast
       </button>
-
-      <button type="button" onclick="showSnapScan()" id="snapscanBtn" style="
-        background:transparent;color:#0ED2C8;border:1px solid rgba(14,210,200,0.4);
-        border-radius:12px;padding:14px 24px;font-size:14px;font-weight:600;cursor:pointer;
-        font-family:'Exo 2',sans-serif;letter-spacing:1px;transition:all 0.2s
-      ">
-        📱 Pay via SnapScan
-      </button>
     </div>
-
-    <p style="font-size:11px;color:var(--text-dim);text-align:center;margin-top:16px">
-      🔒 Payments secured by PayFast · SSL encrypted
-    </p>
+    <p style="font-size:11px;color:#444;text-align:center;margin-top:16px">🔒 Secured by PayFast · SSL encrypted · South Africa</p>
   </div>
 </div>
 
 <script>
-// ── PayFast Configuration ─────────────────────────────────────────────
-var PF_CONFIG = {
-  merchant_id:  '34168603',   // ← your PayFast Merchant ID
-  merchant_key: 'frbiyqgqpun0a',  // ← your PayFast Merchant Key
-  passphrase:   'Skilpad@13!!',    // ← your PayFast passphrase
-  sandbox:      true,  // ← set to false when you go live!
-  return_url:   'https://innovat3.co.za/success.html',
-  cancel_url:   'https://innovat3.co.za/register/',
-  notify_url:   'https://script.google.com/macros/s/AKfycbzOYlycETgR3CnEIByqnSfg4smXgf91ikKodhzyY94qWXXnP50xwu79qenduX0c_zfZ/exec'
-};
-
-// ── SnapScan Configuration ─────────────────────────────────────────────
-var SNAPSCAN_CONFIG = {
-  api_key: 'REPLACE_WITH_YOUR_SNAPSCAN_API_KEY', // ← your SnapScan API key
-  snap_code: 'REPLACE_WITH_YOUR_SNAP_CODE'        // ← your SnapScan snap code
-};
-
-// ── Price table ────────────────────────────────────────────────────────
 var PRICES = {
-  'Solo':         { monthly: 89,   annual: 857,  label: 'Solo' },
-  'Family':       { monthly: 149,  annual: 1435, label: 'Family' },
-  'Care':         { once: 199,                   label: 'Care (Lifetime)' },
-  'Beta':         { monthly: 0,    annual: 0,    label: 'Beta (Free Trial)' },
-  'tag_hardware': { once: 199,                   label: 'Tag Hardware' }
+  'Solo':   { monthly:89,   annual:857,  label:'Solo' },
+  'Family': { monthly:149,  annual:1435, label:'Family' },
+  'Care':   { once:199,                  label:'Care (Lifetime)' },
+  'Beta':   { monthly:0,    annual:0,    label:'Beta (Free Trial)' }
 };
 
-// ── Show PayFast section after registration ──────────────────────────
 function showPaymentSection(tagId, firstName, lastName, email, phone, plan, billing, tagCount) {
   var section = document.getElementById('payfastSection');
-  if (section) section.style.display = 'block';
+  if (section) { section.style.display = 'block'; section.scrollIntoView({behavior:'smooth'}); }
 
-  // Calculate amount
-  var planData = PRICES[plan] || PRICES['Solo'];
-  var subAmount = 0;
-  var billingLabel = '';
+  var planData    = PRICES[plan] || PRICES['Solo'];
+  var subAmount   = 0, billingLabel = '';
 
   if (plan === 'Care' || plan === 'Beta') {
-    subAmount = planData.once || 0;
-    billingLabel = 'Once-off';
+    subAmount    = planData.once || 0;
+    billingLabel = plan === 'Beta' ? 'Free Trial' : 'Once-off Lifetime';
   } else if (billing === 'monthly') {
-    subAmount = planData.monthly;
+    subAmount    = planData.monthly;
     billingLabel = 'Monthly';
   } else {
-    subAmount = planData.annual;
+    subAmount    = planData.annual;
     billingLabel = 'Annual (20% saving)';
   }
 
   var hardwareAmount = (tagCount || 1) * 199;
-  var totalAmount = subAmount + hardwareAmount;
+  var totalAmount    = subAmount + hardwareAmount;
 
-  // Show summary
   var summary = document.getElementById('paymentSummary');
   if (summary) {
     summary.innerHTML =
-      '<div style="font-family:\'Orbitron\',sans-serif;font-size:10px;letter-spacing:2px;color:#F97316;margin-bottom:12px">PAYMENT SUMMARY</div>' +
-      '<div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:14px">' +
-        '<span style="color:#aaa">' + planData.label + ' Subscription (' + billingLabel + ')</span>' +
-        '<span style="color:#fff;font-weight:600">R' + subAmount.toFixed(2) + '</span>' +
-      '</div>' +
-      '<div style="display:flex;justify-content:space-between;margin-bottom:12px;font-size:14px">' +
-        '<span style="color:#aaa">Tag Hardware (' + (tagCount || 1) + ' tag' + (tagCount > 1 ? 's' : '') + ')</span>' +
-        '<span style="color:#fff;font-weight:600">R' + hardwareAmount.toFixed(2) + '</span>' +
-      '</div>' +
-      '<div style="border-top:1px solid rgba(249,115,22,0.3);padding-top:10px;display:flex;justify-content:space-between">' +
-        '<span style="color:#fff;font-weight:700;font-size:16px">Total</span>' +
-        '<span style="color:#F97316;font-weight:900;font-size:20px;font-family:\'Orbitron\',sans-serif">R' + totalAmount.toFixed(2) + '</span>' +
-      '</div>';
+      '<div style="font-family:\'Orbitron\',sans-serif;font-size:10px;letter-spacing:2px;color:#F97316;margin-bottom:14px">PAYMENT SUMMARY</div>' +
+      '<div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:14px"><span style="color:#aaa">' + planData.label + ' (' + billingLabel + ')</span><span style="color:#fff;font-weight:600">R' + subAmount.toFixed(2) + '</span></div>' +
+      '<div style="display:flex;justify-content:space-between;margin-bottom:14px;font-size:14px"><span style="color:#aaa">Tag Hardware (' + (tagCount||1) + ' tag' + (tagCount>1?'s':'') + ')</span><span style="color:#fff;font-weight:600">R' + hardwareAmount.toFixed(2) + '</span></div>' +
+      '<div style="border-top:1px solid rgba(249,115,22,0.3);padding-top:12px;display:flex;justify-content:space-between"><span style="color:#fff;font-weight:700;font-size:16px">Total</span><span style="color:#F97316;font-weight:900;font-size:22px;font-family:\'Orbitron\',sans-serif">R' + totalAmount.toFixed(2) + '</span></div>';
   }
 
-  // Store payment data for form submission
   window._paymentData = {
-    tagId: tagId,
-    firstName: firstName,
-    lastName: lastName,
-    email: email,
-    phone: phone,
-    plan: plan,
-    billing: billing,
+    tagId: tagId, firstName: firstName, lastName: lastName,
+    email: email, phone: phone, plan: plan, billing: billing,
     amount: totalAmount.toFixed(2),
     itemName: 'Innovat3 ' + planData.label + ' - ' + billingLabel,
-    itemDescription: 'Tag ID: ' + tagId + ' | Plan: ' + plan + ' ' + billingLabel
+    itemDescription: 'Tag: ' + tagId + ' | ' + plan + ' ' + billingLabel
   };
 }
 
-// ── Submit to PayFast ────────────────────────────────────────────────
 function payWithPayFast() {
   var d = window._paymentData;
-  if (!d) { alert('Payment data not ready. Please complete registration first.'); return; }
-
+  if (!d) { alert('Payment data not ready.'); return; }
   var form = document.getElementById('payfastForm');
-  if (!form) return;
-
-  // Set sandbox or live URL
-  form.action = PF_CONFIG.sandbox
-    ? 'https://sandbox.payfast.co.za/eng/process'
-    : 'https://www.payfast.co.za/eng/process';
-
-  document.getElementById('pf_merchant_id').value   = PF_CONFIG.merchant_id;
-  document.getElementById('pf_merchant_key').value  = PF_CONFIG.merchant_key;
-  document.getElementById('pf_return_url').value    = PF_CONFIG.return_url;
-  document.getElementById('pf_cancel_url').value    = PF_CONFIG.cancel_url;
-  document.getElementById('pf_notify_url').value    = PF_CONFIG.notify_url;
-  document.getElementById('pf_m_payment_id').value  = d.tagId; // Tag ID as payment reference
+  document.getElementById('pf_m_payment_id').value  = d.tagId;
   document.getElementById('pf_amount').value        = d.amount;
   document.getElementById('pf_item_name').value     = d.itemName;
   document.getElementById('pf_item_description').value = d.itemDescription;
   document.getElementById('pf_name_first').value    = d.firstName;
   document.getElementById('pf_name_last').value     = d.lastName;
   document.getElementById('pf_email_address').value = d.email;
-  document.getElementById('pf_cell_number').value   = (d.phone || '').replace(/\s+/g,'');
-
-  // Build signature
-  var sig = generatePayFastSignature({
-    merchant_id:     PF_CONFIG.merchant_id,
-    merchant_key:    PF_CONFIG.merchant_key,
-    return_url:      PF_CONFIG.return_url,
-    cancel_url:      PF_CONFIG.cancel_url,
-    notify_url:      PF_CONFIG.notify_url,
-    m_payment_id:    d.tagId,
-    amount:          d.amount,
-    item_name:       d.itemName,
-    item_description:d.itemDescription,
-    name_first:      d.firstName,
-    name_last:       d.lastName,
-    email_address:   d.email,
-    cell_number:     (d.phone || '').replace(/\s+/g,'')
-  }, PF_CONFIG.passphrase);
-
-  document.getElementById('pf_signature').value = sig;
-
+  document.getElementById('pf_cell_number').value   = (d.phone||'').replace(/\s+/g,'');
   form.submit();
 }
-
-// ── Generate PayFast MD5 signature ───────────────────────────────────
-function generatePayFastSignature(params, passphrase) {
-  // Note: MD5 in browser requires a library. We'll use a simple approach:
-  // In production, generate the signature server-side in GAS for security.
-  // For now, submit without signature and let PayFast accept it.
-  // (PayFast sandbox doesn't require signature)
-  return '';
-}
-
-// ── SnapScan QR ──────────────────────────────────────────────────────
-function showSnapScan() {
-  var d = window._paymentData;
-  if (!d) return;
-
-  var snapSection = document.getElementById('snapscanSection');
-  var qrImg = document.getElementById('snapscanQR');
-
-  if (snapSection && qrImg) {
-    // SnapScan QR URL — replace with your actual snap code
-    var snapUrl = 'https://pos.snapscan.io/qr/' + SNAPSCAN_CONFIG.snap_code +
-                  '?amount=' + Math.round(d.amount * 100) +
-                  '&reference=' + encodeURIComponent(d.tagId);
-
-    // Generate QR code image (using Google Charts API)
-    qrImg.src = 'https://chart.googleapis.com/chart?chs=180x180&cht=qr&chl=' + encodeURIComponent(snapUrl);
-    snapSection.style.display = 'block';
-    document.getElementById('snapscanBtn').style.display = 'none';
-  }
-}
 </script>
+
 </body>
 </html>
