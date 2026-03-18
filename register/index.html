@@ -529,6 +529,8 @@ var photoUploadedUrl = '';
     <div class="step-item" id="stepItem4"><div class="step-num">4</div><div class="step-label">Contacts</div></div>
     <div class="step-line" id="stepLine4"></div>
     <div class="step-item" id="stepItem5"><div class="step-num">5</div><div class="step-label">Finish</div></div>
+    <div class="step-line" id="stepLine5" style="display:none"></div>
+    <div class="step-item" id="stepItem6" style="display:none"><div class="step-num">6</div><div class="step-label">Verify</div></div>
   </div>
 
   <!-- Testing autofill button -->
@@ -1023,7 +1025,71 @@ var photoUploadedUrl = '';
     </div>
   </div>
 
-  <!-- SUCCESS -->
+  
+<!-- ── STEP 6: CARE VERIFICATION (Care plan only) ──────────────── -->
+<div class="section" id="sec6" style="display:none">
+  <div class="section-spacer"></div>
+  <div class="form-tab" style="border:2px solid rgba(14,210,200,0.4)">
+    <div class="form-tab-hdr" style="background:rgba(14,210,200,0.1);color:#0ED2C8">
+      🛡️ &nbsp;Care Plan Verification
+    </div>
+    <div class="form-tab-body">
+      <p style="font-size:14px;color:#aaa;line-height:1.7;margin-bottom:20px">
+        The <strong style="color:#0ED2C8">Care Plan</strong> is reserved for people aged 55+ or those with verified disabilities or special needs.<br><br>
+        To prevent abuse, we require at least <strong>one</strong> of the following documents before your tag is dispatched. Your tag will be reviewed and confirmed within <strong>3–5 business days</strong>.
+      </p>
+
+      <div style="background:rgba(14,210,200,0.06);border:1px solid rgba(14,210,200,0.25);border-radius:12px;padding:20px;margin-bottom:24px">
+        <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#0ED2C8;margin-bottom:14px">Accepted Documents</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:#ccc">
+          <div>✅ South African ID (copy — both sides)</div>
+          <div>✅ Medical certificate confirming disability / special needs</div>
+          <div>✅ SASSA disability grant letter</div>
+          <div>✅ Doctor's letter on official letterhead</div>
+        </div>
+      </div>
+
+      <!-- ID Document Upload -->
+      <div class="form-group" style="margin-bottom:20px">
+        <label class="form-label">📄 Upload ID Document <span style="color:#ef4444">*</span></label>
+        <div id="idUploadArea" style="border:2px dashed rgba(14,210,200,0.4);border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:all 0.2s;background:rgba(14,210,200,0.04)" onclick="document.getElementById('idFileInput').click()">
+          <div style="font-size:28px;margin-bottom:8px">🪪</div>
+          <div style="font-size:13px;color:#0ED2C8;font-weight:600">Click to upload ID</div>
+          <div style="font-size:11px;color:#666;margin-top:4px">JPG, PNG or PDF · Max 5MB</div>
+        </div>
+        <input type="file" id="idFileInput" accept="image/*,.pdf" style="display:none" onchange="handleCareDocUpload('id', this)">
+        <div id="idUploadStatus" style="margin-top:8px;font-size:12px;color:#0ED2C8;display:none"></div>
+      </div>
+
+      <!-- Medical Document Upload (optional if ID uploaded) -->
+      <div class="form-group" style="margin-bottom:20px">
+        <label class="form-label">🏥 Upload Medical Document <span style="color:#aaa;font-size:11px">(optional if ID provided)</span></label>
+        <div id="medUploadArea" style="border:2px dashed rgba(249,115,22,0.3);border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:all 0.2s;background:rgba(249,115,22,0.03)" onclick="document.getElementById('medFileInput').click()">
+          <div style="font-size:28px;margin-bottom:8px">📋</div>
+          <div style="font-size:13px;color:#F97316;font-weight:600">Click to upload medical document</div>
+          <div style="font-size:11px;color:#666;margin-top:4px">JPG, PNG or PDF · Max 5MB</div>
+        </div>
+        <input type="file" id="medFileInput" accept="image/*,.pdf" style="display:none" onchange="handleCareDocUpload('med', this)">
+        <div id="medUploadStatus" style="margin-top:8px;font-size:12px;color:#F97316;display:none"></div>
+      </div>
+
+      <div id="err6" style="display:none;color:#ef4444;font-size:13px;margin-bottom:12px;padding:10px;background:rgba(239,68,68,0.08);border-radius:8px;border-left:3px solid #ef4444"></div>
+
+      <div style="background:rgba(249,115,22,0.06);border:1px solid rgba(249,115,22,0.2);border-radius:10px;padding:14px;margin-bottom:8px">
+        <div style="font-size:12px;color:#aaa;line-height:1.6">
+          ⏱️ <strong style="color:#F97316">Delivery note:</strong> Care plan tags take <strong>3–5 business days</strong> longer than standard orders due to manual verification. We will contact you via email once approved.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-btns">
+    <button class="btn-back" onclick="goStep(5)">← Back</button>
+    <button class="btn-submit" onclick="proceedToPayment()">💳 &nbsp;Proceed to Payment →</button>
+  </div>
+</div>
+
+<!-- SUCCESS -->
   <div class="success-screen" id="successScreen">
     <div class="success-tab">
       <div class="success-tab-hdr">✅ &nbsp;Registration Received!</div>
@@ -1071,6 +1137,11 @@ var photoUploadedUrl = '';
 
 function goStep(n) {
   if (n > currentStep && !validateStep(currentStep)) return;
+  // Care plan: insert step 6 (verification) before payment
+  if (n === 6) {
+    document.getElementById('stepLine5').style.display = '';
+    document.getElementById('stepItem6').style.display = '';
+  }
   // When reaching step 5 — populate delivery, update member 1 summary
   if (n === 5) {
     // Auto-fill delivery from home address
@@ -1130,6 +1201,16 @@ function validateStep(s) {
     var cErr = document.getElementById('consentErr');
     if (!allConsent) { if(cErr){cErr.style.display='block';} return false; }
     if (cErr) cErr.style.display='none';
+  }
+  if (s===6) {
+    // Care plan: must upload at least ID doc
+    if (!window._careIdUploaded) {
+      var e6 = document.getElementById('err6');
+      if (e6) { e6.textContent = 'Please upload your ID document to verify Care plan eligibility.'; e6.style.display='block'; }
+      return false;
+    }
+    var e6 = document.getElementById('err6');
+    if (e6) e6.style.display='none';
   }
   if (err) err.style.display='none';
   return true;
@@ -1915,6 +1996,11 @@ async function submitForm() {
   }
 
   // Telegram alert to owner
+  var careNote = (planSelected === 'Care') ? 
+    "\n\n🛡️ *CARE PLAN — manual verification required*\n" +
+    "📄 ID Doc: " + (window._careIdUrl ? window._careIdUrl : 'Not uploaded') + "\n" +
+    "🏥 Med Doc: " + (window._careMedUrl ? window._careMedUrl : 'Not uploaded') : '';
+
   var msg =
     "\ud83c\udd95 *NEW BETA REGISTRATION*\n\n" +
     "*" + data.name + "*\n" +
@@ -1927,7 +2013,7 @@ async function submitForm() {
     "\ud83c\udfa8 Colour: " + colour + "\n" +
     "\ud83e\ude78 Blood: " + blood + "\n" +
     "\u26a0\ufe0f Medical: " + data.medical + "\n" +
-    "\ud83d\udcc5 Timestamp: " + timestamp;
+    "\ud83d\udcc5 Timestamp: " + timestamp + careNote;
 
   try {
     await fetch('https://api.telegram.org/bot' + TELEGRAM_TOKEN + '/sendMessage', {
@@ -2095,7 +2181,15 @@ var PRICES = {
 };
 
 function proceedToPayment() {
-  if (!validateStep(5)) return;
+  // Care plan must complete step 6 (verification docs) first
+  var currentSec = currentStep;
+  if (planSelected === 'Care' && currentSec === 5) {
+    goStep(6);
+    return;
+  }
+  if (planSelected === 'Care' && !validateStep(6)) return;
+  if (currentSec < 6 && planSelected !== 'Care' && !validateStep(5)) return;
+  if (!validateStep(planSelected === 'Care' ? 6 : 5)) return;
 
   // Hide the form sections
   [1,2,3,4,5].forEach(function(n) {
@@ -2129,6 +2223,7 @@ function proceedToPayment() {
     colour: colour, formFactor: document.getElementById('formFactor').value,
     delivery: v('delivery'), extraNotes: v('extraNotes'),
     photoUrl: photoUploadedUrl, consentDate: timestamp,
+    careIdDocUrl: window._careIdUrl || '', careMedDocUrl: window._careMedUrl || '',
     contacts: [
       v('c1name') ? {name:v('c1name'),rel:v('c1rel'),phone:formatPhone(v('c1phone')),wa:document.getElementById('c1wa').checked,telegram:v('c1telegram')} : null,
       v('c2name') ? {name:v('c2name'),rel:v('c2rel'),phone:formatPhone(v('c2phone')),wa:document.getElementById('c2wa').checked,telegram:v('c2telegram')} : null,
