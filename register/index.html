@@ -1019,7 +1019,7 @@ var photoUploadedUrl = '';
 
     <div class="nav-btns">
       <button class="btn-back" onclick="goStep(4)">← Back</button>
-      <button class="btn-submit" onclick="submitForm()">✓ &nbsp;Submit Registration</button>
+      <button class="btn-submit" onclick="proceedToPayment()">💳 &nbsp;Proceed to Payment →</button>
     </div>
   </div>
 
@@ -2030,9 +2030,6 @@ async function submitForm() {
     if (bundleEl) { bundleEl.textContent = '👨\u200d👩\u200d👧\u200d👦 Bundle: ' + bundleId; bundleEl.style.display='block'; }
   }
   window.scrollTo({top:0,behavior:'smooth'});
-  // Show PayFast payment section
-  var tagCount = (planSelected === 'Family') ? (familyMembersData.length + 1) : 1;
-  showPaymentSection(tagId, v('firstName'), v('lastName'), v('email'), v('phone'), planSelected, billingCycle, tagCount);
 }
 </script>
 
@@ -2064,7 +2061,7 @@ async function submitForm() {
 
     <div id="paymentSummary" style="background:rgba(249,115,22,0.08);border:1px solid rgba(249,115,22,0.3);border-radius:12px;padding:20px;margin-bottom:24px"></div>
 
-    <form id="payfastForm" action="https://www.payfast.co.za/eng/process" method="post">
+    <form id="payfastForm" action="https://sandbox.payfast.co.za/eng/process" method="post">
       <input type="hidden" name="merchant_id"      id="pf_merchant_id"      value="34168603">
       <input type="hidden" name="merchant_key"     id="pf_merchant_key"     value="frbiyqgqpun0a">
       <input type="hidden" name="return_url"       id="pf_return_url"       value="https://innovat3.co.za/success.html">
@@ -2081,7 +2078,7 @@ async function submitForm() {
     </form>
 
     <div style="display:flex;flex-direction:column;gap:12px">
-      <button type="button" onclick="payWithPayFast()" style="background:#F97316;color:#fff;border:none;border-radius:12px;padding:16px 24px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Exo 2',sans-serif;letter-spacing:1px;box-shadow:0 4px 20px rgba(249,115,22,0.4)">
+      <button type="button" id="payfastPayBtn" onclick="payWithPayFast()" style="background:#F97316;color:#fff;border:none;border-radius:12px;padding:16px 24px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Exo 2',sans-serif;letter-spacing:1px;box-shadow:0 4px 20px rgba(249,115,22,0.4)">
         💳 Pay with PayFast
       </button>
     </div>
@@ -2097,7 +2094,58 @@ var PRICES = {
   'Beta':   { monthly:0,    annual:0,    label:'Beta (Free Trial)' }
 };
 
-function showPaymentSection(tagId, firstName, lastName, email, phone, plan, billing, tagCount) {
+function proceedToPayment() {
+  if (!validateStep(5)) return;
+
+  // Hide the form sections
+  [1,2,3,4,5].forEach(function(n) {
+    var s = document.getElementById('sec'+n);
+    if (s) s.classList.remove('active');
+    var si = document.getElementById('stepItem'+n);
+    if (si) { si.classList.remove('active'); si.classList.add('done'); }
+  });
+  document.getElementById('progressBar').style.display = 'none';
+  document.querySelector('.page').style.paddingTop = '0';
+
+  // Build registration data (same as submitForm but don't send yet)
+  var tagId    = genTagId();
+  var bundleId = (planSelected === 'Family') ? genBundleId() : '';
+  var timestamp = new Date().toLocaleString('en-ZA', {timeZone:'Africa/Johannesburg'});
+  var dobRaw   = getDobFromSelects();
+  var dobFormatted = formatDob(dobRaw);
+  var colour   = coloursSelected.length > 0 ? coloursSelected.join(' + ') : 'Not selected';
+  var blood    = bloodSelected || v('bloodOther') || 'Unknown';
+
+  var registrationData = {
+    type: 'REGISTRATION',
+    tagId: tagId, bundleId: bundleId, timestamp: timestamp,
+    dob: dobFormatted, firstName: v('firstName'), lastName: v('lastName'),
+    name: v('firstName') + ' ' + v('lastName'),
+    email: v('email'), phone: formatPhone(v('phone')), telegram: v('telegram'),
+    plan: planSelected + (billingCycle === 'annual' ? ' (Annual)' : ' (Monthly)'),
+    blood: blood, medical: buildMedical(), meds: v('meds'),
+    address: v('address'), notes: v('notes'),
+    medicalAid: v('medicalAid'), medicalAidNumber: v('medicalAidNumber'),
+    colour: colour, formFactor: document.getElementById('formFactor').value,
+    delivery: v('delivery'), extraNotes: v('extraNotes'),
+    photoUrl: photoUploadedUrl, consentDate: timestamp,
+    contacts: [
+      v('c1name') ? {name:v('c1name'),rel:v('c1rel'),phone:formatPhone(v('c1phone')),wa:document.getElementById('c1wa').checked,telegram:v('c1telegram')} : null,
+      v('c2name') ? {name:v('c2name'),rel:v('c2rel'),phone:formatPhone(v('c2phone')),wa:document.getElementById('c2wa').checked,telegram:v('c2telegram')} : null,
+      v('c3name') ? {name:v('c3name'),rel:v('c3rel'),phone:formatPhone(v('c3phone')),wa:document.getElementById('c3wa').checked,telegram:v('c3telegram')} : null,
+    ].filter(Boolean)
+  };
+
+  // Count tags for family
+  var tagCount = (planSelected === 'Family') ? 
+    ([2,3,4].filter(function(i){ return collectMemberData(i); }).length + 1) : 1;
+
+  // Show payment section
+  showPaymentSection(tagId, v('firstName'), v('lastName'), v('email'), 
+    v('phone'), planSelected, billingCycle, tagCount, registrationData);
+}
+
+function showPaymentSection(tagId, firstName, lastName, email, phone, plan, billing, tagCount, registrationData) {
   var section = document.getElementById('payfastSection');
   if (section) { section.style.display = 'block'; section.scrollIntoView({behavior:'smooth'}); }
 
@@ -2132,23 +2180,36 @@ function showPaymentSection(tagId, firstName, lastName, email, phone, plan, bill
     email: email, phone: phone, plan: plan, billing: billing,
     amount: totalAmount.toFixed(2),
     itemName: 'Innovat3 ' + planData.label + ' - ' + billingLabel,
-    itemDescription: 'Tag: ' + tagId + ' | ' + plan + ' ' + billingLabel
+    itemDescription: 'Tag: ' + tagId + ' | ' + plan + ' ' + billingLabel,
+    registrationData: registrationData || {}
   };
 }
 
 function payWithPayFast() {
   var d = window._paymentData;
   if (!d) { alert('Payment data not ready.'); return; }
-  var form = document.getElementById('payfastForm');
-  document.getElementById('pf_m_payment_id').value  = d.tagId;
-  document.getElementById('pf_amount').value        = d.amount;
-  document.getElementById('pf_item_name').value     = d.itemName;
-  document.getElementById('pf_item_description').value = d.itemDescription;
-  document.getElementById('pf_name_first').value    = d.firstName;
-  document.getElementById('pf_name_last').value     = d.lastName;
-  document.getElementById('pf_email_address').value = d.email;
-  document.getElementById('pf_cell_number').value   = (d.phone||'').replace(/\s+/g,'');
-  form.submit();
+
+  // Save registration to GAS before redirecting to PayFast
+  var btn = document.getElementById('payfastPayBtn');
+  if (btn) { btn.textContent = '⏳ Saving registration...'; btn.disabled = true; }
+
+  // Submit registration data to GAS
+  fetch(GAS_URL, {
+    method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(d.registrationData)
+  }).catch(function(){}).finally(function() {
+    // Whether GAS succeeds or fails, proceed to PayFast
+    var form = document.getElementById('payfastForm');
+    document.getElementById('pf_m_payment_id').value  = d.tagId;
+    document.getElementById('pf_amount').value        = d.amount;
+    document.getElementById('pf_item_name').value     = d.itemName;
+    document.getElementById('pf_item_description').value = d.itemDescription;
+    document.getElementById('pf_name_first').value    = d.firstName;
+    document.getElementById('pf_name_last').value     = d.lastName;
+    document.getElementById('pf_email_address').value = d.email;
+    document.getElementById('pf_cell_number').value   = (d.phone||'').replace(/\s+/g,'');
+    form.submit();
+  });
 }
 </script>
 
