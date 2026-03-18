@@ -632,7 +632,19 @@ var photoUploadedUrl = '';
                 <li>Telegram &amp; WhatsApp notifications</li>
                 <li>Age or special needs verification required</li>
               </ul>
-              <div class="care-age-warn" id="careAgeWarn"></div>
+              <!-- Care type selector -->
+              <div id="careTypeSelector" style="display:none;margin-top:12px;padding:10px;background:rgba(14,210,200,0.06);border:1px solid rgba(14,210,200,0.2);border-radius:10px">
+                <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#0ED2C8;margin-bottom:10px">I am registering as a:</div>
+                <div style="display:flex;gap:8px">
+                  <button type="button" id="careTypeSenior" onclick="setCareType('senior')" style="flex:1;padding:10px 8px;border-radius:8px;border:1px solid rgba(14,210,200,0.4);background:rgba(14,210,200,0.15);color:#0ED2C8;font-size:12px;font-weight:700;cursor:pointer">
+                    👴 Senior (55+)
+                  </button>
+                  <button type="button" id="careTypeSpecial" onclick="setCareType('special_needs')" style="flex:1;padding:10px 8px;border-radius:8px;border:1px solid rgba(14,210,200,0.2);background:transparent;color:#888;font-size:12px;font-weight:700;cursor:pointer">
+                    ♿ Special Needs
+                  </button>
+                </div>
+                <div id="careAgeWarn" style="font-size:11px;color:#0ED2C8;margin-top:8px;min-height:16px"></div>
+              </div>
             </div>
             <div class="plan-price-wrap">
               <div class="plan-price-main" style="color:var(--teal)">R199</div>
@@ -1027,7 +1039,7 @@ var photoUploadedUrl = '';
 
   
 <!-- ── STEP 6: CARE VERIFICATION (Care plan only) ──────────────── -->
-<div class="section" id="sec6" style="display:none">
+<div class="section" id="sec6">
   <div class="section-spacer"></div>
   <div class="form-tab" style="border:2px solid rgba(14,210,200,0.4)">
     <div class="form-tab-hdr" style="background:rgba(14,210,200,0.1);color:#0ED2C8">
@@ -1144,8 +1156,6 @@ function goStep(n) {
   if (n > currentStep && !validateStep(currentStep)) return;
   // Care plan: insert step 6 (verification) before payment
   if (n === 6) {
-    document.getElementById('stepLine5').style.display = '';
-    document.getElementById('stepItem6').style.display = '';
     // Update step 6 content based on careType
     var descEl = document.getElementById('careVerifyDesc');
     var titleEl = document.getElementById('careVerifyTitle');
@@ -1200,6 +1210,11 @@ function goStep(n) {
   document.getElementById('stepItem'+currentStep).classList.add('done');
   if (currentStep < 4) document.getElementById('stepLine'+currentStep).classList.add('done');
   currentStep = n;
+  // Show step 6 progress items if needed
+  if (n === 6) {
+    document.getElementById('stepLine5').style.display = '';
+    document.getElementById('stepItem6').style.display = '';
+  }
   document.getElementById('sec'+n).classList.add('active');
   document.getElementById('stepItem'+n).classList.remove('done');
   document.getElementById('stepItem'+n).classList.add('active');
@@ -2264,15 +2279,23 @@ var PRICES = {
 };
 
 function proceedToPayment() {
-  // Care plan must complete step 6 (verification docs) first
-  var currentSec = currentStep;
-  if (planSelected === 'Care' && currentSec === 5) {
-    goStep(6);
-    return;
+  // For Care plan: must go through step 6 first
+  if (planSelected === 'Care') {
+    if (currentStep === 5) {
+      // Validate step 5 first
+      if (!validateStep(5)) return;
+      // Then go to step 6
+      goStep(6);
+      return;
+    }
+    if (currentStep === 6) {
+      // Validate step 6 (docs)
+      if (!validateStep(6)) return;
+    }
+  } else {
+    // Non-Care: validate step 5
+    if (!validateStep(5)) return;
   }
-  if (planSelected === 'Care' && !validateStep(6)) return;
-  if (currentSec < 6 && planSelected !== 'Care' && !validateStep(5)) return;
-  if (!validateStep(planSelected === 'Care' ? 6 : 5)) return;
 
   // Hide the form sections
   [1,2,3,4,5].forEach(function(n) {
