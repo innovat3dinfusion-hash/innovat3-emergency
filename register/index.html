@@ -1031,13 +1031,18 @@ var photoUploadedUrl = '';
   <div class="section-spacer"></div>
   <div class="form-tab" style="border:2px solid rgba(14,210,200,0.4)">
     <div class="form-tab-hdr" style="background:rgba(14,210,200,0.1);color:#0ED2C8">
-      🛡️ &nbsp;Care Plan Verification
+      🛡️ &nbsp;<span id="careVerifyTitle">Care Plan Verification</span>
     </div>
     <div class="form-tab-body">
-      <p style="font-size:14px;color:#aaa;line-height:1.7;margin-bottom:20px">
-        The <strong style="color:#0ED2C8">Care Plan</strong> is reserved for people aged 55+ or those with verified disabilities or special needs.<br><br>
-        To prevent abuse, we require at least <strong>one</strong> of the following documents before your tag is dispatched. Your tag will be reviewed and confirmed within <strong>3–5 business days</strong>.
-      </p>
+      <div id="careVerifyDesc" style="font-size:14px;color:#aaa;line-height:1.7;margin-bottom:20px">
+        <!-- Filled dynamically based on careType -->
+      </div>
+      <script>
+      // Update step 6 content based on careType when entering step 6
+      document.addEventListener('DOMContentLoaded', function() {
+        var origGoStep = window.goStep;
+      });
+      </script>
 
       <div style="background:rgba(14,210,200,0.06);border:1px solid rgba(14,210,200,0.25);border-radius:12px;padding:20px;margin-bottom:24px">
         <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#0ED2C8;margin-bottom:14px">Accepted Documents</div>
@@ -1141,6 +1146,26 @@ function goStep(n) {
   if (n === 6) {
     document.getElementById('stepLine5').style.display = '';
     document.getElementById('stepItem6').style.display = '';
+    // Update step 6 content based on careType
+    var descEl = document.getElementById('careVerifyDesc');
+    var titleEl = document.getElementById('careVerifyTitle');
+    var idArea  = document.getElementById('idUploadArea');
+    var idLabel = idArea ? idArea.parentElement.querySelector('.form-label') : null;
+    if (careType === 'senior') {
+      if (titleEl) titleEl.textContent = 'Senior Verification (55+)';
+      if (descEl) descEl.innerHTML = 
+        '✅ Your age will be verified against your Date of Birth from Step 2. No document upload is required for Senior registration.<br><br>' +
+        '<strong style="color:#0ED2C8">Optionally</strong>, you may upload a copy of your ID for our records. Your tag will be dispatched within the standard timeframe.';
+      // Make ID upload optional for seniors
+      if (idLabel) idLabel.innerHTML = '📄 Upload ID Document <span style="color:#aaa;font-size:11px">(optional for seniors)</span>';
+    } else {
+      if (titleEl) titleEl.textContent = 'Special Needs Verification';
+      if (descEl) descEl.innerHTML =
+        'The <strong style="color:#0ED2C8">Special Needs</strong> Care plan bypasses the age requirement. To prevent abuse, please upload at least <strong>one</strong> of the accepted documents below.<br><br>' +
+        'Your tag will be reviewed and confirmed within <strong style="color:#F97316">3–5 business days</strong> of submission.';
+      // Make ID upload required for special needs
+      if (idLabel) idLabel.innerHTML = '📄 Upload ID Document <span style="color:#ef4444">*</span>';
+    }
   }
   // When reaching step 5 — populate delivery, update member 1 summary
   if (n === 5) {
@@ -1203,12 +1228,15 @@ function validateStep(s) {
     if (cErr) cErr.style.display='none';
   }
   if (s===6) {
-    // Care plan: must upload at least ID doc
-    if (!window._careIdUploaded) {
-      var e6 = document.getElementById('err6');
-      if (e6) { e6.textContent = 'Please upload your ID document to verify Care plan eligibility.'; e6.style.display='block'; }
-      return false;
+    if (careType === 'special_needs') {
+      // Special needs: must upload at least one document
+      if (!window._careIdUploaded && !window._careMedUploaded) {
+        var e6 = document.getElementById('err6');
+        if (e6) { e6.textContent = 'Please upload at least one verification document (ID or medical certificate) to confirm special needs eligibility.'; e6.style.display='block'; }
+        return false;
+      }
     }
+    // Senior: no doc required — age verified by DOB in step 2
     var e6 = document.getElementById('err6');
     if (e6) e6.style.display='none';
   }
@@ -1285,20 +1313,27 @@ function getAgeFromDob() {
 
 function selectPlan(el, val) {
   if (val === 'Care') {
-    var age = getAgeFromDob();
-    // Guard: DOB must be entered
-    if (age === null) {
-      // Allow selection but show warning — DOB entered in step 2
-      // We validate age properly on submission
-      var warn = document.getElementById('careAgeWarn');
-      if (warn) warn.textContent = 'ℹ️ Age verification required — enter your DOB in Step 2.';
-    } else if (age < 55) {
-      alert('The Innovat3 Care plan is for people aged 55 and older, or those with verified special needs.\n\nYou appear to be ' + age + ' years old.\n\nIf you have special needs that qualify you for this plan, please contact us at hello@innovat3.co.za before registering.');
-      return; // Block selection
-    } else {
-      var warn = document.getElementById('careAgeWarn');
-      if (warn) warn.textContent = '✓ Age verified — you qualify for the Care plan.';
+    // Show the Care type selector (Senior vs Special Needs)
+    showCareTypeSelector();
+    // Default to senior — check age
+    if (careType === 'senior') {
+      var age = getAgeFromDob();
+      if (age === null) {
+        var warn = document.getElementById('careAgeWarn');
+        if (warn) warn.textContent = 'ℹ️ Enter your DOB in Step 2 to verify age. Or select Special Needs below.';
+      } else if (age < 55) {
+        // Under 55 — show selector but default to special needs with message
+        setCareType('special_needs');
+        var warn = document.getElementById('careAgeWarn');
+        if (warn) { warn.textContent = 'ℹ️ You are under 55 — switched to Special Needs. A verification doc is required.'; warn.style.color = '#F97316'; }
+      } else {
+        var warn = document.getElementById('careAgeWarn');
+        if (warn) { warn.textContent = '✓ Age verified — you qualify as a Senior.'; warn.style.color = '#0ED2C8'; }
+      }
     }
+  } else {
+    // Hide Care type selector when another plan is selected
+    hideCareTypeSelector();
   }
   // Show family members name inputs in step 1
   var fm = document.getElementById('familyMembers');
@@ -1586,22 +1621,70 @@ function onDobChange() {
   var age = getAgeFromDob();
   var careCard = document.getElementById('planCare');
   if (!careCard) return;
-  if (age !== null && age < 55) {
+  if (age !== null && age < 55 && careType !== 'special_needs') {
+    // Under 55 AND not special needs — lock Care plan
     careCard.classList.add('care-locked');
-    careCard.title = 'Care plan is for ages 55+ or verified special needs';
-    var warn = document.getElementById('careAgeWarn');
-    if (warn) warn.textContent = '';
-    if (planSelected === 'Care') {
-      selectPlan(document.getElementById('planBeta'), 'Beta');
+    careCard.title = 'Care plan is for ages 55+ or people with special needs/disabilities';
+    if (planSelected === 'Care' && careType === 'senior') {
+      // Auto-switch to special needs option instead of deselecting
+      setCareType('special_needs');
+      var warn = document.getElementById('careAgeWarn');
+      if (warn) { warn.textContent = 'ℹ️ Under 55 — switched to Special Needs. A verification doc is required in Step 6.'; warn.style.color = '#F97316'; }
     }
+  } else if (careType === 'special_needs') {
+    // Special needs — always unlock, bypass age
+    careCard.classList.remove('care-locked');
+    careCard.title = '';
+    var warn = document.getElementById('careAgeWarn');
+    if (warn && planSelected === 'Care') { warn.textContent = '✓ Special Needs selected — age requirement bypassed.'; warn.style.color = '#0ED2C8'; }
   } else {
+    // 55+ Senior
     careCard.classList.remove('care-locked');
     careCard.title = '';
     if (age !== null) {
       var warn = document.getElementById('careAgeWarn');
-      if (warn && planSelected === 'Care') warn.textContent = '✓ Age verified — you qualify.';
+      if (warn && planSelected === 'Care') { warn.textContent = '✓ Age verified — you qualify as a Senior (age ' + age + ').'; warn.style.color = '#0ED2C8'; }
     }
   }
+}
+
+
+// ── CARE PLAN TYPE ─────────────────────────────────────────────────
+var careType = 'senior'; // 'senior' | 'special_needs'
+
+function setCareType(type) {
+  careType = type;
+  var seniorBtn  = document.getElementById('careTypeSenior');
+  var specialBtn = document.getElementById('careTypeSpecial');
+  var badge      = document.getElementById('careBadge');
+  var ageWarn    = document.getElementById('careAgeWarn');
+
+  if (type === 'senior') {
+    if (seniorBtn)  { seniorBtn.style.background = 'rgba(14,210,200,0.15)'; seniorBtn.style.borderColor = 'rgba(14,210,200,0.4)'; seniorBtn.style.color = '#0ED2C8'; }
+    if (specialBtn) { specialBtn.style.background = 'transparent'; specialBtn.style.borderColor = 'rgba(14,210,200,0.2)'; specialBtn.style.color = '#888'; }
+    if (badge) badge.textContent = '55+';
+    // Re-run age check
+    onDobChange();
+  } else {
+    if (specialBtn) { specialBtn.style.background = 'rgba(14,210,200,0.15)'; specialBtn.style.borderColor = 'rgba(14,210,200,0.4)'; specialBtn.style.color = '#0ED2C8'; }
+    if (seniorBtn)  { seniorBtn.style.background = 'transparent'; seniorBtn.style.borderColor = 'rgba(14,210,200,0.2)'; seniorBtn.style.color = '#888'; }
+    if (badge) badge.textContent = '♿';
+    // Bypass age restriction
+    var careCard = document.getElementById('planCare');
+    if (careCard) careCard.classList.remove('care-locked');
+    if (ageWarn)  { ageWarn.textContent = '✓ Special Needs — age requirement bypassed. Verification doc required in Step 6.'; ageWarn.style.color = '#0ED2C8'; }
+  }
+}
+
+function showCareTypeSelector() {
+  var sel = document.getElementById('careTypeSelector');
+  if (sel) sel.style.display = 'block';
+}
+
+function hideCareTypeSelector() {
+  var sel = document.getElementById('careTypeSelector');
+  if (sel) sel.style.display = 'none';
+  careType = 'senior';
 }
 
 // ── TAG COLOUR ──
@@ -1997,7 +2080,7 @@ async function submitForm() {
 
   // Telegram alert to owner
   var careNote = (planSelected === 'Care') ? 
-    "\n\n🛡️ *CARE PLAN — manual verification required*\n" +
+    "\n\n🛡️ *CARE PLAN — " + (careType === "special_needs" ? "SPECIAL NEEDS" : "SENIOR 55+") + "*\n" +
     "📄 ID Doc: " + (window._careIdUrl ? window._careIdUrl : 'Not uploaded') + "\n" +
     "🏥 Med Doc: " + (window._careMedUrl ? window._careMedUrl : 'Not uploaded') : '';
 
@@ -2223,7 +2306,7 @@ function proceedToPayment() {
     colour: colour, formFactor: document.getElementById('formFactor').value,
     delivery: v('delivery'), extraNotes: v('extraNotes'),
     photoUrl: photoUploadedUrl, consentDate: timestamp,
-    careIdDocUrl: window._careIdUrl || '', careMedDocUrl: window._careMedUrl || '',
+    careType: careType || 'senior', careIdDocUrl: window._careIdUrl || '', careMedDocUrl: window._careMedUrl || '',
     contacts: [
       v('c1name') ? {name:v('c1name'),rel:v('c1rel'),phone:formatPhone(v('c1phone')),wa:document.getElementById('c1wa').checked,telegram:v('c1telegram')} : null,
       v('c2name') ? {name:v('c2name'),rel:v('c2rel'),phone:formatPhone(v('c2phone')),wa:document.getElementById('c2wa').checked,telegram:v('c2telegram')} : null,
