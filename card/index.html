@@ -151,7 +151,9 @@ body { font-family:'Exo 2',sans-serif; background:#050505; color:var(--text); mi
 <script>
 var SHEET_ID       = '1_ZvLT_SnRkIgP7xiYBdDJ5DRtn9lwPnc6V3dmb-bSVI';
 var REG_SHEET      = 'Registrations';
-var GAS_URL        = 'https://script.google.com/macros/s/AKfycbwW-OuPGWyhABKlaBU7_AEK5AQruZogbJ-RhCQwzFIIUbBxY9iKUSyAP7GSARtGe4fR/exec';
+var TELEGRAM_TOKEN = '8785184944:AAEEPwzWgfVRaGqEfrCpr4Mf9Yy7qp2Lx2k';
+var TELEGRAM_CHAT  = '8737168646';
+var GAS_URL        = 'https://script.google.com/macros/s/AKfycbwbeveDTjJNNjqrDXBoEUTdorFj36wkOPIU-OLZnFid4QOW3cPPmZzyK8YLtWD1p4JD/exec';
 var WA_IMG         = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyNUQzNjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMjQgMTAuNUMxNi41IDEwLjUgMTAuNSAxNi41IDEwLjUgMjRjMCAyLjQuNjUgNC43IDEuOCA2LjdMMTAuNSAzNy41bDYuOTUtMS44YzEuOTUgMS4wNSA0LjE1IDEuNjUgNi41NSAxLjY1IDcuNSAwIDEzLjUtNiAxMy41LTEzLjVTMzEuNSAxMC41IDI0IDEwLjV6bTAgMjQuNzVjLTIuMSAwLTQuMDUtLjYtNS43LTEuNjVsLS40LS4yNS00LjE1IDEuMDUgMS4xLTQtLjMtLjQ1QzEzLjUgMjguMiAxMi45IDI2LjE1IDEyLjkgMjRjMC02LjEgNC45NS0xMS4xIDExLjEtMTEuMSA2LjEgMCAxMS4xIDQuOTUgMTEuMSAxMS4xIDAgNi4xLTUgMTEuMjUtMTEuMSAxMS4yNXptNi4xLTguMzVjLS4zNS0uMTUtMi4wNS0xLTIuMzUtMS4xLS4zNS0uMTUtLjYtLjE1LS44NS4xNS0uMjUuMy0uOTUgMS4xLTEuMTUgMS4zNS0uMi4yNS0uNC4zLS43NS4xLS4zNS0uMi0xLjQ1LS41NS0yLjc1LTEuNzUtMS0uOS0xLjctMi0xLjktMi4zNS0uMi0uMzUgMC0uNTUuMTUtLjcuMTUtLjE1LjM1LS40LjUtLjYuMi0uMi4yNS0uMzUuMzUtLjYuMTUtLjI1LjA1LS40NS0uMDUtLjY1LS4xLS4xNS0uODUtMi4wNS0xLjE1LTIuOC0uMy0uNzUtLjY1LS42NS0uODUtLjY1aC0uNzVjLS4yNSAwLS42NS4xLS45NS40NS0uMzUuMzUtMS4yNSAxLjItMS4yNSAyLjk1IDAgMS43NSAxLjI1IDMuNDUgMS40NSAzLjcuMTUuMjUgMi41IDMuODUgNi4xIDUuNC44NS4zNSAxLjUuNTUgMi4wNS43Ljg1LjI1IDEuNjUuMiAyLjI1LjEuNy0uMSAyLjA1LS44NSAyLjM1LTEuNjUuMy0uOC4zLTEuNS4yLTEuNjUtLjEtLjE1LS4zNS0uMjUtLjY1LS40eiIvPjwvc3ZnPg==';
 var TG_IMG         = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyOUI2RjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMTAuNSAyMy41bDI3LTEwLjUtNCAyMi04LTctNCA0LTEtOCAxNC0xMi0xNiA5LjV6Ii8+PHBhdGggZmlsbD0iI0IzRTVGQyIgZD0iTTIxLjUgMzNsLTEtOCAxNC0xMiIvPjwvc3ZnPg==';
 var TAG_COLOURS    = {'Black':'#555','Orange':'#F97316','Glow Blue':'#4DBBFF','Glitter Green':'#39FF6A','Red':'#EF4444','Teal':'#0ED2C8','White':'#ccc','Surprise Me':'#F97316'};
@@ -424,6 +426,8 @@ var subData = null;
   var lat=null, lng=null, gpsAddress='Location not shared', mapsUrl='';
   var timestamp = new Date().toLocaleString('en-ZA',{timeZone:'Africa/Johannesburg'});
   var MAX_ACC=100, MAX_ATT=5, TOUT=8000;
+  var GPS_WARN_THRESHOLD=500; // flag as low accuracy if worse than 500m
+  var finalAccuracy=null, gpsLowAccuracy=false;
 
   async function getAccuratePosition(){
     for (var a=1;a<=MAX_ATT;a++){
@@ -447,13 +451,30 @@ var subData = null;
 
   try{
     var pos=await getAccuratePosition();
+    finalAccuracy = Math.round(pos.coords.accuracy);
     lat=pos.coords.latitude.toFixed(6); lng=pos.coords.longitude.toFixed(6);
     mapsUrl='https://www.google.com/maps?q='+lat+','+lng;
+
+    // ── GPS ACCURACY GUARDRAIL ──────────────────────────────────
+    if (finalAccuracy > GPS_WARN_THRESHOLD) {
+      // Accuracy worse than 500m — likely IP-based fallback or VPN
+      gpsLowAccuracy = true;
+      setAlert('orange',
+        '⚠️ Low GPS accuracy ('+finalAccuracy+'m) — location may be inaccurate. ' +
+        'This could be caused by a VPN, denied GPS, or poor signal.'
+      );
+    }
+    // ────────────────────────────────────────────────────────────
+
     try{
       var geo=await (await fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lng+'&format=json')).json();
       gpsAddress=(geo.display_name||'').split(',').slice(0,4).join(',').trim()||lat+','+lng;
     }catch(e){gpsAddress=lat+','+lng;}
-  }catch(e){gpsAddress='Location not shared';}
+  }catch(e){
+    gpsAddress='Location not shared';
+    gpsLowAccuracy = true;
+    finalAccuracy = null;
+  }
 
   // Wire WA buttons with GPS
   var waText = encodeURIComponent(
@@ -470,27 +491,32 @@ var subData = null;
     el.target='_blank';
   });
 
-  // All Telegram alerts are sent server-side by GAS (owner + contacts).
-  // Card page only handles WhatsApp auto-open for Contact 1.
-  var contacts=[
-    {name:subData['Contact 1 Name']||'',rel:subData['Contact 1 Relation']||'',wa:subData['Contact 1 WA']||'',phone:subData['Contact 1 Phone']||''},
-    {name:subData['Contact 2 Name']||'',rel:subData['Contact 2 Relation']||'',wa:subData['Contact 2 WA']||'',phone:subData['Contact 2 Phone']||''},
-    {name:subData['Contact 3 Name']||'',rel:subData['Contact 3 Relation']||'',wa:subData['Contact 3 WA']||'',phone:subData['Contact 3 Phone']||''}
-  ];
-  // WhatsApp buttons are pre-filled below — finder taps manually
+  // Telegram
+  var msg='🚨 *NFC TAG SCANNED — EMERGENCY*\n\n*'+name+'*\n'+
+    '🩸 Blood: '+(subData['Blood Type']||'—')+'\n'+
+    '⚠️ '+(subData['Medical Alerts']||'—')+'\n'+
+    '🏥 '+(subData['Medical Aid']?subData['Medical Aid']+' · '+(subData['Medical Aid Number']||''):'No medical aid')+'\n\n'+
+    (mapsUrl?'📍 *Location:* '+gpsAddress+'\n🗺️ '+mapsUrl+'\n':'📍 Location not shared\n')+
+    '🕐 '+timestamp+'\n🏷️ Tag: '+tagId;
+  try{
+    await fetch('https://api.telegram.org/bot'+TELEGRAM_TOKEN+'/sendMessage',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({chat_id:TELEGRAM_CHAT,text:msg,parse_mode:'Markdown',disable_web_page_preview:true})
+    });
+  }catch(e){}
 
   // Log to Sheets
   try{
     fetch(GAS_URL,{
       method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        tagId:tagId,timestamp:timestamp,name:name,
+        tagId:tagId,timestamp:timestamp,name:name,gpsAccuracy:finalAccuracy,gpsLowAccuracy:gpsLowAccuracy,
         dob:subData['Date of Birth']||'',
         blood:subData['Blood Type']||'',
         medicalAid:subData['Medical Aid']||'',medicalAidNumber:subData['Medical Aid Number']||'',
         medical:subData['Medical Alerts']||'',meds:subData['Medications']||'',
         homeAddress:subData['Home Address']||'',notes:subData['Notes for Finder']||'',
-        gpsAddress:gpsAddress,lat:lat,lng:lng,mapsUrl:mapsUrl,
+        gpsAddress:gpsAddress,lat:lat,lng:lng,mapsUrl:mapsUrl,lowAccuracy:gpsLowAccuracy,accuracy:finalAccuracy,
         c1name:subData['Contact 1 Name']||'',c1rel:subData['Contact 1 Relation']||'',c1phone:subData['Contact 1 Phone']||'',c1wa:subData['Contact 1 WA']||'',c1tg:subData['Contact 1 Telegram']||'',
         c2name:subData['Contact 2 Name']||'',c2rel:subData['Contact 2 Relation']||'',c2phone:subData['Contact 2 Phone']||'',c2wa:subData['Contact 2 WA']||'',c2tg:subData['Contact 2 Telegram']||'',
         c3name:subData['Contact 3 Name']||'',c3rel:subData['Contact 3 Relation']||'',c3phone:subData['Contact 3 Phone']||'',c3wa:subData['Contact 3 WA']||'',c3tg:subData['Contact 3 Telegram']||''
