@@ -349,6 +349,9 @@ var subData = {};
 
   // ── DOB + Age ────────────────────────────────────────────────
   var dobRaw = (subData['Date of Birth'] || '').toString().trim();
+  // Temp debug - show raw value directly
+  var dobEl2 = document.getElementById('scDob');
+  if (dobEl2) dobEl2.textContent = 'DOB:' + JSON.stringify(subData['Date of Birth']) + ' Status:' + JSON.stringify(subData['Status']);
   var dobEl  = document.getElementById('scDob');
   if (dobEl && dobRaw) {
     try {
