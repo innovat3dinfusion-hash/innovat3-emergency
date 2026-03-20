@@ -276,20 +276,31 @@ var subData = null;
     console.log('[IN3]', msg);
   }
 
-  dbg('Fetching sheet data...');
+  dbg('Loading emergency card...');
   try {
-    dbg('Fetching profile from secure API...');
+    dbg('Fetching profile...');
     var apiUrl = GAS_URL + '?action=getProfile&tagId=' + encodeURIComponent(tagId);
     var resp = await fetch(apiUrl);
-    if (!resp.ok) { showError('API error: HTTP ' + resp.status); return; }
+    if (!resp.ok) { showError('Server error: HTTP ' + resp.status + '. Please try again.'); return; }
     var json = await resp.json();
     if (json.status !== 'ok' || !json.profile) {
       showError(json.message === 'Tag not active'
         ? 'This tag is not yet active. Please complete your registration and payment at innovat3.co.za/register'
-        : 'Tag not found. Please check the tag ID: ' + tagId);
+        : 'Tag not found: ' + tagId);
       return;
     }
     subData = json.profile;
+  } catch(fetchErr) {
+    showError('Could not load profile. Check your connection and try again. (' + fetchErr.message + ')');
+    return;
+  }
+
+  // Extract name from profile
+  var fn = subData['First Name'] || subData['Name'] || '';
+  var ln = subData['Last Name'] || '';
+  if (!fn && subData['name']) {
+    var parts = (subData['name'] || '').split(' ');
+    fn = parts[0] || ''; ln = parts.slice(1).join(' ') || '';
   }
 
   // Blood + Aid
@@ -421,12 +432,8 @@ var subData = null;
     '🏥 '+(subData['Medical Aid']?subData['Medical Aid']+' · '+(subData['Medical Aid Number']||''):'No medical aid')+'\n\n'+
     (mapsUrl?'📍 *Location:* '+gpsAddress+'\n🗺️ '+mapsUrl+'\n':'📍 Location not shared\n')+
     '🕐 '+timestamp+'\n🏷️ Tag: '+tagId;
-  try{
-    await fetch('https://api.telegram.org/bot'+TELEGRAM_TOKEN+'/sendMessage',{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({chat_id:TELEGRAM_CHAT,text:msg,parse_mode:'Markdown',disable_web_page_preview:true})
-    });
-  }catch(e){}
+  // Telegram alert sent via GAS (secure - no token in frontend)
+  // GAS handles Telegram notification when scan is logged
 
   // Log to Sheets
   try{
