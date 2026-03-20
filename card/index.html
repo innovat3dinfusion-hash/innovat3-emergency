@@ -296,7 +296,6 @@ var subData = {};
     var resp = await fetch(sheetUrl);
     if (!resp.ok) { showErr('Connection failed (HTTP ' + resp.status + '). Check internet.'); return; }
     var text = await resp.text();
-    dbg('Step 3: Data received (' + text.length + ' chars). Parsing...');
     var si = text.indexOf('('), ei = text.lastIndexOf(')');
     if (si === -1 || ei === -1) { showErr('Invalid response. Got: ' + text.substring(0,100)); return; }
     var parsed;
@@ -343,7 +342,8 @@ var subData = {};
   document.getElementById('scName').textContent = fullName || '—';
 
   // ── DOB + Age ────────────────────────────────────────────────
-  var dobRaw = (subData['Date of Birth'] || '').toString().trim();
+  var dobRaw = (subData['Date of Birth'] || subData['DOB'] || subData['Dob'] || '').toString().trim();
+  console.log('[IN3] DOB raw:', JSON.stringify(dobRaw), 'All keys:', Object.keys(subData).join(','));
   var dobEl  = document.getElementById('scDob');
   if (dobEl && dobRaw) {
     try {
