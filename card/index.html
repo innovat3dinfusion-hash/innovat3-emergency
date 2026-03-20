@@ -340,29 +340,36 @@ var subData = {};
   var fullName = fn + (ln ? ' ' + ln : '');
   document.getElementById('scName').textContent = fullName || '—';
 
-  // ── DOB + Age (gviz returns Date(YYYY,M,D) format) ─────────────
-  var dobRaw = subData['Date of Birth'] || '';
+  // ── DOB + Age ────────────────────────────────────────────────
+  var dobRaw = (subData['Date of Birth'] || '').toString().trim();
   var dobEl  = document.getElementById('scDob');
   if (dobEl && dobRaw) {
-    var dobDate = null;
-    var gvizM = dobRaw.match(/Date\((\d+),(\d+),(\d+)\)/);
-    if (gvizM) {
-      dobDate = new Date(parseInt(gvizM[1]), parseInt(gvizM[2]), parseInt(gvizM[3]));
-    } else if (dobRaw.match(/\d{4}-\d{2}-\d{2}/)) {
-      var dp = dobRaw.split('-');
-      dobDate = new Date(parseInt(dp[0]), parseInt(dp[1])-1, parseInt(dp[2]));
-    } else {
-      // Try removing any time component
-      dobDate = new Date(dobRaw.split('T')[0].split(' ')[0]);
-    }
-    if (dobDate && !isNaN(dobDate.getTime())) {
-      var today = new Date();
-      var age = today.getFullYear() - dobDate.getFullYear();
-      var dm = today.getMonth() - dobDate.getMonth();
-      if (dm < 0 || (dm === 0 && today.getDate() < dobDate.getDate())) age--;
-      var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      dobEl.textContent = dobDate.getDate() + ' ' + months[dobDate.getMonth()] + ' ' + dobDate.getFullYear() + '  ·  Age ' + age;
-    } else {
+    try {
+      var dobDate = null;
+      // Format 1: gviz Date(1988,10,13) — month is 0-indexed
+      var m1 = dobRaw.match(/Date.(\d+),(\d+),(\d+)/);
+      if (m1) {
+        dobDate = new Date(+m1[1], +m1[2], +m1[3]);
+      }
+      // Format 2: 1988-11-13 text
+      if (!dobDate) {
+        var m2 = dobRaw.match(/(\d{4})-(\d{2})-(\d{2})/);
+        if (m2) dobDate = new Date(+m2[1], +m2[2]-1, +m2[3]);
+      }
+      // Format 3: any other parseable string
+      if (!dobDate) dobDate = new Date(dobRaw);
+
+      if (dobDate && !isNaN(dobDate.getTime()) && dobDate.getFullYear() > 1900) {
+        var today = new Date();
+        var age = today.getFullYear() - dobDate.getFullYear();
+        var dm  = today.getMonth() - dobDate.getMonth();
+        if (dm < 0 || (dm===0 && today.getDate() < dobDate.getDate())) age--;
+        var mn = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        dobEl.textContent = dobDate.getDate() + ' ' + mn[dobDate.getMonth()] + ' ' + dobDate.getFullYear() + ' · Age ' + age;
+      } else {
+        dobEl.textContent = dobRaw;
+      }
+    } catch(e) {
       dobEl.textContent = dobRaw;
     }
   }
