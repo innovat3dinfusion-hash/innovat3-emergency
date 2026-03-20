@@ -314,7 +314,13 @@ var subData = {};
       var cellVal = cells[tagCol] ? String(cells[tagCol].v || '').trim() : '';
       if (cellVal === tagId) {
         parsed.table.rows[i].c.forEach(function(cell, idx) {
-          subData[cols[idx]] = cell ? String(cell.v || '') : '';
+          if (!cell) { subData[cols[idx]] = ''; return; }
+          // Use formatted value (.f) for dates/numbers, raw (.v) for text
+          if (cell.f !== undefined && cell.f !== null && cell.f !== '') {
+            subData[cols[idx]] = String(cell.f);
+          } else {
+            subData[cols[idx]] = (cell.v !== null && cell.v !== undefined) ? String(cell.v) : '';
+          }
         });
         break;
       }
@@ -342,8 +348,7 @@ var subData = {};
   document.getElementById('scName').textContent = fullName || '—';
 
   // ── DOB + Age ────────────────────────────────────────────────
-  var dobRaw = (subData['Date of Birth'] || subData['DOB'] || subData['Dob'] || '').toString().trim();
-  console.log('[IN3] DOB raw:', JSON.stringify(dobRaw), 'All keys:', Object.keys(subData).join(','));
+  var dobRaw = (subData['Date of Birth'] || '').toString().trim();
   var dobEl  = document.getElementById('scDob');
   if (dobEl && dobRaw) {
     try {
