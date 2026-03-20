@@ -485,7 +485,7 @@ body { font-family:"Exo 2",sans-serif; background:#050505; color:var(--text); mi
 <script>
 var TELEGRAM_TOKEN   = '8785184944:AAEEPwzWgfVRaGqEfrCpr4Mf9Yy7qp2Lx2k';
 var TELEGRAM_CHAT_ID = '8737168646';
-var GAS_URL          = 'https://script.google.com/macros/s/AKfycbxxXcgZiV1TD7It_MInF8rnbtSja0HxgmwwpyD0W6RO1qWx5TOZU4asa2Jymmc_4SrA/exec';
+var GAS_URL          = 'https://script.google.com/macros/s/AKfycby8KpFgUiRPfpjtswlbQopCuvXwDS1QFmABdsbkpSZ5YXgd5ID0tLjh7urlE5Ihjyrt/exec';
 var IMGBB_KEY        = 'c95f5daba8da7ba6d1f63cbeb6326a88';
 var WA_IMG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyNUQzNjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMjQgMTAuNUMxNi41IDEwLjUgMTAuNSAxNi41IDEwLjUgMjRjMCAyLjQuNjUgNC43IDEuOCA2LjdMMTAuNSAzNy41bDYuOTUtMS44YzEuOTUgMS4wNSA0LjE1IDEuNjUgNi41NSAxLjY1IDcuNSAwIDEzLjUtNiAxMy41LTEzLjVTMzEuNSAxMC41IDI0IDEwLjV6Ii8+PC9zdmc+';
 var TG_IMG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyOUI2RjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMTAuNSAyMy41bDI3LTEwLjUtNCAyMi04LTctNCA0LTEtOCAxNC0xMi0xNiA5LjV6Ii8+PC9zdmc+';
@@ -571,7 +571,7 @@ var photoUploadedUrl = '';
             </div>
             <div class="plan-price-wrap">
               <div class="plan-price-was" id="soloWas"></div>
-              <div class="plan-price-main" id="soloPrice">R857</div>
+              <div class="plan-price-main" id="soloPrice">R470</div>
               <div class="plan-price-per" id="soloPer">/year</div>
             </div>
           </div>
@@ -1371,7 +1371,7 @@ function setBilling(cycle) {
 
   if (cycle === 'annual') {
     // Annual prices (20% saving)
-    document.getElementById('soloPrice').textContent  = 'R857';
+    document.getElementById('soloPrice').textContent  = 'R470';
     document.getElementById('soloPer').textContent    = '/year';
     document.getElementById('soloWas').textContent    = 'R1,068/yr';
     document.getElementById('familyPrice').textContent = 'R1,435';
@@ -1380,7 +1380,7 @@ function setBilling(cycle) {
     if (note) { note.textContent = '💰 Save 20% with annual billing'; note.style.color = 'var(--green)'; }
   } else {
     // Monthly prices
-    document.getElementById('soloPrice').textContent  = 'R89';
+    document.getElementById('soloPrice').textContent  = 'R49';
     document.getElementById('soloPer').textContent    = '/month';
     document.getElementById('soloWas').textContent    = '';
     document.getElementById('familyPrice').textContent = 'R149';
@@ -2009,7 +2009,7 @@ async function submitForm() {
   // Check for duplicate email in Sheets before submitting
   btn.textContent = 'Checking...';
   try {
-    var sheetUrl = 'https://docs.google.com/spreadsheets/d/1_ZvLT_SnRkIgP7xiYBdDJ5DRtn9lwPnc6V3dmb-bSVI/gviz/tq?tqx=out:json&sheet=Registrations';
+    // Sheet URL removed for security
     var resp = await fetch(sheetUrl);
     if (resp.ok) {
       var text = await resp.text();
@@ -2250,7 +2250,7 @@ async function submitForm() {
       <input type="hidden" name="merchant_key"     id="pf_merchant_key"     value="frbiyqgqpun0a">
       <input type="hidden" name="return_url"       id="pf_return_url"       value="https://innovat3.co.za/success.html">
       <input type="hidden" name="cancel_url"       id="pf_cancel_url"       value="https://innovat3.co.za/register/">
-      <input type="hidden" name="notify_url"       id="pf_notify_url"       value="https://script.google.com/macros/s/AKfycbxxXcgZiV1TD7It_MInF8rnbtSja0HxgmwwpyD0W6RO1qWx5TOZU4asa2Jymmc_4SrA/exec">
+      <input type="hidden" name="notify_url"       id="pf_notify_url"       value="https://script.google.com/macros/s/AKfycby8KpFgUiRPfpjtswlbQopCuvXwDS1QFmABdsbkpSZ5YXgd5ID0tLjh7urlE5Ihjyrt/exec">
       <input type="hidden" name="m_payment_id"     id="pf_m_payment_id">
       <input type="hidden" name="amount"           id="pf_amount">
       <input type="hidden" name="item_name"        id="pf_item_name">
@@ -2272,7 +2272,7 @@ async function submitForm() {
 
 <script>
 var PRICES = {
-  'Solo':   { monthly:89,   annual:857,  label:'Solo' },
+  'Solo':   { monthly:49,   annual:470,  label:'Solo' },
   'Family': { monthly:149,  annual:1435, label:'Family' },
   'Care':   { once:199,                  label:'Care (Lifetime)' },
   'Beta':   { monthly:0,    annual:0,    label:'Beta (Free Trial)' }
