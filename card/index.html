@@ -340,18 +340,41 @@ var subData = {};
   var fullName = fn + (ln ? ' ' + ln : '');
   document.getElementById('scName').textContent = fullName || '—';
 
-  // DOB
-  var dob = subData['Date of Birth'] || '';
-  if (dob) {
-    document.getElementById('scDob').textContent = dob;
+  // ── DOB + Age (gviz returns Date(YYYY,M,D) format) ─────────────
+  var dobRaw = subData['Date of Birth'] || '';
+  var dobEl  = document.getElementById('scDob');
+  if (dobEl && dobRaw) {
+    var dobDate = null;
+    var gvizM = dobRaw.match(/Date\((\d+),(\d+),(\d+)\)/);
+    if (gvizM) {
+      dobDate = new Date(parseInt(gvizM[1]), parseInt(gvizM[2]), parseInt(gvizM[3]));
+    } else if (dobRaw.match(/\d{4}-\d{2}-\d{2}/)) {
+      var dp = dobRaw.split('-');
+      dobDate = new Date(parseInt(dp[0]), parseInt(dp[1])-1, parseInt(dp[2]));
+    } else {
+      dobDate = new Date(dobRaw);
+    }
+    if (dobDate && !isNaN(dobDate.getTime())) {
+      var today = new Date();
+      var age = today.getFullYear() - dobDate.getFullYear();
+      var dm = today.getMonth() - dobDate.getMonth();
+      if (dm < 0 || (dm === 0 && today.getDate() < dobDate.getDate())) age--;
+      var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      dobEl.textContent = dobDate.getDate() + ' ' + months[dobDate.getMonth()] + ' ' + dobDate.getFullYear() + '  ·  Age ' + age;
+    } else {
+      dobEl.textContent = dobRaw;
+    }
   }
 
-  // Status badge
+  // ── Status badge ─────────────────────────────────────────────
   var statusEl = document.getElementById('scStatus');
   if (statusEl) {
-    var st = (subData['Status'] || '').toLowerCase();
-    statusEl.textContent = (subData['Status'] || 'Active').toUpperCase();
-    statusEl.style.background = st === 'active' ? '#22C55E' : st === 'beta' ? '#0ED2C8' : '#F97316';
+    var rawSt = (subData['Status'] || 'Active').trim();
+    var st = rawSt.toLowerCase();
+    statusEl.textContent = rawSt.toUpperCase();
+    statusEl.style.background = (st==='active') ? '#22C55E' : (st==='beta') ? '#0ED2C8' : '#F97316';
+    statusEl.style.color = '#fff';
+    statusEl.style.border = 'none';
   }
 
   // Tag ID
@@ -372,14 +395,14 @@ var subData = {};
 
   // Blood + Aid
   document.getElementById('scBlood').textContent = subData['Blood Type']||'—';
-  document.getElementById('scAid').textContent   = subData['Medical Aid']
-    ? subData['Medical Aid'] + (subData['Medical Aid Number'] ? ' · No: ' + subData['Medical Aid Number'] : '')
+  document.getElementById('scAid').textContent   = subData['Medical Aid'] || subData['medicalAid']
+    ? subData['Medical Aid'] || subData['medicalAid'] + (subData['Medical Aid Number'] || subData['medAidNo'] ? ' · No: ' + subData['Medical Aid Number'] || subData['medAidNo'] : '')
     : 'Not provided';
 
   // Tabs
-  document.getElementById('scMedical').textContent = subData['Medical Alerts']||'—';
+  document.getElementById('scMedical').textContent = subData['Medical Alerts'] || subData['Medical Conditions'] || subData['conditions']||'—';
   document.getElementById('scMeds').textContent    = subData['Medications']||'—';
-  document.getElementById('scAddress').textContent = subData['Home Address']||'—';
+  document.getElementById('scAddress').textContent = subData['Home Address'] || subData['Address'] || subData['address']||'—';
   document.getElementById('scNotes').textContent   = subData['Notes for Finder']||'—';
 
   // Contacts
@@ -482,7 +505,7 @@ var subData = {};
     '🚨 EMERGENCY — Innovat3 Alert\n\n'+
     name+"'s NFC tag was just scanned.\\n"+
     '🩸 Blood: '+(subData['Blood Type']||'—')+'\n'+
-    '⚠️ '+(subData['Medical Alerts']||'—')+'\n\n'+
+    '⚠️ '+(subData['Medical Alerts'] || subData['Medical Conditions'] || subData['conditions']||'—')+'\n\n'+
     (mapsUrl?'📍 Location:\n'+mapsUrl:'📍 Location not available')+'\n\n'+
     'Please respond immediately.\n— Innovat3 Emergency System'
   );
@@ -495,8 +518,8 @@ var subData = {};
   // Telegram
   var msg='🚨 *NFC TAG SCANNED — EMERGENCY*\n\n*'+name+'*\n'+
     '🩸 Blood: '+(subData['Blood Type']||'—')+'\n'+
-    '⚠️ '+(subData['Medical Alerts']||'—')+'\n'+
-    '🏥 '+(subData['Medical Aid']?subData['Medical Aid']+' · '+(subData['Medical Aid Number']||''):'No medical aid')+'\n\n'+
+    '⚠️ '+(subData['Medical Alerts'] || subData['Medical Conditions'] || subData['conditions']||'—')+'\n'+
+    '🏥 '+(subData['Medical Aid'] || subData['medicalAid']?subData['Medical Aid'] || subData['medicalAid']+' · '+(subData['Medical Aid Number'] || subData['medAidNo']||''):'No medical aid')+'\n\n'+
     (mapsUrl?'📍 *Location:* '+gpsAddress+'\n🗺️ '+mapsUrl+'\n':'📍 Location not shared\n')+
     '🕐 '+timestamp+'\n🏷️ Tag: '+tagId;
   // Telegram alert sent via GAS (secure - no token in frontend)
@@ -510,9 +533,9 @@ var subData = {};
         tagId:tagId,timestamp:timestamp,name:fullName||name||'',gpsAccuracy:finalAccuracy,gpsLowAccuracy:gpsLowAccuracy,
         dob:subData['Date of Birth']||'',
         blood:subData['Blood Type']||'',
-        medicalAid:subData['Medical Aid']||'',medicalAidNumber:subData['Medical Aid Number']||'',
-        medical:subData['Medical Alerts']||'',meds:subData['Medications']||'',
-        homeAddress:subData['Home Address']||'',notes:subData['Notes for Finder']||'',
+        medicalAid:subData['Medical Aid'] || subData['medicalAid']||'',medicalAidNumber:subData['Medical Aid Number'] || subData['medAidNo']||'',
+        medical:subData['Medical Alerts'] || subData['Medical Conditions'] || subData['conditions']||'',meds:subData['Medications']||'',
+        homeAddress:subData['Home Address'] || subData['Address'] || subData['address']||'',notes:subData['Notes for Finder']||'',
         gpsAddress:gpsAddress,lat:lat,lng:lng,mapsUrl:mapsUrl,lowAccuracy:gpsLowAccuracy,accuracy:finalAccuracy,
         c1name:subData['Contact 1 Name']||'',c1rel:subData['Contact 1 Relation']||'',c1phone:subData['Contact 1 Phone']||'',c1wa:subData['Contact 1 WA']||'',c1tg:subData['Contact 1 Telegram']||'',
         c2name:subData['Contact 2 Name']||'',c2rel:subData['Contact 2 Relation']||'',c2phone:subData['Contact 2 Phone']||'',c2wa:subData['Contact 2 WA']||'',c2tg:subData['Contact 2 Telegram']||'',
