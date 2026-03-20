@@ -289,21 +289,29 @@ var subData = {};
 
   // ── Load profile from Google Sheet (direct, reliable) ────────
   try {
-    dbg('Connecting...');
+    dbg('Step 1: Connecting to server...');
+    console.log('[IN3] Fetching:', sheetUrl);
     var sheetUrl = 'https://docs.google.com/spreadsheets/d/1_ZvLT_SnRkIgP7xiYBdDJ5DRtn9lwPnc6V3dmb-bSVI/gviz/tq?tqx=out:json&sheet=Registrations';
     var resp = await fetch(sheetUrl);
-    if (!resp.ok) { showErr('Connection failed (HTTP ' + resp.status + '). Please try again.'); return; }
+    dbg('Step 2: HTTP ' + resp.status + ' — ' + (resp.ok ? 'OK' : 'FAILED'));
+    if (!resp.ok) { showErr('Connection failed (HTTP ' + resp.status + '). Check internet.'); return; }
     var text = await resp.text();
+    dbg('Step 3: Data received (' + text.length + ' chars). Parsing...');
     var si = text.indexOf('('), ei = text.lastIndexOf(')');
-    if (si === -1 || ei === -1) { showErr('Invalid response from server. Is your internet connected?'); return; }
+    dbg('Step 3a: Response starts with: ' + text.substring(0,30));
+    if (si === -1 || ei === -1) { showErr('Invalid response. Got: ' + text.substring(0,100)); return; }
     var parsed;
     try { parsed = JSON.parse(text.substring(si+1, ei)); }
     catch(pe) { showErr('Data parse error. Please try again.'); return; }
     if (!parsed.table) { showErr('Sheet not accessible. Make sure sheet is shared publicly.'); return; }
 
+    var rowCount = (parsed.table.rows||[]).length;
+    dbg('Step 4: Found ' + rowCount + ' records. Searching for ' + tagId + '...');
+    if (rowCount === 0) { showErr('Sheet has no data rows. Please check the Registrations tab.'); return; }
     var cols = parsed.table.cols.map(function(c){ return c.label; });
     var tagCol = cols.indexOf('Tag ID');
     if (tagCol === -1) { showErr('Tag ID column not found in sheet.'); return; }
+    dbg('Step 5: Looking for tag: ' + tagId);
 
     for (var i = 0; i < (parsed.table.rows || []).length; i++) {
       var cells = parsed.table.rows[i].c;
