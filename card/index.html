@@ -149,7 +149,7 @@ body { font-family:'Exo 2',sans-serif; background:#050505; color:var(--text); mi
 <body>
 
 <script>
-var GAS_URL        = 'https://script.google.com/macros/s/AKfycbw6BuYbgzhqkLJ5eONKCprORSupoJvCLgACr3pUL0FbagROfQNkTDx5v8mAdV5NzpXe/exec';
+var GAS_URL        = 'https://script.google.com/macros/s/AKfycbzpI0rD50XcZPrR8T9VTAoZWghYupzv4aFcP6e-JSh24Q7TJl15Ntt1YzuDSssqTsZO/exec';
 var WA_IMG         = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyNUQzNjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMjQgMTAuNUMxNi41IDEwLjUgMTAuNSAxNi41IDEwLjUgMjRjMCAyLjQuNjUgNC43IDEuOCA2LjdMMTAuNSAzNy41bDYuOTUtMS44YzEuOTUgMS4wNSA0LjE1IDEuNjUgNi41NSAxLjY1IDcuNSAwIDEzLjUtNiAxMy41LTEzLjVTMzEuNSAxMC41IDI0IDEwLjV6bTAgMjQuNzVjLTIuMSAwLTQuMDUtLjYtNS43LTEuNjVsLS40LS4yNS00LjE1IDEuMDUgMS4xLTQtLjMtLjQ1QzEzLjUgMjguMiAxMi45IDI2LjE1IDEyLjkgMjRjMC02LjEgNC45NS0xMS4xIDExLjEtMTEuMSA2LjEgMCAxMS4xIDQuOTUgMTEuMSAxMS4xIDAgNi4xLTUgMTEuMjUtMTEuMSAxMS4yNXptNi4xLTguMzVjLS4zNS0uMTUtMi4wNS0xLTIuMzUtMS4xLS4zNS0uMTUtLjYtLjE1LS44NS4xNS0uMjUuMy0uOTUgMS4xLTEuMTUgMS4zNS0uMi4yNS0uNC4zLS43NS4xLS4zNS0uMi0xLjQ1LS41NS0yLjc1LTEuNzUtMS0uOS0xLjctMi0xLjktMi4zNS0uMi0uMzUgMC0uNTUuMTUtLjcuMTUtLjE1LjM1LS40LjUtLjYuMi0uMi4yNS0uMzUuMzUtLjYuMTUtLjI1LjA1LS40NS0uMDUtLjY1LS4xLS4xNS0uODUtMi4wNS0xLjE1LTIuOC0uMy0uNzUtLjY1LS42NS0uODUtLjY1aC0uNzVjLS4yNSAwLS42NS4xLS45NS40NS0uMzUuMzUtMS4yNSAxLjItMS4yNSAyLjk1IDAgMS43NSAxLjI1IDMuNDUgMS40NSAzLjcuMTUuMjUgMi41IDMuODUgNi4xIDUuNC44NS4zNSAxLjUuNTUgMi4wNS43Ljg1LjI1IDEuNjUuMiAyLjI1LjEuNy0uMSAyLjA1LS44NSAyLjM1LTEuNjUuMy0uOC4zLTEuNS4yLTEuNjUtLjEtLjE1LS4zNS0uMjUtLjY1LS40eiIvPjwvc3ZnPg==';
 var TG_IMG         = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyOUI2RjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMTAuNSAyMy41bDI3LTEwLjUtNCAyMi04LTctNCA0LTEtOCAxNC0xMi0xNiA5LjV6Ii8+PHBhdGggZmlsbD0iI0IzRTVGQyIgZD0iTTIxLjUgMzNsLTEtOCAxNC0xMiIvPjwvc3ZnPg==';
 var TAG_COLOURS    = {'Black':'#555','Orange':'#F97316','Glow Blue':'#4DBBFF','Glitter Green':'#39FF6A','Red':'#EF4444','Teal':'#0ED2C8','White':'#ccc','Surprise Me':'#F97316'};
@@ -289,16 +289,13 @@ var subData = {};
 
   // ── Load profile from Google Sheet (direct, reliable) ────────
   try {
-    dbg('Step 1: Connecting to server...');
-    console.log('[IN3] Fetching:', sheetUrl);
+    dbg('Loading emergency card...');
     var sheetUrl = 'https://docs.google.com/spreadsheets/d/1_ZvLT_SnRkIgP7xiYBdDJ5DRtn9lwPnc6V3dmb-bSVI/gviz/tq?tqx=out:json&sheet=Registrations';
     var resp = await fetch(sheetUrl);
-    dbg('Step 2: HTTP ' + resp.status + ' — ' + (resp.ok ? 'OK' : 'FAILED'));
     if (!resp.ok) { showErr('Connection failed (HTTP ' + resp.status + '). Check internet.'); return; }
     var text = await resp.text();
     dbg('Step 3: Data received (' + text.length + ' chars). Parsing...');
     var si = text.indexOf('('), ei = text.lastIndexOf(')');
-    dbg('Step 3a: Response starts with: ' + text.substring(0,30));
     if (si === -1 || ei === -1) { showErr('Invalid response. Got: ' + text.substring(0,100)); return; }
     var parsed;
     try { parsed = JSON.parse(text.substring(si+1, ei)); }
@@ -306,12 +303,10 @@ var subData = {};
     if (!parsed.table) { showErr('Sheet not accessible. Make sure sheet is shared publicly.'); return; }
 
     var rowCount = (parsed.table.rows||[]).length;
-    dbg('Step 4: Found ' + rowCount + ' records. Searching for ' + tagId + '...');
-    if (rowCount === 0) { showErr('Sheet has no data rows. Please check the Registrations tab.'); return; }
+    if ((parsed.table.rows||[]).length === 0) { showErr('No records found. Please check the sheet.'); return; }
     var cols = parsed.table.cols.map(function(c){ return c.label; });
     var tagCol = cols.indexOf('Tag ID');
     if (tagCol === -1) { showErr('Tag ID column not found in sheet.'); return; }
-    dbg('Step 5: Looking for tag: ' + tagId);
 
     for (var i = 0; i < (parsed.table.rows || []).length; i++) {
       var cells = parsed.table.rows[i].c;
@@ -512,7 +507,7 @@ var subData = {};
     fetch(GAS_URL,{
       method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        tagId:tagId,timestamp:timestamp,name:name,gpsAccuracy:finalAccuracy,gpsLowAccuracy:gpsLowAccuracy,
+        tagId:tagId,timestamp:timestamp,name:fullName||name||'',gpsAccuracy:finalAccuracy,gpsLowAccuracy:gpsLowAccuracy,
         dob:subData['Date of Birth']||'',
         blood:subData['Blood Type']||'',
         medicalAid:subData['Medical Aid']||'',medicalAidNumber:subData['Medical Aid Number']||'',
