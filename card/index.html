@@ -262,85 +262,75 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
 </div>
 
 <script>
-var subData = null;
+var subData = {};
 
 (async function(){
-  var params = new URLSearchParams(window.location.search);
-  var tagId  = (params.get('tag') || params.get('id') || '').trim();
-  if (!tagId) { showError('No tag ID in URL.'); return; }
-
-  // Debug helper — shows status on loading screen
+  // ── Helpers ─────────────────────────────────────────────────
   function dbg(msg) {
     var el = document.getElementById('loadingText');
     if (el) el.textContent = msg;
     console.log('[IN3]', msg);
   }
 
-  dbg('Loading emergency card...');
-
-  // ── Load profile: try GAS API first, fall back to sheet direct ──
-  async function loadProfile(tagId) {
-    // Try GAS secure API first
-    try {
-      var apiUrl = GAS_URL + '?action=getProfile&tagId=' + encodeURIComponent(tagId);
-      var controller = new AbortController();
-      var tid = setTimeout(function(){ controller.abort(); }, 8000);
-      var resp = await fetch(apiUrl, { redirect: 'follow', signal: controller.signal });
-      clearTimeout(tid);
-      if (resp.ok) {
-        var json = await resp.json();
-        if (json.status === 'ok' && json.profile) return json.profile;
-        if (json.message === 'Tag not active') throw new Error('Tag not active');
-      }
-    } catch(e) {
-      if (e.message === 'Tag not active') throw e;
-      console.log('[IN3] GAS API failed, trying sheet direct:', e.message);
-    }
-
-    // Fallback: read sheet directly (gviz)
-    dbg('Loading profile...');
-    var sheetUrl = 'https://docs.google.com/spreadsheets/d/1_ZvLT_SnRkIgP7xiYBdDJ5DRtn9lwPnc6V3dmb-bSVI/gviz/tq?tqx=out:json&sheet=Registrations';
-    var resp2 = await fetch(sheetUrl);
-    if (!resp2.ok) throw new Error('Sheet fetch failed: ' + resp2.status);
-    var text = await resp2.text();
-    var si = text.indexOf('('), ei = text.lastIndexOf(')');
-    if (si === -1) throw new Error('Invalid sheet response');
-    var data = JSON.parse(text.substring(si+1, ei));
-    if (!data.table) throw new Error('No table in sheet response');
-    var cols = data.table.cols.map(function(c){ return c.label; });
-    var tagCol = cols.indexOf('Tag ID');
-    if (tagCol === -1) throw new Error('Tag ID column not found');
-    for (var i = 0; i < (data.table.rows || []).length; i++) {
-      var cells = data.table.rows[i].c;
-      var cellVal = cells[tagCol] ? String(cells[tagCol].v || '').trim() : '';
-      if (cellVal === tagId) {
-        var profile = {};
-        cols.forEach(function(col, idx) {
-          profile[col] = cells[idx] ? String(cells[idx].v || '') : '';
-        });
-        return profile;
-      }
-    }
-    throw new Error('Tag not found: ' + tagId);
+  function showErr(msg) {
+    document.getElementById('loadingScreen').style.display = 'none';
+    document.getElementById('errorScreen').style.display = 'flex';
+    var el = document.getElementById('errorMsg');
+    if (el) el.textContent = msg;
+    console.error('[IN3]', msg);
   }
 
+  // ── Get tag ID from URL ───────────────────────────────────────
+  var params = new URLSearchParams(window.location.search);
+  var tagId  = (params.get('tag') || params.get('id') || '').trim();
+  if (!tagId) { showErr('No tag ID in URL. Please scan a valid innovat3 tag.'); return; }
+
+  dbg('Loading emergency card...');
+
+  // ── Load profile from Google Sheet (direct, reliable) ────────
   try {
-    subData = await loadProfile(tagId);
-  } catch(err) {
-    if (err.message === 'Tag not active') {
-      showError('This tag is not yet active. Please complete registration at innovat3.co.za/register');
-    } else {
-      showError('Could not load profile: ' + err.message);
+    dbg('Connecting...');
+    var sheetUrl = 'https://docs.google.com/spreadsheets/d/1_ZvLT_SnRkIgP7xiYBdDJ5DRtn9lwPnc6V3dmb-bSVI/gviz/tq?tqx=out:json&sheet=Registrations';
+    var resp = await fetch(sheetUrl);
+    if (!resp.ok) { showErr('Connection failed (HTTP ' + resp.status + '). Please try again.'); return; }
+    var text = await resp.text();
+    var si = text.indexOf('('), ei = text.lastIndexOf(')');
+    if (si === -1 || ei === -1) { showErr('Invalid response from server. Is your internet connected?'); return; }
+    var parsed;
+    try { parsed = JSON.parse(text.substring(si+1, ei)); }
+    catch(pe) { showErr('Data parse error. Please try again.'); return; }
+    if (!parsed.table) { showErr('Sheet not accessible. Make sure sheet is shared publicly.'); return; }
+
+    var cols = parsed.table.cols.map(function(c){ return c.label; });
+    var tagCol = cols.indexOf('Tag ID');
+    if (tagCol === -1) { showErr('Tag ID column not found in sheet.'); return; }
+
+    for (var i = 0; i < (parsed.table.rows || []).length; i++) {
+      var cells = parsed.table.rows[i].c;
+      var cellVal = cells[tagCol] ? String(cells[tagCol].v || '').trim() : '';
+      if (cellVal === tagId) {
+        parsed.table.rows[i].c.forEach(function(cell, idx) {
+          subData[cols[idx]] = cell ? String(cell.v || '') : '';
+        });
+        break;
+      }
     }
+
+    if (!subData['First Name'] && !subData['Name'] && !subData['name']) {
+      showErr('Tag ' + tagId + ' not found. Please check the tag or contact innovat3.co.za');
+      return;
+    }
+  } catch(err) {
+    showErr('Could not load profile: ' + err.message + '. Please check your internet connection.');
     return;
   }
 
-  // Extract name
+  // ── Extract name ─────────────────────────────────────────────
   var fn = subData['First Name'] || '';
   var ln = subData['Last Name'] || '';
   if (!fn) {
-    var parts = (subData['Name'] || subData['name'] || '').split(' ');
-    fn = parts[0] || ''; ln = parts.slice(1).join(' ') || '';
+    var nameParts = (subData['Name'] || subData['name'] || '').split(' ');
+    fn = nameParts[0] || 'Unknown'; ln = nameParts.slice(1).join(' ') || '';
   }
 
   // Blood + Aid
@@ -495,6 +485,7 @@ var subData = null;
   }catch(e){}
 
   setAlert('green', name + ' — family alerted ✓');
+})();
 })();
 
 function hexToRgb(hex){
