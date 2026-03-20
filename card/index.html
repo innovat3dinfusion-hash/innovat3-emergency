@@ -149,11 +149,7 @@ body { font-family:'Exo 2',sans-serif; background:#050505; color:var(--text); mi
 <body>
 
 <script>
-var SHEET_ID       = '1_ZvLT_SnRkIgP7xiYBdDJ5DRtn9lwPnc6V3dmb-bSVI';
-var REG_SHEET      = 'Registrations';
-var TELEGRAM_TOKEN = '8785184944:AAEEPwzWgfVRaGqEfrCpr4Mf9Yy7qp2Lx2k';
-var TELEGRAM_CHAT  = '8737168646';
-var GAS_URL        = 'https://script.google.com/macros/s/AKfycbwbeveDTjJNNjqrDXBoEUTdorFj36wkOPIU-OLZnFid4QOW3cPPmZzyK8YLtWD1p4JD/exec';
+var GAS_URL        = 'https://script.google.com/macros/s/AKfycby8KpFgUiRPfpjtswlbQopCuvXwDS1QFmABdsbkpSZ5YXgd5ID0tLjh7urlE5Ihjyrt/exec';
 var WA_IMG         = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyNUQzNjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMjQgMTAuNUMxNi41IDEwLjUgMTAuNSAxNi41IDEwLjUgMjRjMCAyLjQuNjUgNC43IDEuOCA2LjdMMTAuNSAzNy41bDYuOTUtMS44YzEuOTUgMS4wNSA0LjE1IDEuNjUgNi41NSAxLjY1IDcuNSAwIDEzLjUtNiAxMy41LTEzLjVTMzEuNSAxMC41IDI0IDEwLjV6bTAgMjQuNzVjLTIuMSAwLTQuMDUtLjYtNS43LTEuNjVsLS40LS4yNS00LjE1IDEuMDUgMS4xLTQtLjMtLjQ1QzEzLjUgMjguMiAxMi45IDI2LjE1IDEyLjkgMjRjMC02LjEgNC45NS0xMS4xIDExLjEtMTEuMSA2LjEgMCAxMS4xIDQuOTUgMTEuMSAxMS4xIDAgNi4xLTUgMTEuMjUtMTEuMSAxMS4yNXptNi4xLTguMzVjLS4zNS0uMTUtMi4wNS0xLTIuMzUtMS4xLS4zNS0uMTUtLjYtLjE1LS44NS4xNS0uMjUuMy0uOTUgMS4xLTEuMTUgMS4zNS0uMi4yNS0uNC4zLS43NS4xLS4zNS0uMi0xLjQ1LS41NS0yLjc1LTEuNzUtMS0uOS0xLjctMi0xLjktMi4zNS0uMi0uMzUgMC0uNTUuMTUtLjcuMTUtLjE1LjM1LS40LjUtLjYuMi0uMi4yNS0uMzUuMzUtLjYuMTUtLjI1LjA1LS40NS0uMDUtLjY1LS4xLS4xNS0uODUtMi4wNS0xLjE1LTIuOC0uMy0uNzUtLjY1LS42NS0uODUtLjY1aC0uNzVjLS4yNSAwLS42NS4xLS45NS40NS0uMzUuMzUtMS4yNSAxLjItMS4yNSAyLjk1IDAgMS43NSAxLjI1IDMuNDUgMS40NSAzLjcuMTUuMjUgMi41IDMuODUgNi4xIDUuNC44NS4zNSAxLjUuNTUgMi4wNS43Ljg1LjI1IDEuNjUuMiAyLjI1LjEuNy0uMSAyLjA1LS44NSAyLjM1LTEuNjUuMy0uOC4zLTEuNS4yLTEuNjUtLjEtLjE1LS4zNS0uMjUtLjY1LS40eiIvPjwvc3ZnPg==';
 var TG_IMG         = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyOUI2RjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMTAuNSAyMy41bDI3LTEwLjUtNCAyMi04LTctNCA0LTEtOCAxNC0xMi0xNiA5LjV6Ii8+PHBhdGggZmlsbD0iI0IzRTVGQyIgZD0iTTIxLjUgMzNsLTEtOCAxNC0xMiIvPjwvc3ZnPg==';
 var TAG_COLOURS    = {'Black':'#555','Orange':'#F97316','Glow Blue':'#4DBBFF','Glitter Green':'#39FF6A','Red':'#EF4444','Teal':'#0ED2C8','White':'#ccc','Surprise Me':'#F97316'};
@@ -282,91 +278,18 @@ var subData = null;
 
   dbg('Fetching sheet data...');
   try {
-    var url = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent(REG_SHEET);
-    dbg('Connecting to Google Sheets...');
-    var resp = await fetch(url);
-    dbg('Response received: HTTP ' + resp.status);
-    if (!resp.ok) { showError('Sheet fetch failed: HTTP ' + resp.status + '. Make sure sheet is shared — Anyone with the link, Viewer.'); return; }
-    var text = await resp.text();
-    dbg('Data length: ' + text.length + ' chars');
-    if (!text || text.length < 50) { showError('Sheet returned empty response. Please set Google Sheet sharing to: Anyone with the link — Viewer.'); return; }
-    var si = text.indexOf('('), ei = text.lastIndexOf(')');
-    if (si === -1 || ei === -1) { showError('Unexpected response format. First 200 chars: ' + text.substring(0,200)); return; }
-    var json;
-    try { json = JSON.parse(text.substring(si + 1, ei)); }
-    catch(pe) { showError('JSON parse failed: ' + pe.message + ' | Raw: ' + text.substring(si,si+200)); return; }
-    if (!json.table) { showError('No table in response. Full status: ' + JSON.stringify(json).substring(0,300)); return; }
-    var cols = json.table.cols.map(function(c){ return c.label; });
-    dbg('Sheet loaded. Columns: ' + cols.length + ', Rows: ' + json.table.rows.length);
-    var tagColIdx = cols.indexOf('Tag ID');
-    if (tagColIdx === -1) { showError('Column "Tag ID" not found. Sheet columns are: ' + cols.join(' | ')); return; }
-    for (var i = 0; i < json.table.rows.length; i++) {
-      var cells = json.table.rows[i].c;
-      var rt = cells[tagColIdx] ? String(cells[tagColIdx].v||'').trim() : '';
-      if (rt === tagId) {
-        subData = {};
-        cols.forEach(function(col,idx){ subData[col] = cells[idx] ? String(cells[idx].v||'') : ''; });
-        break;
-      }
-    }
-    if (!subData) {
-      // Show first few tag IDs found to help debug
-      var found = [];
-      for (var j=0; j<Math.min(5,json.table.rows.length); j++) {
-        var c = json.table.rows[j].c;
-        if (c[tagColIdx]) found.push(String(c[tagColIdx].v||'').trim());
-      }
-      showError('Tag "' + tagId + '" not found in ' + json.table.rows.length + ' rows. First IDs in sheet: ' + found.join(', '));
+    dbg('Fetching profile from secure API...');
+    var apiUrl = GAS_URL + '?action=getProfile&tagId=' + encodeURIComponent(tagId);
+    var resp = await fetch(apiUrl);
+    if (!resp.ok) { showError('API error: HTTP ' + resp.status); return; }
+    var json = await resp.json();
+    if (json.status !== 'ok' || !json.profile) {
+      showError(json.message === 'Tag not active'
+        ? 'This tag is not yet active. Please complete your registration and payment at innovat3.co.za/register'
+        : 'Tag not found. Please check the tag ID: ' + tagId);
       return;
     }
-  } catch(err) { showError('Network or parse error: ' + err.message); return; }
-
-  // Tag colour
-  var tc = TAG_COLOURS[subData['Tag Colour']] || '#F97316';
-  document.documentElement.style.setProperty('--tag-col', tc);
-  document.getElementById('in3Banner').style.borderBottomColor = tc;
-  document.querySelector('.in3-logo').style.borderColor = tc;
-  document.getElementById('identityTab').style.borderColor = 'rgba(' + hexToRgb(tc) + ',0.7)';
-  document.getElementById('identityTab').style.boxShadow = '0 0 28px rgba(' + hexToRgb(tc) + ',0.2)';
-
-  // Identity
-  var fn = subData['First Name']||'', ln = subData['Last Name']||'';
-  var scAvatar = document.getElementById('scAvatar');
-  if (subData['Photo URL'] && subData['Photo URL'].startsWith('http')) {
-    scAvatar.innerHTML = '<img src="' + subData['Photo URL'] + '" alt="' + fn + '">';
-  } else {
-    scAvatar.textContent = ((fn[0]||'')+(ln[0]||'')).toUpperCase();
-  }
-  scAvatar.style.borderColor = tc;
-  document.getElementById('scName').textContent   = fn + ' ' + ln;
-  document.getElementById('scTagId').textContent  = '🏷 ' + tagId;
-  document.getElementById('scPlan').textContent   = (subData['Plan']||'Beta').toUpperCase();
-  document.title = '🚨 ' + fn + ' ' + ln + ' — Emergency';
-  // Parse and display DOB + Age
-  var dob = subData['Date of Birth']||'';
-  if (dob) {
-    var dobDisplay = dob;
-    var ageStr = '';
-    try {
-      // Google Sheets stores dates as "Date(year,month,day)" or as a string like "1985-04-12" or "12/04/1985"
-      var d = null;
-      var dateMatch = dob.match(/Date\((\d+),(\d+),(\d+)\)/);
-      if (dateMatch) {
-        d = new Date(parseInt(dateMatch[1]), parseInt(dateMatch[2]), parseInt(dateMatch[3]));
-      } else {
-        d = new Date(dob);
-      }
-      if (!isNaN(d.getTime())) {
-        var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-        dobDisplay = d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
-        var today = new Date();
-        var age = today.getFullYear() - d.getFullYear();
-        var m = today.getMonth() - d.getMonth();
-        if (m < 0 || (m === 0 && today.getDate() < d.getDate())) age--;
-        ageStr = ' · Age ' + age;
-      }
-    } catch(e) {}
-    document.getElementById('scDob').textContent = '📅 ' + dobDisplay + ageStr;
+    subData = json.profile;
   }
 
   // Blood + Aid
