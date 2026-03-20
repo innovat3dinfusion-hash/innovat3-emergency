@@ -352,7 +352,8 @@ var subData = {};
       var dp = dobRaw.split('-');
       dobDate = new Date(parseInt(dp[0]), parseInt(dp[1])-1, parseInt(dp[2]));
     } else {
-      dobDate = new Date(dobRaw);
+      // Try removing any time component
+      dobDate = new Date(dobRaw.split('T')[0].split(' ')[0]);
     }
     if (dobDate && !isNaN(dobDate.getTime())) {
       var today = new Date();
@@ -395,8 +396,10 @@ var subData = {};
 
   // Blood + Aid
   document.getElementById('scBlood').textContent = subData['Blood Type']||'—';
-  document.getElementById('scAid').textContent   = subData['Medical Aid'] || subData['medicalAid']
-    ? subData['Medical Aid'] || subData['medicalAid'] + (subData['Medical Aid Number'] || subData['medAidNo'] ? ' · No: ' + subData['Medical Aid Number'] || subData['medAidNo'] : '')
+  var aidName = subData['Medical Aid'] || subData['medicalAid'] || '';
+  var aidNo   = subData['Medical Aid Number'] || subData['medAidNo'] || '';
+  document.getElementById('scAid').textContent = aidName
+    ? (aidName + (aidNo ? ' · No: ' + aidNo : ''))
     : 'Not provided';
 
   // Tabs
