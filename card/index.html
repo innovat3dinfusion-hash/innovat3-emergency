@@ -336,27 +336,15 @@ var subData = {};
   }
 
   // ── Extract name ─────────────────────────────────────────────
-  var fn = subData['First Name'] || '';
-  var ln = subData['Last Name'] || '';
-  if (!fn) {
-    var nameParts = (subData['Name'] || subData['name'] || '').split(' ');
-    fn = nameParts[0] || 'Unknown'; ln = nameParts.slice(1).join(' ') || '';
-  }
+  var fn = (subData['First Name'] || '').trim();
+  var ln = (subData['Last Name'] || '').trim();
 
   // ── Name, DOB, Photo, Status ──────────────────────────────
   var fullName = fn + (ln ? ' ' + ln : '');
   document.getElementById('scName').textContent = fullName || '—';
 
   // ── DOB + Age ────────────────────────────────────────────────
-  var dobRaw = '';
-  // Try every possible key variation gviz might return
-  var dobKeys = ['Date of Birth', 'date of birth', 'DOB', 'dob', 'Birth Date', 'birthDate'];
-  for (var di = 0; di < dobKeys.length; di++) {
-    if (subData[dobKeys[di]] && subData[dobKeys[di]] !== '') {
-      dobRaw = subData[dobKeys[di]].toString().trim();
-      break;
-    }
-  }
+  var dobRaw = (subData['Date of Birth'] || '').toString().trim();
   var dobEl  = document.getElementById('scDob');
   if (dobEl && dobRaw) {
     try {
@@ -407,7 +395,7 @@ var subData = {};
   // Avatar — photo or initials
   var avatarEl = document.getElementById('scAvatar');
   if (avatarEl) {
-    var photoUrl = subData['Photo URL'] || subData['photoUrl'] || subData['Photo'] || '';
+    var photoUrl = subData['Photo URL'] || '';
     if (photoUrl && photoUrl.startsWith('http')) {
       avatarEl.innerHTML = '<img src="' + photoUrl + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';
     } else {
@@ -418,16 +406,16 @@ var subData = {};
 
   // Blood + Aid
   document.getElementById('scBlood').textContent = subData['Blood Type']||'—';
-  var aidName = subData['Medical Aid'] || subData['medicalAid'] || '';
-  var aidNo   = subData['Medical Aid Number'] || subData['medAidNo'] || '';
+  var aidName = subData['Medical Aid'] || '';
+  var aidNo   = subData['Medical Aid Number'] || '';
   document.getElementById('scAid').textContent = aidName
     ? (aidName + (aidNo ? ' · No: ' + aidNo : ''))
     : 'Not provided';
 
   // Tabs
-  document.getElementById('scMedical').textContent = subData['Medical Alerts'] || subData['Medical Conditions'] || subData['conditions']||'—';
+  document.getElementById('scMedical').textContent = subData['Medical Alerts']||'—';
   document.getElementById('scMeds').textContent    = subData['Medications']||'—';
-  document.getElementById('scAddress').textContent = subData['Home Address'] || subData['Address'] || subData['address']||'—';
+  document.getElementById('scAddress').textContent = subData['Home Address']||'—';
   document.getElementById('scNotes').textContent   = subData['Notes for Finder']||'—';
 
   // Contacts
@@ -530,7 +518,7 @@ var subData = {};
     '🚨 EMERGENCY — Innovat3 Alert\n\n'+
     name+"'s NFC tag was just scanned.\\n"+
     '🩸 Blood: '+(subData['Blood Type']||'—')+'\n'+
-    '⚠️ '+(subData['Medical Alerts'] || subData['Medical Conditions'] || subData['conditions']||'—')+'\n\n'+
+    '⚠️ '+(subData['Medical Alerts']||'—')+'\n\n'+
     (mapsUrl?'📍 Location:\n'+mapsUrl:'📍 Location not available')+'\n\n'+
     'Please respond immediately.\n— Innovat3 Emergency System'
   );
@@ -543,8 +531,8 @@ var subData = {};
   // Telegram
   var msg='🚨 *NFC TAG SCANNED — EMERGENCY*\n\n*'+name+'*\n'+
     '🩸 Blood: '+(subData['Blood Type']||'—')+'\n'+
-    '⚠️ '+(subData['Medical Alerts'] || subData['Medical Conditions'] || subData['conditions']||'—')+'\n'+
-    '🏥 '+(subData['Medical Aid'] || subData['medicalAid']?subData['Medical Aid'] || subData['medicalAid']+' · '+(subData['Medical Aid Number'] || subData['medAidNo']||''):'No medical aid')+'\n\n'+
+    '⚠️ '+(subData['Medical Alerts']||'—')+'\n'+
+    '🏥 '+(subData['Medical Aid']?subData['Medical Aid']+' · '+(subData['Medical Aid Number']||''):'No medical aid')+'\n\n'+
     (mapsUrl?'📍 *Location:* '+gpsAddress+'\n🗺️ '+mapsUrl+'\n':'📍 Location not shared\n')+
     '🕐 '+timestamp+'\n🏷️ Tag: '+tagId;
   // Telegram alert sent via GAS (secure - no token in frontend)
@@ -558,9 +546,9 @@ var subData = {};
         tagId:tagId,timestamp:timestamp,name:fullName||name||'',gpsAccuracy:finalAccuracy,gpsLowAccuracy:gpsLowAccuracy,
         dob:subData['Date of Birth']||'',
         blood:subData['Blood Type']||'',
-        medicalAid:subData['Medical Aid'] || subData['medicalAid']||'',medicalAidNumber:subData['Medical Aid Number'] || subData['medAidNo']||'',
-        medical:subData['Medical Alerts'] || subData['Medical Conditions'] || subData['conditions']||'',meds:subData['Medications']||'',
-        homeAddress:subData['Home Address'] || subData['Address'] || subData['address']||'',notes:subData['Notes for Finder']||'',
+        medicalAid:subData['Medical Aid']||'',medicalAidNumber:subData['Medical Aid Number']||'',
+        medical:subData['Medical Alerts']||'',meds:subData['Medications']||'',
+        homeAddress:subData['Home Address']||'',notes:subData['Notes for Finder']||'',
         gpsAddress:gpsAddress,lat:lat,lng:lng,mapsUrl:mapsUrl,lowAccuracy:gpsLowAccuracy,accuracy:finalAccuracy,
         c1name:subData['Contact 1 Name']||'',c1rel:subData['Contact 1 Relation']||'',c1phone:subData['Contact 1 Phone']||'',c1wa:subData['Contact 1 WA']||'',c1tg:subData['Contact 1 Telegram']||'',
         c2name:subData['Contact 2 Name']||'',c2rel:subData['Contact 2 Relation']||'',c2phone:subData['Contact 2 Phone']||'',c2wa:subData['Contact 2 WA']||'',c2tg:subData['Contact 2 Telegram']||'',
