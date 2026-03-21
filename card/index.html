@@ -368,7 +368,8 @@ var subData = {};
         var dm  = today.getMonth() - dobDate.getMonth();
         if (dm < 0 || (dm===0 && today.getDate() < dobDate.getDate())) age--;
         var mn = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-        dobEl.textContent = dobDate.getDate() + ' ' + mn[dobDate.getMonth()] + ' ' + dobDate.getFullYear() + ' · Age ' + age;
+        var dobStr = dobDate.getDate() + ' ' + mn[dobDate.getMonth()] + ' ' + dobDate.getFullYear();
+        dobEl.innerHTML = dobStr + ' &nbsp;·&nbsp; <span style="color:#F97316;font-weight:700">Age ' + age + '</span>';
       } else {
         dobEl.textContent = dobRaw;
       }
