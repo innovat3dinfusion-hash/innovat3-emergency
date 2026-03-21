@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Innovat3 — Beta Registration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -14,7 +16,8 @@
   --yellow:#EAB308;
 }
 * { box-sizing:border-box; margin:0; padding:0; }
-body { font-family:"Exo 2",sans-serif; background:#050505; color:var(--text); min-height:100vh; }
+body { font-family:"Exo 2",sans-serif; background:#050505; color:var(--text); min-height:100vh; -webkit-overflow-scrolling:touch; overflow-x:hidden; }
+button, a, input, select, textarea { touch-action:manipulation; }
 .page { max-width:600px; margin:0 auto; padding:0 16px 60px; } @media(min-width:768px){ .page{ max-width:680px; padding:0 32px 80px; } body{ background:#050505; } }
 
 /* ── BANNER ── */
@@ -59,9 +62,9 @@ body { font-family:"Exo 2",sans-serif; background:#050505; color:var(--text); mi
   width:28px; height:28px; border-radius:50%; border:2px solid var(--border2);
   display:flex; align-items:center; justify-content:center;
   font-family:"Orbitron",sans-serif; font-size:10px; font-weight:900; color:var(--muted2);
-  background:#111; transition:all 0.3s;
+  background:#111; transition:all 0.15s;
 }
-.step-label { font-size:8px; color:var(--muted2); letter-spacing:1px; text-transform:uppercase; font-weight:700; transition:all 0.3s; }
+.step-label { font-size:8px; color:var(--muted2); letter-spacing:1px; text-transform:uppercase; font-weight:700; transition:all 0.15s; }
 .step-item.active .step-num { border-color:var(--orange); color:var(--orange); background:#1a0800; box-shadow:0 0 12px rgba(249,115,22,0.3); }
 .step-item.active .step-label { color:var(--orange); }
 .step-item.done .step-num { border-color:var(--green); color:var(--green); background:#061209; }
@@ -2390,25 +2393,38 @@ function payWithPayFast() {
   var d = window._paymentData;
   if (!d) { alert('Payment data not ready.'); return; }
 
-  // Save registration to GAS before redirecting to PayFast
   var btn = document.getElementById('payfastPayBtn');
-  if (btn) { btn.textContent = '⏳ Saving registration...'; btn.disabled = true; }
+  if (btn) { btn.textContent = '\u23F3 Saving registration...'; btn.disabled = true; }
 
-  // Submit registration data to GAS
+  // Beta/Free: skip PayFast entirely
+  if (d.plan === 'Beta' || parseFloat(d.amount) === 0) {
+    var betaData = JSON.parse(JSON.stringify(d.registrationData));
+    betaData.status = 'Beta';
+    betaData.isBeta = 'true';
+    fetch(GAS_URL, {
+      method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(betaData)
+    }).catch(function(){}).finally(function() {
+      window.location.href = 'https://innovat3.co.za/success.html';
+    });
+    return;
+  }
+
+  // Paid plans: submit registration as Pending, then go to PayFast
+  // GAS ITN webhook sets Status=Active after payment confirms
   fetch(GAS_URL, {
     method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'},
     body: JSON.stringify(d.registrationData)
   }).catch(function(){}).finally(function() {
-    // Whether GAS succeeds or fails, proceed to PayFast
     var form = document.getElementById('payfastForm');
-    document.getElementById('pf_m_payment_id').value  = d.tagId;
-    document.getElementById('pf_amount').value        = d.amount;
-    document.getElementById('pf_item_name').value     = d.itemName;
+    document.getElementById('pf_m_payment_id').value     = d.tagId;
+    document.getElementById('pf_amount').value           = d.amount;
+    document.getElementById('pf_item_name').value        = d.itemName;
     document.getElementById('pf_item_description').value = d.itemDescription;
-    document.getElementById('pf_name_first').value    = d.firstName;
-    document.getElementById('pf_name_last').value     = d.lastName;
-    document.getElementById('pf_email_address').value = d.email;
-    document.getElementById('pf_cell_number').value   = (d.phone||'').replace(/\s+/g,'');
+    document.getElementById('pf_name_first').value       = d.firstName;
+    document.getElementById('pf_name_last').value        = d.lastName;
+    document.getElementById('pf_email_address').value    = d.email;
+    document.getElementById('pf_cell_number').value      = (d.phone||'').replace(/\s+/g,'');
     form.submit();
   });
 }
