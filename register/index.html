@@ -2344,7 +2344,24 @@ function proceedToPayment() {
   var tagCount = (planSelected === 'Family') ? 
     ([2,3,4].filter(function(i){ return collectMemberData(i); }).length + 1) : 1;
 
-  // Show payment section
+  // ── Beta/Free plan: bypass paywall entirely ─────────────────
+  if (planSelected === 'Beta' || planSelected === 'Free Trial') {
+    var betaData = JSON.parse(JSON.stringify(registrationData));
+    betaData.status = 'Beta';
+    betaData.isBeta = 'true';
+    // Show submitting message
+    var page = document.querySelector('.page');
+    if (page) page.innerHTML = '<div style="text-align:center;padding:60px 20px"><div style="font-size:48px">⏳</div><h2 style="color:#F97316;font-family:Orbitron,sans-serif;margin:16px 0">Registering...</h2><p style="color:#888">Please wait while we set up your beta profile.</p></div>';
+    fetch(GAS_URL, {
+      method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(betaData)
+    }).catch(function(){}).finally(function() {
+      window.location.href = 'https://innovat3.co.za/success.html';
+    });
+    return;
+  }
+
+  // Show payment section (paid plans only)
   showPaymentSection(tagId, v('firstName'), v('lastName'), v('email'), 
     v('phone'), planSelected, billingCycle, tagCount, registrationData);
 }
