@@ -343,31 +343,32 @@ var subData = {};
   var fullName = fn + (ln ? ' ' + ln : '');
   document.getElementById('scName').textContent = fullName || '—';
 
-  // ── DOB + Age ────────────────────────────────────────────────
-  var dobRaw = (subData['Date of Birth'] || '').toString().trim();
-  var dobEl  = document.getElementById('scDob');
+
+  // ── DOB + Age ─────────────────────────────────────────────────
+  var dobRaw = (subData["Date of Birth"] || "").toString().trim();
+  var dobEl  = document.getElementById("scDob");
   if (dobEl && dobRaw) {
-    try {
-      var dobDate = null;
-      // Format 1: gviz Date(1988,10,13) — month is 0-indexed
-      var m1 = dobRaw.match(/Date.(\d+),(\d+),(\d+)/);
-      if (m1) {
-        dobDate = new Date(+m1[1], +m1[2], +m1[3]);
-      }
-      // Format 2: YYYY-MM-DD (e.g. 1988-11-13)
-      if (!dobDate) {
-        var m2 = dobRaw.match(/^(\d{4})-(\d{2})-(\d{2})/);
-        if (m2) dobDate = new Date(+m2[1], +m2[2]-1, +m2[3]);
-      }
-      // Format 3: DD/MM/YYYY (e.g. 13/11/1988) — Google Sheets display format
-      if (!dobDate) {
-        var m3 = dobRaw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-        if (m3) dobDate = new Date(+m3[3], +m3[2]-1, +m3[1]);
-      }
-      // Format 4: any other string
-      if (!dobDate) dobDate = new Date(dobRaw.split('T')[0].split(' ')[0]); else {
-        dobEl.textContent = dobRaw;
-      }
+    var dobDate = null, p;
+    // DD/MM/YYYY — Google Sheets default format
+    p = dobRaw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (p) dobDate = new Date(+p[3], +p[2]-1, +p[1]);
+    // YYYY-MM-DD — ISO format
+    if (!dobDate) { p = dobRaw.match(/^(\d{4})-(\d{2})-(\d{2})/); if (p) dobDate = new Date(+p[1], +p[2]-1, +p[3]); }
+    // Date(YYYY,M,D) — gviz format
+    if (!dobDate) { p = dobRaw.match(/Date.(\d+),(\d+),(\d+)/); if (p) dobDate = new Date(+p[1], +p[2], +p[3]); }
+
+    if (dobDate && !isNaN(dobDate.getTime()) && dobDate.getFullYear() > 1900) {
+      var today = new Date();
+      var age = today.getFullYear() - dobDate.getFullYear();
+      if (today.getMonth() < dobDate.getMonth() || (today.getMonth() === dobDate.getMonth() && today.getDate() < dobDate.getDate())) age--;
+      var mn = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+      dobEl.innerHTML = dobDate.getDate() + " " + mn[dobDate.getMonth()] + " " + dobDate.getFullYear() +
+        " &nbsp;&middot;&nbsp; <span style=\"color:#F97316;font-weight:700\">Age " + age + "</span>";
+    } else {
+      dobEl.textContent = dobRaw;
+    }
+  }
+
     } catch(e) {
       dobEl.textContent = dobRaw;
     }
