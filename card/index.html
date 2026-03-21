@@ -354,23 +354,18 @@ var subData = {};
       if (m1) {
         dobDate = new Date(+m1[1], +m1[2], +m1[3]);
       }
-      // Format 2: 1988-11-13 text
+      // Format 2: YYYY-MM-DD (e.g. 1988-11-13)
       if (!dobDate) {
-        var m2 = dobRaw.match(/(\d{4})-(\d{2})-(\d{2})/);
+        var m2 = dobRaw.match(/^(\d{4})-(\d{2})-(\d{2})/);
         if (m2) dobDate = new Date(+m2[1], +m2[2]-1, +m2[3]);
       }
-      // Format 3: any other parseable string
-      if (!dobDate) dobDate = new Date(dobRaw);
-
-      if (dobDate && !isNaN(dobDate.getTime()) && dobDate.getFullYear() > 1900) {
-        var today = new Date();
-        var age = today.getFullYear() - dobDate.getFullYear();
-        var dm  = today.getMonth() - dobDate.getMonth();
-        if (dm < 0 || (dm===0 && today.getDate() < dobDate.getDate())) age--;
-        var mn = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-        var dobStr = dobDate.getDate() + ' ' + mn[dobDate.getMonth()] + ' ' + dobDate.getFullYear();
-        dobEl.innerHTML = dobStr + ' &nbsp;·&nbsp; <span style="color:#F97316;font-weight:700">Age ' + age + '</span>';
-      } else {
+      // Format 3: DD/MM/YYYY (e.g. 13/11/1988) — Google Sheets display format
+      if (!dobDate) {
+        var m3 = dobRaw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+        if (m3) dobDate = new Date(+m3[3], +m3[2]-1, +m3[1]);
+      }
+      // Format 4: any other string
+      if (!dobDate) dobDate = new Date(dobRaw.split('T')[0].split(' ')[0]); else {
         dobEl.textContent = dobRaw;
       }
     } catch(e) {
