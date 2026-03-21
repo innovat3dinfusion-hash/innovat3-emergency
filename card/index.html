@@ -348,10 +348,14 @@ var subData = {};
   document.getElementById('scName').textContent = fullName || '—';
 
   // ── DOB + Age ────────────────────────────────────────────────
-  var dobRaw = (subData['Date of Birth'] || '').toString().trim();
-  // Temp debug - show raw value directly
+  // Show ALL subData key:value pairs to find exact column names and values
+  var debugLines = [];
+  Object.keys(subData).forEach(function(k) {
+    if (subData[k] && subData[k] !== '') debugLines.push(k + ': ' + JSON.stringify(subData[k]));
+  });
   var dobEl2 = document.getElementById('scDob');
-  if (dobEl2) dobEl2.textContent = 'DOB:' + JSON.stringify(subData['Date of Birth']) + ' Status:' + JSON.stringify(subData['Status']);
+  if (dobEl2) dobEl2.textContent = debugLines.join(' | ');
+  var dobRaw = (subData['Date of Birth'] || '').toString().trim();
   var dobEl  = document.getElementById('scDob');
   if (dobEl && dobRaw) {
     try {
