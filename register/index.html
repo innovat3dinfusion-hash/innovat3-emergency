@@ -488,7 +488,7 @@ button, a, input, select, textarea { touch-action:manipulation; }
 <script>
 var TELEGRAM_TOKEN   = '8785184944:AAEEPwzWgfVRaGqEfrCpr4Mf9Yy7qp2Lx2k';
 var TELEGRAM_CHAT_ID = '8737168646';
-var GAS_URL          = 'https://script.google.com/macros/s/AKfycbwuPcTuxAkuXqbA8ePdS0VFkWCLd5Ki7fbK960wFt6i8KzIMN0K1qyV2sonzKLvsvDU/exec';
+var GAS_URL          = 'https://script.google.com/macros/s/AKfycbzI9m21VIvNCwtzX70e_DKhkid3ANu6BfyP9GkizPrFRYb8hJurZGIyJzcOlZSPKWK1/exec';
 var IMGBB_KEY        = 'c95f5daba8da7ba6d1f63cbeb6326a88';
 var WA_IMG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyNUQzNjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMjQgMTAuNUMxNi41IDEwLjUgMTAuNSAxNi41IDEwLjUgMjRjMCAyLjQuNjUgNC43IDEuOCA2LjdMMTAuNSAzNy41bDYuOTUtMS44YzEuOTUgMS4wNSA0LjE1IDEuNjUgNi41NSAxLjY1IDcuNSAwIDEzLjUtNiAxMy41LTEzLjVTMzEuNSAxMC41IDI0IDEwLjV6Ii8+PC9zdmc+';
 var TG_IMG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyOUI2RjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMTAuNSAyMy41bDI3LTEwLjUtNCAyMi04LTctNCA0LTEtOCAxNC0xMi0xNiA5LjV6Ii8+PC9zdmc+';
@@ -2253,7 +2253,7 @@ async function submitForm() {
       <input type="hidden" name="merchant_key"     id="pf_merchant_key"     value="frbiyqgqpun0a">
       <input type="hidden" name="return_url"       id="pf_return_url"       value="https://innovat3.co.za/success.html">
       <input type="hidden" name="cancel_url"       id="pf_cancel_url"       value="https://innovat3.co.za/register/">
-      <input type="hidden" name="notify_url"       id="pf_notify_url"       value="https://script.google.com/macros/s/AKfycbwuPcTuxAkuXqbA8ePdS0VFkWCLd5Ki7fbK960wFt6i8KzIMN0K1qyV2sonzKLvsvDU/exec">
+      <input type="hidden" name="notify_url"       id="pf_notify_url"       value="https://script.google.com/macros/s/AKfycbzI9m21VIvNCwtzX70e_DKhkid3ANu6BfyP9GkizPrFRYb8hJurZGIyJzcOlZSPKWK1/exec">
       <input type="hidden" name="m_payment_id"     id="pf_m_payment_id">
       <input type="hidden" name="amount"           id="pf_amount">
       <input type="hidden" name="item_name"        id="pf_item_name">
@@ -2427,23 +2427,32 @@ function payWithPayFast() {
     return;
   }
 
-  // Paid plans: submit registration as Pending, then go to PayFast
-  // GAS ITN webhook sets Status=Active after payment confirms
-  fetch(GAS_URL, {
-    method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify(d.registrationData)
-  }).catch(function(){}).finally(function() {
-    var form = document.getElementById('payfastForm');
-    document.getElementById('pf_m_payment_id').value     = d.tagId;
-    document.getElementById('pf_amount').value           = d.amount;
-    document.getElementById('pf_item_name').value        = d.itemName;
-    document.getElementById('pf_item_description').value = d.itemDescription;
-    document.getElementById('pf_name_first').value       = d.firstName;
-    document.getElementById('pf_name_last').value        = d.lastName;
-    document.getElementById('pf_email_address').value    = d.email;
-    document.getElementById('pf_cell_number').value      = (d.phone||'').replace(/\s+/g,'');
-    form.submit();
-  });
+  // Paid plans: go STRAIGHT to PayFast — do NOT save to GAS first
+  // Registration is saved by GAS ITN webhook AFTER payment is confirmed
+  // Encode key registration fields into PayFast custom_str fields so GAS
+  // can reconstruct and save the full registration on payment confirmation
+  var form = document.getElementById('payfastForm');
+  var rd   = d.registrationData || {};
+
+  document.getElementById('pf_m_payment_id').value     = d.tagId;
+  document.getElementById('pf_amount').value           = d.amount;
+  document.getElementById('pf_item_name').value        = d.itemName;
+  document.getElementById('pf_item_description').value = d.itemDescription;
+  document.getElementById('pf_name_first').value       = d.firstName;
+  document.getElementById('pf_name_last').value        = d.lastName;
+  document.getElementById('pf_email_address').value    = d.email;
+  document.getElementById('pf_cell_number').value      = (d.phone||'').replace(/\s+/g,'');
+
+  // Pack registration data into custom_str fields (255 chars each)
+  var regJson = JSON.stringify(rd);
+  var chunk   = 240;
+  document.getElementById('pf_custom_str1').value = regJson.substring(0,   chunk);
+  document.getElementById('pf_custom_str2').value = regJson.substring(chunk,   chunk*2);
+  document.getElementById('pf_custom_str3').value = regJson.substring(chunk*2, chunk*3);
+  document.getElementById('pf_custom_str4').value = regJson.substring(chunk*3, chunk*4);
+  document.getElementById('pf_custom_str5').value = regJson.substring(chunk*4, chunk*5);
+
+  form.submit();
 }
 </script>
 
