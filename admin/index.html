@@ -713,6 +713,9 @@
     <a class="nav-item" onclick="showSection('family')">
       <span class="icon">◎</span> Family Bundles
     </a>
+    <a class="nav-item" onclick="showSection('expiring')">
+      <span class="icon" style="color:#F97316">⏰</span> Expiring Soon
+    </a>
     <div class="nav-section">Activity</div>
     <a class="nav-item" onclick="showSection('scans')">
       <span class="icon">◇</span> Scan Logs
@@ -813,6 +816,7 @@
         <div class="card">
           <div class="card-header">
             <span class="card-title">RECENT SCANS</span>
+            <span id="scans-today-badge" style="background:rgba(14,210,200,0.15);color:#0ED2C8;font-size:10px;letter-spacing:1px;padding:3px 8px;border-radius:10px;border:1px solid rgba(14,210,200,0.3)">0 today</span>
           </div>
           <div class="card-body" style="padding: 8px 16px" id="recent-scans">
             <div class="loading"><div class="spinner"></div><br>Loading…</div>
@@ -977,7 +981,24 @@
       </div>
     </div>
 
-    <!-- ════════════ TASKS ════════════ -->
+    <!-- ════════════ EXPIRING ════════════ -->
+    <div class="section hidden" id="section-expiring">
+      <div class="section-header">
+        <h2 class="section-title">⏰ Expiring Subscribers</h2>
+        <span id="expiring-badge" class="badge">0</span>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">SUBSCRIPTIONS EXPIRING WITHIN 30 DAYS</span></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Tag ID</th><th>Name</th><th>Plan</th><th>Status</th><th>Expiry Date</th><th>Days Left</th></tr></thead>
+            <tbody id="expiring-table"><tr><td colspan="6" class="empty">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+<!-- ════════════ TASKS ════════════ -->
     <div class="section" id="section-tasks">
       <div class="card">
         <div class="card-header">
@@ -1057,22 +1078,42 @@ let subSearchTerm = '';
 const PAGE_SIZE = 20;
 
 // ── TASKS DATA ──
-const tasks = [
-  { text: 'Programme physical NFC tags with NFC Tools app', tag: 'ops',      done: false },
-  { text: 'Get custom domain innovat3.co.za → point to GitHub Pages', tag: 'ops', done: false },
-  { text: 'Set up PayFast/SnapScan payment + webhook → auto-set Status = Active', tag: 'revenue', done: false },
-  { text: 'Register as Information Officer at eservices.inforegulator.org.za', tag: 'legal', done: false },
+// Tasks stored in localStorage for persistence
+let tasks = [];
+const TASKS_KEY = 'innovat3_tasks_v2';
+const defaultTasks = [
+  { text: 'Programme physical NFC tags with NFC Tools app', tag: 'ops', done: true },
+  { text: 'Get custom domain innovat3.co.za → GitHub Pages', tag: 'ops', done: true },
+  { text: 'PayFast live payments + ITN webhook active', tag: 'revenue', done: true },
+  { text: 'Register as Information Officer', tag: 'legal', done: true },
+  { text: 'Provisional patent filed ✅ ZA 2026/1539553', tag: 'legal', done: true },
+  { text: 'INNOVAT3 trademark filed ✅ ZA 2026/1540827 Class 42', tag: 'legal', done: true },
+  { text: 'NTAG215 inlays ordered and received', tag: 'ops', done: true },
+  { text: 'GPS guardrail (500m threshold) on card page', tag: 'dev', done: true },
+  { text: 'Subscription expiry tracking + card expiry warning', tag: 'dev', done: true },
+  { text: 'PayFast recurring billing for monthly plans', tag: 'revenue', done: true },
   { text: 'Attorney review of T&Cs before scaling', tag: 'legal', done: false },
-  { text: 'Provisional patent filed ✅ Record ID: 1539553 (ZA 2026/1539553)', tag: 'legal', done: true },
-  { text: 'INNOVAT3 trademark filed ✅ Record ID: 1540827 Class 42 (ZA 2026/1540827)', tag: 'legal', done: true },
-  { text: 'Build admin dashboard', tag: 'dev', done: true },
-  { text: 'Remove 🧪 Autofill for Testing button before going live', tag: 'critical', done: false },
-  { text: 'Run formatAllSheets() in GAS after every redeployment', tag: 'ops', done: false },
-  { text: 'Run registerWebhook() once after each new GAS deployment', tag: 'ops', done: false },
-  { text: 'Have all emergency contacts message Telegram bot to register chat_id', tag: 'ops', done: false },
-  { text: 'Order first batch of NTAG215 inlays (~R750 for 50 tags)', tag: 'ops', done: false },
-  { text: 'Launch beta with first 10 subscribers', tag: 'ops', done: false },
+  { text: 'Logo trademark (device mark) at CIPC — R590', tag: 'legal', done: false },
+  { text: 'PayFast business account full verification', tag: 'revenue', done: false },
+  { text: 'Set up The Courier Guy account for tag shipments', tag: 'ops', done: false },
+  { text: 'Have all emergency contacts message @innovat3bot to register', tag: 'ops', done: false },
+  { text: 'Launch first paid subscriber campaign', tag: 'revenue', done: false },
 ];
+
+// Load tasks from localStorage for persistence
+function loadTasks() {
+  try {
+    const saved = localStorage.getItem('innovat3_tasks_v2');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      tasks = defaultTasks.map((t, i) => ({...t, done: parsed[i] !== undefined ? parsed[i] : t.done}));
+    } else { tasks = defaultTasks.map(t => ({...t})); }
+  } catch(e) { tasks = defaultTasks.map(t => ({...t})); }
+}
+function saveTasks() {
+  try { localStorage.setItem('innovat3_tasks_v2', JSON.stringify(tasks.map(t => t.done))); } catch(e) {}
+}
+
 
 // ── GVIZ QUERY ──
 async function gvizQuery(sheetName, query = 'select *') {
@@ -1128,6 +1169,7 @@ async function loadAll() {
 }
 
 function renderAll() {
+  loadTasks();
   renderMetrics();
   renderRecentSubs();
   renderPlanBars();
@@ -1137,6 +1179,7 @@ function renderAll() {
   renderTelegram();
   renderFamilies();
   renderTasks();
+  renderExpiring();
   renderRevenue();
 }
 
@@ -1231,16 +1274,34 @@ function renderPlanBars() {
 
 // ── RECENT SCANS ──
 function renderRecentScans() {
+  // Count today's scans
+  const todayStr = new Date().toLocaleDateString('en-ZA');
+  const todayScans = allScans.filter(r => {
+    const ts = (r['Timestamp']||'').toString();
+    return ts.includes(new Date().toISOString().split('T')[0]) ||
+           ts.startsWith(new Date().toLocaleDateString('en-ZA').split('/').reverse().join('/'));
+  });
+  const todayBadge = document.getElementById('scans-today-badge');
+  if (todayBadge) todayBadge.textContent = todayScans.length + ' today';
+
   const recent = [...allScans].slice(-6).reverse();
-  document.getElementById('recent-scans').innerHTML = recent.length ? recent.map((r,i) => `
-    <div class="scan-entry">
+  document.getElementById('recent-scans').innerHTML = recent.length ? recent.map((r,i) => {
+    const name = r['Name'] || r['Full Name'] || r['First Name'] || 'Unknown';
+    const addr = r['Address'] || r['GPS Address'] || '';
+    const lat  = r['Latitude'] || r['GPS Lat'] || '';
+    const lng  = r['Longitude'] || r['GPS Lng'] || '';
+    const mapsLink = lat && lng
+      ? `<a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" style="color:var(--teal);font-size:10px;margin-left:6px">📍 Map</a>`
+      : '';
+    return `<div class="scan-entry">
       <div class="scan-dot ${i%2===0?'scan-dot-orange':'scan-dot-teal'}"></div>
-      <div class="scan-info">
-        <div class="scan-name">${r['Full Name']||r['First Name']||'Unknown'}</div>
-        <div class="scan-meta">${r['Tag ID']||''} · ${(r['GPS Address']||r['Address']||'No GPS').substring(0,40)}</div>
+      <div class="scan-info" style="flex:1">
+        <div class="scan-name">${name} ${mapsLink}</div>
+        <div class="scan-meta">${r['Tag ID']||''} · ${addr.substring(0,45) || 'Location not shared'}</div>
       </div>
       <div class="scan-time">${formatTime(r['Timestamp'])}</div>
-    </div>`).join('') : '<div class="empty">No scans yet</div>';
+    </div>`;
+  }).join('') : '<div class="empty">No scans yet</div>';
 }
 
 // ── SUBSCRIBER TABLE ──
@@ -1297,19 +1358,28 @@ function navSubPage(dir) {
 let scanSearchTerm = '';
 function renderScanTable() {
   let data = allScans.filter(r => {
-    const name = (r['Full Name']||r['First Name']||'').toLowerCase();
-    const tag = (r['Tag ID']||'').toLowerCase();
+    const name = (r['Name']||r['Full Name']||r['First Name']||'').toLowerCase();
+    const tag  = (r['Tag ID']||'').toLowerCase();
     return name.includes(scanSearchTerm) || tag.includes(scanSearchTerm);
   });
   document.getElementById('scan-total-badge').textContent = data.length + ' scans';
-  document.getElementById('scan-table').innerHTML = data.length ? [...data].reverse().map(r => `
-    <tr>
+  document.getElementById('scan-table').innerHTML = data.length ? [...data].reverse().map(r => {
+    const name = r['Name'] || r['Full Name'] || r['First Name'] || '—';
+    const addr = r['Address'] || r['GPS Address'] || '—';
+    const lat  = r['Latitude'] || r['GPS Lat'] || '';
+    const lng  = r['Longitude'] || r['GPS Lng'] || '';
+    const acc  = r['Accuracy (m)'] || '';
+    const mapCell = lat && lng
+      ? `<a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" style="color:var(--teal);font-size:11px;white-space:nowrap">📍 Open Map</a>`
+      : '—';
+    return `<tr>
       <td style="font-size:11px;color:var(--text-dim)">${formatTime(r['Timestamp'])}</td>
       <td><span class="tag-id">${r['Tag ID']||'—'}</span></td>
-      <td class="td-primary">${r['Full Name']||r['First Name']||'—'}</td>
-      <td style="font-size:11px;color:var(--text-muted)">${(r['GPS Address']||r['Address']||'—').substring(0,50)}</td>
-      <td>${r['GPS Lat'] ? `<a href="https://www.google.com/maps?q=${r['GPS Lat']},${r['GPS Lng']}" target="_blank" style="color:var(--teal);font-size:11px">📍 Map</a>` : '—'}</td>
-    </tr>`).join('') : '<tr><td colspan="5" class="empty">No scans yet</td></tr>';
+      <td class="td-primary">${name}</td>
+      <td style="font-size:11px;color:var(--text-muted)">${addr.substring(0,50)}${acc?' <span style="color:#666">(±'+acc+'m)</span>':''}</td>
+      <td>${mapCell}</td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="5" class="empty">No scans yet</td></tr>';
 }
 
 function filterScans() {
@@ -1371,6 +1441,7 @@ function renderTasks() {
 
 function toggleTask(i) {
   tasks[i].done = !tasks[i].done;
+  saveTasks();
   renderTasks();
   const remaining = tasks.filter(t=>!t.done).length;
   if (remaining > 0) {
@@ -1381,8 +1452,43 @@ function toggleTask(i) {
 }
 
 // ── REVENUE ──
+function renderExpiring() {
+  const now = new Date();
+  const expiring = allSubs.filter(r => {
+    const exp = (r['Expiry Date'] || '').toString().trim();
+    const ep  = exp.match(/(\d{4})-(\d{2})-(\d{2})/);
+    if (!ep) return false;
+    const days = Math.ceil((new Date(+ep[1],+ep[2]-1,+ep[3]) - now) / (1000*60*60*24));
+    return days <= 30;
+  }).sort((a, b) => {
+    const da = (a['Expiry Date']||''), db = (b['Expiry Date']||'');
+    return da.localeCompare(db);
+  });
+
+  document.getElementById('expiring-badge').textContent = expiring.length;
+
+  document.getElementById('expiring-table').innerHTML = expiring.length ? expiring.map(r => {
+    const exp  = (r['Expiry Date']||'').toString().trim();
+    const ep   = exp.match(/(\d{4})-(\d{2})-(\d{2})/);
+    const days = ep ? Math.ceil((new Date(+ep[1],+ep[2]-1,+ep[3]) - now) / (1000*60*60*24)) : null;
+    const daysLabel = days === null ? '—'
+      : days <= 0  ? '<span style="color:#ef4444;font-weight:700">EXPIRED</span>'
+      : days <= 7  ? '<span style="color:#ef4444;font-weight:700">' + days + ' days</span>'
+      : days <= 14 ? '<span style="color:#F97316;font-weight:700">' + days + ' days</span>'
+      : '<span style="color:#eab308">' + days + ' days</span>';
+    return `<tr>
+      <td><span class="tag-id">${r['Tag ID']||'—'}</span></td>
+      <td class="td-primary">${r['First Name']||''} ${r['Last Name']||''}</td>
+      <td>${planPill(r['Plan']||'')}</td>
+      <td>${statusPill(r['Status']||'')}</td>
+      <td style="font-size:12px">${exp||'—'}</td>
+      <td>${daysLabel}</td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="6" class="empty" style="color:#22c55e">✓ No subscribers expiring within 30 days</td></tr>';
+}
+
 function renderRevenue() {
-  const planRates = { 'Solo Monthly': 89, 'Solo Annual': 857/12, 'Family Monthly': 149, 'Family Annual': 1435/12, 'Care': 0, 'Beta': 0 };
+  const planRates = { 'Solo Monthly': 49, 'Solo Annual': 470/12, 'Family Monthly': 149, 'Family Annual': 1435/12, 'Care': 0, 'Beta': 0 };
   let mrr = 0;
   allSubs.forEach(r => {
     const p = r['Plan']||'';
