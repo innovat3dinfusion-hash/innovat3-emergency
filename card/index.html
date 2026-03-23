@@ -380,6 +380,34 @@ var subData = {};
     statusEl.style.border = 'none';
   }
 
+
+  // ── Expiry check ─────────────────────────────────────────────
+  var expiryRaw = (subData['Expiry Date'] || '').toString().trim();
+  if (expiryRaw) {
+    var expiryDate = null;
+    var ep = expiryRaw.match(/(\d{4})-(\d{2})-(\d{2})/);
+    if (ep) expiryDate = new Date(+ep[1], +ep[2]-1, +ep[3]);
+    if (expiryDate && !isNaN(expiryDate.getTime())) {
+      var nowMs    = new Date();
+      var daysLeft = Math.ceil((expiryDate - nowMs) / (1000*60*60*24));
+      if (daysLeft <= 0) {
+        document.getElementById('loadingScreen').style.display = 'none';
+        document.getElementById('cardWrap').style.display = 'none';
+        document.getElementById('errorScreen').style.display = 'flex';
+        document.getElementById('errorMsg').innerHTML =
+          '<div style="text-align:center">'+
+          '<div style="font-size:48px;margin-bottom:16px">\u26a0\ufe0f</div>'+
+          '<div style="font-family:Orbitron,sans-serif;font-size:18px;color:#F97316;margin-bottom:12px">SUBSCRIPTION EXPIRED</div>'+
+          '<p style="color:#aaa;margin-bottom:20px">This innovat3 tag has expired. Please renew to restore emergency protection.</p>'+
+          '<a href="https://innovat3.co.za" style="background:#F97316;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700">RENEW NOW</a>'+
+          '</div>';
+        return;
+      } else if (daysLeft <= 3) {
+        setAlert('orange', '\u26a0\ufe0f Subscription expires in ' + daysLeft + ' day' + (daysLeft===1?'':'s') + '. Please renew to keep this tag active.');
+      }
+    }
+  }
+
   // Tag ID
   var tagIdEl = document.getElementById('scTagId');
   if (tagIdEl) tagIdEl.textContent = tagId;
