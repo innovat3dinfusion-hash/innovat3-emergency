@@ -2,6 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://docs.google.com https://script.google.com;">
+<meta http-equiv="X-Frame-Options" content="DENY">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="Referrer-Policy" content="no-referrer">
+<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>innovat3 — Admin Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet"/>
@@ -844,7 +849,7 @@
           </div>
           <div class="card-body">
             <div style="display:flex;flex-direction:column;gap:10px">
-              <button class="action-btn btn-outline" onclick="window.open('https://script.google.com/macros/s/AKfycbzY7UUmX_dgGJSx11NkotiXyG0CxTyf5WH3vQ-sov-dnmIB5D5-36Ynu-CKhkunAf3G-OuPGWyhABKlaBU7_AEK5AQruZogbJ-RhCQwzFIIUbBxY9iKUSyAP7GSARtGe4fR/exec','_blank')">⚙ Open GAS Console</button>
+              <button class="action-btn btn-outline" onclick="window.open('https://script.google.com/macros/s/AKfycbyCVOtoyanEfMqeLM0e8QSnulpcyRKqJLEYSNp50k-7CcGstV2p95UBCaPvtl6bgHUo-sov-dnmIB5D5-36Ynu-CKhkunAf3G-OuPGWyhABKlaBU7_AEK5AQruZogbJ-RhCQwzFIIUbBxY9iKUSyAP7GSARtGe4fR/exec','_blank')">⚙ Open GAS Console</button>
               <button class="action-btn btn-outline" onclick="window.open('https://docs.google.com/spreadsheets/d/1_ZvLT_SnRkIgP7xiYBdDJ5DRtn9lwPnc6V3dmb-bSVI','_blank')">📊 Open Google Sheet</button>
               <button class="action-btn btn-outline" onclick="window.open('https://innovat3dinfusion-hash.github.io/innovat3-emergency/register/','_blank')">📝 Registration Form</button>
               <button class="action-btn btn-orange" onclick="showSection('tasks')">✓ View All Tasks</button>
@@ -964,7 +969,7 @@
             <div style="display:flex;flex-direction:column;gap:14px">
               <div>
                 <div class="rev-label">Bot Token</div>
-                <div style="font-family:var(--font-head);font-size:11px;color:var(--teal);word-break:break-all">8785184944:AAEEPwzW…</div>
+                <div style="font-family:var(--font-head);font-size:11px;color:var(--teal);word-break:break-all">8785184944:••••••••••• (secured)</div>
               </div>
               <div>
                 <div class="rev-label">Owner Chat ID</div>
@@ -972,7 +977,7 @@
               </div>
               <div>
                 <div class="rev-label">Webhook URL</div>
-                <div style="font-size:11px;color:var(--text-dim);word-break:break-all">…AKfycbzY7UUmX_dgGJSx11NkotiXyG0CxTyf5WH3vQ-sov-dnmIB5D5-36Ynu-CKhkunAf3G…/exec</div>
+                <div style="font-size:11px;color:var(--text-dim);word-break:break-all">…AKfycbyCVOtoyanEfMqeLM0e8QSnulpcyRKqJLEYSNp50k-7CcGstV2p95UBCaPvtl6bgHUo-sov-dnmIB5D5-36Ynu-CKhkunAf3G…/exec</div>
               </div>
               <button class="action-btn btn-teal" onclick="window.open('https://t.me/innovat3bot','_blank')">Open Telegram Bot</button>
             </div>
@@ -1068,7 +1073,7 @@
 <script>
 // ── CONFIG ──
 const SHEET_ID = '1_ZvLT_SnRkIgP7xiYBdDJ5DRtn9lwPnc6V3dmb-bSVI';
-const GAS_URL  = 'https://script.google.com/macros/s/AKfycbzY7UUmX_dgGJSx11NkotiXyG0CxTyf5WH3vQ-sov-dnmIB5D5-36Ynu-CKhkunAf3G-OuPGWyhABKlaBU7_AEK5AQruZogbJ-RhCQwzFIIUbBxY9iKUSyAP7GSARtGe4fR/exec';
+const GAS_URL  = 'https://script.google.com/macros/s/AKfycbyCVOtoyanEfMqeLM0e8QSnulpcyRKqJLEYSNp50k-7CcGstV2p95UBCaPvtl6bgHUo-sov-dnmIB5D5-36Ynu-CKhkunAf3G-OuPGWyhABKlaBU7_AEK5AQruZogbJ-RhCQwzFIIUbBxY9iKUSyAP7GSARtGe4fR/exec';
 
 // ── STATE ──
 let allSubs = [], allScans = [], allTelegram = [], allFamilies = [];
@@ -1578,14 +1583,18 @@ function showSection(id) {
 }
 
 // ── AUTH ──
-const ADMIN_PW = 'IN3@Lj2026!';
+const ADMIN_PW_HASH = '52f4377d872e0096b33aa94877f5435ccf6f1da88f03f91bc460473a41b672b0'; // SHA-256 hashed
 const SESSION_KEY = 'in3_admin_auth';
 
-function doLogin() {
+async function doLogin() {
   const entered = document.getElementById('login-pw').value;
   const errEl = document.getElementById('login-error');
-  if (entered === ADMIN_PW) {
+  // Hash the entered password and compare
+  const enteredHash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(entered))
+    .then(buf => Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join(''));
+  if (enteredHash === ADMIN_PW_HASH) {
     sessionStorage.setItem(SESSION_KEY, '1');
+    sessionStorage.setItem(SESSION_KEY + '_time', Date.now().toString());
     document.getElementById('login-screen').classList.add('hidden');
     loadAll();
   } else {
@@ -1596,8 +1605,16 @@ function doLogin() {
   }
 }
 
+function doLogout() {
+  sessionStorage.removeItem(SESSION_KEY);
+  sessionStorage.removeItem(SESSION_KEY + '_time');
+  location.reload();
+}
+
 function checkAuth() {
-  if (sessionStorage.getItem(SESSION_KEY) === '1') {
+  const authTime = parseInt(sessionStorage.getItem(SESSION_KEY + '_time') || '0');
+  const fourHours = 4 * 60 * 60 * 1000;
+  if (sessionStorage.getItem(SESSION_KEY) === '1' && (Date.now() - authTime) < fourHours) {
     document.getElementById('login-screen').classList.add('hidden');
     loadAll();
   }
