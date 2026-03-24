@@ -580,7 +580,7 @@ var subData = {};
     el.target='_blank';
   });
 
-  // Log to GAS via GET — doGet is proven to work from browser (no CORS issues)
+  // Log to GAS via hidden iframe — not blocked by tracker prevention
   try{
     var scanParams = '?action=scan' +
       '&tagId='     + encodeURIComponent(tagId) +
@@ -609,8 +609,70 @@ var subData = {};
       '&c3phone='   + encodeURIComponent(subData['Contact 3 Phone']||'') +
       '&c3wa='      + encodeURIComponent(subData['Contact 3 WA']||'') +
       '&c3tg='      + encodeURIComponent(subData['Contact 3 Telegram']||'');
-    new Image().src = GAS_URL + scanParams;
+    var ifr = document.createElement('iframe');
+    ifr.style.cssText = 'position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;';
+    ifr.src = GAS_URL + scanParams;
+    document.body.appendChild(ifr);
+    setTimeout(function(){ try{document.body.removeChild(ifr);}catch(e){} }, 10000);
   }catch(e){}
+
+  // Send Telegram alert directly — api.telegram.org supports CORS from browsers
+  try {
+    var BOT = '8785184944:AAGQqyqxy9inPBSGmJsiYtEK-vvMfhT1ars';
+    var OWNER = '8737168646';
+    var tgMsg = '\uD83D\uDEA8 *TAG SCANNED — ' + tagId + '*\n\n' +
+      '\uD83D\uDC64 *' + (fullName||name) + '*\n' +
+      '\uD83E\uDE78 Blood: ' + (subData['Blood Type']||'—') + '\n' +
+      '\u26A0\uFE0F ' + (subData['Medical Alerts']||'—') + '\n' +
+      '\uD83C\uDFE5 ' + (subData['Medical Aid']||'No medical aid') + '\n\n' +
+      (mapsUrl ? '\uD83D\uDCCD *Location:* ' + (gpsAddress||'') + '\n\uD83D\uDDFA\uFE0F ' + mapsUrl + '\n' : '\uD83D\uDCCD Location not available\n') +
+      '\uD83C\uDD98 Please respond immediately.';
+    var tgBase = 'https://api.telegram.org/bot' + BOT + '/sendMessage';
+    // Alert owner
+    fetch(tgBase, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({chat_id: OWNER, text: tgMsg, parse_mode:'Markdown'})
+    }).catch(function(){});
+    // Alert contacts with Telegram usernames
+    var tgLookup = function(username) {
+      var tgSheet = subData['_tgSheet'] || null;
+      return null; // contacts alerted via GAS
+    };
+    // For each contact with a Telegram field — look up in Telegram Chat IDs sheet via gviz
+    var tgContacts = [
+      subData['Contact 1 Telegram'],
+      subData['Contact 2 Telegram'],
+      subData['Contact 3 Telegram']
+    ];
+    var invalidTg = ['yes','no','true','false','1','0','','none','n/a','-'];
+    // Load Telegram Chat IDs sheet to resolve usernames to chat IDs
+    var tgSheetUrl = 'https://docs.google.com/spreadsheets/d/1_ZvLT_SnRkIgP7xiYBdDJ5DRtn9lwPnc6V3dmb-bSVI/gviz/tq?tqx=out:json&sheet=Telegram%20Chat%20IDs';
+    fetch(tgSheetUrl).then(function(r){return r.text();}).then(function(txt){
+      try {
+        var si=txt.indexOf('('), ei=txt.lastIndexOf(')');
+        var tgData = JSON.parse(txt.substring(si+1,ei));
+        if (!tgData.table) return;
+        var tgRows = tgData.table.rows || [];
+        tgContacts.forEach(function(uname){
+          if (!uname) return;
+          var clean = uname.replace('@','').toLowerCase().trim();
+          if (invalidTg.indexOf(clean) !== -1 || clean.length < 4) return;
+          for (var r=0;r<tgRows.length;r++){
+            var cells = tgRows[r].c;
+            if (!cells || !cells[0]) continue;
+            var rowUser = String(cells[0].v||'').replace('@','').toLowerCase().trim();
+            if (rowUser === clean && cells[1] && cells[1].v) {
+              fetch(tgBase, {
+                method:'POST', headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({chat_id: String(cells[1].v), text: tgMsg, parse_mode:'Markdown'})
+              }).catch(function(){});
+              break;
+            }
+          }
+        });
+      } catch(e){}
+    }).catch(function(){});
+  } catch(e) {}
 
   setAlert('green', name + ' — family alerted ✓');
 })();
