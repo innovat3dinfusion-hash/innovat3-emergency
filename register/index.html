@@ -2,6 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://script.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://script.google.com https://nominatim.openstreetmap.org https://api.imgbb.com https://i.ibb.co;">
+  <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Innovat3 — Beta Registration</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -486,10 +490,9 @@ button, a, input, select, textarea { touch-action:manipulation; }
 <body>
 
 <script>
-var TELEGRAM_TOKEN   = '8785184944:AAEEPwzWgfVRaGqEfrCpr4Mf9Yy7qp2Lx2k';
-var TELEGRAM_CHAT_ID = '8737168646';
-var GAS_URL          = 'https://script.google.com/macros/s/AKfycbzEReQt0E9yCDUFtHozyRsYvJkl9VcqATeyXZU7zWP286vwJUXoixRVRndCrVasHphA/exec';
-var IMGBB_KEY        = 'c95f5daba8da7ba6d1f63cbeb6326a88';
+// Telegram notifications handled server-side by GAS — no token in frontend
+var GAS_URL          = 'https://script.google.com/macros/s/AKfycbyCVOtoyanEfMqeLM0e8QSnulpcyRKqJLEYSNp50k-7CcGstV2p95UBCaPvtl6bgHUo/exec';
+var IMGBB_KEY        = 'SECURED';
 var WA_IMG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyNUQzNjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMjQgMTAuNUMxNi41IDEwLjUgMTAuNSAxNi41IDEwLjUgMjRjMCAyLjQuNjUgNC43IDEuOCA2LjdMMTAuNSAzNy41bDYuOTUtMS44YzEuOTUgMS4wNSA0LjE1IDEuNjUgNi41NSAxLjY1IDcuNSAwIDEzLjUtNiAxMy41LTEzLjVTMzEuNSAxMC41IDI0IDEwLjV6Ii8+PC9zdmc+';
 var TG_IMG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyOUI2RjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMTAuNSAyMy41bDI3LTEwLjUtNCAyMi04LTctNCA0LTEtOCAxNC0xMi0xNiA5LjV6Ii8+PC9zdmc+';
 var currentStep      = 1;
@@ -2118,12 +2121,7 @@ async function submitForm() {
     "\u26a0\ufe0f Medical: " + data.medical + "\n" +
     "\ud83d\udcc5 Timestamp: " + timestamp + careNote;
 
-  try {
-    await fetch('https://api.telegram.org/bot' + TELEGRAM_TOKEN + '/sendMessage', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({chat_id: TELEGRAM_CHAT_ID, text: msg, parse_mode:'Markdown'})
-    });
-  } catch(e) {}
+  // Owner notification handled by GAS after registration
 
   // Send main member to Google Sheets via GAS
   try {
@@ -2255,7 +2253,7 @@ async function submitForm() {
       <input type="hidden" name="merchant_key"     id="pf_merchant_key"     value="frbiyqgqpun0a">
       <input type="hidden" name="return_url"       id="pf_return_url"       value="https://innovat3.co.za/success.html">
       <input type="hidden" name="cancel_url"       id="pf_cancel_url"       value="https://innovat3.co.za/register/">
-      <input type="hidden" name="notify_url"       id="pf_notify_url"       value="https://script.google.com/macros/s/AKfycbzEReQt0E9yCDUFtHozyRsYvJkl9VcqATeyXZU7zWP286vwJUXoixRVRndCrVasHphA/exec">
+      <input type="hidden" name="notify_url"       id="pf_notify_url"       value="https://script.google.com/macros/s/AKfycbyCVOtoyanEfMqeLM0e8QSnulpcyRKqJLEYSNp50k-7CcGstV2p95UBCaPvtl6bgHUo/exec">
       <input type="hidden" name="m_payment_id"     id="pf_m_payment_id">
       <input type="hidden" name="amount"           id="pf_amount">
       <input type="hidden" name="item_name"        id="pf_item_name">
