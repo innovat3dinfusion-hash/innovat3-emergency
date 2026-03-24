@@ -297,37 +297,44 @@ var subData = {};
   try {
     dbg('Loading emergency card...');
 
-    // ── Secure GAS API via POST — same method used by scan logging ──
-    // Uses no-cors so response is opaque — we use a separate readable fetch
-    // GAS doPost returns JSON; we POST with mode cors via a proxy-free approach
-    var gasResp = await fetch(GAS_URL, {
-      method: 'POST',
-      mode: 'cors',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ action: 'getProfile', tagId: tagId })
-    });
+    // ── Load profile from Google Sheet via gviz ─────────────────────
+    var SHEET_ID = '1_ZvLT_SnRkIgP7xiYBdDJ5DRtn9lwPnc6V3dmb-bSVI';
+    var sheetUrl = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID +
+                   '/gviz/tq?tqx=out:json&sheet=Registrations';
+    var resp = await fetch(sheetUrl);
+    if (!resp.ok) { showErr('Connection failed (HTTP ' + resp.status + '). Check internet.'); return; }
+    var text = await resp.text();
+    var si = text.indexOf('('), ei = text.lastIndexOf(')');
+    if (si === -1 || ei === -1) { showErr('Invalid response. Please try again.'); return; }
+    var parsed;
+    try { parsed = JSON.parse(text.substring(si+1, ei)); }
+    catch(pe) { showErr('Data parse error. Please try again.'); return; }
+    if (!parsed.table) { showErr('Sheet not accessible. Please try again.'); return; }
+    if ((parsed.table.rows||[]).length === 0) { showErr('No records found.'); return; }
 
-    if (!gasResp.ok) { showErr('Server error (' + gasResp.status + '). Please try again.'); return; }
+    var cols   = parsed.table.cols.map(function(c){ return c.label; });
+    var tagCol = cols.indexOf('Tag ID');
+    if (tagCol === -1) { showErr('Tag ID column not found.'); return; }
 
-    var json;
-    try { json = await gasResp.json(); }
-    catch(pe) { showErr('Invalid response from server. Please try again.'); return; }
-
-    if (!json || json.status !== 'ok' || !json.profile) {
-      showErr((json && json.message) || 'Tag ' + tagId + ' not found. Please check the tag or contact innovat3.co.za');
-      return;
+    var found = false;
+    for (var i = 0; i < parsed.table.rows.length; i++) {
+      var cells = parsed.table.rows[i].c;
+      var cellVal = cells[tagCol] ? String(cells[tagCol].v || '').trim() : '';
+      if (cellVal === tagId) {
+        found = true;
+        cells.forEach(function(cell, idx) {
+          if (!cell) { subData[cols[idx]] = ''; return; }
+          if (cell.f !== undefined && cell.f !== null && cell.f !== '') {
+            subData[cols[idx]] = String(cell.f);
+          } else {
+            subData[cols[idx]] = (cell.v !== null && cell.v !== undefined) ? String(cell.v) : '';
+          }
+        });
+        break;
+      }
     }
 
-    // Map profile fields into subData
-    var profile = json.profile;
-    Object.keys(profile).forEach(function(key) {
-      subData[key] = profile[key] !== null && profile[key] !== undefined ? String(profile[key]) : '';
-    });
-
-    // Photo URL returned separately (safe public imgbb URL)
-    if (json.photoUrl) subData['Photo URL'] = json.photoUrl;
-
-    if (!subData['First Name'] && !subData['Last Name']) {
+    if (!found || (!subData['First Name'] && !subData['Last Name'])) {
       showErr('Tag ' + tagId + ' not found. Please check the tag or contact innovat3.co.za');
       return;
     }
