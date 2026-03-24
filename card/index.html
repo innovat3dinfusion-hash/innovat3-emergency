@@ -492,8 +492,8 @@ var subData = {};
   // GPS
   var lat=null, lng=null, gpsAddress='Location not shared', mapsUrl='';
   var timestamp = new Date().toLocaleString('en-ZA',{timeZone:'Africa/Johannesburg'});
-  var MAX_ACC=100, MAX_ATT=5, TOUT=8000;
-  var GPS_WARN_THRESHOLD=50;  // skip alerts if accuracy worse than 50m
+  var MAX_ACC=200, MAX_ATT=5, TOUT=8000;
+  var GPS_WARN_THRESHOLD=200; // skip alerts if accuracy worse than 200m (rejects IP fallback)
   var finalAccuracy=null, gpsLowAccuracy=false;
 
   async function getAccuratePosition(){
