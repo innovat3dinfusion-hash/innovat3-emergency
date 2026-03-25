@@ -492,7 +492,7 @@ button, a, input, select, textarea { touch-action:manipulation; }
 <script>
 // Telegram notifications handled server-side by GAS — no token in frontend
 var GAS_URL = 'https://api.innovat3.co.za';
-var IMGBB_KEY        = '184152bba5665cc2e0c9032e5d84d133';
+var IMGBB_KEY        = 'a46ec81521abc525c8cb3e0ad7dcc4b0';
 var WA_IMG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyNUQzNjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMjQgMTAuNUMxNi41IDEwLjUgMTAuNSAxNi41IDEwLjUgMjRjMCAyLjQuNjUgNC43IDEuOCA2LjdMMTAuNSAzNy41bDYuOTUtMS44YzEuOTUgMS4wNSA0LjE1IDEuNjUgNi41NSAxLjY1IDcuNSAwIDEzLjUtNiAxMy41LTEzLjVTMzEuNSAxMC41IDI0IDEwLjV6Ii8+PC9zdmc+';
 var TG_IMG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyOUI2RjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMTAuNSAyMy41bDI3LTEwLjUtNCAyMi04LTctNCA0LTEtOCAxNC0xMi0xNiA5LjV6Ii8+PC9zdmc+';
 var currentStep      = 1;
@@ -701,6 +701,7 @@ var photoUploadedUrl = '';
           </div>
         </div>
         <input type="file" id="photoInput" accept="image/*" style="display:none" onchange="handlePhoto(this)">
+        <div id="photoUploadStatus" style="display:none;font-size:12px;margin-top:8px;padding:8px;border-radius:8px;text-align:center"></div>
       </div>
     </div>
 
@@ -1893,12 +1894,20 @@ function closeCrop() {
 async function uploadPhotoToImgbb(dataUrl) {
   try {
     var base64 = dataUrl.split(',')[1];
+    if (!base64) { console.error('[IN3] Photo: no base64 data'); return ''; }
     var fd = new FormData();
     fd.append('image', base64);
     var resp = await fetch('https://api.imgbb.com/1/upload?key=' + IMGBB_KEY, { method:'POST', body:fd });
     var json = await resp.json();
+    console.log('[IN3] imgbb response:', JSON.stringify(json));
     if (json.success) return json.data.url;
-  } catch(e) {}
+    // Show error so user knows photo failed
+    var msg = (json.error && json.error.message) ? json.error.message : 'Upload failed (status ' + resp.status + ')';
+    console.error('[IN3] imgbb error:', msg);
+    // Don't block registration — just warn
+    var photoStatus = document.getElementById('photoUploadStatus');
+    if (photoStatus) { photoStatus.textContent = '⚠️ Photo upload failed: ' + msg + '. Registration will proceed without photo.'; photoStatus.style.color='#EAB308'; photoStatus.style.display='block'; }
+  } catch(e) { console.error('[IN3] imgbb exception:', e.message); }
   return '';
 }
 
