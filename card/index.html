@@ -681,13 +681,14 @@ function showError(msg){
       '&c3phone='   + encodeURIComponent(subData['Contact 3 Phone']||'') +
       '&c3wa='      + encodeURIComponent(subData['Contact 3 WA']||'') +
       '&c3tg='      + encodeURIComponent(subData['Contact 3 Telegram']||'');
-    var fullUrl = GAS_URL + scanParams;
-    // sendBeacon: browser-native, fires reliably, never blocked as tracker
-    if (navigator.sendBeacon) {
-      navigator.sendBeacon(fullUrl);
-    } else {
-      // Fallback for older browsers
-      fetch(fullUrl, {mode:'no-cors', method:'GET'}).catch(function(){});
-    }
+    // Send via Cloudflare Worker — same domain family, never blocked
+    var workerUrl = 'https://api.innovat3.co.za/scan' + scanParams;
+    fetch(workerUrl, {
+      method: 'GET',
+      mode:   'cors'
+    }).catch(function() {
+      // Fallback: sendBeacon if fetch fails
+      navigator.sendBeacon && navigator.sendBeacon(workerUrl);
+    });
   }catch(e){}html>
 </html>
