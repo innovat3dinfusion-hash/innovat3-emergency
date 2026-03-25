@@ -293,52 +293,33 @@ var subData = {};
 
   dbg('Loading emergency card...');
 
-  // ── Load profile from Google Sheet (direct, reliable) ────────
+  // ── Load profile from GAS backend ───────────────────────────
   try {
     dbg('Loading emergency card...');
 
-    // ── Load profile from Google Sheet via gviz ─────────────────────
-    var SHEET_ID = '1_ZvLT_SnRkIgP7xiYBdDJ5DRtn9lwPnc6V3dmb-bSVI';
-    var sheetUrl = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID +
-                   '/gviz/tq?tqx=out:json&sheet=Registrations';
-    var resp = await fetch(sheetUrl);
+    var GAS_PROFILE_URL = 'https://api.innovat3.co.za/gas?action=getProfile&tagId=' + encodeURIComponent(tagId);
+    var resp = await fetch(GAS_PROFILE_URL);
     if (!resp.ok) { showErr('Connection failed (HTTP ' + resp.status + '). Check internet.'); return; }
-    var text = await resp.text();
-    var si = text.indexOf('('), ei = text.lastIndexOf(')');
-    if (si === -1 || ei === -1) { showErr('Invalid response. Please try again.'); return; }
-    var parsed;
-    try { parsed = JSON.parse(text.substring(si+1, ei)); }
+    var json;
+    try { json = await resp.json(); }
     catch(pe) { showErr('Data parse error. Please try again.'); return; }
-    if (!parsed.table) { showErr('Sheet not accessible. Please try again.'); return; }
-    if ((parsed.table.rows||[]).length === 0) { showErr('No records found.'); return; }
 
-    var cols   = parsed.table.cols.map(function(c){ return c.label; });
-    var tagCol = cols.indexOf('Tag ID');
-    if (tagCol === -1) { showErr('Tag ID column not found.'); return; }
-
-    var found = false;
-    for (var i = 0; i < parsed.table.rows.length; i++) {
-      var cells = parsed.table.rows[i].c;
-      var cellVal = cells[tagCol] ? String(cells[tagCol].v || '').trim() : '';
-      if (cellVal === tagId) {
-        found = true;
-        cells.forEach(function(cell, idx) {
-          if (!cell) { subData[cols[idx]] = ''; return; }
-          if (cell.f !== undefined && cell.f !== null && cell.f !== '') {
-            subData[cols[idx]] = String(cell.f);
-          } else {
-            subData[cols[idx]] = (cell.v !== null && cell.v !== undefined) ? String(cell.v) : '';
-          }
-        });
-        break;
-      }
+    if (json.status === 'error') {
+      showErr(json.message === 'Tag not found'
+        ? 'Tag ' + tagId + ' not found. Please check the tag or contact innovat3.co.za'
+        : json.message || 'Profile not found.');
+      return;
     }
 
-    if (!found || (!subData['First Name'] && !subData['Last Name'])) {
+    // Merge profile + photoUrl into subData
+    var profile = json.profile || {};
+    Object.keys(profile).forEach(function(k){ subData[k] = String(profile[k] == null ? '' : profile[k]); });
+    if (json.photoUrl) subData['Photo URL'] = json.photoUrl;
+
+    if (!subData['First Name'] && !subData['Last Name']) {
       showErr('Tag ' + tagId + ' not found. Please check the tag or contact innovat3.co.za');
       return;
     }
-    // ─────────────────────────────────────────────────────────────
 
   } catch(err) {
     showErr('Could not load profile: ' + (err.message || err) + '. Please check your internet connection.');
@@ -651,44 +632,4 @@ function showError(msg){
 }
 </script>
 </body>
-</html// Log to GAS via sendBeacon — designed for exactly this use case,
-  // never blocked by tracker prevention, fires reliably
-  try{
-    var scanParams = '?action=scan' +
-      '&tagId='     + encodeURIComponent(tagId) +
-      '&name='      + encodeURIComponent(fullName||name||'') +
-      '&lat='       + encodeURIComponent(lat||'') +
-      '&lng='       + encodeURIComponent(lng||'') +
-      '&gpsAddress='+ encodeURIComponent(gpsAddress||'') +
-      '&accuracy='  + encodeURIComponent(finalAccuracy||'') +
-      '&lowAccuracy=false' +
-      '&blood='     + encodeURIComponent(subData['Blood Type']||'') +
-      '&medicalAid='+ encodeURIComponent(subData['Medical Aid']||'') +
-      '&medAidNo='  + encodeURIComponent(subData['Medical Aid Number']||'') +
-      '&medical='   + encodeURIComponent(subData['Medical Alerts']||'') +
-      '&c1name='    + encodeURIComponent(subData['Contact 1 Name']||'') +
-      '&c1rel='     + encodeURIComponent(subData['Contact 1 Relation']||'') +
-      '&c1phone='   + encodeURIComponent(subData['Contact 1 Phone']||'') +
-      '&c1wa='      + encodeURIComponent(subData['Contact 1 WA']||'') +
-      '&c1tg='      + encodeURIComponent(subData['Contact 1 Telegram']||'') +
-      '&c2name='    + encodeURIComponent(subData['Contact 2 Name']||'') +
-      '&c2rel='     + encodeURIComponent(subData['Contact 2 Relation']||'') +
-      '&c2phone='   + encodeURIComponent(subData['Contact 2 Phone']||'') +
-      '&c2wa='      + encodeURIComponent(subData['Contact 2 WA']||'') +
-      '&c2tg='      + encodeURIComponent(subData['Contact 2 Telegram']||'') +
-      '&c3name='    + encodeURIComponent(subData['Contact 3 Name']||'') +
-      '&c3rel='     + encodeURIComponent(subData['Contact 3 Relation']||'') +
-      '&c3phone='   + encodeURIComponent(subData['Contact 3 Phone']||'') +
-      '&c3wa='      + encodeURIComponent(subData['Contact 3 WA']||'') +
-      '&c3tg='      + encodeURIComponent(subData['Contact 3 Telegram']||'');
-    // Send via Cloudflare Worker — same domain family, never blocked
-    var workerUrl = 'https://api.innovat3.co.za/scan' + scanParams;
-    fetch(workerUrl, {
-      method: 'GET',
-      mode:   'cors'
-    }).catch(function() {
-      // Fallback: sendBeacon if fetch fails
-      navigator.sendBeacon && navigator.sendBeacon(workerUrl);
-    });
-  }catch(e){}html>
 </html>
