@@ -2014,36 +2014,25 @@ async function submitForm() {
     photoUploadedUrl = await uploadPhotoToImgbb(photoDataUrl);
   }
 
-  // Check for duplicate email in Sheets before submitting
+  // Check for duplicate email via GAS before submitting
   btn.textContent = 'Checking...';
   try {
-    // Sheet URL removed for security
-    var resp = await fetch(sheetUrl);
-    if (resp.ok) {
-      var text = await resp.text();
-      var si = text.indexOf('('), ei = text.lastIndexOf(')');
-      if (si !== -1 && ei !== -1) {
-        var json = JSON.parse(text.substring(si+1, ei));
-        if (json.table && json.table.cols) {
-          var cols = json.table.cols.map(function(c){ return c.label; });
-          var emailColIdx = cols.indexOf('Email');
-          var emailVal = v('email').toLowerCase();
-          if (emailColIdx !== -1) {
-            for (var ri=0; ri < json.table.rows.length; ri++) {
-              var cell = json.table.rows[ri].c[emailColIdx];
-              if (cell && String(cell.v||'').toLowerCase().trim() === emailVal) {
-                btn.textContent = '✓  Submit Registration';
-                btn.disabled = false;
-                alert('This email address is already registered! If you need help with your existing registration, please contact us at hello@innovat3.co.za');
-                return;
-              }
-            }
-          }
-        }
+    var dupResp = await fetch('https://api.innovat3.co.za/register', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ action: 'checkEmail', email: v('email') })
+    });
+    if (dupResp.ok) {
+      var dupJson = await dupResp.json();
+      if (dupJson.status === 'duplicate') {
+        btn.textContent = '✓  Submit Registration';
+        btn.disabled = false;
+        alert('This email address is already registered! If you need help with your existing registration, please contact us at hello@innovat3.co.za');
+        return;
       }
     }
   } catch(dupErr) {
-    // If duplicate check fails (e.g. sheet not public yet), allow submission to proceed
+    // If duplicate check fails, allow submission to proceed
     console.log('Duplicate check skipped:', dupErr.message);
   }
 
