@@ -435,7 +435,7 @@ var subData = {};
   [1,2,3].forEach(function(n){
     var cname  = subData['Contact '+n+' Name'];
     var crel   = subData['Contact '+n+' Relation'];
-    var cphone = subData['Contact '+n+' Phone'];
+    var cphone = (subData['Contact '+n+' Phone']||'').toString();
     var cwa    = subData['Contact '+n+' WA'];
     var ctg    = subData['Contact '+n+' Telegram']||'';
     if (!cname) return;
