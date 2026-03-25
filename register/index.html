@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://script.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://script.google.com https://nominatim.openstreetmap.org https://api.imgbb.com https://i.ibb.co;">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://api.innovat3.co.za https://nominatim.openstreetmap.org https://api.imgbb.com https://i.ibb.co;">
   <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
@@ -491,7 +491,7 @@ button, a, input, select, textarea { touch-action:manipulation; }
 
 <script>
 // Telegram notifications handled server-side by GAS — no token in frontend
-var GAS_URL          = 'https://script.google.com/macros/s/AKfycbzutuLjcoNYjl6wW7z95oVAGvQvoqmao0z8jzonwXK-NEP-OdXNhFz2WZcS1ADwcL0Y-mRmmM7XDxj7zQrcqFMJZssPIo_OmZ5QCLJRWs_u4FL93rWmYUEaXQuHTfV3p-Zv-YUUmoWA5tZHjQFN-hvFsgj9s0eN6Cw0yYzkMtVNXqzJ9n-DP5K-upB1eN0-KbEiUJii-v2gmu-_PukP9TegzoIllSFPKPmN0Vc4tV0EpABmJnEIyNRJfdmYgDz8_u-S3-GW9zFS-7CcGstV2p95UBCaPvtl6bgHUo/exec';
+var GAS_URL = 'https://api.innovat3.co.za';
 var IMGBB_KEY        = '184152bba5665cc2e0c9032e5d84d133';
 var WA_IMG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyNUQzNjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMjQgMTAuNUMxNi41IDEwLjUgMTAuNSAxNi41IDEwLjUgMjRjMCAyLjQuNjUgNC43IDEuOCA2LjdMMTAuNSAzNy41bDYuOTUtMS44YzEuOTUgMS4wNSA0LjE1IDEuNjUgNi41NSAxLjY1IDcuNSAwIDEzLjUtNiAxMy41LTEzLjVTMzEuNSAxMC41IDI0IDEwLjV6Ii8+PC9zdmc+';
 var TG_IMG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyOUI2RjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMTAuNSAyMy41bDI3LTEwLjUtNCAyMi04LTctNCA0LTEtOCAxNC0xMi0xNiA5LjV6Ii8+PC9zdmc+';
@@ -2125,8 +2125,8 @@ async function submitForm() {
 
   // Send main member to Google Sheets via GAS
   try {
-    await fetch(GAS_URL, {
-      method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'},
+    await fetch('https://api.innovat3.co.za/register', {
+      method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify(data)
     });
   } catch(e) {}
@@ -2181,8 +2181,8 @@ async function submitForm() {
         } catch(e) {}
       }
       try {
-        await fetch(GAS_URL, {
-          method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'},
+        await fetch('https://api.innovat3.co.za/register', {
+          method:'POST', headers:{'Content-Type':'application/json'},
           body: JSON.stringify(memberReg)
         });
       } catch(e) {}
@@ -2352,8 +2352,9 @@ function proceedToPayment() {
     // Show submitting message
     var page = document.querySelector('.page');
     if (page) page.innerHTML = '<div style="text-align:center;padding:60px 20px"><div style="font-size:48px">⏳</div><h2 style="color:#F97316;font-family:Orbitron,sans-serif;margin:16px 0">Registering...</h2><p style="color:#888">Please wait while we set up your beta profile.</p></div>';
-    fetch(GAS_URL, {
-      method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'application/json'},
+    fetch('https://api.innovat3.co.za/register', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(betaData)
     }).catch(function(){}).finally(function() {
       window.location.href = 'https://innovat3.co.za/success.html';
@@ -2418,8 +2419,9 @@ function payWithPayFast() {
     var betaData = JSON.parse(JSON.stringify(d.registrationData));
     betaData.status = 'Beta';
     betaData.isBeta = 'true';
-    fetch(GAS_URL, {
-      method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'},
+    fetch('https://api.innovat3.co.za/register', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
       body: JSON.stringify(betaData)
     }).catch(function(){}).finally(function() {
       window.location.href = 'https://innovat3.co.za/success.html';
