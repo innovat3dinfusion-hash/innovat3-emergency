@@ -2251,7 +2251,7 @@ async function submitForm() {
       <input type="hidden" name="merchant_key"       id="pf_merchant_key"       value="frbiyqgqpun0a">
       <input type="hidden" name="return_url"         id="pf_return_url"         value="https://innovat3.co.za/success.html">
       <input type="hidden" name="cancel_url"         id="pf_cancel_url"         value="https://innovat3.co.za/register/">
-      <input type="hidden" name="notify_url"         id="pf_notify_url"         value="https://script.google.com/macros/s/AKfycbzUXiFOj1hsH8cMnkWrGaCAjn5moIc187mi3O1ss-yuOiL88L_7MvWBVmhE0BMSP_w8/exec">
+      <input type="hidden" name="notify_url"         id="pf_notify_url"         value="https://script.google.com/macros/s/AKfycbwGhm5mbnhuDw-xSLbpFMVuKVc5Pq-g7JwCwKFTmJ34-Nxulrjcr6PNhBe0EMQiSAZi/exec">
       <input type="hidden" name="m_payment_id"       id="pf_m_payment_id">
       <input type="hidden" name="amount"             id="pf_amount">
       <input type="hidden" name="item_name"          id="pf_item_name">
@@ -2289,7 +2289,7 @@ var PRICES = {
   'Beta':   { monthly:0,    annual:0,    label:'Beta (Free Trial)' }
 };
 
-function proceedToPayment() {
+async function proceedToPayment() {
   // For Care plan: must go through step 6 first
   if (planSelected === 'Care') {
     if (currentStep === 5) {
@@ -2306,6 +2306,14 @@ function proceedToPayment() {
   } else {
     // Non-Care: validate step 5
     if (!validateStep(5)) return;
+  }
+
+  // ── Upload photo BEFORE building registration data ──────────
+  if (photoDataUrl && !photoUploadedUrl) {
+    var submitBtn = document.querySelector('.btn-submit');
+    if (submitBtn) { submitBtn.textContent = '📷 Uploading photo...'; submitBtn.disabled = true; }
+    photoUploadedUrl = await uploadPhotoToImgbb(photoDataUrl);
+    if (submitBtn) { submitBtn.textContent = '💳 Proceed to Payment →'; submitBtn.disabled = false; }
   }
 
   // Hide the form sections
