@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://docs.google.com https://script.google.com;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://docs.google.com https://script.google.com https://accounts.google.com https://api.innovat3.co.za;">
 <meta http-equiv="X-Frame-Options" content="DENY">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="Referrer-Policy" content="no-referrer">
@@ -778,6 +778,11 @@
           <div class="metric-value" id="m-families">—</div>
           <div class="metric-sub">registered</div>
         </div>
+        <div class="metric-card teal">
+          <div class="metric-label">Waitlist</div>
+          <div class="metric-value" id="m-waitlist">—</div>
+          <div class="metric-sub">signed up</div>
+        </div>
       </div>
 
       <div class="three-col">
@@ -849,7 +854,7 @@
           </div>
           <div class="card-body">
             <div style="display:flex;flex-direction:column;gap:10px">
-              <button class="action-btn btn-outline" onclick="window.open('https://script.google.com/macros/s/AKfycbxjclapRIKMPYhQSUpBLuEOqdLctVYVImhXlnpI41lCJrmeTS41rWdXajekN-GW9zFS-7CcGstV2p95UBCaPvtl6bgHUo-sov-dnmIB5D5-36Ynu-CKhkunAf3G-OuPGWyhABKlaBU7_AEK5AQruZogbJ-RhCQwzFIIUbBxY9iKUSyAP7GSARtGe4fR/exec','_blank')">⚙ Open GAS Console</button>
+              <button class="action-btn btn-outline" onclick="window.open('https://script.google.com/macros/s/AKfycbwGhm5mbnhuDw-xSLbpFMVuKVc5Pq-g7JwCwKFTmJ34-Nxulrjcr6PNhBe0EMQiSAZi/exec','_blank')">⚙ Open GAS Console</button>
               <button class="action-btn btn-outline" onclick="window.open('https://docs.google.com/spreadsheets/d/1_ZvLT_SnRkIgP7xiYBdDJ5DRtn9lwPnc6V3dmb-bSVI','_blank')">📊 Open Google Sheet</button>
               <button class="action-btn btn-outline" onclick="window.open('https://innovat3dinfusion-hash.github.io/innovat3-emergency/register/','_blank')">📝 Registration Form</button>
               <button class="action-btn btn-orange" onclick="showSection('tasks')">✓ View All Tasks</button>
@@ -1073,10 +1078,10 @@
 <script>
 // ── CONFIG ──
 const SHEET_ID = '1_ZvLT_SnRkIgP7xiYBdDJ5DRtn9lwPnc6V3dmb-bSVI';
-const GAS_URL  = 'https://script.google.com/macros/s/AKfycbxjclapRIKMPYhQSUpBLuEOqdLctVYVImhXlnpI41lCJrmeTS41rWdXajekN-GW9zFS-7CcGstV2p95UBCaPvtl6bgHUo-sov-dnmIB5D5-36Ynu-CKhkunAf3G-OuPGWyhABKlaBU7_AEK5AQruZogbJ-RhCQwzFIIUbBxY9iKUSyAP7GSARtGe4fR/exec';
+const GAS_URL  = 'https://script.google.com/macros/s/AKfycbwGhm5mbnhuDw-xSLbpFMVuKVc5Pq-g7JwCwKFTmJ34-Nxulrjcr6PNhBe0EMQiSAZi/exec';
 
 // ── STATE ──
-let allSubs = [], allScans = [], allTelegram = [], allFamilies = [];
+let allSubs = [], allScans = [], allTelegram = [], allFamilies = [], allWaitlist = [];
 let subFilter = 'all';
 let currentSubPage = 0;
 let subSearchTerm = '';
@@ -1123,8 +1128,13 @@ function saveTasks() {
 // ── GVIZ QUERY ──
 async function gvizQuery(sheetName, query = 'select *') {
   const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}&tq=${encodeURIComponent(query)}`;
-  const res = await fetch(url);
+  let res;
+  try { res = await fetch(url); } catch(e) { throw new Error('Network error: ' + e.message); }
+  if (!res.ok) throw new Error('Sheet HTTP ' + res.status + ' — check sharing settings');
   const text = await res.text();
+  if (text.includes('google.com/accounts') || text.includes('ServiceLogin')) {
+    throw new Error('Sheet is private — go to Google Sheet > Share > change to "Anyone with link can view"');
+  }
   // Parse raw text before JSON.parse so Date(...) strings stay as strings
   const raw = text.replace(/^[^(]+\(/, '').replace(/\);?\s*$/, '');
   const json = JSON.parse(raw);
@@ -1159,17 +1169,34 @@ async function gvizQuery(sheetName, query = 'select *') {
 async function loadAll() {
   document.getElementById('last-updated').textContent = 'Refreshing…';
   try {
-    [allSubs, allScans, allTelegram, allFamilies] = await Promise.all([
+    const results = await Promise.allSettled([
       gvizQuery('Registrations'),
       gvizQuery('Scan Logs'),
       gvizQuery('Telegram Chat IDs'),
       gvizQuery('Family Bundles'),
+      gvizQuery('Waitlist'),
     ]);
+    allSubs      = results[0].status === 'fulfilled' ? results[0].value : [];
+    allScans     = results[1].status === 'fulfilled' ? results[1].value : [];
+    allTelegram  = results[2].status === 'fulfilled' ? results[2].value : [];
+    allFamilies  = results[3].status === 'fulfilled' ? results[3].value : [];
+    allWaitlist  = results[4].status === 'fulfilled' ? results[4].value : [];
+
+    // Check if sheet is accessible
+    const failed = results.filter(r => r.status === 'rejected');
+    if (failed.length === results.length) {
+      // All failed — sheet not public
+      document.getElementById('last-updated').textContent = 'Error: Check Sheet sharing settings (must be Anyone with link can view)';
+      console.error('All gviz queries failed:', failed[0].reason);
+      return;
+    }
+
     renderAll();
-    document.getElementById('last-updated').textContent = 'Updated ' + new Date().toLocaleTimeString('en-ZA');
+    const t = new Date().toLocaleTimeString('en-ZA');
+    document.getElementById('last-updated').textContent = 'Updated ' + t + (failed.length ? ' (some sheets missing)' : '');
   } catch (e) {
-    console.error(e);
-    document.getElementById('last-updated').textContent = 'Error loading data';
+    console.error('loadAll error:', e);
+    document.getElementById('last-updated').textContent = 'Error: ' + e.message;
   }
 }
 
@@ -1219,6 +1246,7 @@ function renderMetrics() {
   document.getElementById('m-active').textContent = active;
   document.getElementById('m-scans').textContent = scans;
   document.getElementById('m-families').textContent = fams;
+  document.getElementById('m-waitlist').textContent = allWaitlist.length;
   document.getElementById('m-beta-badge').textContent = beta + ' beta';
   document.getElementById('m-pending-sub').textContent = pend + ' pending';
 
