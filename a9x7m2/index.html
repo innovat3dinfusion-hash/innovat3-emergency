@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://docs.google.com https://script.google.com https://accounts.google.com https://api.innovat3.co.za;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://script.google.com https://api.innovat3.co.za;">
 <meta http-equiv="X-Frame-Options" content="DENY">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="Referrer-Policy" content="no-referrer">
@@ -778,11 +778,6 @@
           <div class="metric-value" id="m-families">—</div>
           <div class="metric-sub">registered</div>
         </div>
-        <div class="metric-card teal">
-          <div class="metric-label">Waitlist</div>
-          <div class="metric-value" id="m-waitlist">—</div>
-          <div class="metric-sub">signed up</div>
-        </div>
       </div>
 
       <div class="three-col">
@@ -1078,10 +1073,10 @@
 <script>
 // ── CONFIG ──
 const SHEET_ID = '1_ZvLT_SnRkIgP7xiYBdDJ5DRtn9lwPnc6V3dmb-bSVI';
-const GAS_URL  = 'https://script.google.com/macros/s/AKfycbwGhm5mbnhuDw-xSLbpFMVuKVc5Pq-g7JwCwKFTmJ34-Nxulrjcr6PNhBe0EMQiSAZi/exec';
+const GAS_URL  = 'https://script.google.com/macros/s/AKfycbxmnSw493AHOdXHruQJODMzKbUSg--9XwF1L8rFdWedeGDP9qBAjuKHCD92tOGNpSVE/exec';
 
 // ── STATE ──
-let allSubs = [], allScans = [], allTelegram = [], allFamilies = [], allWaitlist = [];
+let allSubs = [], allScans = [], allTelegram = [], allFamilies = [];
 let subFilter = 'all';
 let currentSubPage = 0;
 let subSearchTerm = '';
@@ -1125,44 +1120,15 @@ function saveTasks() {
 }
 
 
-// ── GVIZ QUERY ──
+// ── GAS QUERY (replaces gviz — works with restricted Sheet) ──
 async function gvizQuery(sheetName, query = 'select *') {
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}&tq=${encodeURIComponent(query)}`;
+  const url = GAS_URL + '?action=adminData&sheet=' + encodeURIComponent(sheetName) + '&adminSecret=IN3x2026xSECURE';
   let res;
   try { res = await fetch(url); } catch(e) { throw new Error('Network error: ' + e.message); }
-  if (!res.ok) throw new Error('Sheet HTTP ' + res.status + ' — check sharing settings');
-  const text = await res.text();
-  if (text.includes('google.com/accounts') || text.includes('ServiceLogin')) {
-    throw new Error('Sheet is private — go to Google Sheet > Share > change to "Anyone with link can view"');
-  }
-  // Parse raw text before JSON.parse so Date(...) strings stay as strings
-  const raw = text.replace(/^[^(]+\(/, '').replace(/\);?\s*$/, '');
-  const json = JSON.parse(raw);
-  const cols = json.table.cols.map(c => c.label);
-  const rows = (json.table.rows || []).map(r =>
-    Object.fromEntries(cols.map((c, i) => {
-      const cell = r.c[i];
-      if (!cell || cell.v === null || cell.v === undefined) return [c, ''];
-      const v = cell.v;
-      const f = cell.f;
-      // gviz datetime: v is a JS Date object after JSON.parse
-      if (v instanceof Date) {
-        if (f) return [c, f];
-        return [c, v.toLocaleDateString('en-ZA') + ' ' + v.toLocaleTimeString('en-ZA', {hour:'2-digit', minute:'2-digit'})];
-      }
-      // gviz date string not yet parsed (some environments keep it as string)
-      if (typeof v === 'string' && v.startsWith('Date(')) {
-        if (f) return [c, f];
-        const m = v.match(/Date\((\d+),(\d+),(\d+)(?:,(\d+),(\d+))?/);
-        if (m) {
-          const d = new Date(+m[1], +m[2], +m[3], +(m[4]||0), +(m[5]||0));
-          return [c, d.toLocaleDateString('en-ZA') + ' ' + d.toLocaleTimeString('en-ZA', {hour:'2-digit', minute:'2-digit'})];
-        }
-      }
-      return [c, v];
-    }))
-  );
-  return rows;
+  if (!res.ok) throw new Error('GAS HTTP ' + res.status);
+  const json = await res.json();
+  if (json.status !== 'ok') throw new Error(json.message || 'GAS error');
+  return json.rows || [];
 }
 
 // ── LOAD ALL DATA ──
@@ -1174,13 +1140,11 @@ async function loadAll() {
       gvizQuery('Scan Logs'),
       gvizQuery('Telegram Chat IDs'),
       gvizQuery('Family Bundles'),
-      gvizQuery('Waitlist'),
     ]);
     allSubs      = results[0].status === 'fulfilled' ? results[0].value : [];
     allScans     = results[1].status === 'fulfilled' ? results[1].value : [];
     allTelegram  = results[2].status === 'fulfilled' ? results[2].value : [];
     allFamilies  = results[3].status === 'fulfilled' ? results[3].value : [];
-    allWaitlist  = results[4].status === 'fulfilled' ? results[4].value : [];
 
     // Check if sheet is accessible
     const failed = results.filter(r => r.status === 'rejected');
@@ -1246,7 +1210,6 @@ function renderMetrics() {
   document.getElementById('m-active').textContent = active;
   document.getElementById('m-scans').textContent = scans;
   document.getElementById('m-families').textContent = fams;
-  document.getElementById('m-waitlist').textContent = allWaitlist.length;
   document.getElementById('m-beta-badge').textContent = beta + ' beta';
   document.getElementById('m-pending-sub').textContent = pend + ' pending';
 
