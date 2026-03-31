@@ -7,7 +7,7 @@
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Innovat3 — Beta Registration</title>
+<title>Innovat3 — Registration</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -35,13 +35,6 @@ button, a, input, select, textarea { touch-action:manipulation; }
 .in3-brand-name { font-family:"Orbitron",sans-serif; font-size:20px; font-weight:900; color:var(--orange); line-height:1; }
 .in3-brand-name span { color:#fff; }
 .in3-brand-sub { font-size:8px; color:var(--muted); letter-spacing:3px; text-transform:uppercase; margin-top:4px; }
-.in3-beta-badge {
-  margin-left:auto; background:#0a1a00; border:2px solid var(--green); color:var(--green);
-  font-family:"Orbitron",sans-serif; font-size:7px; font-weight:900;
-  letter-spacing:1px; padding:6px 10px; border-radius:8px; text-transform:uppercase;
-  box-shadow:0 0 14px rgba(34,197,94,0.2);
-}
-
 /* ── HERO ── */
 .hero {
   background:linear-gradient(160deg,#0f0f0f,#080808);
@@ -51,12 +44,6 @@ button, a, input, select, textarea { touch-action:manipulation; }
 .hero h1 { font-family:"Orbitron",sans-serif; font-size:18px; font-weight:900; color:#fff; margin-bottom:8px; }
 .hero h1 span { color:var(--orange); }
 .hero p { font-size:12px; color:var(--muted); line-height:1.7; max-width:380px; margin:0 auto; }
-.beta-spots {
-  display:inline-flex; align-items:center; gap:8px; margin-top:14px;
-  background:#0a1a00; border:1px solid var(--green); border-radius:20px;
-  padding:6px 14px; font-size:11px; color:var(--green); font-weight:700;
-}
-.beta-dot { width:7px; height:7px; border-radius:50%; background:var(--green); animation:pd 1s infinite; }
 @keyframes pd { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
 /* ── PROGRESS ── */
@@ -503,6 +490,16 @@ var familyMembers    = [];
 var coloursSelected  = ['Surprise Me'];
 var photoDataUrl     = '';
 var photoUploadedUrl = '';
+
+// ── AUTO-SELECT PLAN FROM URL PARAM (?plan=solo/family/care) ──
+(function() {
+  try {
+    var params = new URLSearchParams(window.location.search);
+    var p = (params.get('plan') || '').toLowerCase();
+    var map = { solo: 'Solo', family: 'Family', care: 'Care' };
+    if (map[p]) { planSelected = map[p]; }
+  } catch(e) {}
+})();
 </script>
 
 <div class="page">
@@ -514,14 +511,12 @@ var photoUploadedUrl = '';
       <div class="in3-brand-name">innovat3<span>.</span></div>
       <div class="in3-brand-sub">Smart NFC Emergency Tag</div>
     </div>
-    <div class="in3-beta-badge">Beta Programme</div>
   </div>
 
   <!-- HERO -->
   <div class="hero">
-    <h1>Join the First <span>10</span> Beta Testers</h1>
-    <p>Get your free Innovat3 NFC emergency tag — 3 months free, no payment needed. Be first to test South Africa's smartest emergency ID system.</p>
-    <div class="beta-spots"><div class="beta-dot"></div> Limited beta spots available</div>
+    <h1>Register Your <span>Innovat3</span> Tag</h1>
+    <p>Choose your plan, fill in your emergency profile, and get your Innovat3 NFC tag delivered to your door.</p>
   </div>
 
   <!-- PROGRESS -->
@@ -655,23 +650,6 @@ var photoUploadedUrl = '';
             <div class="plan-price-wrap">
               <div class="plan-price-main" style="color:var(--teal)">R199</div>
               <div class="plan-price-per" style="color:var(--teal)">once-off</div>
-            </div>
-          </div>
-
-          <!-- BETA -->
-          <div class="plan-card" id="planBeta" onclick="selectPlan(this,'Beta')">
-            <div class="plan-icon-wrap">🧪</div>
-            <div class="plan-info">
-              <div class="plan-name">Beta <span>Tester</span><div class="plan-badge badge-free" style="display:inline-block">Free</div></div>
-              <ul class="plan-features">
-                <li>3 months free — no payment</li>
-                <li>All Solo features included</li>
-                <li>Standard Solo rates apply after</li>
-              </ul>
-            </div>
-            <div class="plan-price-wrap">
-              <div class="plan-price-free">FREE</div>
-              <div class="plan-price-per">3 months</div>
             </div>
           </div>
 
@@ -1124,7 +1102,7 @@ var photoUploadedUrl = '';
         <div class="success-name" id="successName">—</div>
         <div class="success-tagid" id="successTagId">—</div>
         <div id="successBundleId" style="display:none;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:900;color:var(--orange);letter-spacing:1px;margin:4px 0 8px;padding:6px 14px;background:rgba(249,115,22,0.1);border:1px solid rgba(249,115,22,0.3);border-radius:8px;text-align:center;"></div>
-        <div class="success-msg">Your beta registration is in! We will review and contact you within 24 hours to confirm your free tag.</div>
+        
         <div class="success-steps">
           <div class="success-step"><div class="success-step-num">1</div><div>We review your registration and confirm your spot</div></div>
           <div class="success-step"><div class="success-step-num">2</div><div>We program your NFC tag with your unique ID</div></div>
@@ -2106,7 +2084,7 @@ async function submitForm() {
     "🏥 Med Doc: " + (window._careMedUrl ? window._careMedUrl : 'Not uploaded') : '';
 
   var msg =
-    "\ud83c\udd95 *NEW BETA REGISTRATION*\n\n" +
+    "\ud83c\udd95 *NEW REGISTRATION*\n\n" +
     "*" + data.name + "*\n" +
     "\ud83d\udce7 " + data.email + "\n" +
     "\ud83d\udcf1 +" + data.phone + "\n" +
@@ -2251,7 +2229,7 @@ async function submitForm() {
       <input type="hidden" name="merchant_key"       id="pf_merchant_key"       value="frbiyqgqpun0a">
       <input type="hidden" name="return_url"         id="pf_return_url"         value="https://innovat3.co.za/success.html">
       <input type="hidden" name="cancel_url"         id="pf_cancel_url"         value="https://innovat3.co.za/register/">
-      <input type="hidden" name="notify_url"         id="pf_notify_url"         value="https://script.google.com/macros/s/AKfycbxpdQc2SJGOJrmaFm1tYh6wgjgU4lnECPKpv7pWTyAIsts1xfBFA7eslEV9eMEVpC1F/exec">
+      <input type="hidden" name="notify_url"         id="pf_notify_url"         value="https://script.google.com/macros/s/AKfycbxmnSw493AHOdXHruQJODMzKbUSg--9XwF1L8rFdWedeGDP9qBAjuKHCD92tOGNpSVE/exec">
       <input type="hidden" name="m_payment_id"       id="pf_m_payment_id">
       <input type="hidden" name="amount"             id="pf_amount">
       <input type="hidden" name="item_name"          id="pf_item_name">
@@ -2285,8 +2263,7 @@ async function submitForm() {
 var PRICES = {
   'Solo':   { monthly:49,   annual:470,  label:'Solo' },
   'Family': { monthly:149,  annual:1435, label:'Family' },
-  'Care':   { once:199,                  label:'Care (Lifetime)' },
-  'Beta':   { monthly:0,    annual:0,    label:'Beta (Free Trial)' }
+  'Care':   { once:199,                  label:'Care (Lifetime)' }
 };
 
 async function proceedToPayment() {
@@ -2360,23 +2337,7 @@ async function proceedToPayment() {
   var tagCount = (planSelected === 'Family') ? 
     ([2,3,4].filter(function(i){ return collectMemberData(i); }).length + 1) : 1;
 
-  // ── Beta/Free plan: bypass paywall entirely ─────────────────
-  if (planSelected === 'Beta' || planSelected === 'Free Trial') {
-    var betaData = JSON.parse(JSON.stringify(registrationData));
-    betaData.status = 'Beta';
-    betaData.isBeta = 'true';
-    // Show submitting message
-    var page = document.querySelector('.page');
-    if (page) page.innerHTML = '<div style="text-align:center;padding:60px 20px"><div style="font-size:48px">⏳</div><h2 style="color:#F97316;font-family:Orbitron,sans-serif;margin:16px 0">Registering...</h2><p style="color:#888">Please wait while we set up your beta profile.</p></div>';
-    fetch('https://api.innovat3.co.za/register', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(betaData)
-    }).catch(function(){}).finally(function() {
-      window.location.href = 'https://innovat3.co.za/success.html';
-    });
-    return;
-  }
+
 
   // Show payment section (paid plans only)
   showPaymentSection(tagId, v('firstName'), v('lastName'), v('email'), 
@@ -2390,9 +2351,9 @@ function showPaymentSection(tagId, firstName, lastName, email, phone, plan, bill
   var planData    = PRICES[plan] || PRICES['Solo'];
   var subAmount   = 0, billingLabel = '';
 
-  if (plan === 'Care' || plan === 'Beta') {
+  if (plan === 'Care') {
     subAmount    = planData.once || 0;
-    billingLabel = plan === 'Beta' ? 'Free Trial' : 'Once-off Lifetime';
+    billingLabel = 'Once-off Lifetime';
   } else if (billing === 'monthly') {
     subAmount    = planData.monthly;
     billingLabel = 'Monthly';
@@ -2430,20 +2391,7 @@ function payWithPayFast() {
   var btn = document.getElementById('payfastPayBtn');
   if (btn) { btn.textContent = '\u23F3 Saving registration...'; btn.disabled = true; }
 
-  // Beta/Free: skip PayFast entirely
-  if (d.plan === 'Beta' || parseFloat(d.amount) === 0) {
-    var betaData = JSON.parse(JSON.stringify(d.registrationData));
-    betaData.status = 'Beta';
-    betaData.isBeta = 'true';
-    fetch('https://api.innovat3.co.za/register', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify(betaData)
-    }).catch(function(){}).finally(function() {
-      window.location.href = 'https://innovat3.co.za/success.html';
-    });
-    return;
-  }
+
 
   // Paid plans: go STRAIGHT to PayFast — do NOT save to GAS first
   // Registration is saved by GAS ITN webhook AFTER payment is confirmed
@@ -2497,5 +2445,27 @@ function payWithPayFast() {
 }
 </script>
 
+<script>
+// Apply URL-param plan pre-selection visually on page load
+document.addEventListener('DOMContentLoaded', function() {
+  var params = new URLSearchParams(window.location.search);
+  var p = (params.get('plan') || '').toLowerCase();
+  var map = { solo: 'planSolo', family: 'planFamily', care: 'planCare' };
+  if (map[p]) {
+    var el = document.getElementById(map[p]);
+    if (el) {
+      // Deselect all, select the target
+      document.querySelectorAll('.plan-card').forEach(function(c) { c.classList.remove('selected'); });
+      el.classList.add('selected');
+      planSelected = { solo:'Solo', family:'Family', care:'Care' }[p];
+      // If care plan, also show care type selector
+      if (p === 'care') {
+        var sel = document.getElementById('careTypeSelector');
+        if (sel) sel.style.display = 'block';
+      }
+    }
+  }
+});
+</script>
 </body>
 </html>
