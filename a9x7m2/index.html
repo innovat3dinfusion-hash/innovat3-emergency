@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://script.google.com https://api.innovat3.co.za;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.innovat3.co.za;">
 <meta http-equiv="X-Frame-Options" content="DENY">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="Referrer-Policy" content="no-referrer">
@@ -1120,14 +1120,14 @@ function saveTasks() {
 }
 
 
-// ── GAS QUERY (replaces gviz — works with restricted Sheet) ──
+// ── ADMIN DATA QUERY (via Cloudflare Worker — avoids CORS) ──
 async function gvizQuery(sheetName, query = 'select *') {
-  const url = GAS_URL + '?action=adminData&sheet=' + encodeURIComponent(sheetName) + '&adminSecret=IN3x2026xSECURE';
+  const url = 'https://api.innovat3.co.za/admin?sheet=' + encodeURIComponent(sheetName);
   let res;
   try { res = await fetch(url); } catch(e) { throw new Error('Network error: ' + e.message); }
-  if (!res.ok) throw new Error('GAS HTTP ' + res.status);
+  if (!res.ok) throw new Error('Worker HTTP ' + res.status);
   const json = await res.json();
-  if (json.status !== 'ok') throw new Error(json.message || 'GAS error');
+  if (json.status !== 'ok') throw new Error(json.message || 'Error fetching data');
   return json.rows || [];
 }
 
