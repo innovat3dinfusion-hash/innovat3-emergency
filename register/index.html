@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://api.innovat3.co.za https://nominatim.openstreetmap.org https://api.imgbb.com https://i.ibb.co;">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://api.innovat3.co.za https://nominatim.openstreetmap.org https://i.ibb.co;">
   <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
@@ -479,7 +479,7 @@ button, a, input, select, textarea { touch-action:manipulation; }
 <script>
 // Telegram notifications handled server-side by GAS — no token in frontend
 var GAS_URL = 'https://api.innovat3.co.za';
-var IMGBB_KEY        = 'a46ec81521abc525c8cb3e0ad7dcc4b0';
+// Photo uploads proxied through Worker /upload-photo — API key never in frontend
 var WA_IMG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyNUQzNjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMjQgMTAuNUMxNi41IDEwLjUgMTAuNSAxNi41IDEwLjUgMjRjMCAyLjQuNjUgNC43IDEuOCA2LjdMMTAuNSAzNy41bDYuOTUtMS44YzEuOTUgMS4wNSA0LjE1IDEuNjUgNi41NSAxLjY1IDcuNSAwIDEzLjUtNiAxMy41LTEzLjVTMzEuNSAxMC41IDI0IDEwLjV6Ii8+PC9zdmc+';
 var TG_IMG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyOUI2RjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMTAuNSAyMy41bDI3LTEwLjUtNCAyMi04LTctNCA0LTEtOCAxNC0xMi0xNiA5LjV6Ii8+PC9zdmc+';
 var currentStep      = 1;
@@ -1875,10 +1875,10 @@ async function uploadPhotoToImgbb(dataUrl) {
     if (!base64) { console.error('[IN3] Photo: no base64 data'); return ''; }
     var fd = new FormData();
     fd.append('image', base64);
-    var resp = await fetch('https://api.imgbb.com/1/upload?key=' + IMGBB_KEY, { method:'POST', body:fd });
+    var resp = await fetch('https://api.innovat3.co.za/upload-photo', { method:'POST', body:fd });
     var json = await resp.json();
-    console.log('[IN3] imgbb response:', JSON.stringify(json));
-    if (json.success) return json.data.url;
+    console.log('[IN3] upload-photo response:', JSON.stringify(json));
+    if (json.success) return json.url;
     // Show error so user knows photo failed
     var msg = (json.error && json.error.message) ? json.error.message : 'Upload failed (status ' + resp.status + ')';
     console.error('[IN3] imgbb error:', msg);
