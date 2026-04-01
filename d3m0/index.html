@@ -208,7 +208,7 @@ button, a, input, select, textarea { touch-action:manipulation; }
   </div>
   <div class="crop-zoom">
     <label>Zoom</label>
-    <input type="range" id="cropZoom" min="1" max="4" step="0.01" value="1">
+    <input type="range" id="cropZoom" min="0.1" max="4" step="0.01" value="1">
   </div>
   <div class="crop-btns">
     <button class="crop-cancel" onclick="cancelCrop()">Cancel</button>
@@ -625,8 +625,13 @@ function handlePhoto(input) {
   reader.onload=function(e){
     cropImg=new Image();
     cropImg.onload=function(){
-      cropOffX=0; cropOffY=0; cropScale=1;
-      document.getElementById('cropZoom').value=1;
+      cropOffX=0; cropOffY=0;
+      // Start at "cover" scale so the circle is filled — user can zoom out to see more
+      var coverScale=Math.max(260/cropImg.naturalWidth, 260/cropImg.naturalHeight);
+      cropScale=coverScale;
+      var zoomEl=document.getElementById('cropZoom');
+      zoomEl.min=Math.max(0.1, (Math.min(260/cropImg.naturalWidth, 260/cropImg.naturalHeight)*0.5).toFixed(2));
+      zoomEl.value=coverScale;
       document.getElementById('cropModal').classList.add('show');
       drawCrop();
     };
