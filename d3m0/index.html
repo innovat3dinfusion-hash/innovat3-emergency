@@ -526,7 +526,7 @@ button, a, input, select, textarea { touch-action:manipulation; }
 
 <script>
 var WORKER_URL    = 'https://api.innovat3.co.za';
-var IMGBB_KEY     = 'a46ec81521abc525c8cb3e0ad7dcc4b0';
+// Photo uploads proxied through Worker /upload-photo — API key never in frontend
 var CARD_BASE_URL = 'https://innovat3.co.za/d3m0/card/';
 
 var selectedBlood = '';
@@ -685,9 +685,9 @@ async function uploadPhoto() {
   try {
     var base64=croppedPhotoDataUrl.split(',')[1];
     var fd=new FormData(); fd.append('image',base64);
-    var resp=await fetch('https://api.imgbb.com/1/upload?key='+IMGBB_KEY,{method:'POST',body:fd});
+    var resp=await fetch('https://api.innovat3.co.za/upload-photo',{method:'POST',body:fd});
     var json=await resp.json();
-    return (json.success&&json.data&&json.data.url)||'';
+    return (json.success&&json.url)||'';
   } catch(e){ return ''; }
 }
 
