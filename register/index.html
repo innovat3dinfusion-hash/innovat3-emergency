@@ -2394,9 +2394,7 @@ function showPaymentSection(tagId, firstName, lastName, email, phone, plan, bill
   };
 }
 
-var PF_PASSPHRASE = 'Slakpad13eats';
-
-// ── MD5 implementation (PayFast signature) ───────────────────────────
+// ── MD5 — kept for potential future use ─────────────────────────────
 function md5(s){
   function rh(n){var j,s="";for(j=0;j<=3;j++)s+="0123456789abcdef".charAt((n>>(j*8+4))&0xF)+"0123456789abcdef".charAt((n>>(j*8))&0xF);return s;}
   function ad(x,y){var l=(x&0xFFFF)+(y&0xFFFF);var m=(x>>16)+(y>>16)+(l>>16);return(m<<16)|(l&0xFFFF);}
@@ -2430,25 +2428,12 @@ function md5(s){
   return rh(a)+rh(b)+rh(c)+rh(d);
 }
 
-// Matches PHP urlencode() exactly — PayFast uses this server-side
-function phpUrlencode(str) {
-  return encodeURIComponent(String(str).trim())
-    .replace(/%20/g, '+')
-    .replace(/!/g,   '%21')
-    .replace(/'/g,   '%27')
-    .replace(/\(/g,  '%28')
-    .replace(/\)/g,  '%29')
-    .replace(/\*/g,  '%2A')
-    .replace(/~/g,   '%7E');
-}
-
-
-function payWithPayFast() {
+async function payWithPayFast() {
   var d = window._paymentData;
   if (!d) { alert('Payment data not ready.'); return; }
 
   var btn = document.getElementById('payfastPayBtn');
-  if (btn) { btn.textContent = '\u23F3 Redirecting to PayFast...'; btn.disabled = true; }
+  if (btn) { btn.textContent = '\u23F3 Preparing payment...'; btn.disabled = true; }
 
   var form = document.getElementById('payfastForm');
 
@@ -2457,40 +2442,48 @@ function payWithPayFast() {
   if (rawPhone.startsWith('0') && rawPhone.length === 10) rawPhone = '27' + rawPhone.slice(1);
   var phone = (rawPhone.length >= 10) ? rawPhone : '';
 
-  // Build params — only simple ASCII fields, NO custom_str
-  // Registration already saved to GAS; ITN will mark it paid by m_payment_id
-  var params = {};
-  params['merchant_id']      = '34168603';
-  params['merchant_key']     = 'frbiyqgqpun0a';
-  params['return_url']       = 'https://innovat3.co.za/success.html';
-  params['cancel_url']       = 'https://innovat3.co.za/register/';
-  params['notify_url']       = 'https://script.google.com/macros/s/AKfycbzMpDAOkGZM3L8kwl5MqPxzwlk6W_prse0LWid6jXQVO7dW6dMxXQ1fAJr7b7VASBf3/exec';
-  params['m_payment_id']     = d.tagId;
-  params['amount']           = d.amount;
-  params['item_name']        = d.itemName;
-  params['item_description'] = d.itemDescription;
-  params['name_first']       = d.firstName;
-  params['name_last']        = d.lastName;
-  params['email_address']    = d.email;
-  if (phone) params['cell_number'] = phone;
+  // Build params object — NO custom_str, only clean fields
+  var pfParams = {};
+  pfParams['merchant_id']      = '34168603';
+  pfParams['merchant_key']     = 'frbiyqgqpun0a';
+  pfParams['return_url']       = 'https://innovat3.co.za/success.html';
+  pfParams['cancel_url']       = 'https://innovat3.co.za/register/';
+  pfParams['notify_url']       = 'https://script.google.com/macros/s/AKfycbzMpDAOkGZM3L8kwl5MqPxzwlk6W_prse0LWid6jXQVO7dW6dMxXQ1fAJr7b7VASBf3/exec';
+  pfParams['m_payment_id']     = d.tagId;
+  pfParams['amount']           = d.amount;
+  pfParams['item_name']        = d.itemName;
+  pfParams['item_description'] = d.itemDescription;
+  pfParams['name_first']       = d.firstName;
+  pfParams['name_last']        = d.lastName;
+  pfParams['email_address']    = d.email;
+  if (phone) pfParams['cell_number'] = phone;
 
-  // Build signature from params object (same values, same order)
-  var sigStr = Object.keys(params).map(function(k) {
-    return k + '=' + phpUrlencode(params[k]);
-  }).join('&');
-  sigStr += '&passphrase=' + phpUrlencode(PF_PASSPHRASE);
-  var sig = md5(sigStr);
-  console.log('[PayFast] Signature string:', sigStr);
-  console.log('[PayFast] MD5 signature:', sig);
-  params['signature'] = sig;
+  // Get signature from server — GAS uses Java URLEncoder which matches PHP exactly
+  var signature;
+  try {
+    var sigResp = await fetch('https://api.innovat3.co.za/prepare-payment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pfParams: pfParams })
+    });
+    var sigJson = await sigResp.json();
+    if (sigJson.status !== 'ok' || !sigJson.signature) throw new Error(sigJson.message || 'No signature');
+    signature = sigJson.signature;
+  } catch(err) {
+    if (btn) { btn.textContent = '💳 Pay with PayFast'; btn.disabled = false; }
+    alert('Could not prepare payment: ' + err.message);
+    return;
+  }
 
-  // Populate form with exactly these fields (clear first)
+  pfParams['signature'] = signature;
+
+  // Populate form and submit
   form.innerHTML = '';
-  Object.keys(params).forEach(function(k) {
+  Object.keys(pfParams).forEach(function(k) {
     var inp = document.createElement('input');
     inp.type  = 'hidden';
     inp.name  = k;
-    inp.value = params[k];
+    inp.value = pfParams[k];
     form.appendChild(inp);
   });
 
