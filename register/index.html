@@ -2280,13 +2280,12 @@ async function proceedToPayment() {
     if (!validateStep(5)) return;
   }
 
-  // ── Photo upload deferred to success page ──────────────────
-  // Store raw dataUrl in localStorage — success.html uploads it after payment
+  // Defer photo upload to success page
   if (photoDataUrl && !photoUploadedUrl) {
     try { localStorage.setItem('in3_pending_photo', photoDataUrl); } catch(e) {}
   }
 
-  // Hide the form sections
+  // Hide form sections
   [1,2,3,4,5].forEach(function(n) {
     var s = document.getElementById('sec'+n);
     if (s) s.classList.remove('active');
@@ -2296,19 +2295,21 @@ async function proceedToPayment() {
   document.getElementById('progressBar').style.display = 'none';
   document.querySelector('.page').style.paddingTop = '0';
 
-  // Build registration data (same as submitForm but don't send yet)
-  var tagId    = genTagId();
-  var bundleId = (planSelected === 'Family') ? genBundleId() : '';
+  var btn = document.getElementById('payfastPayBtn');
+  if (btn) { btn.textContent = '\u23F3 Saving registration...'; btn.disabled = true; }
+
+  // Build registration data
+  var tagId     = genTagId();
+  var bundleId  = (planSelected === 'Family') ? genBundleId() : '';
   var timestamp = new Date().toLocaleString('en-ZA', {timeZone:'Africa/Johannesburg'});
-  var dobRaw   = getDobFromSelects();
-  var dobFormatted = formatDob(dobRaw);
-  var colour   = coloursSelected.length > 0 ? coloursSelected.join(' + ') : 'Not selected';
-  var blood    = bloodSelected || v('bloodOther') || 'Unknown';
+  var dobRaw    = getDobFromSelects();
+  var colour    = coloursSelected.length > 0 ? coloursSelected.join(' + ') : 'Not selected';
+  var blood     = bloodSelected || v('bloodOther') || 'Unknown';
 
   var registrationData = {
-    type: 'REGISTRATION',
+    type: 'REGISTRATION', status: 'Pending Payment',
     tagId: tagId, bundleId: bundleId, timestamp: timestamp,
-    dob: dobFormatted, firstName: v('firstName'), lastName: v('lastName'),
+    dob: formatDob(dobRaw), firstName: v('firstName'), lastName: v('lastName'),
     name: v('firstName') + ' ' + v('lastName'),
     email: v('email'), phone: formatPhone(v('phone')), telegram: v('telegram'),
     plan: planSelected + (billingCycle === 'annual' ? ' (Annual)' : ' (Monthly)'),
@@ -2317,7 +2318,7 @@ async function proceedToPayment() {
     medicalAid: v('medicalAid'), medicalAidNumber: v('medicalAidNumber'),
     colour: colour, formFactor: document.getElementById('formFactor').value,
     delivery: v('delivery'), extraNotes: v('extraNotes'),
-    photoUrl: photoUploadedUrl, consentDate: timestamp,
+    photoUrl: '', consentDate: timestamp,
     careType: careType || 'senior', careIdDocUrl: window._careIdUrl || '', careMedDocUrl: window._careMedUrl || '',
     contacts: [
       v('c1name') ? {name:v('c1name'),rel:v('c1rel'),phone:formatPhone(v('c1phone')),wa:document.getElementById('c1wa').checked,telegram:v('c1telegram')} : null,
@@ -2326,15 +2327,31 @@ async function proceedToPayment() {
     ].filter(Boolean)
   };
 
-  // Count tags for family
-  var tagCount = (planSelected === 'Family') ? 
+  var tagCount = (planSelected === 'Family') ?
     ([2,3,4].filter(function(i){ return collectMemberData(i); }).length + 1) : 1;
 
+  // ── Save registration to GAS FIRST (status: Pending Payment) ────────
+  try {
+    var gasResp = await fetch('https://api.innovat3.co.za/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(registrationData)
+    });
+    var gasJson = await gasResp.json();
+    if (gasJson.status !== 'ok') throw new Error(gasJson.message || 'GAS error');
+  } catch(err) {
+    if (btn) { btn.textContent = '💳 Proceed to Payment \u2192'; btn.disabled = false; }
+    alert('Could not save registration: ' + err.message + '. Please try again.');
+    return;
+  }
 
+  // Store tagId for success page photo upload
+  try { localStorage.setItem('in3_pending_tagid', tagId); } catch(e) {}
 
-  // Show payment section (paid plans only)
-  showPaymentSection(tagId, v('firstName'), v('lastName'), v('email'), 
+  // Show payment section
+  showPaymentSection(tagId, v('firstName'), v('lastName'), v('email'),
     v('phone'), planSelected, billingCycle, tagCount, registrationData);
+  if (btn) { btn.textContent = '💳 Pay with PayFast'; btn.disabled = false; }
 }
 
 function showPaymentSection(tagId, firstName, lastName, email, phone, plan, billing, tagCount, registrationData) {
@@ -2371,8 +2388,8 @@ function showPaymentSection(tagId, firstName, lastName, email, phone, plan, bill
     tagId: tagId, firstName: firstName, lastName: lastName,
     email: email, phone: phone, plan: plan, billing: billing,
     amount: totalAmount.toFixed(2),
-    itemName: 'Innovat3 ' + planData.label + ' - ' + billingLabel,
-    itemDescription: 'Tag: ' + tagId + ' | ' + plan + ' ' + billingLabel,
+    itemName: 'Innovat3 ' + planData.label + ' ' + billingLabel,
+    itemDescription: 'Tag ' + tagId + ' ' + plan + ' ' + billingLabel,
     registrationData: registrationData || {}
   };
 }
@@ -2434,19 +2451,14 @@ function payWithPayFast() {
   if (btn) { btn.textContent = '\u23F3 Redirecting to PayFast...'; btn.disabled = true; }
 
   var form = document.getElementById('payfastForm');
-  var rd   = d.registrationData || {};
 
   // Format phone: PayFast requires 27XXXXXXXXX (digits only)
   var rawPhone = (d.phone||'').replace(/\D/g,'');
   if (rawPhone.startsWith('0') && rawPhone.length === 10) rawPhone = '27' + rawPhone.slice(1);
   var phone = (rawPhone.length >= 10) ? rawPhone : '';
 
-  // Pack registration data into custom_str fields (255 chars each)
-  var regJson = JSON.stringify(rd);
-  var chunk = 240;
-
-  // Build ordered params object — ONLY include fields we actually send
-  // Order matters: must match form field order for signature
+  // Build params — only simple ASCII fields, NO custom_str
+  // Registration already saved to GAS; ITN will mark it paid by m_payment_id
   var params = {};
   params['merchant_id']      = '34168603';
   params['merchant_key']     = 'frbiyqgqpun0a';
@@ -2461,30 +2473,6 @@ function payWithPayFast() {
   params['name_last']        = d.lastName;
   params['email_address']    = d.email;
   if (phone) params['cell_number'] = phone;
-  var cs1 = regJson.substring(0,         chunk);
-  var cs2 = regJson.substring(chunk,     chunk*2);
-  var cs3 = regJson.substring(chunk*2,   chunk*3);
-  var cs4 = regJson.substring(chunk*3,   chunk*4);
-  var cs5 = regJson.substring(chunk*4,   chunk*5);
-  if (cs1) params['custom_str1'] = cs1;
-  if (cs2) params['custom_str2'] = cs2;
-  if (cs3) params['custom_str3'] = cs3;
-  if (cs4) params['custom_str4'] = cs4;
-  if (cs5) params['custom_str5'] = cs5;
-
-  // Only add subscription fields for monthly billing
-  if (d.billing === 'monthly') {
-    var nextMonth = new Date();
-    nextMonth.setMonth(nextMonth.getMonth() + 1);
-    var dd   = String(nextMonth.getDate()).padStart(2,'0');
-    var mm   = String(nextMonth.getMonth()+1).padStart(2,'0');
-    var yyyy = nextMonth.getFullYear();
-    params['subscription_type']  = '1';
-    params['billing_date']       = yyyy+'-'+mm+'-'+dd;
-    params['recurring_amount']   = d.amount;
-    params['frequency']          = '3';
-    params['cycles']             = '0';
-  }
 
   // Build signature from params object (same values, same order)
   var sigStr = Object.keys(params).map(function(k) {
