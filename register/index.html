@@ -2295,10 +2295,7 @@ async function proceedToPayment() {
   document.getElementById('progressBar').style.display = 'none';
   document.querySelector('.page').style.paddingTop = '0';
 
-  var btn = document.getElementById('payfastPayBtn');
-  if (btn) { btn.textContent = '\u23F3 Saving registration...'; btn.disabled = true; }
-
-  // Build registration data
+  // Build registration data — stored in memory, saved by ITN after payment
   var tagId     = genTagId();
   var bundleId  = (planSelected === 'Family') ? genBundleId() : '';
   var timestamp = new Date().toLocaleString('en-ZA', {timeZone:'Africa/Johannesburg'});
@@ -2307,7 +2304,7 @@ async function proceedToPayment() {
   var blood     = bloodSelected || v('bloodOther') || 'Unknown';
 
   var registrationData = {
-    type: 'REGISTRATION', status: 'Pending Payment',
+    type: 'REGISTRATION',
     tagId: tagId, bundleId: bundleId, timestamp: timestamp,
     dob: formatDob(dobRaw), firstName: v('firstName'), lastName: v('lastName'),
     name: v('firstName') + ' ' + v('lastName'),
@@ -2330,28 +2327,13 @@ async function proceedToPayment() {
   var tagCount = (planSelected === 'Family') ?
     ([2,3,4].filter(function(i){ return collectMemberData(i); }).length + 1) : 1;
 
-  // ── Save registration to GAS FIRST (status: Pending Payment) ────────
-  try {
-    var gasResp = await fetch('https://api.innovat3.co.za/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(registrationData)
-    });
-    var gasJson = await gasResp.json();
-    if (gasJson.status !== 'ok') throw new Error(gasJson.message || 'GAS error');
-  } catch(err) {
-    if (btn) { btn.textContent = '💳 Proceed to Payment \u2192'; btn.disabled = false; }
-    alert('Could not save registration: ' + err.message + '. Please try again.');
-    return;
-  }
-
-  // Store tagId for success page photo upload
+  // Store registration data in sessionStorage — Worker /prepare-payment picks it up
+  try { sessionStorage.setItem('in3_reg_data', JSON.stringify(registrationData)); } catch(e) {}
   try { localStorage.setItem('in3_pending_tagid', tagId); } catch(e) {}
 
   // Show payment section
   showPaymentSection(tagId, v('firstName'), v('lastName'), v('email'),
     v('phone'), planSelected, billingCycle, tagCount, registrationData);
-  if (btn) { btn.textContent = '💳 Pay with PayFast'; btn.disabled = false; }
 }
 
 function showPaymentSection(tagId, firstName, lastName, email, phone, plan, billing, tagCount, registrationData) {
@@ -2461,10 +2443,12 @@ async function payWithPayFast() {
   // Get signature from server — GAS uses Java URLEncoder which matches PHP exactly
   var signature;
   try {
+    var regData = null;
+    try { regData = JSON.parse(sessionStorage.getItem('in3_reg_data') || 'null'); } catch(e) {}
     var sigResp = await fetch('https://api.innovat3.co.za/prepare-payment', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ pfParams: pfParams })
+      body: JSON.stringify({ pfParams: pfParams, regData: regData })
     });
     var sigJson = await sigResp.json();
     if (sigJson.status !== 'ok' || !sigJson.signature) throw new Error(sigJson.message || 'No signature');
