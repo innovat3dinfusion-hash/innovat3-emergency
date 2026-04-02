@@ -299,14 +299,15 @@ button, a, input, select, textarea { touch-action:manipulation; }
 /* ── CROP MODAL ── */
 .crop-modal {
   display:none; position:fixed; inset:0; z-index:9999;
-  background:rgba(0,0,0,0.92); align-items:center; justify-content:center;
-  padding:20px;
+  background:rgba(0,0,0,0.92); align-items:flex-start; justify-content:center;
+  padding:16px; overflow-y:auto;
 }
 .crop-modal.open { display:flex; }
 .crop-box {
   background:#111; border-radius:18px; padding:20px;
   width:100%; max-width:420px; border:1px solid #333;
-  display:flex; flex-direction:column; gap:16px;
+  display:flex; flex-direction:column; gap:14px;
+  margin:auto;
 }
 .crop-title {
   font-family:'Orbitron',sans-serif; font-size:11px; font-weight:900;
@@ -1721,18 +1722,21 @@ function handlePhoto(input) {
     var img = new Image();
     img.onload = function() {
       _ci = img;
-      // Size canvas to its rendered width
+      // Show modal FIRST so getBoundingClientRect returns real dimensions
+      document.getElementById('cropModal').classList.add('open');
       var canvas = document.getElementById('cropCanvas');
       var wrap   = canvas.parentElement;
       var sz     = Math.round(wrap.getBoundingClientRect().width) || 300;
       _cSize     = sz;
       canvas.width = canvas.height = sz;
-      // fitScale: fill the circle — shorter side = canvas
-      _cFit = sz / Math.min(img.naturalWidth, img.naturalHeight);
+      // Cover scale: shorter side fills canvas circle
+      _cFit  = sz / Math.min(img.naturalWidth, img.naturalHeight);
       _cZoom = 1;
       _cX = 0; _cY = 0;
-      document.getElementById('cropZoom').value = 1;
-      document.getElementById('cropModal').classList.add('open');
+      var zoomEl  = document.getElementById('cropZoom');
+      zoomEl.min   = '0.5';
+      zoomEl.max   = '4';
+      zoomEl.value = '1';
       _cDraw();
       _cBindEvents();
     };
@@ -1777,15 +1781,23 @@ function _cBindEvents() {
   canvas.parentNode.replaceChild(fresh, canvas);
   canvas = fresh;
 
+  // Helper: CSS px → canvas buffer px ratio
+  function getScale() {
+    var r = canvas.getBoundingClientRect();
+    return r.width > 0 ? _cSize / r.width : 1;
+  }
+
   // Mouse
   canvas.addEventListener('mousedown', function(e) {
-    _drag = {x: e.clientX, y: e.clientY, ox: _cX, oy: _cY};
+    var sc = getScale();
+    _drag = {x: e.clientX * sc, y: e.clientY * sc, ox: _cX, oy: _cY};
     e.preventDefault();
   });
   canvas.addEventListener('mousemove', function(e) {
     if (!_drag) return;
-    _cX = _drag.ox + (e.clientX - _drag.x);
-    _cY = _drag.oy + (e.clientY - _drag.y);
+    var sc = getScale();
+    _cX = _drag.ox + (e.clientX * sc - _drag.x);
+    _cY = _drag.oy + (e.clientY * sc - _drag.y);
     _cDraw(); e.preventDefault();
   });
   canvas.addEventListener('mouseup',   function() { _drag = null; });
@@ -1794,43 +1806,49 @@ function _cBindEvents() {
   // Mouse wheel zoom
   canvas.addEventListener('wheel', function(e) {
     var delta = e.deltaY > 0 ? -0.08 : 0.08;
-    _cZoom = Math.min(4, Math.max(0.3, _cZoom + delta));
+    _cZoom = Math.min(4, Math.max(0.5, _cZoom + delta));
     document.getElementById('cropZoom').value = _cZoom;
     _cDraw(); e.preventDefault();
   }, {passive: false});
 
   // Touch drag + pinch
   canvas.addEventListener('touchstart', function(e) {
+    var sc = getScale();
     if (e.touches.length === 1) {
-      _drag = {x: e.touches[0].clientX, y: e.touches[0].clientY, ox: _cX, oy: _cY};
+      _drag = {x: e.touches[0].clientX * sc, y: e.touches[0].clientY * sc, ox: _cX, oy: _cY};
+      _pinch0 = 0;
     } else if (e.touches.length === 2) {
       _pinch0  = Math.hypot(
         e.touches[0].clientX - e.touches[1].clientX,
         e.touches[0].clientY - e.touches[1].clientY
       );
       _pinchZ0 = _cZoom;
+      _drag = null;
     }
     e.preventDefault();
   }, {passive: false});
 
   canvas.addEventListener('touchmove', function(e) {
+    var sc = getScale();
     if (e.touches.length === 1 && _drag) {
-      _cX = _drag.ox + (e.touches[0].clientX - _drag.x);
-      _cY = _drag.oy + (e.touches[0].clientY - _drag.y);
+      _cX = _drag.ox + (e.touches[0].clientX * sc - _drag.x);
+      _cY = _drag.oy + (e.touches[0].clientY * sc - _drag.y);
       _cDraw();
     } else if (e.touches.length === 2 && _pinch0) {
       var dist = Math.hypot(
         e.touches[0].clientX - e.touches[1].clientX,
         e.touches[0].clientY - e.touches[1].clientY
       );
-      _cZoom = Math.min(4, Math.max(0.3, _pinchZ0 * (dist / _pinch0)));
+      _cZoom = Math.min(4, Math.max(0.5, _pinchZ0 * (dist / _pinch0)));
       document.getElementById('cropZoom').value = _cZoom;
       _cDraw();
     }
     e.preventDefault();
   }, {passive: false});
 
-  canvas.addEventListener('touchend', function() { _drag = null; });
+  canvas.addEventListener('touchend', function(e) {
+    if (e.touches.length === 0) { _drag = null; _pinch0 = 0; }
+  }, {passive: false});
 }
 
 function cropDraw() { _cDraw(); }   // called by zoom slider oninput
@@ -2421,15 +2439,28 @@ function md5(s){
   return rh(a)+rh(b)+rh(c)+rh(d);
 }
 
+// PHP-compatible urlencode (PayFast requires this exact encoding)
+function phpUrlencode(str) {
+  return encodeURIComponent(String(str))
+    .replace(/%20/g, '+')
+    .replace(/!/g,   '%21')
+    .replace(/'/g,   '%27')
+    .replace(/\(/g,  '%28')
+    .replace(/\)/g,  '%29')
+    .replace(/\*/g,  '%2A')
+    .replace(/~/g,   '%7E');
+}
+
 function buildPayFastSignature(form, passphrase) {
   var pairs = [];
   form.querySelectorAll('input[type="hidden"]').forEach(function(f) {
-    if (f.name !== 'signature' && f.value !== '') {
-      pairs.push(f.name + '=' + encodeURIComponent(f.value).replace(/%20/g, '+'));
+    // Skip signature field, skip empty values, skip subscription fields with value 0 when not a subscription
+    if (f.name !== 'signature' && f.value !== '' && f.value !== '0') {
+      pairs.push(f.name + '=' + phpUrlencode(f.value));
     }
   });
   var str = pairs.join('&');
-  if (passphrase) str += '&passphrase=' + encodeURIComponent(passphrase).replace(/%20/g, '+');
+  if (passphrase) str += '&passphrase=' + phpUrlencode(passphrase);
   return md5(str);
 }
 
