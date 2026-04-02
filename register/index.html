@@ -2379,7 +2379,7 @@ function showPaymentSection(tagId, firstName, lastName, email, phone, plan, bill
   };
 }
 
-var PF_PASSPHRASE = 'Skilpad@13!!';
+var PF_PASSPHRASE = 'Slakpad13eats';
 
 // ── MD5 implementation (PayFast signature) ───────────────────────────
 function md5(s){
@@ -2455,7 +2455,7 @@ function payWithPayFast() {
   params['merchant_key']     = 'frbiyqgqpun0a';
   params['return_url']       = 'https://innovat3.co.za/success.html';
   params['cancel_url']       = 'https://innovat3.co.za/register/';
-  params['notify_url']       = 'https://script.google.com/macros/s/AKfycbxmnSw493AHOdXHruQJODMzKbUSg--9XwF1L8rFdWedeGDP9qBAjuKHCD92tOGNpSVE/exec';
+  params['notify_url']       = 'https://script.google.com/macros/s/AKfycbzMpDAOkGZM3L8kwl5MqPxzwlk6W_prse0LWid6jXQVO7dW6dMxXQ1fAJr7b7VASBf3/exec';
   params['m_payment_id']     = d.tagId;
   params['amount']           = d.amount;
   params['item_name']        = d.itemName;
