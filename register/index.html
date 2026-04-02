@@ -2415,9 +2415,17 @@ function md5(s){
   return rh(a)+rh(b)+rh(c)+rh(d);
 }
 
-// PayFast-compatible urlencode — matches PayFast's official JS SDK exactly
+// PHP urlencode — matches PHP's urlencode() which PayFast uses server-side
+// encodeURIComponent leaves ! ~ * ' ( ) unencoded; PHP encodes all of them
 function phpUrlencode(str) {
-  return encodeURIComponent(String(str)).replace(/%20/g, '+');
+  return encodeURIComponent(String(str))
+    .replace(/%20/g, '+')
+    .replace(/!/g,  '%21')
+    .replace(/~/g,  '%7E')
+    .replace(/\*/g, '%2A')
+    .replace(/'/g,  '%27')
+    .replace(/\(/g, '%28')
+    .replace(/\)/g, '%29');
 }
 
 
