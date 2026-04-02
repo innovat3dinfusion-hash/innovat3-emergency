@@ -2410,7 +2410,7 @@ function md5(s){
   return rh(a)+rh(b)+rh(c)+rh(d);
 }
 
-async function payWithPayFast() {
+function payWithPayFast() {
   var d = window._paymentData;
   if (!d) { alert('Payment data not ready.'); return; }
 
@@ -2424,7 +2424,7 @@ async function payWithPayFast() {
   if (rawPhone.startsWith('0') && rawPhone.length === 10) rawPhone = '27' + rawPhone.slice(1);
   var phone = (rawPhone.length >= 10) ? rawPhone : '';
 
-  // Build params object — NO custom_str, only clean fields
+  // Build params object — insertion order matters for signature
   var pfParams = {};
   pfParams['merchant_id']      = '34168603';
   pfParams['merchant_key']     = 'frbiyqgqpun0a';
@@ -2440,26 +2440,35 @@ async function payWithPayFast() {
   pfParams['email_address']    = d.email;
   if (phone) pfParams['cell_number'] = phone;
 
-  // Get signature from server — GAS uses Java URLEncoder which matches PHP exactly
-  var signature;
+  // PHP urlencode() compatible encoding — matches what PayFast verifies against
+  function pfEnc(str) {
+    return encodeURIComponent(String(str).trim())
+      .replace(/%20/g,'+').replace(/!/g,'%21').replace(/'/g,'%27')
+      .replace(/\(/g,'%28').replace(/\)/g,'%29').replace(/\*/g,'%2A').replace(/~/g,'%7E');
+  }
+
+  // Fire-and-forget: store regData in Worker KV so ITN can save registration after payment
   try {
     var regData = null;
     try { regData = JSON.parse(sessionStorage.getItem('in3_reg_data') || 'null'); } catch(e) {}
-    var sigResp = await fetch('https://api.innovat3.co.za/prepare-payment', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ pfParams: pfParams, regData: regData })
-    });
-    var sigJson = await sigResp.json();
-    if (sigJson.status !== 'ok' || !sigJson.signature) throw new Error(sigJson.message || 'No signature');
-    signature = sigJson.signature;
-  } catch(err) {
-    if (btn) { btn.textContent = '💳 Pay with PayFast'; btn.disabled = false; }
-    alert('Could not prepare payment: ' + err.message);
-    return;
-  }
+    if (regData) {
+      fetch('https://api.innovat3.co.za/prepare-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pfParams: pfParams, regData: regData })
+      }).catch(function(){});
+    }
+  } catch(e) {}
 
-  pfParams['signature'] = signature;
+  // Build signature string and generate MD5 using existing md5() above
+  var parts = [];
+  Object.keys(pfParams).forEach(function(k) {
+    var val = String(pfParams[k]).trim();
+    if (val !== '') parts.push(k + '=' + pfEnc(val));
+  });
+  parts.push('passphrase=' + pfEnc('Slakpad13eats'));
+  var sigStr = parts.join('&');
+  pfParams['signature'] = md5(sigStr);
 
   // Populate form and submit
   form.innerHTML = '';
