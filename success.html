@@ -62,13 +62,15 @@
 </div>
 
 <script>
-// Extract tag ID from URL params if passed back from PayFast
+// Extract tag ID from URL params or localStorage
 var urlParams = new URLSearchParams(window.location.search);
 var tagId = urlParams.get('m_payment_id') || urlParams.get('tag') || '';
+try { if (!tagId) tagId = localStorage.getItem('in3_pending_tagid') || ''; } catch(e) {}
 if (tagId) {
   document.getElementById('tagIdDisplay').textContent = tagId;
   document.getElementById('tagBox').style.display = 'block';
 }
+try { localStorage.removeItem('in3_pending_tagid'); } catch(e) {}
 
 // Upload deferred photo from registration
 (async function() {
