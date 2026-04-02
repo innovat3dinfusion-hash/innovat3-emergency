@@ -69,6 +69,28 @@ if (tagId) {
   document.getElementById('tagIdDisplay').textContent = tagId;
   document.getElementById('tagBox').style.display = 'block';
 }
+
+// Upload deferred photo from registration
+(async function() {
+  var pending;
+  try { pending = localStorage.getItem('in3_pending_photo'); } catch(e) {}
+  if (!pending) return;
+  try {
+    var fd = new FormData();
+    fd.append('image', pending.split(',')[1]);
+    var resp = await fetch('https://api.innovat3.co.za/upload-photo', { method:'POST', body:fd });
+    var json = await resp.json();
+    if (json.success && json.url && tagId) {
+      // Update the registration sheet with the photo URL
+      await fetch('https://api.innovat3.co.za/update-photo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tagId: tagId, photoUrl: json.url })
+      });
+    }
+    localStorage.removeItem('in3_pending_photo');
+  } catch(e) { console.log('Photo upload error:', e); }
+})();
 </script>
 </body>
 </html>
