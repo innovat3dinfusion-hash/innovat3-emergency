@@ -2487,7 +2487,10 @@ function payWithPayFast() {
   document.getElementById('pf_name_first').value       = d.firstName;
   document.getElementById('pf_name_last').value        = d.lastName;
   document.getElementById('pf_email_address').value    = d.email;
-  document.getElementById('pf_cell_number').value      = (d.phone||'').replace(/\s+/g,'');
+  // PayFast requires 27XXXXXXXXX format (digits only, no + or spaces)
+  var rawPhone = (d.phone||'').replace(/\D/g,'');
+  if (rawPhone.startsWith('0') && rawPhone.length === 10) rawPhone = '27' + rawPhone.slice(1);
+  document.getElementById('pf_cell_number').value = (rawPhone.length >= 10) ? rawPhone : '';
 
   // ── Recurring billing for monthly plans ───────────────────────
   var isMonthly = (d.billing === 'monthly');
