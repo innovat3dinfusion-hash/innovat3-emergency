@@ -2280,12 +2280,10 @@ async function proceedToPayment() {
     if (!validateStep(5)) return;
   }
 
-  // ── Upload photo BEFORE building registration data ──────────
+  // ── Photo upload deferred to success page ──────────────────
+  // Store raw dataUrl in localStorage — success.html uploads it after payment
   if (photoDataUrl && !photoUploadedUrl) {
-    var submitBtn = document.querySelector('.btn-submit');
-    if (submitBtn) { submitBtn.textContent = '📷 Uploading photo...'; submitBtn.disabled = true; }
-    photoUploadedUrl = await uploadPhotoToImgbb(photoDataUrl);
-    if (submitBtn) { submitBtn.textContent = '💳 Proceed to Payment →'; submitBtn.disabled = false; }
+    try { localStorage.setItem('in3_pending_photo', photoDataUrl); } catch(e) {}
   }
 
   // Hide the form sections
@@ -2415,9 +2413,16 @@ function md5(s){
   return rh(a)+rh(b)+rh(c)+rh(d);
 }
 
-// Matches PayFast's official JS SDK encoding exactly
+// Matches PHP urlencode() exactly — PayFast uses this server-side
 function phpUrlencode(str) {
-  return encodeURIComponent(String(str).trim()).replace(/%20/g, '+');
+  return encodeURIComponent(String(str).trim())
+    .replace(/%20/g, '+')
+    .replace(/!/g,   '%21')
+    .replace(/'/g,   '%27')
+    .replace(/\(/g,  '%28')
+    .replace(/\)/g,  '%29')
+    .replace(/\*/g,  '%2A')
+    .replace(/~/g,   '%7E');
 }
 
 
