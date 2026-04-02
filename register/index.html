@@ -2415,16 +2415,9 @@ function md5(s){
   return rh(a)+rh(b)+rh(c)+rh(d);
 }
 
-// PHP-compatible urlencode (PayFast requires this exact encoding)
+// PayFast-compatible urlencode — matches PayFast's official JS SDK exactly
 function phpUrlencode(str) {
-  return encodeURIComponent(String(str))
-    .replace(/%20/g, '+')
-    .replace(/!/g,   '%21')
-    .replace(/'/g,   '%27')
-    .replace(/\(/g,  '%28')
-    .replace(/\)/g,  '%29')
-    .replace(/\*/g,  '%2A')
-    .replace(/~/g,   '%7E');
+  return encodeURIComponent(String(str)).replace(/%20/g, '+');
 }
 
 
@@ -2493,7 +2486,10 @@ function payWithPayFast() {
     return k + '=' + phpUrlencode(params[k]);
   }).join('&');
   sigStr += '&passphrase=' + phpUrlencode(PF_PASSPHRASE);
-  params['signature'] = md5(sigStr);
+  var sig = md5(sigStr);
+  console.log('[PayFast] Signature string:', sigStr);
+  console.log('[PayFast] MD5 signature:', sig);
+  params['signature'] = sig;
 
   // Populate form with exactly these fields (clear first)
   form.innerHTML = '';
