@@ -2473,11 +2473,9 @@ function payWithPayFast() {
     var val = String(pfParams[k]).trim();
     if (val !== '') parts.push(k + '=' + pfEnc(val));
   });
-  parts.push('passphrase=' + pfEnc('Slakpad13eats'));
+  // NO passphrase — must also be cleared in PayFast Developer Settings
   var sigStr = parts.join('&');
   pfParams['signature'] = md5(sigStr);
-  // TEMP DEBUG
-  prompt('COPY THIS SIGSTR (Ctrl+A, Ctrl+C):', sigStr);
 
   // Populate form and submit
   form.innerHTML = '';
