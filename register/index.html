@@ -2491,7 +2491,7 @@ function md5(str) {
   return hex(a)+hex(b)+hex(c)+hex(d);
 }
 
-function payWithPayFast() {
+async function payWithPayFast() {
   var d = window._paymentData;
   if (!d) { alert('Payment data not ready.'); return; }
 
@@ -2524,46 +2524,39 @@ function payWithPayFast() {
   // ── Recurring subscription fields (monthly billing only) ────────
   if (d.isRecurring) {
     var today = new Date();
-    var billingDate = today.toISOString().split('T')[0];
     pfParams['subscription_type']  = '1';
-    pfParams['billing_date']       = billingDate;
+    pfParams['billing_date']       = today.toISOString().split('T')[0];
     pfParams['recurring_amount']   = d.recurring_amount;
     pfParams['frequency']          = '3';
     pfParams['cycles']             = '0';
   }
 
-  // PHP urlencode() compatible encoding
-  function pfEnc(str) {
-    return encodeURIComponent(String(str).trim())
-      .replace(/%20/g,'+').replace(/!/g,'%21').replace(/'/g,'%27')
-      .replace(/\(/g,'%28').replace(/\)/g,'%29').replace(/\*/g,'%2A').replace(/~/g,'%7E');
-  }
-
-  // Fire-and-forget: store regData in KV for ITN
+  // Get signature from worker (passphrase stays server-side, worker MD5 is verified correct)
+  var signature = '';
   try {
     var regData = null;
     try { regData = JSON.parse(sessionStorage.getItem('in3_reg_data') || 'null'); } catch(e) {}
-    if (regData) {
-      fetch('https://api.innovat3.co.za/prepare-payment', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pfParams: pfParams, regData: regData })
-      }).catch(function(){});
+    var resp = await fetch('https://api.innovat3.co.za/prepare-payment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pfParams: pfParams, regData: regData || {} })
+    });
+    var json = await resp.json();
+    console.log('[IN3] Worker sigStr:', json.sigStr);
+    console.log('[IN3] Worker signature:', json.signature);
+    if (json.status === 'ok' && json.signature) {
+      signature = json.signature;
+    } else {
+      throw new Error(json.message || 'prepare-payment failed');
     }
-  } catch(e) {}
+  } catch(e) {
+    console.error('[IN3] prepare-payment error:', e.message);
+    if (btn) { btn.textContent = '\uD83D\uDCB3 Pay with PayFast'; btn.disabled = false; }
+    alert('Could not prepare payment. Please try again.');
+    return;
+  }
 
-  // Build signature — ksort (alphabetical) + passphrase appended at end
-  var parts = [];
-  Object.keys(pfParams).sort().forEach(function(k) {
-    var val = String(pfParams[k]).trim();
-    if (val !== '') parts.push(k + '=' + pfEnc(val));
-  });
-  parts.push('passphrase=' + pfEnc('Slakpad13eats'));
-  var sigStr = parts.join('&');
-  var sig = md5(sigStr);
-  console.log('[IN3] SigStr:', sigStr);
-  console.log('[IN3] Signature:', sig);
-  pfParams['signature'] = sig;
+  pfParams['signature'] = signature;
 
   // Populate form and submit
   form.innerHTML = '';
