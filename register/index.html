@@ -1907,6 +1907,73 @@ async function uploadPhotoToImgbb(dataUrl) {
   return '';
 }
 
+// ── CARE DOCUMENT UPLOAD ──
+async function handleCareDocUpload(type, input) {
+  var file = input.files[0];
+  if (!file) return;
+
+  var areaId   = type === 'id' ? 'idUploadArea'   : 'medUploadArea';
+  var statusId = type === 'id' ? 'idUploadStatus' : 'medUploadStatus';
+  var area     = document.getElementById(areaId);
+  var status   = document.getElementById(statusId);
+  var color    = type === 'id' ? '#0ED2C8' : '#F97316';
+  var icon     = type === 'id' ? '🪪' : '📋';
+
+  // 5 MB limit
+  if (file.size > 5 * 1024 * 1024) {
+    if (status) { status.textContent = '⚠️ File too large. Max 5 MB.'; status.style.color = '#ef4444'; status.style.display = 'block'; }
+    input.value = '';
+    return;
+  }
+
+  // Show uploading state
+  if (area) area.innerHTML = '<div style="font-size:20px;margin-bottom:6px">⏳</div><div style="font-size:13px;color:' + color + ';font-weight:600">Uploading…</div>';
+  if (status) status.style.display = 'none';
+
+  var isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+
+  if (isPdf) {
+    // PDFs cannot be previewed via imgbb — record filename and mark uploaded
+    if (area) area.innerHTML = '<div style="font-size:24px;margin-bottom:6px">' + icon + '</div><div style="font-size:13px;color:' + color + ';font-weight:600">✅ ' + file.name + '</div><div style="font-size:11px;color:#aaa">PDF received</div>';
+    if (type === 'id') { window._careIdUploaded  = true; window._careIdUrl  = 'pdf:' + file.name; }
+    else               { window._careMedUploaded = true; window._careMedUrl = 'pdf:' + file.name; }
+    if (status) { status.textContent = '✅ Document received.'; status.style.color = color; status.style.display = 'block'; }
+    return;
+  }
+
+  // Image — upload to imgbb via worker proxy
+  var reader = new FileReader();
+  reader.onload = async function(e) {
+    var base64 = e.target.result.split(',')[1];
+    if (!base64) {
+      if (area) area.innerHTML = '<div style="font-size:24px">' + icon + '</div>';
+      if (status) { status.textContent = '⚠️ Could not read file.'; status.style.color = '#ef4444'; status.style.display = 'block'; }
+      return;
+    }
+    try {
+      var fd = new FormData();
+      fd.append('image', base64);
+      var resp = await fetch('https://api.innovat3.co.za/upload-photo', { method: 'POST', body: fd });
+      var json = await resp.json();
+      if (json.success && json.url) {
+        if (area) area.innerHTML = '<img src="' + json.url + '" style="max-height:80px;border-radius:8px;object-fit:contain">';
+        if (type === 'id') { window._careIdUploaded  = true; window._careIdUrl  = json.url; }
+        else               { window._careMedUploaded = true; window._careMedUrl = json.url; }
+        if (status) { status.textContent = '✅ Uploaded successfully.'; status.style.color = color; status.style.display = 'block'; }
+      } else {
+        if (area) area.innerHTML = '<div style="font-size:24px">⚠️</div><div style="font-size:12px;color:#ef4444">Upload failed — try again</div>';
+        if (status) { status.textContent = '⚠️ Upload failed. Please try again.'; status.style.color = '#ef4444'; status.style.display = 'block'; }
+        input.value = '';
+      }
+    } catch(err) {
+      if (area) area.innerHTML = '<div style="font-size:24px">⚠️</div><div style="font-size:12px;color:#ef4444">Network error</div>';
+      if (status) { status.textContent = '⚠️ Network error. Please try again.'; status.style.color = '#ef4444'; status.style.display = 'block'; }
+      input.value = '';
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
 // ── WA/TG TOGGLES ──
 function toggleCt(toggleEl, checkId, type) {
   var cb = document.getElementById(checkId);
