@@ -2460,13 +2460,12 @@ function payWithPayFast() {
     }
   } catch(e) {}
 
-  // Build signature string and generate MD5 using existing md5() above
+  // Build signature string and generate MD5 — NO passphrase (cleared in PayFast settings)
   var parts = [];
   Object.keys(pfParams).forEach(function(k) {
     var val = String(pfParams[k]).trim();
     if (val !== '') parts.push(k + '=' + pfEnc(val));
   });
-  parts.push('passphrase=' + pfEnc('Slakpad13eats'));
   var sigStr = parts.join('&');
   pfParams['signature'] = md5(sigStr);
 
