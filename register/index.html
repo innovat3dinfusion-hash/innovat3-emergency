@@ -2467,13 +2467,12 @@ function payWithPayFast() {
     }
   } catch(e) {}
 
-  // Build signature string and generate MD5
+  // Build signature string — alphabetical sort (ksort) to match PayFast
   var parts = [];
-  Object.keys(pfParams).forEach(function(k) {
+  Object.keys(pfParams).sort().forEach(function(k) {
     var val = String(pfParams[k]).trim();
     if (val !== '') parts.push(k + '=' + pfEnc(val));
   });
-  // NO passphrase — must also be cleared in PayFast Developer Settings
   var sigStr = parts.join('&');
   pfParams['signature'] = md5(sigStr);
 
