@@ -2460,18 +2460,15 @@ function payWithPayFast() {
     }
   } catch(e) {}
 
-  // Build signature string and generate MD5 — NO passphrase (cleared in PayFast settings)
+  // Build signature string and generate MD5
   var parts = [];
   Object.keys(pfParams).forEach(function(k) {
     var val = String(pfParams[k]).trim();
     if (val !== '') parts.push(k + '=' + pfEnc(val));
   });
+  parts.push('passphrase=' + pfEnc('Slakpad13eats'));
   var sigStr = parts.join('&');
   pfParams['signature'] = md5(sigStr);
-  console.log('=== PAYFAST DEBUG ===');
-  console.log('sigStr:', sigStr);
-  console.log('signature:', pfParams['signature']);
-  console.log('all fields:', JSON.stringify(pfParams));
 
   // Populate form and submit
   form.innerHTML = '';
@@ -2484,8 +2481,6 @@ function payWithPayFast() {
   });
 
   form.action = 'https://www.payfast.co.za/eng/process';
-  // TEMP: pause so console log is visible — remove after debugging
-  if (!confirm('DEBUG: Check console for sigStr then click OK to submit')) return;
   form.submit();
 }
 </script>
