@@ -2559,7 +2559,11 @@ function payWithPayFast() {
     if (val !== '') parts.push(k + '=' + pfEnc(val));
   });
   parts.push('passphrase=' + pfEnc('Slakpad13eats'));
-  pfParams['signature'] = md5(parts.join('&'));
+  var sigStr = parts.join('&');
+  var sig = md5(sigStr);
+  console.log('[IN3] SigStr:', sigStr);
+  console.log('[IN3] Signature:', sig);
+  pfParams['signature'] = sig;
 
   // Populate form and submit
   form.innerHTML = '';
