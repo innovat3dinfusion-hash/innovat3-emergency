@@ -2476,6 +2476,8 @@ function payWithPayFast() {
   parts.push('passphrase=' + pfEnc('Slakpad13eats'));
   var sigStr = parts.join('&');
   pfParams['signature'] = md5(sigStr);
+  // TEMP DEBUG
+  prompt('COPY THIS SIGSTR (Ctrl+A, Ctrl+C):', sigStr);
 
   // Populate form and submit
   form.innerHTML = '';
