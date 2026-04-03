@@ -2468,6 +2468,10 @@ function payWithPayFast() {
   });
   var sigStr = parts.join('&');
   pfParams['signature'] = md5(sigStr);
+  console.log('=== PAYFAST DEBUG ===');
+  console.log('sigStr:', sigStr);
+  console.log('signature:', pfParams['signature']);
+  console.log('all fields:', JSON.stringify(pfParams));
 
   // Populate form and submit
   form.innerHTML = '';
@@ -2480,6 +2484,8 @@ function payWithPayFast() {
   });
 
   form.action = 'https://www.payfast.co.za/eng/process';
+  // TEMP: pause so console log is visible — remove after debugging
+  if (!confirm('DEBUG: Check console for sigStr then click OK to submit')) return;
   form.submit();
 }
 </script>
