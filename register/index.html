@@ -2491,7 +2491,7 @@ function md5(str) {
   return hex(a)+hex(b)+hex(c)+hex(d);
 }
 
-async function payWithPayFast() {
+function payWithPayFast() {
   var d = window._paymentData;
   if (!d) { alert('Payment data not ready.'); return; }
 
@@ -2505,7 +2505,7 @@ async function payWithPayFast() {
   if (rawPhone.startsWith('0') && rawPhone.length === 10) rawPhone = '27' + rawPhone.slice(1);
   var phone = (rawPhone.length >= 10) ? rawPhone : '';
 
-  // Build params object — insertion order matters for signature
+  // Build params object
   var pfParams = {};
   pfParams['merchant_id']      = '34168603';
   pfParams['merchant_key']     = 'frbiyqgqpun0a';
@@ -2524,38 +2524,42 @@ async function payWithPayFast() {
   // ── Recurring subscription fields (monthly billing only) ────────
   if (d.isRecurring) {
     var today = new Date();
-    var billingDate = today.toISOString().split('T')[0]; // YYYY-MM-DD
+    var billingDate = today.toISOString().split('T')[0];
     pfParams['subscription_type']  = '1';
     pfParams['billing_date']       = billingDate;
     pfParams['recurring_amount']   = d.recurring_amount;
-    pfParams['frequency']          = '3';  // 3 = monthly
-    pfParams['cycles']             = '0';  // 0 = indefinite
+    pfParams['frequency']          = '3';
+    pfParams['cycles']             = '0';
   }
 
-  // Call worker to: (1) store regData in KV, (2) generate signature with passphrase server-side
-  var signature = '';
+  // PHP urlencode() compatible encoding
+  function pfEnc(str) {
+    return encodeURIComponent(String(str).trim())
+      .replace(/%20/g,'+').replace(/!/g,'%21').replace(/'/g,'%27')
+      .replace(/\(/g,'%28').replace(/\)/g,'%29').replace(/\*/g,'%2A').replace(/~/g,'%7E');
+  }
+
+  // Fire-and-forget: store regData in KV for ITN
   try {
     var regData = null;
     try { regData = JSON.parse(sessionStorage.getItem('in3_reg_data') || 'null'); } catch(e) {}
-    var resp = await fetch('https://api.innovat3.co.za/prepare-payment', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ pfParams: pfParams, regData: regData || {} })
-    });
-    var json = await resp.json();
-    if (json.status === 'ok' && json.signature) {
-      signature = json.signature;
-    } else {
-      throw new Error(json.message || 'Signature request failed');
+    if (regData) {
+      fetch('https://api.innovat3.co.za/prepare-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pfParams: pfParams, regData: regData })
+      }).catch(function(){});
     }
-  } catch(e) {
-    console.error('[IN3] prepare-payment error:', e.message);
-    if (btn) { btn.textContent = '💳 Pay with PayFast'; btn.disabled = false; }
-    alert('Could not prepare payment. Please try again.');
-    return;
-  }
+  } catch(e) {}
 
-  pfParams['signature'] = signature;
+  // Build signature — ksort (alphabetical) + passphrase appended at end
+  var parts = [];
+  Object.keys(pfParams).sort().forEach(function(k) {
+    var val = String(pfParams[k]).trim();
+    if (val !== '') parts.push(k + '=' + pfEnc(val));
+  });
+  parts.push('passphrase=' + pfEnc('Slakpad13eats'));
+  pfParams['signature'] = md5(parts.join('&'));
 
   // Populate form and submit
   form.innerHTML = '';
