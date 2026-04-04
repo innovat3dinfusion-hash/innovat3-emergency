@@ -1358,6 +1358,19 @@ function renderAll() {
   renderRevenue();
 }
 
+// ── DATE HELPER — handles YYYY-MM-DD and DD/MM/YYYY HH:MM ──
+function parseExpiry(str) {
+  if (!str) return null;
+  str = str.toString().trim();
+  // YYYY-MM-DD (date-only stored as string or returned from fixed GAS)
+  var m1 = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (m1) return new Date(+m1[1], +m1[2]-1, +m1[3]);
+  // DD/MM/YYYY (GAS date serialization, with optional HH:MM)
+  var m2 = str.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+  if (m2) return new Date(+m2[3], +m2[2]-1, +m2[1]);
+  return null;
+}
+
 // ── METRICS ──
 function renderMetrics() {
   const total  = allSubs.length;
@@ -1370,17 +1383,14 @@ function renderMetrics() {
   // Expiry stats
   const now = new Date();
   const expiringSoon = allSubs.filter(r => {
-    const exp = r['Expiry Date'] || '';
-    const ep = exp.match(/(\d{4})-(\d{2})-(\d{2})/);
-    if (!ep) return false;
-    const d = Math.ceil((new Date(+ep[1],+ep[2]-1,+ep[3]) - now) / (1000*60*60*24));
-    return d >= 0 && d <= 3;
+    const d = parseExpiry(r['Expiry Date']);
+    if (!d) return false;
+    const days = Math.ceil((d - now) / (1000*60*60*24));
+    return days >= 0 && days <= 3;
   }).length;
   const expired = allSubs.filter(r => {
-    const exp = r['Expiry Date'] || '';
-    const ep = exp.match(/(\d{4})-(\d{2})-(\d{2})/);
-    if (!ep) return false;
-    return new Date(+ep[1],+ep[2]-1,+ep[3]) < now;
+    const d = parseExpiry(r['Expiry Date']);
+    return d && d < now;
   }).length;
   const mExp = document.getElementById('m-expiring');
   if (mExp) mExp.textContent = expiringSoon + (expired ? ' ('+expired+' expired)' : '');
@@ -1407,18 +1417,15 @@ function renderRecentSubs() {
   document.getElementById('recent-table').innerHTML = recent.length ? recent.map(r => {
     const expiry = r['Expiry Date'] || '';
     let expiryCell = '<span style="color:#666">—</span>';
-    if (expiry) {
-      const ep = expiry.match(/(\d{4})-(\d{2})-(\d{2})/);
-      if (ep) {
-        const expDate  = new Date(+ep[1], +ep[2]-1, +ep[3]);
-        const daysLeft = Math.ceil((expDate - new Date()) / (1000*60*60*24));
-        if (daysLeft <= 0)
-          expiryCell = '<span style="color:#ef4444;font-weight:700">EXPIRED</span>';
-        else if (daysLeft <= 3)
-          expiryCell = '<span style="color:#F97316;font-weight:700">' + daysLeft + 'd left</span>';
-        else
-          expiryCell = '<span style="color:#22c55e">' + expiry + '</span>';
-      }
+    const expDate = parseExpiry(expiry);
+    if (expDate) {
+      const daysLeft = Math.ceil((expDate - new Date()) / (1000*60*60*24));
+      if (daysLeft <= 0)
+        expiryCell = '<span style="color:#ef4444;font-weight:700">EXPIRED</span>';
+      else if (daysLeft <= 3)
+        expiryCell = '<span style="color:#F97316;font-weight:700">' + daysLeft + 'd left</span>';
+      else
+        expiryCell = '<span style="color:#22c55e">' + expiry + '</span>';
     }
     return `<tr>
       <td><span class="tag-id">${r['Tag ID']||'—'}</span></td>
@@ -1630,22 +1637,21 @@ function toggleTask(i) {
 function renderExpiring() {
   const now = new Date();
   const expiring = allSubs.filter(r => {
-    const exp = (r['Expiry Date'] || '').toString().trim();
-    const ep  = exp.match(/(\d{4})-(\d{2})-(\d{2})/);
-    if (!ep) return false;
-    const days = Math.ceil((new Date(+ep[1],+ep[2]-1,+ep[3]) - now) / (1000*60*60*24));
+    const d = parseExpiry(r['Expiry Date']);
+    if (!d) return false;
+    const days = Math.ceil((d - now) / (1000*60*60*24));
     return days <= 30;
   }).sort((a, b) => {
-    const da = (a['Expiry Date']||''), db = (b['Expiry Date']||'');
-    return da.localeCompare(db);
+    const da = parseExpiry(a['Expiry Date']), db = parseExpiry(b['Expiry Date']);
+    return (da||0) - (db||0);
   });
 
   document.getElementById('expiring-badge').textContent = expiring.length;
 
   document.getElementById('expiring-table').innerHTML = expiring.length ? expiring.map(r => {
     const exp  = (r['Expiry Date']||'').toString().trim();
-    const ep   = exp.match(/(\d{4})-(\d{2})-(\d{2})/);
-    const days = ep ? Math.ceil((new Date(+ep[1],+ep[2]-1,+ep[3]) - now) / (1000*60*60*24)) : null;
+    const d    = parseExpiry(exp);
+    const days = d ? Math.ceil((d - now) / (1000*60*60*24)) : null;
     const daysLabel = days === null ? '—'
       : days <= 0  ? '<span style="color:#ef4444;font-weight:700">EXPIRED</span>'
       : days <= 7  ? '<span style="color:#ef4444;font-weight:700">' + days + ' days</span>'
