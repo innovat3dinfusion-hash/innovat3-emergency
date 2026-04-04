@@ -2520,17 +2520,7 @@ async function payWithPayFast() {
   pfParams['email_address']    = d.email;
   if (phone) pfParams['cell_number'] = phone;
 
-  // Add subscription fields BEFORE signing (they're included in signature)
-  // cycles=0 is added AFTER signing (PHP empty('0')=true, PayFast excludes it)
-  if (d.isRecurring) {
-    var today = new Date();
-    pfParams['subscription_type'] = '1';
-    pfParams['billing_date']      = today.toISOString().split('T')[0];
-    pfParams['recurring_amount']  = d.recurring_amount;
-    pfParams['frequency']         = '3';
-  }
-
-  // Get signature from worker (passphrase + correct empty() logic server-side)
+  // Get signature from worker — subscription fields excluded from signing
   var signature = '';
   try {
     var regData = null;
@@ -2557,9 +2547,16 @@ async function payWithPayFast() {
 
   pfParams['signature'] = signature;
 
-  // cycles=0 added AFTER signature — PHP empty('0')=true so PayFast excludes
-  // it from their sig check but still requires it in the form
-  if (d.isRecurring) pfParams['cycles'] = '0';
+  // Subscription fields added AFTER signature — PayFast needs them in the form
+  // but excludes them from signature verification
+  if (d.isRecurring) {
+    var today = new Date();
+    pfParams['subscription_type'] = '1';
+    pfParams['billing_date']      = today.toISOString().split('T')[0];
+    pfParams['recurring_amount']  = d.recurring_amount;
+    pfParams['frequency']         = '3';
+    pfParams['cycles']            = '0';
+  }
 
   // Populate form and submit
   form.innerHTML = '';
