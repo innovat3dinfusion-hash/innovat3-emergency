@@ -175,6 +175,34 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
   <p id="errorMsg">Tag ID not found. Contact Innovat3 support.</p>
 </div>
 
+<!-- INACTIVE (expired tag) -->
+<div id="inactiveScreen" style="
+  display:none;position:fixed;inset:0;z-index:9999;
+  background:#0a0a0f;
+  display:none;
+  flex-direction:column;align-items:center;justify-content:center;
+  padding:32px;text-align:center;font-family:'Exo 2',sans-serif;
+">
+  <div style="font-size:64px;margin-bottom:16px">🔒</div>
+  <div style="
+    font-family:'Orbitron',sans-serif;font-size:22px;font-weight:900;
+    color:#F97316;letter-spacing:3px;margin-bottom:12px;text-transform:uppercase
+  ">Tag Inactive</div>
+  <p style="color:#aaa;font-size:14px;max-width:320px;line-height:1.6;margin-bottom:28px">
+    This tag's subscription has expired.<br>
+    The emergency profile is temporarily disabled until the account is renewed.
+  </p>
+  <a id="inactiveRenewLink" href="https://innovat3.co.za/register/" style="
+    display:inline-block;
+    background:#F97316;color:#fff;text-decoration:none;
+    border-radius:12px;padding:14px 32px;
+    font-size:14px;font-weight:700;letter-spacing:1px;
+    box-shadow:0 4px 20px rgba(249,115,22,0.4);
+    font-family:'Exo 2',sans-serif
+  ">Renew Subscription</a>
+  <p style="color:#555;font-size:11px;margin-top:20px">innovat3.co.za &middot; Smart NFC Emergency Tag</p>
+</div>
+
 <!-- CARD -->
 <div class="card-wrap" id="cardWrap">
 
@@ -303,6 +331,13 @@ var subData = {};
     var json;
     try { json = await resp.json(); }
     catch(pe) { showErr('Data parse error. Please try again.'); return; }
+
+    if (json.status === 'inactive') {
+      document.getElementById('loadingScreen').style.display = 'none';
+      var inactiveScreen = document.getElementById('inactiveScreen');
+      inactiveScreen.style.display = 'flex';
+      return;
+    }
 
     if (json.status === 'error') {
       showErr(json.message === 'Tag not found'
