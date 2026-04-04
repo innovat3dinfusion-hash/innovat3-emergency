@@ -2559,6 +2559,10 @@ async function payWithPayFast() {
 
   pfParams['signature'] = signature;
 
+  // cycles=0 must be sent to PayFast but NOT included in the signature
+  // (PayFast's PHP uses empty('0')=true so they exclude it from their hash)
+  if (d.isRecurring) pfParams['cycles'] = '0';
+
   // Populate form and submit
   form.innerHTML = '';
   Object.keys(pfParams).forEach(function(k) {
