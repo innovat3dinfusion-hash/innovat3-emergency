@@ -668,6 +668,16 @@
     .sidebar { transform: translateX(-220px); }
     .main { margin-left: 0; }
   }
+  .form-label {
+    display:block;font-size:11px;color:var(--text-muted);margin-bottom:4px;letter-spacing:.5px;
+  }
+  .cash-input {
+    width:100%;padding:9px 12px;background:#0d0d14;border:1px solid #2a2a3a;
+    border-radius:8px;color:#fff;font-size:13px;font-family:'Exo 2',sans-serif;
+    box-sizing:border-box;outline:none;transition:border-color .2s;
+  }
+  .cash-input:focus { border-color:#F97316; }
+  .cash-input option { background:#111; }
 </style>
 </head>
 <body>
@@ -734,6 +744,9 @@
     </a>
     <a class="nav-item" onclick="showSection('revenue')">
       <span class="icon">◈</span> Revenue
+    </a>
+    <a class="nav-item" onclick="showSection('cashReg')">
+      <span class="icon">💵</span> Cash Registration
     </a>
   </nav>
   <div class="sidebar-footer">
@@ -1016,6 +1029,170 @@
       </div>
     </div>
 
+    <!-- ════════════ CASH REGISTRATION ════════════ -->
+    <div class="section" id="section-cashReg">
+      <div class="card" style="max-width:680px;margin:0 auto">
+        <div class="card-header">
+          <span class="card-title">💵 CASH REGISTRATION</span>
+          <span style="font-size:11px;color:var(--text-muted)">Bypasses PayFast · Status set to Active immediately</span>
+        </div>
+        <div class="card-body">
+
+          <div id="cashRegMsg" style="display:none;margin-bottom:16px;padding:12px 16px;border-radius:8px;font-size:13px"></div>
+
+          <!-- Admin key -->
+          <div style="margin-bottom:20px;padding:14px;background:rgba(249,115,22,0.06);border:1px solid rgba(249,115,22,0.2);border-radius:10px">
+            <label style="font-size:11px;letter-spacing:1px;color:#F97316;font-family:'Orbitron',sans-serif">ADMIN CASH KEY</label>
+            <input type="password" id="cr_adminKey" placeholder="Enter your Admin Cash Key" style="
+              width:100%;margin-top:8px;padding:10px 14px;background:#111;border:1px solid #333;
+              border-radius:8px;color:#fff;font-size:13px;font-family:'Exo 2',sans-serif;box-sizing:border-box
+            ">
+          </div>
+
+          <!-- Personal details -->
+          <div style="font-size:11px;letter-spacing:1px;color:#F97316;font-family:'Orbitron',sans-serif;margin-bottom:10px">PERSONAL DETAILS</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+            <div>
+              <label class="form-label">First Name *</label>
+              <input type="text" id="cr_firstName" class="cash-input" placeholder="First name">
+            </div>
+            <div>
+              <label class="form-label">Last Name *</label>
+              <input type="text" id="cr_lastName" class="cash-input" placeholder="Last name">
+            </div>
+            <div>
+              <label class="form-label">Email *</label>
+              <input type="email" id="cr_email" class="cash-input" placeholder="email@example.com">
+            </div>
+            <div>
+              <label class="form-label">Phone *</label>
+              <input type="tel" id="cr_phone" class="cash-input" placeholder="0821234567">
+            </div>
+            <div>
+              <label class="form-label">Date of Birth</label>
+              <input type="date" id="cr_dob" class="cash-input">
+            </div>
+            <div>
+              <label class="form-label">Telegram Handle</label>
+              <input type="text" id="cr_telegram" class="cash-input" placeholder="@username">
+            </div>
+          </div>
+
+          <!-- Plan -->
+          <div style="font-size:11px;letter-spacing:1px;color:#F97316;font-family:'Orbitron',sans-serif;margin-bottom:10px">PLAN &amp; BILLING</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px">
+            <div>
+              <label class="form-label">Plan *</label>
+              <select id="cr_plan" class="cash-input">
+                <option value="Solo">Solo</option>
+                <option value="Family">Family</option>
+                <option value="Care">Care (Lifetime)</option>
+                <option value="Beta">Beta (Free)</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Billing</label>
+              <select id="cr_billing" class="cash-input">
+                <option value="annual">Annual</option>
+                <option value="monthly">Monthly</option>
+                <option value="once">Once-off</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Cash Amount (R)</label>
+              <input type="number" id="cr_cashAmount" class="cash-input" placeholder="0.00" step="0.01">
+            </div>
+          </div>
+
+          <!-- Medical -->
+          <div style="font-size:11px;letter-spacing:1px;color:#F97316;font-family:'Orbitron',sans-serif;margin-bottom:10px">MEDICAL INFO</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+            <div>
+              <label class="form-label">Blood Type</label>
+              <select id="cr_bloodType" class="cash-input">
+                <option value="">Unknown</option>
+                <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+                <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Medical Aid</label>
+              <input type="text" id="cr_medicalAid" class="cash-input" placeholder="Discovery, Momentum…">
+            </div>
+            <div>
+              <label class="form-label">Medical Aid Number</label>
+              <input type="text" id="cr_medAidNo" class="cash-input" placeholder="Member number">
+            </div>
+            <div>
+              <label class="form-label">Tag Colour</label>
+              <input type="text" id="cr_colours" class="cash-input" placeholder="Black, White…">
+            </div>
+          </div>
+          <div style="margin-bottom:16px">
+            <label class="form-label">Medical Conditions / Alerts</label>
+            <textarea id="cr_conditions" class="cash-input" rows="2" placeholder="Allergies, chronic conditions…" style="resize:vertical"></textarea>
+          </div>
+          <div style="margin-bottom:16px">
+            <label class="form-label">Medications</label>
+            <textarea id="cr_medications" class="cash-input" rows="2" placeholder="Current medications…" style="resize:vertical"></textarea>
+          </div>
+
+          <!-- Contacts -->
+          <div style="font-size:11px;letter-spacing:1px;color:#F97316;font-family:'Orbitron',sans-serif;margin-bottom:10px">EMERGENCY CONTACTS</div>
+          <div id="cr_contacts">
+            <!-- Contact 1 -->
+            <div style="background:#111;border:1px solid #222;border-radius:10px;padding:14px;margin-bottom:10px">
+              <div style="font-size:12px;color:#aaa;margin-bottom:10px">Contact 1</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                <input type="text" id="cr_c1Name" class="cash-input" placeholder="Full name">
+                <input type="text" id="cr_c1Rel" class="cash-input" placeholder="Relationship">
+                <input type="tel" id="cr_c1Phone" class="cash-input" placeholder="Phone">
+                <input type="text" id="cr_c1TG" class="cash-input" placeholder="Telegram @handle">
+              </div>
+            </div>
+            <!-- Contact 2 -->
+            <div style="background:#111;border:1px solid #222;border-radius:10px;padding:14px;margin-bottom:10px">
+              <div style="font-size:12px;color:#aaa;margin-bottom:10px">Contact 2</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                <input type="text" id="cr_c2Name" class="cash-input" placeholder="Full name">
+                <input type="text" id="cr_c2Rel" class="cash-input" placeholder="Relationship">
+                <input type="tel" id="cr_c2Phone" class="cash-input" placeholder="Phone">
+                <input type="text" id="cr_c2TG" class="cash-input" placeholder="Telegram @handle">
+              </div>
+            </div>
+            <!-- Contact 3 -->
+            <div style="background:#111;border:1px solid #222;border-radius:10px;padding:14px;margin-bottom:10px">
+              <div style="font-size:12px;color:#aaa;margin-bottom:10px">Contact 3</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                <input type="text" id="cr_c3Name" class="cash-input" placeholder="Full name">
+                <input type="text" id="cr_c3Rel" class="cash-input" placeholder="Relationship">
+                <input type="tel" id="cr_c3Phone" class="cash-input" placeholder="Phone">
+                <input type="text" id="cr_c3TG" class="cash-input" placeholder="Telegram @handle">
+              </div>
+            </div>
+          </div>
+
+          <!-- Notes -->
+          <div style="margin-bottom:20px">
+            <label class="form-label">Notes for Finder</label>
+            <textarea id="cr_notes" class="cash-input" rows="2" placeholder="What a first responder should know…" style="resize:vertical"></textarea>
+          </div>
+          <div style="margin-bottom:24px">
+            <label class="form-label">Admin Notes (internal)</label>
+            <textarea id="cr_extraNotes" class="cash-input" rows="2" placeholder="Internal admin notes, not shown on card…" style="resize:vertical"></textarea>
+          </div>
+
+          <button onclick="submitCashReg()" id="cr_submitBtn" style="
+            width:100%;padding:16px;background:#F97316;color:#fff;border:none;border-radius:12px;
+            font-size:14px;font-weight:700;letter-spacing:1px;cursor:pointer;
+            font-family:'Exo 2',sans-serif;box-shadow:0 4px 20px rgba(249,115,22,0.35);
+            transition:opacity 0.2s
+          ">💵 Register as Cash Payment</button>
+
+        </div>
+      </div>
+    </div>
+
     <!-- ════════════ REVENUE ════════════ -->
     <div class="section" id="section-revenue">
       <div class="metric-grid">
@@ -1074,6 +1251,8 @@
 // ── CONFIG ──
 const SHEET_ID = '1_ZvLT_SnRkIgP7xiYBdDJ5DRtn9lwPnc6V3dmb-bSVI';
 const GAS_URL  = 'https://script.google.com/macros/s/AKfycbxmnSw493AHOdXHruQJODMzKbUSg--9XwF1L8rFdWedeGDP9qBAjuKHCD92tOGNpSVE/exec';
+// ADMIN_CASH_KEY must match the ADMIN_CASH_KEY Script Property set in GAS.
+// You enter this key in the Cash Registration form — it is never stored here.
 
 // ── STATE ──
 let allSubs = [], allScans = [], allTelegram = [], allFamilies = [];
@@ -1613,6 +1792,89 @@ function checkAuth() {
 
 // ── INIT ──
 checkAuth();
+
+// ════════════════════════════════════════════════════════════════════
+// CASH REGISTRATION
+// ════════════════════════════════════════════════════════════════════
+async function submitCashReg() {
+  const g = id => (document.getElementById(id) || {}).value || '';
+  const showMsg = (msg, ok) => {
+    const el = document.getElementById('cashRegMsg');
+    el.style.display = 'block';
+    el.style.background = ok ? 'rgba(0,200,100,0.1)' : 'rgba(249,115,22,0.1)';
+    el.style.border = ok ? '1px solid rgba(0,200,100,0.3)' : '1px solid rgba(249,115,22,0.3)';
+    el.style.color = ok ? '#0ed2a0' : '#F97316';
+    el.textContent = msg;
+  };
+
+  const adminKey = g('cr_adminKey');
+  const firstName = g('cr_firstName').trim();
+  const lastName  = g('cr_lastName').trim();
+  const email     = g('cr_email').trim();
+  const phone     = g('cr_phone').trim();
+
+  if (!adminKey)   { showMsg('Enter your Admin Cash Key.', false); return; }
+  if (!firstName)  { showMsg('First name is required.', false); return; }
+  if (!lastName)   { showMsg('Last name is required.', false); return; }
+  if (!email)      { showMsg('Email is required.', false); return; }
+  if (!phone)      { showMsg('Phone is required.', false); return; }
+
+  const btn = document.getElementById('cr_submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Registering…';
+
+  const payload = {
+    type:        'CASH_REGISTRATION',
+    _adminKey:   adminKey,
+    firstName:   firstName,
+    lastName:    lastName,
+    email:       email,
+    phone:       phone,
+    dob:         g('cr_dob'),
+    telegram:    g('cr_telegram'),
+    plan:        g('cr_plan'),
+    billing:     g('cr_billing'),
+    cashAmount:  g('cr_cashAmount'),
+    bloodType:   g('cr_bloodType'),
+    medicalAid:  g('cr_medicalAid'),
+    medAidNo:    g('cr_medAidNo'),
+    colours:     g('cr_colours'),
+    conditions:  g('cr_conditions'),
+    medications: g('cr_medications'),
+    notes:       g('cr_notes'),
+    extraNotes:  g('cr_extraNotes'),
+    c1Name:  g('cr_c1Name'), c1Rel: g('cr_c1Rel'), c1Phone: g('cr_c1Phone'), c1TG: g('cr_c1TG'), c1WA: 'No',
+    c2Name:  g('cr_c2Name'), c2Rel: g('cr_c2Rel'), c2Phone: g('cr_c2Phone'), c2TG: g('cr_c2TG'), c2WA: 'No',
+    c3Name:  g('cr_c3Name'), c3Rel: g('cr_c3Rel'), c3Phone: g('cr_c3Phone'), c3TG: g('cr_c3TG'), c3WA: 'No',
+  };
+
+  try {
+    const resp = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const json = await resp.json();
+    if (json.status === 'ok') {
+      showMsg('✅ Registered! Tag ID: ' + json.tagId, true);
+      // Clear the form
+      ['cr_firstName','cr_lastName','cr_email','cr_phone','cr_dob','cr_telegram',
+       'cr_cashAmount','cr_medicalAid','cr_medAidNo','cr_colours','cr_conditions',
+       'cr_medications','cr_notes','cr_extraNotes',
+       'cr_c1Name','cr_c1Rel','cr_c1Phone','cr_c1TG',
+       'cr_c2Name','cr_c2Rel','cr_c2Phone','cr_c2TG',
+       'cr_c3Name','cr_c3Rel','cr_c3Phone','cr_c3TG'
+      ].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    } else {
+      showMsg('Error: ' + (json.message || 'Unknown error'), false);
+    }
+  } catch(err) {
+    showMsg('Network error: ' + err.message, false);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '💵 Register as Cash Payment';
+  }
+}
 </script>
 </body>
 </html>
