@@ -2422,30 +2422,27 @@ function showPaymentSection(tagId, firstName, lastName, email, phone, plan, bill
   }
 
   var hardwareAmount = (tagCount || 1) * 199;
-  var totalAmount    = subAmount + hardwareAmount; // first payment includes hardware
-  var isRecurring    = billing === 'monthly' && plan !== 'Care';
+  var totalAmount    = subAmount + hardwareAmount;
 
   var summary = document.getElementById('paymentSummary');
   if (summary) {
-    var recurringNote = isRecurring
-      ? '<div style="margin-top:10px;padding:8px 12px;background:rgba(14,210,200,0.07);border-radius:8px;font-size:12px;color:#0ED2C8">🔄 Then <strong>R' + subAmount.toFixed(2) + '/month</strong> automatically — cancel any time</div>'
+    var renewalNote = billing === 'monthly'
+      ? '<div style="margin-top:10px;padding:8px 12px;background:rgba(14,210,200,0.07);border-radius:8px;font-size:12px;color:#0ED2C8">📅 You will receive a renewal link each month for R' + subAmount.toFixed(2) + '</div>'
       : '';
     summary.innerHTML =
       '<div style="font-family:\'Orbitron\',sans-serif;font-size:10px;letter-spacing:2px;color:#F97316;margin-bottom:14px">PAYMENT SUMMARY</div>' +
       '<div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:14px"><span style="color:#aaa">' + planData.label + ' (' + billingLabel + ')</span><span style="color:#fff;font-weight:600">R' + subAmount.toFixed(2) + '</span></div>' +
       '<div style="display:flex;justify-content:space-between;margin-bottom:14px;font-size:14px"><span style="color:#aaa">Tag Hardware (' + (tagCount||1) + ' tag' + (tagCount>1?'s':'') + ') — once-off</span><span style="color:#fff;font-weight:600">R' + hardwareAmount.toFixed(2) + '</span></div>' +
-      '<div style="border-top:1px solid rgba(249,115,22,0.3);padding-top:12px;display:flex;justify-content:space-between"><span style="color:#fff;font-weight:700;font-size:16px">Total today</span><span style="color:#F97316;font-weight:900;font-size:22px;font-family:\'Orbitron\',sans-serif">R' + totalAmount.toFixed(2) + '</span></div>' +
-      recurringNote;
+      '<div style="border-top:1px solid rgba(249,115,22,0.3);padding-top:12px;display:flex;justify-content:space-between"><span style="color:#fff;font-weight:700;font-size:16px">Total</span><span style="color:#F97316;font-weight:900;font-size:22px;font-family:\'Orbitron\',sans-serif">R' + totalAmount.toFixed(2) + '</span></div>' +
+      renewalNote;
   }
 
   window._paymentData = {
     tagId: tagId, firstName: firstName, lastName: lastName,
     email: email, phone: phone, plan: plan, billing: billing,
     amount: totalAmount.toFixed(2),
-    recurring_amount: subAmount.toFixed(2), // recurring charges (no hardware)
-    isRecurring: isRecurring,
+    renewalAmount: subAmount.toFixed(2),
     itemName: 'Innovat3 ' + planData.label + ' ' + billingLabel,
-    itemDescription: 'Innovat3 ' + planData.label + ' ' + billingLabel,
     registrationData: registrationData || {}
   };
 }
@@ -2520,7 +2517,7 @@ async function payWithPayFast() {
   pfParams['email_address']    = d.email;
   if (phone) pfParams['cell_number'] = phone;
 
-  // Get signature from worker — subscription fields excluded from signing
+  // Get signature from worker (passphrase-free, proven working)
   var signature = '';
   try {
     var regData = null;
@@ -2531,8 +2528,6 @@ async function payWithPayFast() {
       body: JSON.stringify({ pfParams: pfParams, regData: regData || {} })
     });
     var json = await resp.json();
-    console.log('[IN3] Worker sigStr:', json.sigStr);
-    console.log('[IN3] Worker signature:', json.signature);
     if (json.status === 'ok' && json.signature) {
       signature = json.signature;
     } else {
@@ -2546,17 +2541,6 @@ async function payWithPayFast() {
   }
 
   pfParams['signature'] = signature;
-
-  // Subscription fields added AFTER signature — PayFast needs them in the form
-  // but excludes them from signature verification
-  if (d.isRecurring) {
-    var today = new Date();
-    pfParams['subscription_type'] = '1';
-    pfParams['billing_date']      = today.toISOString().split('T')[0];
-    pfParams['recurring_amount']  = d.recurring_amount;
-    pfParams['frequency']         = '3';
-    pfParams['cycles']            = '0';
-  }
 
   // Populate form and submit
   form.innerHTML = '';
