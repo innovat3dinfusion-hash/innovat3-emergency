@@ -2527,7 +2527,9 @@ async function payWithPayFast() {
     pfParams['billing_date']       = today.toISOString().split('T')[0];
     pfParams['recurring_amount']   = d.recurring_amount;
     pfParams['frequency']          = '3';
-    pfParams['cycles']             = '0';
+    // cycles omitted — PayFast PHP uses empty('0')=true so '0' gets excluded
+    // from their signature but included in ours, causing mismatch.
+    // Omitting cycles defaults to indefinite subscription (same effect as 0).
   }
 
   // Get signature from worker (passphrase stays server-side, worker MD5 is verified correct)
