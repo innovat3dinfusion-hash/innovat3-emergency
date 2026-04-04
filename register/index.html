@@ -2418,7 +2418,7 @@ function showPaymentSection(tagId, firstName, lastName, email, phone, plan, bill
     billingLabel = 'Monthly';
   } else {
     subAmount    = planData.annual;
-    billingLabel = 'Annual (20% saving)';
+    billingLabel = 'Annual';
   }
 
   var hardwareAmount = (tagCount || 1) * 199;
@@ -2445,7 +2445,7 @@ function showPaymentSection(tagId, firstName, lastName, email, phone, plan, bill
     recurring_amount: subAmount.toFixed(2), // recurring charges (no hardware)
     isRecurring: isRecurring,
     itemName: 'Innovat3 ' + planData.label + ' ' + billingLabel,
-    itemDescription: 'Tag ' + tagId + ' ' + plan + ' ' + billingLabel,
+    itemDescription: 'Innovat3 ' + planData.label + ' ' + billingLabel,
     registrationData: registrationData || {}
   };
 }
@@ -2515,7 +2515,6 @@ async function payWithPayFast() {
   pfParams['m_payment_id']     = d.tagId;
   pfParams['amount']           = d.amount;
   pfParams['item_name']        = d.itemName;
-  pfParams['item_description'] = d.itemDescription;
   pfParams['name_first']       = d.firstName;
   pfParams['name_last']        = d.lastName;
   pfParams['email_address']    = d.email;
