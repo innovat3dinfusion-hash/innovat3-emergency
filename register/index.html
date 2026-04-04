@@ -2520,19 +2520,9 @@ async function payWithPayFast() {
   pfParams['email_address']    = d.email;
   if (phone) pfParams['cell_number'] = phone;
 
-  // ── Recurring subscription fields (monthly billing only) ────────
-  if (d.isRecurring) {
-    var today = new Date();
-    pfParams['subscription_type']  = '1';
-    pfParams['billing_date']       = today.toISOString().split('T')[0];
-    pfParams['recurring_amount']   = d.recurring_amount;
-    pfParams['frequency']          = '3';
-    // cycles omitted — PayFast PHP uses empty('0')=true so '0' gets excluded
-    // from their signature but included in ours, causing mismatch.
-    // Omitting cycles defaults to indefinite subscription (same effect as 0).
-  }
-
-  // Get signature from worker (passphrase stays server-side, worker MD5 is verified correct)
+  // Get signature from worker — subscription fields excluded from signing
+  // (PayFast excludes billing_date, frequency, recurring_amount, subscription_type,
+  //  and cycles from their own signature verification, same as empty('0') for cycles)
   var signature = '';
   try {
     var regData = null;
@@ -2559,9 +2549,16 @@ async function payWithPayFast() {
 
   pfParams['signature'] = signature;
 
-  // cycles=0 must be sent to PayFast but NOT included in the signature
-  // (PayFast's PHP uses empty('0')=true so they exclude it from their hash)
-  if (d.isRecurring) pfParams['cycles'] = '0';
+  // Add subscription fields AFTER signature is built — PayFast requires these
+  // in the form but excludes them from signature verification
+  if (d.isRecurring) {
+    var today = new Date();
+    pfParams['subscription_type'] = '1';
+    pfParams['billing_date']      = today.toISOString().split('T')[0];
+    pfParams['recurring_amount']  = d.recurring_amount;
+    pfParams['frequency']         = '3';
+    pfParams['cycles']            = '0';
+  }
 
   // Populate form and submit
   form.innerHTML = '';
