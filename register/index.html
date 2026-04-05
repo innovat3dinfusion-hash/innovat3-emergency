@@ -967,7 +967,7 @@ var photoUploadedUrl = '';
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:8px">
           <div>
             <label style="font-size:10px;letter-spacing:1.5px;color:#F97316;font-family:'Orbitron',sans-serif;display:block;margin-bottom:6px">RING COLOUR</label>
-            <select id="colourRing" onchange="updateTagPreview()" style="
+            <select id="colourRing" onchange="updateTagPreview('ringDrop')" style="
               width:100%;padding:10px 12px;background:#0d0d14;border:1px solid #2a2a3a;
               border-radius:8px;color:#fff;font-size:13px;font-family:'Exo 2',sans-serif;
               outline:none;cursor:pointer
@@ -985,10 +985,21 @@ var photoUploadedUrl = '';
               <option value="Sky Blue|#06b6d4">Sky Blue</option>
               <option value="Surprise Me|#F97316">✨ Surprise Me</option>
             </select>
+            <!-- Custom ring colour -->
+            <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
+              <input type="color" id="ringSwatchPicker" value="#ef4444"
+                onchange="document.getElementById('ringCustomHex').value=this.value; updateTagPreview('ringCustom')"
+                style="width:34px;height:34px;border:none;border-radius:6px;cursor:pointer;background:none;padding:0">
+              <input type="text" id="ringCustomHex" placeholder="#ef4444" maxlength="7"
+                oninput="var v=this.value; if(/^#[0-9a-fA-F]{6}$/.test(v)){document.getElementById('ringSwatchPicker').value=v; updateTagPreview('ringCustom');}"
+                style="flex:1;padding:8px 10px;background:#0d0d14;border:1px solid #2a2a3a;border-radius:8px;
+                       color:#fff;font-size:12px;font-family:monospace;outline:none" value="#ef4444">
+              <span style="font-size:10px;color:var(--muted);white-space:nowrap">custom hex</span>
+            </div>
           </div>
           <div>
             <label style="font-size:10px;letter-spacing:1.5px;color:#0ED2C8;font-family:'Orbitron',sans-serif;display:block;margin-bottom:6px">DISC COLOUR</label>
-            <select id="colourDisc" onchange="updateTagPreview()" style="
+            <select id="colourDisc" onchange="updateTagPreview('discDrop')" style="
               width:100%;padding:10px 12px;background:#0d0d14;border:1px solid #2a2a3a;
               border-radius:8px;color:#fff;font-size:13px;font-family:'Exo 2',sans-serif;
               outline:none;cursor:pointer
@@ -1006,9 +1017,30 @@ var photoUploadedUrl = '';
               <option value="Sky Blue|#06b6d4">Sky Blue</option>
               <option value="Surprise Me|#a855f7">✨ Surprise Me</option>
             </select>
+            <!-- Custom disc colour -->
+            <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
+              <input type="color" id="discSwatchPicker" value="#0ED2C8"
+                onchange="document.getElementById('discCustomHex').value=this.value; updateTagPreview('discCustom')"
+                style="width:34px;height:34px;border:none;border-radius:6px;cursor:pointer;background:none;padding:0">
+              <input type="text" id="discCustomHex" placeholder="#0ED2C8" maxlength="7"
+                oninput="var v=this.value; if(/^#[0-9a-fA-F]{6}$/.test(v)){document.getElementById('discSwatchPicker').value=v; updateTagPreview('discCustom');}"
+                style="flex:1;padding:8px 10px;background:#0d0d14;border:1px solid #2a2a3a;border-radius:8px;
+                       color:#fff;font-size:12px;font-family:monospace;outline:none" value="#0ED2C8">
+              <span style="font-size:10px;color:var(--muted);white-space:nowrap">custom hex</span>
+            </div>
           </div>
         </div>
-        <p style="font-size:10px;color:var(--muted);text-align:center;margin-top:4px">
+
+        <!-- Colour notes -->
+        <div style="margin-top:14px">
+          <label style="font-size:10px;letter-spacing:1.5px;color:var(--muted);font-family:'Orbitron',sans-serif;display:block;margin-bottom:6px">COLOUR NOTES <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
+          <textarea id="colourNotes" rows="2" placeholder="e.g. Matte black ring with navy blue disc — match school uniform colours"
+            style="width:100%;padding:10px 12px;background:#0d0d14;border:1px solid #2a2a3a;border-radius:8px;
+                   color:#fff;font-size:12px;font-family:'Exo 2',sans-serif;outline:none;resize:vertical;
+                   line-height:1.5"></textarea>
+        </div>
+
+        <p style="font-size:10px;color:var(--muted);text-align:center;margin-top:10px">
           Ring = outer border &amp; logo colour &nbsp;·&nbsp; Disc = inner face colour
         </p>
       </div>
@@ -1826,16 +1858,34 @@ function _loadTagImg(cb) {
   img.src = _tagImgSrc;
 }
 
-function updateTagPreview() {
-  var ringSel = document.getElementById('colourRing');
-  var discSel = document.getElementById('colourDisc');
+function _isValidHex(h) { return /^#[0-9a-fA-F]{6}$/.test(h); }
+
+function updateTagPreview(src) {
+  var ringSel   = document.getElementById('colourRing');
+  var discSel   = document.getElementById('colourDisc');
+  var ringInput = document.getElementById('ringCustomHex');
+  var discInput = document.getElementById('discCustomHex');
   if (!ringSel || !discSel) return;
+
+  // If a dropdown changed, sync the colour picker
+  if (src === 'ringDrop' && ringInput) {
+    var hex = ringSel.value.split('|')[1] || '#ef4444';
+    ringInput.value = hex;
+    document.getElementById('ringSwatchPicker').value = hex;
+  }
+  if (src === 'discDrop' && discInput) {
+    var hex = discSel.value.split('|')[1] || '#0ED2C8';
+    discInput.value = hex;
+    document.getElementById('discSwatchPicker').value = hex;
+  }
 
   var ringParts = ringSel.value.split('|');
   var discParts = discSel.value.split('|');
-  var ringName  = ringParts[0], discName = discParts[0];
-  var ringHex   = ringParts[1] || '#ef4444';
-  var discHex   = discParts[1] || '#0ED2C8';
+  // Custom hex overrides dropdown if valid
+  var ringHex  = (ringInput && _isValidHex(ringInput.value)) ? ringInput.value : (ringParts[1] || '#ef4444');
+  var discHex  = (discInput && _isValidHex(discInput.value)) ? discInput.value : (discParts[1] || '#0ED2C8');
+  var ringName = (ringInput && _isValidHex(ringInput.value) && ringInput.value !== (ringParts[1]||'')) ? ringInput.value : ringParts[0];
+  var discName = (discInput && _isValidHex(discInput.value) && discInput.value !== (discParts[1]||'')) ? discInput.value : discParts[0];
 
   var label = document.getElementById('tagColourLabel');
   if (label) label.textContent = ringName + ' + ' + discName;
@@ -1857,6 +1907,13 @@ function updateTagPreview() {
     var ringHsl  = _rgbToHsl(ringRgb.r,ringRgb.g,ringRgb.b);
     var discHsl  = _rgbToHsl(discRgb.r,discRgb.g,discRgb.b);
 
+    // Base luminance of original source colours in this image
+    // Red ring: ~L 0.46  |  Mint disc: ~L 0.79
+    var SRC_RING_L = 0.46;
+    var SRC_DISC_L = 0.79;
+
+    function _clamp01(v) { return Math.max(0, Math.min(1, v)); }
+
     for (var i=0; i<data.length; i+=4) {
       var r=data[i], g=data[i+1], b=data[i+2], a=data[i+3];
       if (a < 20) continue;
@@ -1866,16 +1923,20 @@ function updateTagPreview() {
 
       // Ring pixels: vivid red (ring shell, mascot, text) — hue 340°–25°, high sat
       var isRing = (h>=340 || h<=25) && s>0.45 && l>0.18 && l<0.78;
-      // Disc pixels: light mint/seafoam face — hue 130°–185°, lower sat, higher lightness
-      // Excludes water-blue (hue 190°–230°) which must be left untouched
+      // Disc pixels: light mint/seafoam face — hue 130°–185°, lower sat, high lightness
+      // Water-blue (190°–230°) is deliberately excluded
       var isDisc = (h>=130 && h<=185) && s>0.06 && l>0.45 && l<0.95;
 
       if (isRing) {
-        // Keep original luminance, apply target hue+sat
-        var nr = _hslToRgb(ringHsl.h, ringHsl.s>0 ? Math.max(ringHsl.s, s*0.5) : 0, l);
+        // Scale target luminance proportionally to original pixel vs source base
+        var relL = _clamp01(l / SRC_RING_L);
+        var newL = _clamp01(ringHsl.l * relL * 1.05);
+        var nr   = _hslToRgb(ringHsl.h, ringHsl.s, newL);
         data[i]=nr.r; data[i+1]=nr.g; data[i+2]=nr.b;
       } else if (isDisc) {
-        var nd = _hslToRgb(discHsl.h, discHsl.s>0 ? Math.max(discHsl.s, s*0.5) : 0, l);
+        var relL = _clamp01(l / SRC_DISC_L);
+        var newL = _clamp01(discHsl.l * relL * 1.05);
+        var nd   = _hslToRgb(discHsl.h, discHsl.s, newL);
         data[i]=nd.r; data[i+1]=nd.g; data[i+2]=nd.b;
       }
     }
@@ -2564,7 +2625,8 @@ async function proceedToPayment() {
     blood: blood, medical: buildMedical(), meds: v('meds'),
     address: v('address'), notes: v('notes'),
     medicalAid: v('medicalAid'), medicalAidNumber: v('medicalAidNumber'),
-    colour: colour, formFactor: document.getElementById('formFactor').value,
+    colour: colour, colourNotes: v('colourNotes'),
+    formFactor: document.getElementById('formFactor').value,
     delivery: v('delivery'), extraNotes: v('extraNotes'),
     photoUrl: '', consentDate: timestamp,
     careType: careType || 'senior', careIdDocUrl: window._careIdUrl || '', careMedDocUrl: window._careMedUrl || '',
