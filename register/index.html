@@ -954,33 +954,83 @@ var photoUploadedUrl = '';
       <div class="form-tab-hdr">🎨 &nbsp;Tag Colour</div>
       <div class="form-tab-body">
 
-        <!-- Live SVG Preview — disc tag like the actual product -->
+        <!-- Live SVG Preview — matches real disc tag exactly -->
         <div class="tag-preview-wrap" style="margin-bottom:20px">
           <div class="tag-preview-label">Live Preview</div>
-          <svg id="tagPreviewSvg" viewBox="0 0 160 180" width="140" height="157" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 4px 16px rgba(0,0,0,0.5))">
-            <!-- Keyring loop -->
-            <ellipse cx="80" cy="16" rx="10" ry="10" fill="none" id="tagRingLoop" stroke="#ef4444" stroke-width="5"/>
-            <!-- Outer ring (colour 1) -->
-            <circle cx="80" cy="100" r="68" id="tagOuterRing" fill="#ef4444"/>
-            <!-- Inner disc (colour 2) -->
-            <circle cx="80" cy="100" r="54" id="tagInnerDisc" fill="#0ED2C8"/>
-            <!-- Logo: mascot silhouette in ring colour -->
-            <!-- Body -->
-            <ellipse cx="80" cy="88" rx="14" ry="16" id="logoBody" fill="#ef4444"/>
+          <svg id="tagPreviewSvg" viewBox="0 0 200 230" width="160" height="184" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 6px 24px rgba(0,0,0,0.7))">
+            <defs>
+              <!-- Radial gradient for inner disc depth/texture -->
+              <radialGradient id="discShine" cx="38%" cy="35%" r="60%">
+                <stop offset="0%" stop-color="rgba(255,255,255,0.18)"/>
+                <stop offset="100%" stop-color="rgba(0,0,0,0.1)"/>
+              </radialGradient>
+              <!-- Ring bevel highlight -->
+              <radialGradient id="ringShine" cx="35%" cy="30%" r="65%">
+                <stop offset="0%" stop-color="rgba(255,255,255,0.22)"/>
+                <stop offset="100%" stop-color="rgba(0,0,0,0.15)"/>
+              </radialGradient>
+            </defs>
+
+            <!-- ── KEYRING TAB ── -->
+            <!-- Triangular connector from hole to ring top -->
+            <path id="tagTab" d="M88,42 Q100,18 112,42 Z" fill="#ef4444"/>
+            <!-- Keyring hole outline (dark cutout) -->
+            <circle cx="100" cy="30" r="11" fill="#1a1a1a"/>
+            <!-- Keyring hole inner (dark) -->
+            <circle cx="100" cy="30" r="7" fill="#0d0d0d"/>
+            <!-- Tab ring-colour fill over connector -->
+            <path id="tagTab2" d="M86,50 Q100,16 114,50 Z" fill="#ef4444"/>
+            <!-- Redo hole cutout on top -->
+            <circle cx="100" cy="30" r="10" fill="#1a1a1a"/>
+            <circle cx="100" cy="30" r="6.5" fill="#0d0d0d"/>
+
+            <!-- ── OUTER RING (colour 1) ── -->
+            <circle cx="100" cy="138" r="86" id="tagOuterRing" fill="#ef4444"/>
+            <!-- Ring shine overlay -->
+            <circle cx="100" cy="138" r="86" fill="url(#ringShine)" opacity="0.5"/>
+
+            <!-- ── INNER DISC (colour 2) ── -->
+            <circle cx="100" cy="138" r="67" id="tagInnerDisc" fill="#0ED2C8"/>
+            <!-- Disc texture/shine -->
+            <circle cx="100" cy="138" r="67" fill="url(#discShine)"/>
+
+            <!-- ── INNOVAT3 MASCOT (in ring colour, embossed on disc) ── -->
+            <!-- Traced from the real logo: rounded body, head with antenna, spread arms, legs -->
             <!-- Head -->
-            <circle cx="80" cy="68" r="10" id="logoHead" fill="#ef4444"/>
-            <!-- Left arm -->
-            <ellipse cx="63" cy="88" rx="6" ry="9" id="logoArmL" fill="#ef4444" transform="rotate(-20,63,88)"/>
-            <!-- Right arm -->
-            <ellipse cx="97" cy="88" rx="6" ry="9" id="logoArmR" fill="#ef4444" transform="rotate(20,97,88)"/>
-            <!-- Eye -->
-            <circle cx="84" cy="66" r="2.5" fill="#0ED2C8" id="logoEye"/>
-            <!-- innovat3 text -->
-            <text x="80" y="126" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" font-weight="900" id="logoText" fill="#ef4444" letter-spacing="1">innovat3</text>
-            <!-- Subtle shine -->
-            <ellipse cx="65" cy="78" rx="18" ry="10" fill="rgba(255,255,255,0.08)" transform="rotate(-30,65,78)"/>
+            <circle cx="100" cy="104" r="13" id="m_head" fill="#ef4444"/>
+            <!-- Antenna -->
+            <line x1="107" y1="93" x2="115" y2="82" id="m_antenna" stroke="#ef4444" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="116" cy="80" r="3.5" id="m_antennaBall" fill="#ef4444"/>
+            <!-- Body -->
+            <ellipse cx="100" cy="126" rx="11" ry="13" id="m_body" fill="#ef4444"/>
+            <!-- Left arm — angled out and down like running pose -->
+            <path id="m_armL" d="M89,118 Q76,122 70,132" stroke="#ef4444" stroke-width="7" fill="none" stroke-linecap="round"/>
+            <circle cx="69" cy="133" r="4" id="m_handL" fill="#ef4444"/>
+            <!-- Right arm — up and out -->
+            <path id="m_armR" d="M111,118 Q122,112 128,120" stroke="#ef4444" stroke-width="7" fill="none" stroke-linecap="round"/>
+            <circle cx="129" cy="121" r="4" id="m_handR" fill="#ef4444"/>
+            <!-- Left leg -->
+            <path id="m_legL" d="M95,138 Q90,148 85,156" stroke="#ef4444" stroke-width="6.5" fill="none" stroke-linecap="round"/>
+            <circle cx="84" cy="157" r="3.5" id="m_footL" fill="#ef4444"/>
+            <!-- Right leg -->
+            <path id="m_legR" d="M105,138 Q110,148 116,154" stroke="#ef4444" stroke-width="6.5" fill="none" stroke-linecap="round"/>
+            <circle cx="117" cy="155" r="3.5" id="m_footR" fill="#ef4444"/>
+            <!-- Eye (disc colour peeking through) -->
+            <circle cx="104" cy="101" r="3" id="m_eye" fill="#0ED2C8"/>
+            <circle cx="104" cy="101" r="1.5" fill="#1a1a1a"/>
+
+            <!-- ── innovat3 TEXT ── -->
+            <text x="100" y="178" text-anchor="middle"
+              font-family="'Arial Black',Arial,sans-serif"
+              font-size="13.5" font-weight="900" font-style="italic"
+              id="logoText" fill="#ef4444" letter-spacing="0.5">innovat3</text>
+
+            <!-- Ring inner edge shadow (depth effect) -->
+            <circle cx="100" cy="138" r="67" fill="none" stroke="rgba(0,0,0,0.25)" stroke-width="3"/>
+            <!-- Ring outer edge highlight -->
+            <circle cx="100" cy="138" r="86" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
           </svg>
-          <div id="tagColourLabel" style="font-size:12px;color:#F97316;font-weight:700;letter-spacing:1px;margin-top:4px">Red + Teal</div>
+          <div id="tagColourLabel" style="font-size:12px;color:#F97316;font-weight:700;letter-spacing:1px;margin-top:6px">Red + Teal</div>
         </div>
 
         <!-- Two dropdowns: Ring colour + Disc colour -->
@@ -1800,21 +1850,35 @@ function updateTagPreview() {
   var ringHex   = ringParts[1] || '#ef4444';
   var discHex   = discParts[1] || '#0ED2C8';
 
-  // Update SVG elements
-  var ids = ['tagOuterRing','tagRingLoop','logoBody','logoHead','logoArmL','logoArmR','logoText'];
-  ids.forEach(function(id) {
+  // All ring-coloured fills (outer ring + tab + mascot parts)
+  var ringFillIds = [
+    'tagOuterRing','tagTab','tagTab2',
+    'm_head','m_body','m_antennaBall',
+    'm_handL','m_handR','m_footL','m_footR',
+    'm_armL','m_armR','m_legL','m_legR',
+    'm_antenna','logoText'
+  ];
+  ringFillIds.forEach(function(id) {
     var el = document.getElementById(id);
-    if (el) el.setAttribute('fill', ringHex);
+    if (!el) return;
+    if (el.tagName === 'line' || el.tagName === 'path' && el.getAttribute('fill') === 'none') {
+      el.setAttribute('stroke', ringHex);
+    } else {
+      el.setAttribute('fill', ringHex);
+    }
   });
-  // Ring loop uses stroke not fill
-  var loop = document.getElementById('tagRingLoop');
-  if (loop) { loop.setAttribute('stroke', ringHex); loop.setAttribute('fill', 'none'); }
+  // Stroke-only paths (arms, legs, antenna)
+  ['m_armL','m_armR','m_legL','m_legR','m_antenna'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) { el.setAttribute('stroke', ringHex); el.setAttribute('fill', 'none'); }
+  });
 
+  // Inner disc
   var disc = document.getElementById('tagInnerDisc');
   if (disc) disc.setAttribute('fill', discHex);
 
-  // Eye colour matches disc so it "pops" through
-  var eye = document.getElementById('logoEye');
+  // Eye = disc colour so it reads as a cutout
+  var eye = document.getElementById('m_eye');
   if (eye) eye.setAttribute('fill', discHex);
 
   // Update label and coloursSelected for form submission
