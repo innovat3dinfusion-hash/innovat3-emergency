@@ -89,6 +89,9 @@ button, a, input, select, textarea { touch-action:manipulation; }
 .tab-contacts  .form-tab-hdr { background:linear-gradient(90deg,#082a16,#15803D,#22c55e); color:#fff; }
 .tab-tag       { border:1px solid rgba(14,210,200,0.4); }
 .tab-tag       .form-tab-hdr { background:linear-gradient(90deg,#064e4a,#0ED2C8); color:#000; }
+/* Colour picker two-column layout — stacks on mobile */
+.colour-pick-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:8px; }
+@media(max-width:520px){ .colour-pick-grid { grid-template-columns:1fr; gap:10px; } }
 .tab-photo     { border:1px solid rgba(59,130,246,0.4); }
 .tab-photo     .form-tab-hdr { background:linear-gradient(90deg,#1e3a8a,#3B82F6); color:#fff; }
 .tab-address   { border:1px solid rgba(20,83,45,0.5); }
@@ -964,7 +967,7 @@ var photoUploadedUrl = '';
         </div>
 
         <!-- Two dropdowns: Ring colour + Disc colour -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:8px">
+        <div class="colour-pick-grid">
           <div>
             <label style="font-size:10px;letter-spacing:1.5px;color:#F97316;font-family:'Orbitron',sans-serif;display:block;margin-bottom:6px">RING COLOUR</label>
             <select id="colourRing" onchange="updateTagPreview('ringDrop')" style="
@@ -1921,11 +1924,13 @@ function updateTagPreview(src) {
       var hsl = _rgbToHsl(r,g,b);
       var h=hsl.h, s=hsl.s, l=hsl.l;
 
-      // Ring pixels: vivid red (ring shell, mascot, text) — hue 340°–25°, high sat
-      var isRing = (h>=340 || h<=25) && s>0.45 && l>0.18 && l<0.78;
-      // Disc pixels: light mint/seafoam face — hue 130°–185°, lower sat, high lightness
-      // Water-blue (190°–230°) is deliberately excluded
-      var isDisc = (h>=130 && h<=185) && s>0.06 && l>0.45 && l<0.95;
+      // Ring pixels: vivid red (ring shell, mascot, text)
+      // High saturation floor (>0.55) to exclude water reflections which are desaturated
+      // Narrow lightness window to exclude very dark shadows and washed-out highlights
+      var isRing = (h>=338 || h<=22) && s>0.55 && l>0.22 && l<0.72;
+      // Disc pixels: mint/seafoam face only — narrow hue 135°–178° to avoid water (190°+)
+      // Higher sat floor than before to exclude desaturated reflection areas
+      var isDisc = (h>=135 && h<=178) && s>0.12 && l>0.50 && l<0.92;
 
       if (isRing) {
         // Scale target luminance proportionally to original pixel vs source base
