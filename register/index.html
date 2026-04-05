@@ -1770,6 +1770,7 @@ function hideCareTypeSelector() {
 // ── TAG COLOUR — canvas pixel recolour ──
 var _tagImg       = null;
 var _tagImgReady  = false;
+var _tagImgSrc    = '/assets/DZCP5614.PNG';
 
 function _hexToRgb(hex) {
   return {
@@ -1816,13 +1817,13 @@ function _loadTagImg(cb) {
     var ctx=cv.getContext('2d');
     ctx.clearRect(0,0,cv.width,cv.height);
     ctx.beginPath(); ctx.arc(200,200,180,0,Math.PI*2);
-    ctx.fillStyle='#ef4444'; ctx.fill();
+    ctx.fillStyle='#e53935'; ctx.fill();
     ctx.beginPath(); ctx.arc(200,200,140,0,Math.PI*2);
-    ctx.fillStyle='#0ED2C8'; ctx.fill();
-    ctx.fillStyle='#fff'; ctx.font='bold 28px sans-serif'; ctx.textAlign='center';
-    ctx.fillText('innovat3',200,215);
+    ctx.fillStyle='#b2dfdb'; ctx.fill();
+    ctx.fillStyle='#e53935'; ctx.font='bold 28px sans-serif'; ctx.textAlign='center';
+    ctx.fillText('innovata',200,215);
   };
-  img.src = '/assets/water-tag.png';
+  img.src = _tagImgSrc;
 }
 
 function updateTagPreview() {
@@ -1863,10 +1864,11 @@ function updateTagPreview() {
       var hsl = _rgbToHsl(r,g,b);
       var h=hsl.h, s=hsl.s, l=hsl.l;
 
-      // Ring pixels: reddish hues (330°–30°), not too dark/light
-      var isRing = (h>=330 || h<=30) && s>0.2 && l>0.07 && l<0.88;
-      // Disc pixels: cyan/teal hues (155°–215°), not too dark/light
-      var isDisc = (h>=155 && h<=215) && s>0.2 && l>0.07 && l<0.88;
+      // Ring pixels: vivid red (ring shell, mascot, text) — hue 340°–25°, high sat
+      var isRing = (h>=340 || h<=25) && s>0.45 && l>0.18 && l<0.78;
+      // Disc pixels: light mint/seafoam face — hue 130°–185°, lower sat, higher lightness
+      // Excludes water-blue (hue 190°–230°) which must be left untouched
+      var isDisc = (h>=130 && h<=185) && s>0.06 && l>0.45 && l<0.95;
 
       if (isRing) {
         // Keep original luminance, apply target hue+sat
