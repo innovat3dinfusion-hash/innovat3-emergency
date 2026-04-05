@@ -288,8 +288,40 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
   <p style="color:#555;font-size:11px;margin-top:16px">innovat3.co.za &middot; Smart NFC Emergency Tag</p>
 </div>
 
+<!-- SESSION EXPIRED OVERLAY -->
+<div id="sessionExpiredScreen" style="
+  display:none;position:fixed;inset:0;z-index:10000;
+  background:#0a0a0f;
+  flex-direction:column;align-items:center;justify-content:center;
+  padding:32px;text-align:center;font-family:'Exo 2',sans-serif;
+">
+  <div style="font-size:56px;margin-bottom:16px">⏱️</div>
+  <div style="
+    font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;
+    color:#F97316;letter-spacing:3px;margin-bottom:12px;text-transform:uppercase
+  ">Session Expired</div>
+  <p style="color:#aaa;font-size:14px;max-width:300px;line-height:1.6;margin-bottom:24px">
+    This emergency card session has ended for security.<br>
+    Scan the tag again to view emergency information.
+  </p>
+  <p style="color:#555;font-size:11px">innovat3.co.za &middot; Smart NFC Emergency Tag</p>
+</div>
+
 <!-- CARD -->
 <div class="card-wrap" id="cardWrap">
+
+  <!-- SESSION TIMER BAR -->
+  <div id="sessionTimerBar" style="
+    position:sticky;top:0;z-index:100;
+    background:#0d0d14;border-bottom:1px solid #1a1a2e;
+    padding:6px 16px;display:none;
+    align-items:center;justify-content:space-between;gap:12px;
+  ">
+    <div style="flex:1;height:4px;background:#1a1a2e;border-radius:2px;overflow:hidden">
+      <div id="sessionTimerFill" style="height:100%;background:#F97316;transition:width 1s linear;width:100%"></div>
+    </div>
+    <span id="sessionTimerLabel" style="font-size:10px;color:#aaa;white-space:nowrap;font-family:'Orbitron',sans-serif;letter-spacing:1px">15:00</span>
+  </div>
 
   <!-- BANNER -->
   <div class="in3-banner" id="in3Banner">
@@ -596,6 +628,51 @@ var subData = {};
   // Show card
   document.getElementById('loadingScreen').style.display = 'none';
   document.getElementById('cardWrap').style.display      = 'block';
+
+  // ── Session timer ─────────────────────────────────────────────
+  // Expires after 15 min total, or if tab is hidden for > 2 min.
+  var SESSION_MS      = 15 * 60 * 1000;  // 15 minutes total
+  var HIDDEN_LIMIT_MS =  2 * 60 * 1000;  // 2 minutes hidden = expire
+  var sessionStart    = Date.now();
+  var hiddenSince     = null;
+
+  var timerBar   = document.getElementById('sessionTimerBar');
+  var timerFill  = document.getElementById('sessionTimerFill');
+  var timerLabel = document.getElementById('sessionTimerLabel');
+  timerBar.style.display = 'flex';
+
+  function expireSession() {
+    clearInterval(sessionTick);
+    document.getElementById('cardWrap').style.display = 'none';
+    var exp = document.getElementById('sessionExpiredScreen');
+    exp.style.display = 'flex';
+  }
+
+  var sessionTick = setInterval(function() {
+    var elapsed  = Date.now() - sessionStart;
+    var remaining = SESSION_MS - elapsed;
+    if (remaining <= 0) { expireSession(); return; }
+    var pct = (remaining / SESSION_MS) * 100;
+    timerFill.style.width = pct + '%';
+    timerFill.style.background = pct > 40 ? '#F97316' : pct > 15 ? '#eab308' : '#ef4444';
+    var mins = Math.floor(remaining / 60000);
+    var secs = Math.floor((remaining % 60000) / 1000);
+    timerLabel.textContent = mins + ':' + (secs < 10 ? '0' : '') + secs;
+  }, 1000);
+
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden) {
+      hiddenSince = Date.now();
+    } else {
+      if (hiddenSince !== null) {
+        var hiddenFor = Date.now() - hiddenSince;
+        hiddenSince = null;
+        if (hiddenFor >= HIDDEN_LIMIT_MS) {
+          expireSession();
+        }
+      }
+    }
+  });
 
   // GPS
   var lat=null, lng=null, gpsAddress='Location not shared', mapsUrl='';
