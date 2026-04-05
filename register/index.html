@@ -237,7 +237,15 @@ button, a, input, select, textarea { touch-action:manipulation; }
   text-align:center; cursor:pointer; transition:all 0.15s; font-size:10px;
   font-weight:700; color:#fff;
 }
-.colour-swatch.selected { border-color:#fff; transform:scale(1.05); }
+.colour-swatch.selected { border-color:#fff; transform:scale(1.05); box-shadow:0 0 8px rgba(255,255,255,0.3); }
+.tag-preview-wrap {
+  display:flex; flex-direction:column; align-items:center;
+  margin-bottom:18px; gap:6px;
+}
+.tag-preview-label {
+  font-size:10px; letter-spacing:1.5px; color:var(--muted);
+  font-family:'Orbitron',sans-serif; text-transform:uppercase;
+}
 
 /* ── CONTACT CARD ── */
 .contact-card {
@@ -489,6 +497,17 @@ var planSelected     = 'Solo';
 var billingCycle     = 'annual';  // 'annual' or 'monthly'
 var familyMembers    = [];
 var coloursSelected  = ['Surprise Me'];
+// Initialise tag preview once DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+  // Mark Surprise Me swatch as selected by default
+  var swatches = document.querySelectorAll('#colourGrid .colour-swatch');
+  swatches.forEach(function(sw) {
+    if (sw.getAttribute('onclick') && sw.getAttribute('onclick').indexOf('Surprise Me') !== -1) {
+      sw.classList.add('selected');
+    }
+  });
+  if (typeof updateTagPreview === 'function') updateTagPreview();
+});
 var photoDataUrl     = '';
 var photoUploadedUrl = '';
 
@@ -934,6 +953,55 @@ var photoUploadedUrl = '';
             <option value="Disc Tag">Disc Tag (25mm)</option>
           </select>
         </div>
+      </div>
+    </div>
+
+    <!-- Tag Colour Picker -->
+    <div class="form-tab tab-tag">
+      <div class="form-tab-hdr">🎨 &nbsp;Tag Colour <span style="font-size:9px;opacity:0.6;font-weight:400">(pick up to 2)</span></div>
+      <div class="form-tab-body">
+
+        <!-- SVG Tag Preview -->
+        <div class="tag-preview-wrap">
+          <div class="tag-preview-label">Preview</div>
+          <svg id="tagPreviewSvg" viewBox="0 0 120 200" width="90" height="150" xmlns="http://www.w3.org/2000/svg">
+            <!-- Keyring hole -->
+            <circle cx="60" cy="14" r="8" fill="none" stroke="#888" stroke-width="3"/>
+            <!-- Tag body top half -->
+            <path id="tagTop" d="M20,20 Q20,10 30,10 L90,10 Q100,10 100,20 L100,110 L20,110 Z" fill="#333"/>
+            <!-- Tag body bottom half -->
+            <path id="tagBottom" d="M20,110 L100,110 L100,180 Q100,195 60,195 Q20,195 20,180 Z" fill="#555"/>
+            <!-- Innovat3 logo text -->
+            <text x="60" y="65" text-anchor="middle" font-family="'Orbitron',sans-serif" font-size="7" font-weight="900" fill="rgba(255,255,255,0.7)" letter-spacing="1">innovat3</text>
+            <!-- NFC symbol -->
+            <path d="M47,130 Q60,118 73,130" stroke="rgba(255,255,255,0.5)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <path d="M42,137 Q60,120 78,137" stroke="rgba(255,255,255,0.35)" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <path d="M52,124 Q60,118 68,124" stroke="rgba(255,255,255,0.65)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <circle cx="60" cy="145" r="3" fill="rgba(255,255,255,0.6)"/>
+            <!-- Shine -->
+            <path d="M28,18 Q28,14 34,14 L70,14 L70,60 Q50,55 28,45 Z" fill="rgba(255,255,255,0.06)"/>
+          </svg>
+          <div id="tagColourLabel" style="font-size:11px;color:#F97316;font-weight:700;letter-spacing:1px">Surprise Me</div>
+        </div>
+
+        <!-- Colour grid -->
+        <div class="colour-grid" id="colourGrid">
+          <div class="colour-swatch selected" style="background:#2a2a2a" onclick="toggleColour(this,'Black')" data-hex="#2a2a2a">⬛<br>Black</div>
+          <div class="colour-swatch" style="background:#e8e8e8;color:#111" onclick="toggleColour(this,'White')" data-hex="#e8e8e8">⬜<br>White</div>
+          <div class="colour-swatch" style="background:#F97316" onclick="toggleColour(this,'Orange')" data-hex="#F97316">🟧<br>Orange</div>
+          <div class="colour-swatch" style="background:#ef4444" onclick="toggleColour(this,'Red')" data-hex="#ef4444">🟥<br>Red</div>
+          <div class="colour-swatch" style="background:#3b82f6" onclick="toggleColour(this,'Blue')" data-hex="#3b82f6">🟦<br>Blue</div>
+          <div class="colour-swatch" style="background:#22c55e" onclick="toggleColour(this,'Green')" data-hex="#22c55e">🟩<br>Green</div>
+          <div class="colour-swatch" style="background:#0ED2C8" onclick="toggleColour(this,'Teal')" data-hex="#0ED2C8">🩵<br>Teal</div>
+          <div class="colour-swatch" style="background:#a855f7" onclick="toggleColour(this,'Purple')" data-hex="#a855f7">🟣<br>Purple</div>
+          <div class="colour-swatch" style="background:#ec4899" onclick="toggleColour(this,'Pink')" data-hex="#ec4899">🩷<br>Pink</div>
+          <div class="colour-swatch" style="background:#eab308" onclick="toggleColour(this,'Yellow')" data-hex="#eab308">🟨<br>Yellow</div>
+          <div class="colour-swatch" style="background:#06b6d4" onclick="toggleColour(this,'Sky Blue')" data-hex="#06b6d4">🔵<br>Sky Blue</div>
+          <div class="colour-swatch" style="background:linear-gradient(135deg,#F97316,#a855f7,#3b82f6)" onclick="toggleColour(this,'Surprise Me')" data-hex="surprise">✨<br>Surprise</div>
+        </div>
+        <p style="font-size:10px;color:var(--muted);margin-top:8px;text-align:center">
+          First colour = top half · Second colour = bottom half
+        </p>
       </div>
     </div>
 
@@ -1691,14 +1759,76 @@ function hideCareTypeSelector() {
 }
 
 // ── TAG COLOUR ──
+var COLOUR_HEX_MAP = {
+  'Black':       '#2a2a2a',
+  'White':       '#e8e8e8',
+  'Orange':      '#F97316',
+  'Red':         '#ef4444',
+  'Blue':        '#3b82f6',
+  'Green':       '#22c55e',
+  'Teal':        '#0ED2C8',
+  'Purple':      '#a855f7',
+  'Pink':        '#ec4899',
+  'Yellow':      '#eab308',
+  'Sky Blue':    '#06b6d4',
+  'Surprise Me': null
+};
+
 function toggleColour(el, val) {
+  // Remove this colour if already selected
   if (el.classList.contains('selected')) {
     el.classList.remove('selected');
-    coloursSelected = coloursSelected.filter(function(c){return c!==val;});
+    coloursSelected = coloursSelected.filter(function(c){ return c !== val; });
+    // Deselecting first → if second exists promote it to first slot
+    updateTagPreview();
+    return;
+  }
+  // Max 2 colours
+  if (coloursSelected.length >= 2) {
+    // Replace the earliest selected one
+    var oldest = coloursSelected.shift();
+    document.querySelectorAll('.colour-swatch').forEach(function(sw) {
+      if (sw.getAttribute('data-name') === oldest || sw.textContent.indexOf(oldest) !== -1) {
+        sw.classList.remove('selected');
+      }
+    });
+    // Find and remove by value match
+    document.querySelectorAll('#colourGrid .colour-swatch').forEach(function(sw) {
+      if (sw.getAttribute('onclick') && sw.getAttribute('onclick').indexOf("'" + oldest + "'") !== -1) {
+        sw.classList.remove('selected');
+      }
+    });
+  }
+  el.classList.add('selected');
+  coloursSelected.push(val);
+  updateTagPreview();
+}
+
+function updateTagPreview() {
+  var tagTop    = document.getElementById('tagTop');
+  var tagBottom = document.getElementById('tagBottom');
+  var label     = document.getElementById('tagColourLabel');
+  if (!tagTop || !tagBottom) return;
+
+  var c1 = coloursSelected[0] || 'Surprise Me';
+  var c2 = coloursSelected[1] || c1;
+
+  var hex1 = COLOUR_HEX_MAP[c1] || '#F97316';
+  var hex2 = COLOUR_HEX_MAP[c2] || hex1;
+
+  // Surprise Me gets a gradient-ish random orange/purple
+  if (!COLOUR_HEX_MAP[c1] || c1 === 'Surprise Me') hex1 = '#F97316';
+  if (!COLOUR_HEX_MAP[c2] || c2 === 'Surprise Me') hex2 = '#a855f7';
+
+  tagTop.setAttribute('fill', hex1);
+  tagBottom.setAttribute('fill', hex2);
+
+  if (coloursSelected.length === 0) {
+    label.textContent = 'Surprise Me';
+  } else if (coloursSelected.length === 1) {
+    label.textContent = c1;
   } else {
-    if (coloursSelected.length >= 2) return;
-    el.classList.add('selected');
-    coloursSelected.push(val);
+    label.textContent = c1 + ' + ' + c2;
   }
 }
 
