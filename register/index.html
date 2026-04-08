@@ -2678,7 +2678,7 @@ function showPaymentSection(tagId, firstName, lastName, email, phone, plan, bill
   var summary = document.getElementById('paymentSummary');
   if (summary) {
     var renewalNote = billing === 'monthly'
-      ? '<div style="margin-top:10px;padding:8px 12px;background:rgba(14,210,200,0.07);border-radius:8px;font-size:12px;color:#0ED2C8">📅 You will receive a renewal link each month for R' + subAmount.toFixed(2) + '</div>'
+      ? '<div style="margin-top:10px;padding:8px 12px;background:rgba(14,210,200,0.07);border:1px solid rgba(14,210,200,0.2);border-radius:8px;font-size:12px;color:#0ED2C8">🔁 <strong>Auto-recurring:</strong> R' + subAmount.toFixed(2) + '/month charged automatically. Cancel anytime via PayFast dashboard.</div>'
       : '';
     summary.innerHTML =
       '<div style="font-family:\'Orbitron\',sans-serif;font-size:10px;letter-spacing:2px;color:#F97316;margin-bottom:14px">PAYMENT SUMMARY</div>' +
@@ -2768,7 +2768,20 @@ async function payWithPayFast() {
   pfParams['email_address']    = d.email;
   if (phone) pfParams['cell_number'] = phone;
 
-  // Get signature from worker (passphrase-free, proven working)
+  // ── RECURRING BILLING — monthly plans only ─────────────────────────────
+  // subscription_type=1: PayFast subscription model
+  // frequency=3:         monthly billing cycle
+  // cycles=0:            indefinite (until cancelled)
+  // recurring_amount:    subscription fee only (no hardware) — charged each month after first
+  // The initial 'amount' above is first charge (subscription + hardware tag)
+  if (d.billing === 'monthly') {
+    pfParams['subscription_type'] = '1';
+    pfParams['frequency']         = '3';
+    pfParams['cycles']            = '0';
+    pfParams['recurring_amount']  = parseFloat(d.renewalAmount).toFixed(2);
+  }
+
+  // Get signature from worker — Worker includes PF_PASSPHRASE when set (required for recurring billing)
   var signature = '';
   try {
     var regData = null;
