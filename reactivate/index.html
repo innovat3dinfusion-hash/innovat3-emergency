@@ -135,6 +135,12 @@ input:focus, select:focus { border-color:var(--orange); }
 var _tagId = '', _email = '', _firstName = '', _lastName = '';
 var _plan = 'Solo', _amount = 49, _recurAmount = 49;
 
+// Pre-fill tag ID from URL param (when redirected from card page)
+(function() {
+  var urlTag = new URLSearchParams(location.search).get('tag') || '';
+  if (urlTag) document.getElementById('tagId').value = urlTag.toUpperCase();
+})();
+
 // ── MD5 (identical to Worker) ──────────────────────────────────────
 function md5hex(str) {
   function safeAdd(x,y){var l=(x&0xffff)+(y&0xffff);var m=(x>>16)+(y>>16)+(l>>16);return(m<<16)|(l&0xffff);}
