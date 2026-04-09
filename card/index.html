@@ -157,17 +157,15 @@ body { font-family:'Exo 2',sans-serif; background:#050505; color:var(--text); mi
 <script>
 var GAS_URL = 'https://api.innovat3.co.za';
 
-// ── PayFast renewal from card inactive screen ────────────────────
-var PF_RENEW = {
-  merchant_id:  '34168603',
-  merchant_key: 'frbiyqgqpun0a',
-  sandbox:      false,
-  return_url:   'https://innovat3.co.za/success.html',
-  cancel_url:   'https://innovat3.co.za/card/?tag=' + (new URLSearchParams(location.search).get('tag') || ''),
-  notify_url:   'https://api.innovat3.co.za/itn'
-};
+// ── Redirect expired tag to reactivate page ──────────────────────
+function goReactivate() {
+  var d = window._renewData;
+  var tagId = (d && d.tagId) ? d.tagId : (new URLSearchParams(location.search).get('tag') || '');
+  window.location.href = 'https://innovat3.co.za/reactivate/?tag=' + encodeURIComponent(tagId);
+}
 
-async function renewWithPayFast() {
+// ── LEGACY — kept for reference only, no longer called ───────────
+async function renewWithPayFast_LEGACY() {
   var d = window._renewData;
   if (!d) return;
   var btn = document.getElementById('renewBtn');
@@ -177,11 +175,11 @@ async function renewWithPayFast() {
   errEl.style.display = 'none';
 
   var pfParams = {
-    merchant_id:      PF_RENEW.merchant_id,
-    merchant_key:     PF_RENEW.merchant_key,
-    return_url:       PF_RENEW.return_url,
-    cancel_url:       PF_RENEW.cancel_url,
-    notify_url:       PF_RENEW.notify_url,
+    merchant_id:      '34168603',
+    merchant_key:     'frbiyqgqpun0a',
+    return_url:       'https://innovat3.co.za/success.html',
+    cancel_url:       'https://innovat3.co.za/card/?tag=' + d.tagId,
+    notify_url:       'https://api.innovat3.co.za/itn',
     m_payment_id:     'RENEW-' + d.tagId,
     amount:           d.amount,
     item_name:        'Innovat3 ' + d.plan + ' Renewal',
@@ -276,13 +274,13 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
     <input type="hidden" name="signature"        id="rpf_signature">
   </form>
 
-  <button onclick="renewWithPayFast()" id="renewBtn" style="
+  <button onclick="goReactivate()" id="renewBtn" style="
     background:#F97316;color:#fff;border:none;border-radius:12px;
     padding:16px 36px;font-size:14px;font-weight:700;cursor:pointer;
     font-family:'Exo 2',sans-serif;letter-spacing:1px;
     box-shadow:0 4px 20px rgba(249,115,22,0.4);margin-bottom:12px;
     transition:opacity 0.2s;width:260px
-  ">💳 Renew Subscription</button>
+  ">💳 Reactivate Tag</button>
 
   <p id="renewError" style="color:#ef4444;font-size:12px;display:none;margin-top:8px"></p>
   <p style="color:#555;font-size:11px;margin-top:16px">innovat3.co.za &middot; Smart NFC Emergency Tag</p>
