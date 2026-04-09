@@ -2754,34 +2754,32 @@ async function payWithPayFast() {
   var phone = (rawPhone.length >= 10) ? rawPhone : '';
 
   // Build params object
+  // Fields in PayFast canonical order (confirmed from official PHP SDK Auth.php)
   var pfParams = {};
-  pfParams['merchant_id']      = '34168603';
-  pfParams['merchant_key']     = 'frbiyqgqpun0a';
-  pfParams['return_url']       = 'https://innovat3.co.za/success.html';
-  pfParams['cancel_url']       = 'https://innovat3.co.za/register/';
-  pfParams['notify_url']       = 'https://api.innovat3.co.za/itn';
-  pfParams['m_payment_id']     = d.tagId;
-  pfParams['amount']           = d.amount;
-  pfParams['item_name']        = d.itemName;
-  pfParams['name_first']       = d.firstName;
-  pfParams['name_last']        = d.lastName;
-  pfParams['email_address']    = d.email;
+  pfParams['merchant_id']   = '34168603';
+  pfParams['merchant_key']  = 'frbiyqgqpun0a';
+  pfParams['return_url']    = 'https://innovat3.co.za/success.html';
+  pfParams['cancel_url']    = 'https://innovat3.co.za/register/';
+  pfParams['notify_url']    = 'https://api.innovat3.co.za/itn';
+  pfParams['name_first']    = d.firstName;
+  pfParams['name_last']     = d.lastName;
+  pfParams['email_address'] = d.email;
   if (phone) pfParams['cell_number'] = phone;
+  pfParams['m_payment_id']  = d.tagId;
+  pfParams['amount']        = d.amount;
+  pfParams['item_name']     = d.itemName;
 
   // ── RECURRING BILLING — monthly plans only ─────────────────────────────
-  // subscription_type=1: PayFast subscription model
-  // frequency=3:         monthly billing cycle
-  // cycles=0:            indefinite (until cancelled)
-  // recurring_amount:    subscription fee only (no hardware) — charged each month after first
-  // The initial 'amount' above is first charge (subscription + hardware tag)
+  // subscription_type, billing_date, recurring_amount, frequency, cycles
+  // must be in canonical order (matches PF_FIELD_ORDER in Worker)
   if (d.billing === 'monthly') {
     pfParams['subscription_type'] = '1';
+    pfParams['recurring_amount']  = parseFloat(d.renewalAmount).toFixed(2);
     pfParams['frequency']         = '3';
     pfParams['cycles']            = '0';
-    pfParams['recurring_amount']  = parseFloat(d.renewalAmount).toFixed(2);
   }
 
-  // Get signature from worker — Worker includes PF_PASSPHRASE when set (required for recurring billing)
+  // Get signature from worker — no passphrase (cleared in PayFast settings)
   var signature = '';
   try {
     var regData = null;
