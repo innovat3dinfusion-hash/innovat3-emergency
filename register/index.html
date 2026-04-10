@@ -269,11 +269,13 @@ button, a, input, select, textarea { touch-action:manipulation; }
 .btn-next {
   flex:2; background:linear-gradient(135deg,#c45000,#f97316); color:#000;
   font-family:"Orbitron",sans-serif; font-size:11px; font-weight:900;
-  letter-spacing:1px; padding:13px; border-radius:12px; cursor:pointer;
-  border:none; transition:all 0.15s; text-transform:uppercase;
+  letter-spacing:1px; padding:16px 13px; border-radius:12px; cursor:pointer;
+  border:none; transition:box-shadow 0.15s; text-transform:uppercase;
   box-shadow:0 4px 20px rgba(249,115,22,0.3);
+  -webkit-appearance:none; user-select:none; -webkit-user-select:none;
 }
-.btn-next:hover { box-shadow:0 4px 28px rgba(249,115,22,0.5); transform:translateY(-1px); }
+.btn-next:active { opacity:0.85; box-shadow:0 2px 10px rgba(249,115,22,0.3); }
+@media (hover:hover) { .btn-next:hover { box-shadow:0 4px 28px rgba(249,115,22,0.5); transform:translateY(-1px); } }
 .btn-submit {
   flex:2; background:linear-gradient(135deg,#0a6e22,#22c55e); color:#000;
   font-family:"Orbitron",sans-serif; font-size:11px; font-weight:900;
@@ -2820,23 +2822,31 @@ async function payWithPayFast() {
 </script>
 
 <script>
-// Apply URL-param plan pre-selection visually on page load
+// Apply URL-param plan pre-selection and skip straight to step 2
 document.addEventListener('DOMContentLoaded', function() {
   var params = new URLSearchParams(window.location.search);
   var p = (params.get('plan') || '').toLowerCase();
-  var map = { solo: 'planSolo', family: 'planFamily', care: 'planCare' };
-  if (map[p]) {
-    var el = document.getElementById(map[p]);
+  var idMap  = { solo: 'planSolo', family: 'planFamily', care: 'planCare' };
+  var valMap = { solo: 'Solo', family: 'Family', care: 'Care' };
+  if (idMap[p]) {
+    var el = document.getElementById(idMap[p]);
     if (el) {
-      // Deselect all, select the target
+      // Visually select the plan card
       document.querySelectorAll('.plan-card').forEach(function(c) { c.classList.remove('selected'); });
       el.classList.add('selected');
-      planSelected = { solo:'Solo', family:'Family', care:'Care' }[p];
-      // If care plan, also show care type selector
+      planSelected = valMap[p];
+      // Show family member inputs if family plan
+      var fm = document.getElementById('familyMembers');
+      if (fm) fm.classList.toggle('show', p === 'family');
+      var fms = document.getElementById('familyMemberFormsSection');
+      if (fms) fms.style.display = (p === 'family') ? 'block' : 'none';
+      // Show care type selector if care plan
       if (p === 'care') {
         var sel = document.getElementById('careTypeSelector');
         if (sel) sel.style.display = 'block';
       }
+      // Skip step 1 — go directly to personal info
+      goStep(2);
     }
   }
 });
