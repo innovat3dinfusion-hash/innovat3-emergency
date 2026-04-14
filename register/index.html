@@ -1101,6 +1101,15 @@ var photoUploadedUrl = '';
           </div>
         </label>
 
+        <label class="consent-row" onclick="toggleConsent(this,'consent_cancel')">
+          <input type="checkbox" id="consent_cancel">
+          <div class="consent-check"></div>
+          <div class="consent-text">
+            <strong>Refund &amp; Cancellation Policy</strong><span class="consent-req">*</span><br>
+            I have read and accept the <a href="https://innovat3dinfusion-hash.github.io/innovat3-emergency/cancellation.html" target="_blank">innovat3. Refund &amp; Cancellation Policy</a>. I understand I may cancel my subscription at any time and that a 5-day cooling-off period applies under the Consumer Protection Act.
+          </div>
+        </label>
+
         <label class="consent-row" onclick="toggleConsent(this,'consent3')">
           <input type="checkbox" id="consent3">
           <div class="consent-check"></div>
@@ -1128,7 +1137,7 @@ var photoUploadedUrl = '';
           </div>
         </label>
 
-        <div class="consent-note">⚠️ All five consent boxes must be ticked before submitting. These are required under South African law (POPIA) and for the safety of yourself and your emergency contacts.</div>
+        <div class="consent-note">⚠️ All six consent boxes must be ticked before submitting. These are required under South African law (POPIA) and for the safety of yourself and your emergency contacts.</div>
         <div id="consentErr">Please tick all five consent boxes before submitting.</div>
       </div>
     </div>
@@ -1339,7 +1348,7 @@ function validateStep(s) {
   }
   if (s===5) {
     if (!v('delivery')) { var e5=document.getElementById('err5'); if(e5){e5.textContent='Please enter a delivery address.';e5.style.display='block';} return false; }
-    var allConsent = ['consent1','consent2','consent3','consent4','consent5'].every(function(id){ return document.getElementById(id) && document.getElementById(id).checked; });
+    var allConsent = ['consent1','consent2','consent_cancel','consent3','consent4','consent5'].every(function(id){ return document.getElementById(id) && document.getElementById(id).checked; });
     var cErr = document.getElementById('consentErr');
     if (!allConsent) { if(cErr){cErr.style.display='block';} return false; }
     if (cErr) cErr.style.display='none';
@@ -1370,7 +1379,7 @@ function toggleConsent(rowEl, checkId) {
   cb.checked = !cb.checked;
   rowEl.classList.toggle('checked', cb.checked);
   // Hide error if all are now checked
-  if (['consent1','consent2','consent3','consent4','consent5'].every(function(id){ return document.getElementById(id) && document.getElementById(id).checked; })) {
+  if (['consent1','consent2','consent_cancel','consent3','consent4','consent5'].every(function(id){ return document.getElementById(id) && document.getElementById(id).checked; })) {
     var cErr = document.getElementById('consentErr');
     if (cErr) cErr.style.display = 'none';
   }
