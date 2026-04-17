@@ -895,9 +895,11 @@
                 <th>Medical Aid</th>
                 <th>Contacts</th>
                 <th>Registered</th>
+                <th>Dispatch</th>
+                <th>Tracking #</th>
               </tr></thead>
               <tbody id="sub-table">
-                <tr><td colspan="8"><div class="loading"><div class="spinner"></div><br>Loading…</div></td></tr>
+                <tr><td colspan="10"><div class="loading"><div class="spinner"></div><br>Loading…</div></td></tr>
               </tbody>
             </table>
           </div>
@@ -1488,6 +1490,40 @@ function renderRecentScans() {
 
 // ── SUBSCRIBER TABLE ──
 
+// ── DISPATCH TRACKING (localStorage) ──────────────────────────────
+const DISPATCH_KEY = 'innovat3_dispatch_v1';
+function getDispatchStore() {
+  try { return JSON.parse(localStorage.getItem(DISPATCH_KEY)) || {}; } catch(e) { return {}; }
+}
+function saveDispatchStore(store) {
+  localStorage.setItem(DISPATCH_KEY, JSON.stringify(store));
+}
+function getDispatch(tagId) {
+  return getDispatchStore()[tagId] || { status: 'pending', tracking: '' };
+}
+function markDispatched(tagId) {
+  const store = getDispatchStore();
+  const tracking = document.getElementById('trk-' + tagId);
+  store[tagId] = { status: 'dispatched', tracking: tracking ? tracking.value : '', date: new Date().toISOString() };
+  saveDispatchStore(store);
+  renderSubscriberTable();
+}
+function saveTracking(tagId, value) {
+  const store = getDispatchStore();
+  if (!store[tagId]) store[tagId] = { status: 'pending', tracking: '' };
+  store[tagId].tracking = value;
+  saveDispatchStore(store);
+}
+function editTracking(tagId) {
+  const store = getDispatchStore();
+  const newTracking = prompt('Update tracking number:', store[tagId]?.tracking || '');
+  if (newTracking !== null) {
+    store[tagId].tracking = newTracking;
+    saveDispatchStore(store);
+    renderSubscriberTable();
+  }
+}
+
 function renderSubscriberTable() {
   let data = allSubs.filter(r => {
     const name = `${r['First Name']||''} ${r['Last Name']||''}`.toLowerCase();
@@ -1502,8 +1538,20 @@ function renderSubscriberTable() {
   const page  = data.slice(start, start + PAGE_SIZE);
   document.getElementById('sub-table').innerHTML = page.length ? page.map(r => {
     const contacts = [r['Contact 1 Name'], r['Contact 2 Name'], r['Contact 3 Name']].filter(Boolean).length;
-    return `<tr>
-      <td><span class="tag-id">${r['Tag ID']||'—'}</span></td>
+    const tagId = r['Tag ID'] || '';
+    const dispatch = getDispatch(tagId);
+    const isDispatched = dispatch.status === 'dispatched';
+    const dispatchPill = isDispatched
+      ? `<span style="background:rgba(34,197,94,0.15);color:#22C55E;border:1px solid rgba(34,197,94,0.3);border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;white-space:nowrap;">✅ Sent</span>`
+      : `<button onclick="markDispatched('${tagId}')" style="background:rgba(249,115,22,0.15);color:var(--orange);border:1px solid rgba(249,115,22,0.3);border-radius:6px;padding:4px 10px;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;">📦 Mark Sent</button>`;
+    const trackingCell = isDispatched
+      ? `<span style="font-size:11px;color:var(--teal);">${dispatch.tracking || '—'}</span>
+         <button onclick="editTracking('${tagId}')" style="background:none;border:none;color:var(--text-dim);font-size:10px;cursor:pointer;margin-left:4px;">✏️</button>`
+      : `<input id="trk-${tagId}" type="text" placeholder="Enter tracking #"
+           style="background:var(--surface3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:11px;padding:4px 8px;width:130px;font-family:var(--font-body);"
+           onchange="saveTracking('${tagId}', this.value)" value="${dispatch.tracking||''}">`;
+    return `<tr style="${isDispatched ? 'opacity:0.7' : ''}">
+      <td><span class="tag-id">${tagId||'—'}</span></td>
       <td class="td-primary">${r['First Name']||''} ${r['Last Name']||''}</td>
       <td>${planPill(r['Plan']||'')}</td>
       <td>${statusPill(r['Status']||'')}</td>
@@ -1511,8 +1559,10 @@ function renderSubscriberTable() {
       <td style="font-size:11px;color:var(--text-dim)">${r['Medical Aid']||'—'}</td>
       <td style="text-align:center">${contacts}</td>
       <td style="font-size:11px;color:var(--text-dim)">${formatDate(r['Timestamp'])}</td>
+      <td style="white-space:nowrap">${dispatchPill}</td>
+      <td style="white-space:nowrap">${trackingCell}</td>
     </tr>`;
-  }).join('') : '<tr><td colspan="8" class="empty">No results</td></tr>';
+  }).join('') : '<tr><td colspan="10" class="empty">No results</td></tr>';
   const totalPages = Math.ceil(total / PAGE_SIZE);
   document.getElementById('sub-page-info').textContent = `${start+1}–${Math.min(start+PAGE_SIZE, total)} of ${total}`;
 }
