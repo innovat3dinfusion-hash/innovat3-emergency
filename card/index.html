@@ -150,6 +150,25 @@ body { font-family:'Exo 2',sans-serif; background:#050505; color:var(--text); mi
 .colour-strip div { flex:1; }
 .sc-footer { text-align:center; padding:12px; background:#030303; font-family:'Orbitron',sans-serif; font-size:7px; color:#2a2a2a; letter-spacing:3px; border-top:1px solid #0f0f0f; }
 .sc-footer span { color:var(--orange); }
+
+/* ── FINDER STATUS REPLY ── */
+.finder-status { margin:10px; background:#0d0d0d; border:1px solid #1e1e1e; border-radius:14px; padding:16px; }
+.finder-status-hdr { font-size:10px; color:#555; letter-spacing:2px; text-transform:uppercase; margin-bottom:14px; }
+.fs-btn {
+  display:block; width:100%; text-align:left;
+  background:#111; border:none; border-left:4px solid transparent;
+  border-radius:10px; padding:14px 16px; margin-bottom:8px;
+  font-family:'Exo 2',sans-serif; font-size:14px; font-weight:700; color:#fff;
+  cursor:pointer; transition:opacity 0.15s, transform 0.1s;
+}
+.fs-btn:last-child { margin-bottom:0; }
+.fs-btn:active { transform:scale(0.98); opacity:0.8; }
+.fs-btn:disabled { opacity:0.4; cursor:default; transform:none; }
+.fs-btn-red    { border-left-color:#EF4444; }
+.fs-btn-yellow { border-left-color:#EAB308; }
+.fs-btn-green  { border-left-color:#22C55E; }
+.fs-btn-teal   { border-left-color:#0ED2C8; }
+.finder-confirm { padding:14px; text-align:center; background:rgba(34,197,94,0.06); border-radius:10px; margin-top:10px; }
 </style>
 </head>
 <body>
@@ -405,6 +424,18 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
     <a href="tel:112"   class="e-num"><div class="lbl">Emergency</div><div class="num">112</div></a>
   </div>
 
+  <!-- FINDER STATUS REPLY -->
+  <div class="finder-status" id="finderStatus" style="display:none">
+    <div class="finder-status-hdr">🤝 Are you the finder? Tap to let the family know:</div>
+    <div id="finderStatusBtns">
+      <button class="fs-btn fs-btn-red"    onclick="sendFinderStatus('emergency')">🔴 &nbsp;Calling emergency services</button>
+      <button class="fs-btn fs-btn-yellow" onclick="sendFinderStatus('conscious')">🟡 &nbsp;Person is conscious and stable</button>
+      <button class="fs-btn fs-btn-green"  onclick="sendFinderStatus('found')">🟢 &nbsp;Tag found — not an emergency</button>
+      <button class="fs-btn fs-btn-teal"   onclick="sendFinderStatus('safe')">📍 &nbsp;I'm safe at this location</button>
+    </div>
+    <div class="finder-confirm" id="finderStatusConfirm" style="display:none"></div>
+  </div>
+
   <div class="colour-strip" id="colourStrip"></div>
   <div class="sc-footer"><span>innovat3.</span> &nbsp;·&nbsp; Smart NFC Emergency Tags &nbsp;·&nbsp; innovat3.co.za</div>
 
@@ -433,6 +464,7 @@ var subData = {};
   var params = new URLSearchParams(window.location.search);
   var tagId  = (params.get('tag') || params.get('id') || '').trim();
   if (!tagId) { showErr('No tag ID in URL. Please scan a valid innovat3 tag.'); return; }
+  window._finderTagId = tagId;
 
   dbg('Loading emergency card...');
 
@@ -489,6 +521,7 @@ var subData = {};
 
   // ── Name, DOB, Photo, Status ──────────────────────────────
   var fullName = fn + (ln ? ' ' + ln : '');
+  window._finderName = fullName;
   document.getElementById('scName').textContent = fullName || '—';
 
 
@@ -626,6 +659,7 @@ var subData = {};
   // Show card
   document.getElementById('loadingScreen').style.display = 'none';
   document.getElementById('cardWrap').style.display      = 'block';
+  document.getElementById('finderStatus').style.display  = 'block';
 
   // ── Session timer ─────────────────────────────────────────────
   // Expires after 15 min total, or if tab is hidden for > 2 min.
@@ -814,6 +848,59 @@ function buildManualButtons(name, sub) {
     }
   });
   return btns || '<span style="font-size:11px;color:rgba(255,255,255,0.4)">No contacts registered</span>';
+}
+
+function sendFinderStatus(statusKey) {
+  var btns    = document.getElementById('finderStatusBtns');
+  var confirm = document.getElementById('finderStatusConfirm');
+
+  // Disable all buttons immediately — one-time only
+  btns.querySelectorAll('button').forEach(function(b) {
+    b.disabled = true;
+  });
+
+  confirm.style.display = 'block';
+  confirm.innerHTML = '<span style="color:#F97316;font-size:12px;font-weight:700;">📡 Sending status to family...</span>';
+
+  var statusMap = {
+    emergency: 'Calling emergency services',
+    conscious:  'Person is conscious and stable',
+    found:      'Tag found — not an emergency',
+    safe:       "I'm safe at this location"
+  };
+  var statusLabel = statusMap[statusKey] || statusKey;
+
+  function send(lat, lng) {
+    var p = '?action=finderStatus' +
+      '&tagId='       + encodeURIComponent(window._finderTagId || '') +
+      '&name='        + encodeURIComponent(window._finderName  || '') +
+      '&status='      + encodeURIComponent(statusKey) +
+      '&statusLabel=' + encodeURIComponent(statusLabel) +
+      '&lat='         + encodeURIComponent(lat || '') +
+      '&lng='         + encodeURIComponent(lng || '') +
+      '&c1tg='        + encodeURIComponent((subData['Contact 1 Telegram']||'')) +
+      '&c2tg='        + encodeURIComponent((subData['Contact 2 Telegram']||'')) +
+      '&c3tg='        + encodeURIComponent((subData['Contact 3 Telegram']||''));
+    fetch('https://api.innovat3.co.za/gas' + p).catch(function(){});
+    confirm.innerHTML =
+      '<div style="color:#22C55E;font-size:15px;font-weight:700;margin-bottom:5px;">✓ Family has been notified</div>' +
+      '<div style="color:#555;font-size:12px;">' + statusLabel + '</div>';
+  }
+
+  if (navigator.geolocation) {
+    var done = false;
+    var timer = setTimeout(function() { if (!done) { done=true; send('',''); } }, 5000);
+    navigator.geolocation.getCurrentPosition(
+      function(pos) {
+        if (done) return; done=true; clearTimeout(timer);
+        send(pos.coords.latitude.toFixed(6), pos.coords.longitude.toFixed(6));
+      },
+      function() { if (done) return; done=true; clearTimeout(timer); send('',''); },
+      { enableHighAccuracy:false, timeout:5000, maximumAge:30000 }
+    );
+  } else {
+    send('','');
+  }
 }
 
 function hexToRgb(hex){
