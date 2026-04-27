@@ -543,13 +543,13 @@ var photoUploadedUrl = '';
     <div class="step-line" id="stepLine1"></div>
     <div class="step-item" id="stepItem2"><div class="step-num">2</div><div class="step-label">Personal</div></div>
     <div class="step-line" id="stepLine2"></div>
-    <div class="step-item" id="stepItem3"><div class="step-num">3</div><div class="step-label">Medical</div></div>
+    <div class="step-item" id="stepItem3"><div class="step-num">3</div><div class="step-label">Emergency</div></div>
     <div class="step-line" id="stepLine3"></div>
-    <div class="step-item" id="stepItem4"><div class="step-num">4</div><div class="step-label">Contacts</div></div>
-    <div class="step-line" id="stepLine4"></div>
-    <div class="step-item" id="stepItem5"><div class="step-num">5</div><div class="step-label">Finish</div></div>
+    <div class="step-item" id="stepItem4" style="display:none"><div class="step-num">4</div><div class="step-label">Contacts</div></div>
+    <div class="step-line" id="stepLine4" style="display:none"></div>
+    <div class="step-item" id="stepItem5"><div class="step-num">4</div><div class="step-label">Finish</div></div>
     <div class="step-line" id="stepLine5" style="display:none"></div>
-    <div class="step-item" id="stepItem6" style="display:none"><div class="step-num">6</div><div class="step-label">Verify</div></div>
+    <div class="step-item" id="stepItem6" style="display:none"><div class="step-num">5</div><div class="step-label">Verify</div></div>
   </div>
 
   <!-- Testing autofill button -->
@@ -844,15 +844,7 @@ var photoUploadedUrl = '';
       </div>
     </div>
 
-    <div class="nav-btns">
-      <button class="btn-back" onclick="goStep(2)">← Back</button>
-      <button class="btn-next" onclick="goStep(4)">Next — Contacts →</button>
-    </div>
-  </div>
-
-  <!-- ── STEP 3: CONTACTS ── -->
-  <div class="section" id="sec4">
-    <div class="section-spacer"></div>
+    <!-- Emergency Contacts (merged into this step) -->
     <div class="form-tab tab-contacts">
       <div class="form-tab-hdr">📞 &nbsp;Emergency Contacts</div>
       <div class="form-tab-body">
@@ -931,10 +923,13 @@ var photoUploadedUrl = '';
     </div>
 
     <div class="nav-btns">
-      <button class="btn-back" onclick="goStep(3)">← Back</button>
+      <button class="btn-back" onclick="goStep(2)">← Back</button>
       <button class="btn-next" onclick="goStep(5)">Next — Finish →</button>
     </div>
   </div>
+
+  <!-- ── STEP 4 (unused — contacts merged into step 3) ── -->
+  <div class="section" id="sec4" style="display:none"></div>
 
   <!-- ── STEP 4: TAG ── -->
   <div class="section" id="sec5">
@@ -1143,12 +1138,12 @@ var photoUploadedUrl = '';
     </div>
 
     <div class="nav-btns">
-      <button class="btn-back" onclick="goStep(4)">← Back</button>
+      <button class="btn-back" onclick="goStep(3)">← Back</button>
       <button class="btn-submit" onclick="proceedToPayment()">💳 &nbsp;Proceed to Payment →</button>
     </div>
   </div>
 
-  
+
 <!-- ── STEP 6: CARE VERIFICATION (Care plan only) ──────────────── -->
 <div class="section" id="sec6">
   <div class="section-spacer"></div>
@@ -1343,7 +1338,7 @@ function validateStep(s) {
     if (!fn||!ln||!em||!ph||!dob) { if(err){err.textContent='Please fill in all required fields.';err.style.display='block';} return false; }
     if (!/^[^@]+@[^@]+\.[^@]+$/.test(em)) { if(err){err.textContent='Please enter a valid email address.';err.style.display='block';} return false; }
   }
-  if (s===4) {
+  if (s===3) {
     if (!v('c1name')||!v('c1phone')) { if(err){err.textContent='Please add at least one emergency contact.';err.style.display='block';} return false; }
   }
   if (s===5) {
