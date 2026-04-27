@@ -387,6 +387,18 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
     </div>
   </div>
 
+  <!-- FINDER STATUS REPLY -->
+  <div class="finder-status" id="finderStatus" style="display:none">
+    <div class="finder-status-hdr">🤝 Are you the finder? Tap to let the family know:</div>
+    <div id="finderStatusBtns">
+      <button class="fs-btn fs-btn-red"    onclick="sendFinderStatus('emergency')">🔴 &nbsp;Calling emergency services</button>
+      <button class="fs-btn fs-btn-yellow" onclick="sendFinderStatus('conscious')">🟡 &nbsp;Person is conscious and stable</button>
+      <button class="fs-btn fs-btn-green"  onclick="sendFinderStatus('found')">🟢 &nbsp;Tag found — not an emergency</button>
+      <button class="fs-btn fs-btn-teal"   onclick="sendFinderStatus('safe')">📍 &nbsp;I'm safe at this location</button>
+    </div>
+    <div class="finder-confirm" id="finderStatusConfirm" style="display:none"></div>
+  </div>
+
   <!-- TABS -->
   <div class="tabs">
 
@@ -422,18 +434,6 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
     <a href="tel:10111" class="e-num"><div class="lbl">SAPS Police</div><div class="num">10111</div></a>
     <a href="tel:10177" class="e-num"><div class="lbl">Ambulance</div><div class="num">10177</div></a>
     <a href="tel:112"   class="e-num"><div class="lbl">Emergency</div><div class="num">112</div></a>
-  </div>
-
-  <!-- FINDER STATUS REPLY -->
-  <div class="finder-status" id="finderStatus" style="display:none">
-    <div class="finder-status-hdr">🤝 Are you the finder? Tap to let the family know:</div>
-    <div id="finderStatusBtns">
-      <button class="fs-btn fs-btn-red"    onclick="sendFinderStatus('emergency')">🔴 &nbsp;Calling emergency services</button>
-      <button class="fs-btn fs-btn-yellow" onclick="sendFinderStatus('conscious')">🟡 &nbsp;Person is conscious and stable</button>
-      <button class="fs-btn fs-btn-green"  onclick="sendFinderStatus('found')">🟢 &nbsp;Tag found — not an emergency</button>
-      <button class="fs-btn fs-btn-teal"   onclick="sendFinderStatus('safe')">📍 &nbsp;I'm safe at this location</button>
-    </div>
-    <div class="finder-confirm" id="finderStatusConfirm" style="display:none"></div>
   </div>
 
   <div class="colour-strip" id="colourStrip"></div>
@@ -877,10 +877,7 @@ function sendFinderStatus(statusKey) {
       '&status='      + encodeURIComponent(statusKey) +
       '&statusLabel=' + encodeURIComponent(statusLabel) +
       '&lat='         + encodeURIComponent(lat || '') +
-      '&lng='         + encodeURIComponent(lng || '') +
-      '&c1tg='        + encodeURIComponent((subData['Contact 1 Telegram']||'')) +
-      '&c2tg='        + encodeURIComponent((subData['Contact 2 Telegram']||'')) +
-      '&c3tg='        + encodeURIComponent((subData['Contact 3 Telegram']||''));
+      '&lng='         + encodeURIComponent(lng || '');
     fetch('https://api.innovat3.co.za/gas' + p).catch(function(){});
     confirm.innerHTML =
       '<div style="color:#22C55E;font-size:15px;font-weight:700;margin-bottom:5px;">✓ Family has been notified</div>' +
