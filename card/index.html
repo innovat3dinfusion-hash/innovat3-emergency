@@ -152,23 +152,65 @@ body { font-family:'Exo 2',sans-serif; background:#050505; color:var(--text); mi
 .sc-footer span { color:var(--orange); }
 
 /* ── FINDER STATUS REPLY ── */
-.finder-status { margin:10px; background:#0d0d0d; border:1px solid #1e1e1e; border-radius:14px; padding:16px; }
-.finder-status-hdr { font-size:10px; color:#555; letter-spacing:2px; text-transform:uppercase; margin-bottom:14px; }
-.fs-btn {
-  display:block; width:100%; text-align:left;
-  background:#111; border:none; border-left:4px solid transparent;
-  border-radius:10px; padding:14px 16px; margin-bottom:8px;
-  font-family:'Exo 2',sans-serif; font-size:14px; font-weight:700; color:#fff;
-  cursor:pointer; transition:opacity 0.15s, transform 0.1s;
+.finder-status {
+  margin:10px 10px 0;
+  border-radius:14px; overflow:hidden;
+  border:2px solid rgba(168,85,247,0.7);
+  box-shadow:0 0 28px rgba(168,85,247,0.18), 0 4px 20px rgba(0,0,0,0.5);
 }
-.fs-btn:last-child { margin-bottom:0; }
-.fs-btn:active { transform:scale(0.98); opacity:0.8; }
-.fs-btn:disabled { opacity:0.4; cursor:default; transform:none; }
-.fs-btn-red    { border-left-color:#EF4444; }
-.fs-btn-yellow { border-left-color:#EAB308; }
-.fs-btn-green  { border-left-color:#22C55E; }
-.fs-btn-teal   { border-left-color:#0ED2C8; }
-.finder-confirm { padding:14px; text-align:center; background:rgba(34,197,94,0.06); border-radius:10px; margin-top:10px; }
+.finder-status-hdr {
+  background:linear-gradient(90deg,#6b21a8 0%,#a855f7 60%,#d8b4fe 100%);
+  padding:10px 16px;
+  display:flex; align-items:center; gap:8px;
+}
+.finder-status-hdr-label {
+  font-family:'Orbitron',sans-serif; font-size:9px; font-weight:900;
+  color:#000; letter-spacing:1.5px; text-transform:uppercase;
+}
+.finder-status-body {
+  background:linear-gradient(160deg,#160d20 0%,#0e0a14 100%);
+  padding:14px;
+}
+.finder-status-intro {
+  font-size:12px; color:#c084fc; font-weight:600;
+  text-align:center; margin-bottom:12px; letter-spacing:0.3px;
+}
+.fs-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:10px;
+}
+.fs-btn {
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; border:none; border-radius:12px;
+  padding:18px 10px; min-height:90px;
+  font-family:'Exo 2',sans-serif; font-weight:800; color:#fff;
+  cursor:pointer; transition:transform 0.12s, box-shadow 0.12s;
+  position:relative; overflow:hidden;
+}
+.fs-btn:active  { transform:scale(0.96); }
+.fs-btn:disabled { opacity:0.35; cursor:default; transform:none; }
+.fs-icon { font-size:28px; margin-bottom:7px; display:block; }
+.fs-label { font-size:12px; line-height:1.3; }
+.fs-btn-red {
+  background:linear-gradient(135deg,#7f1d1d,#ef4444);
+  border:2px solid #ef4444;
+  box-shadow:0 0 16px rgba(239,68,68,0.45), 0 4px 12px rgba(0,0,0,0.4);
+}
+.fs-btn-yellow {
+  background:linear-gradient(135deg,#713f12,#eab308);
+  border:2px solid #eab308;
+  box-shadow:0 0 16px rgba(234,179,8,0.45), 0 4px 12px rgba(0,0,0,0.4);
+}
+.fs-btn-green {
+  background:linear-gradient(135deg,#14532d,#22c55e);
+  border:2px solid #22c55e;
+  box-shadow:0 0 16px rgba(34,197,94,0.45), 0 4px 12px rgba(0,0,0,0.4);
+}
+.fs-btn-teal {
+  background:linear-gradient(135deg,#134e4a,#0ed2c8);
+  border:2px solid #0ed2c8;
+  box-shadow:0 0 16px rgba(14,210,200,0.45), 0 4px 12px rgba(0,0,0,0.4);
+}
+.finder-confirm { padding:14px; text-align:center; background:rgba(168,85,247,0.08); border:1px solid rgba(168,85,247,0.2); border-radius:10px; margin-top:12px; }
 </style>
 </head>
 <body>
@@ -389,14 +431,31 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
 
   <!-- FINDER STATUS REPLY -->
   <div class="finder-status" id="finderStatus" style="display:none">
-    <div class="finder-status-hdr">🤝 Are you the finder? Tap to let the family know:</div>
-    <div id="finderStatusBtns">
-      <button class="fs-btn fs-btn-red"    onclick="sendFinderStatus('emergency')">🔴 &nbsp;Calling emergency services</button>
-      <button class="fs-btn fs-btn-yellow" onclick="sendFinderStatus('conscious')">🟡 &nbsp;Person is conscious and stable</button>
-      <button class="fs-btn fs-btn-green"  onclick="sendFinderStatus('found')">🟢 &nbsp;Tag found — not an emergency</button>
-      <button class="fs-btn fs-btn-teal"   onclick="sendFinderStatus('safe')">📍 &nbsp;I'm safe at this location</button>
+    <div class="finder-status-hdr">
+      <span class="finder-status-hdr-label">🤝 &nbsp;Are you the finder?</span>
     </div>
-    <div class="finder-confirm" id="finderStatusConfirm" style="display:none"></div>
+    <div class="finder-status-body">
+      <div class="finder-status-intro">Tap a button to instantly alert the family</div>
+      <div class="fs-grid" id="finderStatusBtns">
+        <button class="fs-btn fs-btn-red"    onclick="sendFinderStatus('emergency')">
+          <span class="fs-icon">🚨</span>
+          <span class="fs-label">Calling emergency services</span>
+        </button>
+        <button class="fs-btn fs-btn-green"  onclick="sendFinderStatus('found')">
+          <span class="fs-icon">🟢</span>
+          <span class="fs-label">Tag found — not an emergency</span>
+        </button>
+        <button class="fs-btn fs-btn-yellow" onclick="sendFinderStatus('conscious')">
+          <span class="fs-icon">⚠️</span>
+          <span class="fs-label">Person is conscious &amp; stable</span>
+        </button>
+        <button class="fs-btn fs-btn-teal"   onclick="sendFinderStatus('safe')">
+          <span class="fs-icon">📍</span>
+          <span class="fs-label">I'm safe at this location</span>
+        </button>
+      </div>
+      <div class="finder-confirm" id="finderStatusConfirm" style="display:none"></div>
+    </div>
   </div>
 
   <!-- TABS -->
