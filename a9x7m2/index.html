@@ -1905,7 +1905,7 @@ async function submitCashReg() {
   };
 
   try {
-    const resp = await fetch(GAS_URL, {
+    const resp = await fetch('https://api.innovat3.co.za/cash-register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
