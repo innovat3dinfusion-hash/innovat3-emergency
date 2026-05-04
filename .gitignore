@@ -1,3 +1,12 @@
 # Claude Code local settings (machine-specific)
 .claude/settings.local.json
 **/settings.local.json
+
+# Internal business documents — never commit these
+*.docx
+*.pdf
+*.pptx
+*.xlsx
+**/Legal/
+**/Video/
+**/Pitch Deck/
