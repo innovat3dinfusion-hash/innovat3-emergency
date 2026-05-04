@@ -62,6 +62,16 @@
     </div>
   </div>
 
+  <!-- Referral section — shown only when tagId is available -->
+  <div id="referralSection" style="display:none;margin:28px 0 8px;padding:20px;background:rgba(249,115,22,0.07);border:1px solid rgba(249,115,22,0.3);border-radius:12px;text-align:left;">
+    <div style="font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:2px;color:#F97316;margin-bottom:8px;">🎁 REFER A FRIEND — GET 1 MONTH FREE</div>
+    <p style="font-size:13px;color:#aaa;margin:0 0 12px;">Every friend who signs up through your link earns you <strong style="color:#fff;">1 free month</strong>. Share yours:</p>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+      <input id="refLinkInput" readonly style="flex:1;min-width:0;background:#1a1a1a;border:1px solid #333;color:#fff;padding:10px 12px;border-radius:8px;font-size:12px;outline:none;" />
+      <button onclick="copyRefLink()" style="background:#F97316;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap;" id="copyBtn">Copy</button>
+    </div>
+  </div>
+
   <a href="https://innovat3.co.za" class="btn">← Back to innovat3.co.za</a>
   <p class="footer-note">Questions? <a href="mailto:Info@innovat3.co.za" style="color:#F97316">Info@innovat3.co.za</a></p>
 </div>
@@ -74,6 +84,18 @@ try { if (!tagId) tagId = localStorage.getItem('in3_pending_tagid') || ''; } cat
 if (tagId) {
   document.getElementById('tagIdDisplay').textContent = tagId;
   document.getElementById('tagBox').style.display = 'block';
+  var refLink = 'https://innovat3.co.za/register/?ref=' + encodeURIComponent(tagId);
+  document.getElementById('refLinkInput').value = refLink;
+  document.getElementById('referralSection').style.display = 'block';
+}
+
+function copyRefLink() {
+  var input = document.getElementById('refLinkInput');
+  input.select(); input.setSelectionRange(0, 999);
+  navigator.clipboard.writeText(input.value).catch(function() { document.execCommand('copy'); });
+  var btn = document.getElementById('copyBtn');
+  btn.textContent = 'Copied!';
+  setTimeout(function() { btn.textContent = 'Copy'; }, 2000);
 }
 try { localStorage.removeItem('in3_pending_tagid'); } catch(e) {}
 
