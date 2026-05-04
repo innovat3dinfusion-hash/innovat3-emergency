@@ -510,12 +510,15 @@ var photoDataUrl     = '';
 var photoUploadedUrl = '';
 
 // ── AUTO-SELECT PLAN FROM URL PARAM (?plan=solo/family/care) ──
+// ── CAPTURE REFERRAL CODE FROM URL PARAM (?ref=tagId) ──
+var referredByCode = '';
 (function() {
   try {
     var params = new URLSearchParams(window.location.search);
     var p = (params.get('plan') || '').toLowerCase();
     var map = { solo: 'Solo', family: 'Family', care: 'Care' };
     if (map[p]) { planSelected = map[p]; }
+    referredByCode = (params.get('ref') || '').trim();
   } catch(e) {}
 })();
 </script>
@@ -2640,6 +2643,7 @@ async function proceedToPayment() {
     formFactor: document.getElementById('formFactor').value,
     delivery: v('delivery'), extraNotes: v('extraNotes'),
     photoUrl: '', consentDate: timestamp,
+    referredBy: referredByCode,
     careType: careType || 'senior', careIdDocUrl: window._careIdUrl || '', careMedDocUrl: window._careMedUrl || '',
     contacts: [
       v('c1name') ? {name:v('c1name'),rel:v('c1rel'),phone:formatPhone(v('c1phone')),wa:document.getElementById('c1wa').checked,telegram:v('c1telegram')} : null,
