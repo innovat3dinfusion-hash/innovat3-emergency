@@ -1,0 +1,2959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://www.googletagmanager.com https://connect.facebook.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://api.innovat3.co.za https://nominatim.openstreetmap.org https://i.ibb.co https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://www.facebook.com;">
+  <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Innovat3 — Registration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --orange:#F97316; --teal:#0ED2C8; --black:#0A0A0A;
+  --card:#141414; --border:#222; --border2:#2a2a2a;
+  --text:#F0F0F0; --muted:#777; --muted2:#444;
+  --red:#EF4444; --green:#22C55E; --blue:#3B82F6;
+  --yellow:#EAB308;
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:"Exo 2",sans-serif; background:#050505; color:var(--text); min-height:100vh; -webkit-overflow-scrolling:touch; overflow-x:hidden; overscroll-behavior-y:contain; }
+button, a, input, select, textarea { touch-action:manipulation; }
+.page { max-width:600px; margin:0 auto; padding:0 16px 60px; } @media(min-width:768px){ .page{ max-width:680px; padding:0 32px 80px; } body{ background:#050505; } }
+
+/* ── BANNER ── */
+.in3-banner {
+  background:linear-gradient(135deg,#0d0d0d 0%,#1a0a00 100%);
+  border-bottom:3px solid var(--orange);
+  padding:13px 18px; display:flex; align-items:center; gap:14px;
+}
+.in3-logo { width:46px; height:46px; border-radius:11px; border:2px solid var(--orange); flex-shrink:0; overflow:hidden; box-shadow:0 0 18px rgba(249,115,22,0.45); }
+.in3-logo img { width:100%; height:100%; object-fit:cover; }
+.in3-brand-name { font-family:"Orbitron",sans-serif; font-size:20px; font-weight:900; color:var(--orange); line-height:1; }
+.in3-brand-name span { color:#fff; }
+.in3-brand-sub { font-size:8px; color:var(--muted); letter-spacing:3px; text-transform:uppercase; margin-top:4px; }
+/* ── HERO ── */
+.hero {
+  background:linear-gradient(160deg,#0f0f0f,#080808);
+  padding:24px 18px 20px; border-bottom:1px solid var(--border);
+  text-align:center;
+}
+.hero h1 { font-family:"Orbitron",sans-serif; font-size:18px; font-weight:900; color:#fff; margin-bottom:8px; }
+.hero h1 span { color:var(--orange); }
+.hero p { font-size:12px; color:var(--muted); line-height:1.7; max-width:380px; margin:0 auto; }
+@keyframes pd { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* ── PROGRESS ── */
+.progress { display:flex; align-items:center; padding:16px 18px; background:#0a0a0a; border-bottom:1px solid var(--border); }
+.step-item { display:flex; flex-direction:column; align-items:center; gap:4px; flex:1; }
+.step-num {
+  width:28px; height:28px; border-radius:50%; border:2px solid var(--border2);
+  display:flex; align-items:center; justify-content:center;
+  font-family:"Orbitron",sans-serif; font-size:10px; font-weight:900; color:var(--muted2);
+  background:#111; transition:all 0.15s;
+}
+.step-label { font-size:8px; color:var(--muted2); letter-spacing:1px; text-transform:uppercase; font-weight:700; transition:all 0.15s; }
+.step-item.active .step-num { border-color:var(--orange); color:var(--orange); background:#1a0800; box-shadow:0 0 12px rgba(249,115,22,0.3); }
+.step-item.active .step-label { color:var(--orange); }
+.step-item.done .step-num { border-color:var(--green); color:var(--green); background:#061209; }
+.step-item.done .step-label { color:var(--green); }
+.step-line { flex:1; height:1px; background:var(--border2); margin-bottom:18px; }
+.step-line.done { background:var(--green); }
+
+/* ── SECTIONS ── */
+.section { display:none; padding:0 10px; }
+.section.active { display:block; }
+
+/* ── TABS (same as card) ── */
+.form-tab {
+  border-radius:14px; overflow:hidden;
+  box-shadow:0 2px 16px rgba(0,0,0,0.4);
+  margin-top:10px;
+}
+.form-tab-hdr {
+  padding:10px 16px; font-size:8px; font-weight:900;
+  letter-spacing:1.5px; text-transform:uppercase;
+  display:flex; align-items:center; gap:8px;
+}
+.form-tab-body { background:#111; padding:16px; }
+
+/* Tab colour variants */
+.tab-personal  { border:2px solid rgba(249,115,22,0.7); box-shadow:0 0 24px rgba(249,115,22,0.12); }
+.tab-personal  .form-tab-hdr { background:linear-gradient(90deg,#c45000,#f97316,#ffb347); color:#000; }
+.tab-medical   { border:1px solid rgba(239,68,68,0.4); }
+.tab-medical   .form-tab-hdr { background:linear-gradient(90deg,#7f1d1d,#ef4444); color:#fff; }
+.tab-contacts  { border:2px solid rgba(21,128,61,0.6); box-shadow:0 0 22px rgba(21,128,61,0.12); }
+.tab-contacts  .form-tab-hdr { background:linear-gradient(90deg,#082a16,#15803D,#22c55e); color:#fff; }
+.tab-tag       { border:1px solid rgba(14,210,200,0.4); }
+.tab-tag       .form-tab-hdr { background:linear-gradient(90deg,#064e4a,#0ED2C8); color:#000; }
+/* Colour picker two-column layout — stacks on mobile */
+.colour-pick-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:8px; }
+@media(max-width:520px){ .colour-pick-grid { grid-template-columns:1fr; gap:10px; } }
+.tab-photo     { border:1px solid rgba(59,130,246,0.4); }
+.tab-photo     .form-tab-hdr { background:linear-gradient(90deg,#1e3a8a,#3B82F6); color:#fff; }
+.tab-address   { border:1px solid rgba(20,83,45,0.5); }
+.tab-address   .form-tab-hdr { background:linear-gradient(90deg,#0c2e1a,#14532D); color:#fff; }
+.tab-plan      { border:1px solid rgba(234,179,8,0.4); }
+.tab-plan      .form-tab-hdr { background:linear-gradient(90deg,#713f12,#EAB308); color:#000; }
+
+/* ── FORM FIELDS ── */
+.field { margin-bottom:14px; }
+.field:last-child { margin-bottom:0; }
+.field label { display:block; font-size:9px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+.field label .req { color:var(--orange); margin-left:2px; }
+.field input, .field select, .field textarea {
+  width:100%; background:#0d0d0d; border:1px solid var(--border2);
+  border-radius:10px; color:var(--text); font-family:"Exo 2",sans-serif;
+  font-size:13px; padding:11px 14px; outline:none;
+  transition:border-color 0.2s, box-shadow 0.2s;
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  border-color:var(--orange); box-shadow:0 0 0 3px rgba(249,115,22,0.1);
+}
+.field textarea { resize:vertical; min-height:70px; }
+.field select { appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23777' d='M1 1l5 5 5-5'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center; }
+.field-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.field-hint { font-size:10px; color:var(--muted); margin-top:5px; line-height:1.5; }
+
+/* ── PHOTO UPLOAD ── */
+.photo-upload-area {
+  border:2px dashed var(--border2); border-radius:14px;
+  padding:20px; text-align:center; cursor:pointer;
+  transition:border-color 0.2s; background:#0d0d0d;
+}
+.photo-upload-area:hover { border-color:var(--blue); }
+.photo-upload-area.has-photo { border-style:solid; border-color:var(--blue); padding:10px; }
+#photoPreview { width:90px; height:90px; border-radius:50%; object-fit:cover; border:3px solid var(--blue); display:none; margin:0 auto 8px; }
+.photo-icon { font-size:32px; margin-bottom:8px; }
+.photo-label { font-size:12px; color:var(--muted); }
+.photo-sub { font-size:10px; color:var(--muted2); margin-top:4px; }
+
+/* ── CHECKBOXES (custom) ── */
+.check-row { display:flex; align-items:center; gap:10px; margin-bottom:8px; cursor:pointer; }
+.check-row:last-child { margin-bottom:0; }
+.custom-check { width:18px; height:18px; border:2px solid var(--border2); border-radius:5px; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:all 0.15s; background:#0d0d0d; }
+.check-row input[type=checkbox] { display:none; }
+.check-row input[type=checkbox]:checked + .custom-check { background:var(--teal); border-color:var(--teal); }
+.check-row input[type=checkbox]:checked + .custom-check::after { content:"✓"; color:#000; font-size:11px; font-weight:900; }
+.check-text { font-size:12px; color:var(--text); }
+
+/* ── CONSENT SECTION ── */
+.consent-section {
+  margin:0 0 16px; background:#0a0a0a; border:2px solid rgba(249,115,22,0.35);
+  border-radius:14px; overflow:hidden;
+  box-shadow:0 0 24px rgba(249,115,22,0.08);
+}
+.consent-hdr {
+  background:linear-gradient(90deg,#2a0a00,#f97316 80%,#ffb347);
+  padding:12px 16px; font-family:"Orbitron",sans-serif; font-size:9px;
+  font-weight:900; letter-spacing:1.5px; text-transform:uppercase; color:#000;
+}
+.consent-body { padding:16px; display:flex; flex-direction:column; gap:14px; }
+.consent-row {
+  display:flex; align-items:flex-start; gap:12px;
+  padding:12px; border-radius:10px; background:#111;
+  border:1px solid rgba(249,115,22,0.18); cursor:pointer; transition:all 0.2s;
+}
+.consent-row:hover { border-color:rgba(249,115,22,0.45); background:#161616; }
+.consent-row.checked { border-color:var(--orange); background:#1a0d00; }
+.consent-check {
+  width:22px; height:22px; border:2px solid #444; border-radius:6px;
+  flex-shrink:0; display:flex; align-items:center; justify-content:center;
+  transition:all 0.2s; background:#0d0d0d; margin-top:1px;
+}
+.consent-row input[type=checkbox] { display:none; }
+.consent-row input[type=checkbox]:checked ~ .consent-check,
+.consent-row.checked .consent-check { background:var(--orange); border-color:var(--orange); }
+.consent-row input[type=checkbox]:checked ~ .consent-check::after,
+.consent-row.checked .consent-check::after { content:"✓"; color:#000; font-size:13px; font-weight:900; }
+.consent-text { font-size:12px; color:#ccc; line-height:1.65; }
+.consent-text strong { color:#fff; font-weight:700; }
+.consent-text a { color:var(--orange); text-decoration:underline; }
+.consent-req { color:var(--red); font-weight:700; margin-left:3px; }
+.consent-note {
+  font-size:10px; color:var(--muted); line-height:1.6;
+  padding:10px 14px; background:#0d0d0d; border-radius:8px;
+  border-left:3px solid var(--orange); margin-top:4px;
+}
+#consentErr { display:none; color:var(--red); font-size:11px; font-weight:700;
+  padding:8px 12px; background:#1a0505; border-radius:8px;
+  border:1px solid rgba(239,68,68,0.4); margin-top:4px; text-align:center; }
+
+/* ── WA/TG TOGGLE ── */
+.ct-toggles { display:flex; gap:8px; margin-top:8px; }
+.ct-toggle {
+  display:flex; align-items:center; gap:6px; padding:7px 12px;
+  border-radius:8px; border:1px solid var(--border2); background:#0d0d0d;
+  cursor:pointer; font-size:11px; font-weight:700; transition:all 0.15s;
+}
+.ct-toggle img { width:16px; height:16px; border-radius:3px; }
+.ct-toggle input { display:none; }
+.ct-toggle.wa-tog { color:#888; }
+.ct-toggle.tg-tog { color:#888; }
+.ct-toggle.active-wa { background:#071a0e; border-color:#25D366; color:#25D366; }
+.ct-toggle.active-tg { background:#001a2e; border-color:#29B6F6; color:#29B6F6; }
+
+/* ── DOB SELECTS ── */
+.dob-selects { display:grid; grid-template-columns:1fr 2fr 1.5fr; gap:8px; }
+.dob-selects select {
+  background:#0d0d0d; border:1px solid var(--border2); border-radius:10px;
+  color:var(--text); font-family:'Exo 2',sans-serif; font-size:13px;
+  padding:10px 10px; cursor:pointer; appearance:none; -webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right 10px center;
+}
+.dob-selects select:focus { outline:none; border-color:var(--orange); }
+
+/* ── BLOOD TYPE GRID ── */
+.blood-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+.blood-btn {
+  padding:10px 4px; border-radius:10px; border:1px solid var(--border2);
+  background:#0d0d0d; color:var(--muted); font-family:"Orbitron",sans-serif;
+  font-size:12px; font-weight:900; text-align:center; cursor:pointer; transition:all 0.15s;
+}
+.blood-btn.selected { background:#1a0505; border-color:var(--red); color:#fff; box-shadow:0 0 12px rgba(239,68,68,0.2); }
+
+/* ── PLAN CARDS ── */
+.plan-grid { display:flex; flex-direction:column; gap:8px; }
+.plan-card {
+  background:#0d0d0d; border:1px solid var(--border2); border-radius:12px;
+  padding:14px; cursor:pointer; transition:all 0.15s;
+  display:flex; align-items:center; gap:14px;
+}
+.plan-card.selected { border-color:var(--orange); background:#150900; box-shadow:0 0 16px rgba(249,115,22,0.15); }
+.plan-icon { font-size:22px; flex-shrink:0; }
+.plan-name { font-family:"Orbitron",sans-serif; font-size:12px; font-weight:900; color:#fff; margin-bottom:3px; }
+.plan-name span { color:var(--orange); }
+.plan-desc { font-size:10px; color:var(--muted); line-height:1.5; }
+.plan-price { margin-left:auto; text-align:right; flex-shrink:0; }
+.plan-price .price { font-family:"Orbitron",sans-serif; font-size:14px; font-weight:900; color:var(--orange); }
+.plan-price .per { font-size:9px; color:var(--muted); }
+.plan-radio { display:none; }
+
+/* ── TAG COLOUR GRID ── */
+.colour-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+.colour-swatch {
+  padding:10px 4px; border-radius:10px; border:2px solid transparent;
+  text-align:center; cursor:pointer; transition:all 0.15s; font-size:10px;
+  font-weight:700; color:#fff;
+}
+.colour-swatch.selected { border-color:#fff; transform:scale(1.05); box-shadow:0 0 8px rgba(255,255,255,0.3); }
+.tag-preview-wrap {
+  display:flex; flex-direction:column; align-items:center;
+  margin-bottom:18px; gap:6px;
+}
+.tag-preview-label {
+  font-size:10px; letter-spacing:1.5px; color:var(--muted);
+  font-family:'Orbitron',sans-serif; text-transform:uppercase;
+}
+
+/* ── CONTACT CARD ── */
+.contact-card {
+  background:#0d0d0d; border:1px solid var(--border2); border-radius:12px;
+  padding:14px; margin-bottom:10px;
+}
+.contact-card:last-child { margin-bottom:0; }
+.contact-card-hdr { font-size:9px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:12px; }
+
+/* ── NAV BUTTONS ── */
+.nav-btns { display:flex; gap:10px; padding:14px 10px 0; }
+.btn-back {
+  flex:1; background:#111; border:1px solid var(--border2); color:var(--muted);
+  font-family:"Exo 2",sans-serif; font-size:13px; font-weight:700;
+  padding:13px; border-radius:12px; cursor:pointer; transition:all 0.15s;
+}
+.btn-back:hover { border-color:var(--orange); color:var(--text); }
+.btn-next {
+  flex:2; background:linear-gradient(135deg,#c45000,#f97316); color:#000;
+  font-family:"Orbitron",sans-serif; font-size:11px; font-weight:900;
+  letter-spacing:1px; padding:16px 13px; border-radius:12px; cursor:pointer;
+  border:none; transition:box-shadow 0.15s; text-transform:uppercase;
+  box-shadow:0 4px 20px rgba(249,115,22,0.3);
+  -webkit-appearance:none; user-select:none; -webkit-user-select:none;
+}
+.btn-next:active { opacity:0.85; box-shadow:0 2px 10px rgba(249,115,22,0.3); }
+@media (hover:hover) { .btn-next:hover { box-shadow:0 4px 28px rgba(249,115,22,0.5); transform:translateY(-1px); } }
+.btn-submit {
+  flex:2; background:linear-gradient(135deg,#0a6e22,#22c55e); color:#000;
+  font-family:"Orbitron",sans-serif; font-size:11px; font-weight:900;
+  letter-spacing:1px; padding:13px; border-radius:12px; cursor:pointer;
+  border:none; transition:all 0.15s; text-transform:uppercase;
+  box-shadow:0 4px 20px rgba(34,197,94,0.3);
+}
+
+/* ── SUCCESS CARD ── */
+.success-screen { display:none; padding:20px 10px; }
+.success-tab {
+  border-radius:14px; overflow:hidden;
+  border:2px solid rgba(34,197,94,0.7);
+  box-shadow:0 0 28px rgba(34,197,94,0.18);
+}
+.success-tab-hdr { background:linear-gradient(90deg,#0a3320,#15803D,#22c55e); padding:12px 16px; font-family:"Orbitron",sans-serif; font-size:9px; font-weight:900; letter-spacing:1.5px; color:#fff; text-transform:uppercase; }
+.success-tab-body { background:#0a1a0a; padding:20px; text-align:center; }
+.success-avatar { width:80px; height:80px; border-radius:50%; background:#111; border:3px solid var(--green); display:flex; align-items:center; justify-content:center; font-family:"Orbitron",sans-serif; font-size:24px; font-weight:900; margin:0 auto 14px; overflow:hidden; }
+.success-avatar img { width:100%; height:100%; object-fit:cover; }
+.success-name { font-family:"Orbitron",sans-serif; font-size:16px; font-weight:900; color:#fff; margin-bottom:6px; }
+.success-tagid { font-family:monospace; font-size:11px; color:var(--muted); margin-bottom:14px; }
+.success-msg { font-size:12px; color:#aaa; line-height:1.7; margin-bottom:16px; }
+.success-steps { background:#0d0d0d; border-radius:10px; padding:12px; text-align:left; }
+.success-step { display:flex; align-items:flex-start; gap:10px; padding:6px 0; border-bottom:1px solid #1a1a1a; font-size:11px; color:#aaa; line-height:1.5; }
+.success-step:last-child { border:none; }
+.success-step-num { width:20px; height:20px; border-radius:50%; background:var(--orange); color:#000; font-size:9px; font-weight:900; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+
+/* ── ERROR MSG ── */
+.err-msg { font-size:11px; color:var(--red); margin-top:5px; display:none; }
+
+/* ── SECTION SPACING ── */
+.section-spacer { height:10px; }
+
+/* ── CROP MODAL ── */
+.crop-modal {
+  display:none; position:fixed; inset:0; z-index:9999;
+  background:rgba(0,0,0,0.92); align-items:flex-start; justify-content:center;
+  padding:16px; overflow-y:auto;
+}
+.crop-modal.open { display:flex; }
+.crop-box {
+  background:#111; border-radius:18px; padding:20px;
+  width:100%; max-width:420px; border:1px solid #333;
+  display:flex; flex-direction:column; gap:14px;
+  margin:auto;
+}
+.crop-title {
+  font-family:'Orbitron',sans-serif; font-size:11px; font-weight:900;
+  color:var(--blue); letter-spacing:1.5px; text-transform:uppercase; text-align:center;
+}
+.crop-canvas-wrap {
+  position:relative; width:100%; aspect-ratio:1/1;
+  overflow:hidden; border-radius:50%; background:#111; cursor:move;
+  border:2px solid rgba(59,130,246,0.5);
+}
+#cropCanvas {
+  display:block; width:100%; height:100%;
+  touch-action:none; border-radius:50%;
+}
+.crop-hint { font-size:11px; color:var(--muted); text-align:center; }
+.crop-zoom { display:flex; align-items:center; gap:10px; }
+.crop-zoom label { font-size:11px; color:var(--muted); white-space:nowrap; }
+.crop-zoom input[type=range] { flex:1; accent-color:var(--blue); }
+.crop-btns { display:flex; gap:10px; }
+.crop-btns button {
+  flex:1; padding:12px; border-radius:10px; font-family:'Orbitron',sans-serif;
+  font-size:10px; font-weight:900; letter-spacing:1px; cursor:pointer; border:none;
+}
+.btn-crop-cancel { background:#1a1a1a; color:var(--muted); border:1px solid #333; }
+.btn-crop-apply  { background:var(--blue); color:#fff; }
+
+/* ── BILLING TOGGLE ── */
+.billing-toggle {
+  display:flex; align-items:center; justify-content:center;
+  gap:0; background:#0d0d0d; border:1px solid var(--border2);
+  border-radius:30px; padding:4px; margin:0 auto 20px; width:fit-content;
+}
+.billing-btn {
+  padding:8px 20px; border-radius:26px; font-family:'Orbitron',sans-serif;
+  font-size:9px; font-weight:900; letter-spacing:1px; cursor:pointer;
+  border:none; background:transparent; color:var(--muted); transition:all 0.2s;
+}
+.billing-btn.active { background:var(--orange); color:#000; }
+.saving-badge {
+  display:inline-block; background:rgba(34,197,94,0.15); color:var(--green);
+  border:1px solid rgba(34,197,94,0.4); border-radius:20px;
+  font-size:9px; font-weight:700; padding:3px 10px; margin-left:8px;
+  vertical-align:middle;
+}
+
+/* ── PLAN CARDS REDESIGN ── */
+.plan-grid { display:grid; grid-template-columns:1fr; gap:10px; }
+.plan-card {
+  display:flex; align-items:flex-start; gap:14px; padding:16px;
+  border-radius:14px; border:2px solid var(--border2); background:#0d0d0d;
+  cursor:pointer; transition:all 0.2s; position:relative; overflow:hidden;
+}
+.plan-card.selected { border-color:var(--orange); background:#1a0d00; }
+.plan-card.selected::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg,var(--orange),#ffb347);
+}
+.plan-card.care-locked { opacity:0.4; cursor:not-allowed; }
+.plan-badge {
+  display:inline-block; font-size:8px; font-weight:900;
+  font-family:'Orbitron',sans-serif; letter-spacing:1px; padding:2px 8px;
+  border-radius:10px; text-transform:uppercase; margin-left:8px;
+  vertical-align:middle; flex-shrink:0;
+}
+.badge-popular { background:rgba(249,115,22,0.2); color:var(--orange); border:1px solid rgba(249,115,22,0.4); }
+.badge-free    { background:rgba(34,197,94,0.2);  color:var(--green);  border:1px solid rgba(34,197,94,0.4); }
+.badge-care    { background:rgba(14,210,200,0.2); color:var(--teal);   border:1px solid rgba(14,210,200,0.4); }
+.plan-icon-wrap { font-size:28px; flex-shrink:0; margin-top:2px; }
+.plan-info { flex:1; min-width:0; }
+.plan-name { font-family:'Orbitron',sans-serif; font-size:13px; font-weight:900; color:#fff; margin-bottom:4px; }
+.plan-name span { color:var(--orange); }
+.plan-features { font-size:11px; color:var(--muted); line-height:1.7; margin-bottom:6px; }
+.plan-features li { list-style:none; padding:0; }
+.plan-features li::before { content:'✓ '; color:var(--green); font-weight:700; }
+.plan-price-wrap { text-align:right; flex-shrink:0; }
+.plan-price-main { font-family:'Orbitron',sans-serif; font-size:18px; font-weight:900; color:var(--orange); line-height:1; }
+.plan-price-was  { font-size:10px; color:var(--muted); text-decoration:line-through; margin-bottom:2px; }
+.plan-price-per  { font-size:9px; color:var(--muted); margin-top:2px; }
+.plan-price-free { font-family:'Orbitron',sans-serif; font-size:18px; font-weight:900; color:var(--green); }
+.care-age-warn { font-size:10px; color:var(--teal); margin-top:4px; font-style:italic; }
+
+/* ── FAMILY MEMBERS ── */
+.family-members { display:none; margin-top:14px; }
+.family-members.show { display:block; }
+.family-member-row {
+  background:#111; border:1px solid var(--border2); border-radius:10px;
+  padding:12px; margin-bottom:8px;
+}
+.family-member-hdr {
+  font-family:'Orbitron',sans-serif; font-size:9px; font-weight:900;
+  color:var(--orange); letter-spacing:1px; text-transform:uppercase; margin-bottom:10px;
+}
+
+
+/* ── FAMILY MEMBER SUB-FORMS ── */
+.member-accordion {
+  border:1px solid rgba(249,115,22,0.3); border-radius:12px;
+  overflow:hidden; margin-bottom:10px; background:#0a0a0a;
+}
+.member-accordion-hdr {
+  display:flex; align-items:center; gap:10px; padding:12px 14px;
+  background:linear-gradient(90deg,#1a0800,#0d0d0d);
+  cursor:pointer; user-select:none;
+}
+.member-accordion-hdr .member-num {
+  width:26px; height:26px; border-radius:50%; background:var(--orange);
+  color:#000; font-family:'Orbitron',sans-serif; font-size:10px; font-weight:900;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.member-accordion-hdr .member-title { font-size:12px; font-weight:700; color:#fff; flex:1; }
+.member-accordion-hdr .member-chevron { color:var(--muted); font-size:14px; transition:transform 0.2s; }
+.member-accordion.open .member-chevron { transform:rotate(180deg); }
+.member-accordion-body { display:none; padding:14px; border-top:1px solid #1a1a1a; }
+.member-accordion.open .member-accordion-body { display:block; }
+.same-as-main {
+  display:flex; align-items:center; gap:10px; padding:10px 12px;
+  background:#111; border:1px solid rgba(249,115,22,0.2); border-radius:8px;
+  margin-bottom:12px; cursor:pointer;
+}
+.same-as-main input[type=checkbox] { display:none; }
+.same-as-main .same-check {
+  width:18px; height:18px; border:2px solid #444; border-radius:5px;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  transition:all 0.15s; background:#0d0d0d;
+}
+.same-as-main input:checked + .same-check { background:var(--orange); border-color:var(--orange); }
+.same-as-main input:checked + .same-check::after { content:"✓"; color:#000; font-size:11px; font-weight:900; }
+.same-as-main .same-label { font-size:11px; color:var(--muted); }
+.member-section-hdr {
+  font-family:'Orbitron',sans-serif; font-size:9px; font-weight:900;
+  color:var(--orange); letter-spacing:1.5px; text-transform:uppercase;
+  margin:14px 0 8px; padding-bottom:6px; border-bottom:1px solid #1a1a1a;
+}
+.member-fields-wrap { transition:all 0.2s; }
+.member-fields-wrap.hidden { display:none; }
+
+
+/* ── MEMBER COMPLETED STATE ── */
+.member-accordion.member-done {
+  border-color:var(--green) !important;
+  background:#061209 !important;
+}
+.member-accordion.member-done .member-accordion-hdr {
+  background:linear-gradient(90deg,#061209,#0a2e14);
+}
+.member-accordion.member-done .member-num {
+  background:var(--green) !important;
+}
+.member-accordion.member-done .member-title {
+  color:var(--green);
+}
+.btn-member-done {
+  width:100%; margin-top:14px; padding:12px;
+  background:linear-gradient(90deg,#0a2e14,#15803D);
+  border:1px solid var(--green); border-radius:10px;
+  color:var(--green); font-family:'Orbitron',sans-serif;
+  font-size:10px; font-weight:900; letter-spacing:1px;
+  cursor:pointer; transition:all 0.2s;
+}
+.btn-member-done:hover { background:#15803D; color:#000; }
+.member-done-label {
+  font-size:10px; color:var(--green); font-weight:700;
+  margin-left:6px;
+}
+
+</style>
+</head>
+<body>
+
+<script>
+// Telegram notifications handled server-side by GAS — no token in frontend
+var GAS_URL = 'https://api.innovat3.co.za';
+// Photo uploads proxied through Worker /upload-photo — API key never in frontend
+var WA_IMG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyNUQzNjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMjQgMTAuNUMxNi41IDEwLjUgMTAuNSAxNi41IDEwLjUgMjRjMCAyLjQuNjUgNC43IDEuOCA2LjdMMTAuNSAzNy41bDYuOTUtMS44YzEuOTUgMS4wNSA0LjE1IDEuNjUgNi41NSAxLjY1IDcuNSAwIDEzLjUtNiAxMy41LTEzLjVTMzEuNSAxMC41IDI0IDEwLjV6Ii8+PC9zdmc+';
+var TG_IMG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyOUI2RjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMTAuNSAyMy41bDI3LTEwLjUtNCAyMi04LTctNCA0LTEtOCAxNC0xMi0xNiA5LjV6Ii8+PC9zdmc+';
+var currentStep      = 1;
+var bloodSelected    = '';
+var planSelected     = 'Solo';
+var billingCycle     = 'annual';  // 'annual' or 'monthly'
+var familyMembers    = [];
+var coloursSelected  = ['Surprise Me'];
+// Initialise tag preview once DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+  if (typeof updateTagPreview === 'function') updateTagPreview();
+});
+var photoDataUrl     = '';
+var photoUploadedUrl = '';
+
+// ── AUTO-SELECT PLAN FROM URL PARAM (?plan=solo/family/care) ──
+var urlRef = '';
+(function() {
+  try {
+    var params = new URLSearchParams(window.location.search);
+    var p = (params.get('plan') || '').toLowerCase();
+    var map = { solo: 'Solo', family: 'Family', care: 'Care' };
+    if (map[p]) { planSelected = map[p]; }
+    urlRef = params.get('ref') || '';
+  } catch(e) {}
+})();
+</script>
+
+<div class="page">
+
+  <!-- BANNER -->
+  <div class="in3-banner">
+    <div class="in3-logo"><img src="data:image/png;base64,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" alt="Innovat3"></div>
+    <div>
+      <div class="in3-brand-name">innovat3<span>.</span></div>
+      <div class="in3-brand-sub">Smart NFC Emergency Tag</div>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <h1>Register Your <span>Innovat3</span> Tag</h1>
+    <p>Choose your plan, fill in your emergency profile, and get your Innovat3 NFC tag delivered to your door.</p>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress" id="progressBar">
+    <div class="step-item active" id="stepItem1"><div class="step-num">1</div><div class="step-label">Plan</div></div>
+    <div class="step-line" id="stepLine1"></div>
+    <div class="step-item" id="stepItem2"><div class="step-num">2</div><div class="step-label">Personal</div></div>
+    <div class="step-line" id="stepLine2"></div>
+    <div class="step-item" id="stepItem3"><div class="step-num">3</div><div class="step-label">Emergency</div></div>
+    <div class="step-line" id="stepLine3"></div>
+    <div class="step-item" id="stepItem4" style="display:none"><div class="step-num">4</div><div class="step-label">Contacts</div></div>
+    <div class="step-line" id="stepLine4" style="display:none"></div>
+    <div class="step-item" id="stepItem5"><div class="step-num">4</div><div class="step-label">Finish</div></div>
+    <div class="step-line" id="stepLine5" style="display:none"></div>
+    <div class="step-item" id="stepItem6" style="display:none"><div class="step-num">5</div><div class="step-label">Verify</div></div>
+  </div>
+
+  <!-- Testing autofill button -->
+  <div style="text-align:center;padding:8px 0 0;">
+    
+  </div>
+
+  <!-- ── STEP 1: PLAN SELECTION ── -->
+  <div class="section active" id="sec1">
+    <div class="section-spacer"></div>
+
+    <!-- Billing Toggle -->
+    <div style="text-align:center;margin-bottom:6px">
+      <div class="billing-toggle">
+        <button class="billing-btn active" id="billAnnual" onclick="setBilling('annual')">Annual</button>
+        <button class="billing-btn" id="billMonthly" onclick="setBilling('monthly')">Monthly</button>
+      </div>
+      <div style="font-size:11px;color:var(--green);font-weight:700;" id="savingNote">💰 Save 20% with annual billing</div>
+    </div>
+
+    <!-- Plan Cards -->
+    <div class="form-tab" style="border:1px solid var(--border2);border-radius:14px;overflow:hidden;margin-bottom:12px;">
+      <div class="form-tab-hdr" style="background:linear-gradient(90deg,#1a0800,#f97316);color:#000;font-family:Orbitron,sans-serif;font-size:9px;font-weight:900;letter-spacing:1.5px;padding:12px 16px;">⭐ &nbsp;CHOOSE YOUR PLAN</div>
+      <div class="form-tab-body">
+        <div class="plan-grid">
+
+          <!-- SOLO -->
+          <div class="plan-card selected" id="planSolo" onclick="selectPlan(this,'Solo')">
+            <div class="plan-icon-wrap">👤</div>
+            <div class="plan-info">
+              <div class="plan-name">Innovat3 <span>Solo</span><div class="plan-badge badge-popular" style="display:inline-block">Popular</div></div>
+              <ul class="plan-features">
+                <li>1 person · 1 NFC tag</li>
+                <li>GPS emergency alerts</li>
+                <li>Telegram &amp; WhatsApp notifications</li>
+                <li>Live emergency profile</li>
+              </ul>
+            </div>
+            <div class="plan-price-wrap">
+              <div class="plan-price-was" id="soloWas"></div>
+              <div class="plan-price-main" id="soloPrice">R470</div>
+              <div class="plan-price-per" id="soloPer">/year</div>
+            </div>
+          </div>
+
+          <!-- FAMILY -->
+          <div class="plan-card" id="planFamily" onclick="selectPlan(this,'Family')">
+            <div class="plan-icon-wrap">👨‍👩‍👧‍👦</div>
+            <div class="plan-info">
+              <div class="plan-name">Innovat3 <span>Family</span></div>
+              <ul class="plan-features">
+                <li>Up to 4 people · 1 email</li>
+                <li>GPS emergency alerts per member</li>
+                <li>Telegram &amp; WhatsApp notifications</li>
+                <li>Shared family dashboard</li>
+              </ul>
+              <!-- Family member names -->
+              <div class="family-members" id="familyMembers">
+                <div style="font-size:10px;color:var(--muted);margin-bottom:10px;">Enter names to unlock each member's profile form:</div>
+                <div class="field" style="margin-bottom:8px;">
+                  <label>Member 1 (Main Member) <span class="req">*</span></label>
+                  <input type="text" id="fm1" placeholder="Full Name" oninput="onMemberNameChange(1)">
+                </div>
+                <div class="field" style="margin-bottom:8px;">
+                  <label>Member 2 <span class="req">*</span></label>
+                  <input type="text" id="fm2" placeholder="Full Name" oninput="onMemberNameChange(2)">
+                </div>
+                <div class="field" style="margin-bottom:8px;">
+                  <label>Member 3 <span style="color:var(--muted)">(optional)</span></label>
+                  <input type="text" id="fm3" placeholder="Full Name" oninput="onMemberNameChange(3)">
+                </div>
+                <div class="field" style="margin-bottom:10px;">
+                  <label>Member 4 <span style="color:var(--muted)">(optional)</span></label>
+                  <input type="text" id="fm4" placeholder="Full Name" oninput="onMemberNameChange(4)">
+                </div>
+                <!-- Member sub-forms — unlocked as names are entered -->
+              </div>
+            </div>
+            <div class="plan-price-wrap">
+              <div class="plan-price-was" id="familyWas"></div>
+              <div class="plan-price-main" id="familyPrice">R1,435</div>
+              <div class="plan-price-per" id="familyPer">/year</div>
+            </div>
+          </div>
+
+          <!-- CARE -->
+          <div class="plan-card" id="planCare" onclick="selectPlan(this,'Care')" style="border-color:rgba(14,210,200,0.4);">
+            <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--teal),#00fff7);border-radius:14px 14px 0 0;"></div>
+            <div class="plan-icon-wrap">💛</div>
+            <div class="plan-info">
+              <div class="plan-name" style="color:var(--teal);">Innovat3 <span style="color:var(--teal);">Care</span><div class="plan-badge badge-care" style="display:inline-block">55+</div></div>
+              <div style="font-size:11px;font-weight:700;color:var(--teal);margin-bottom:6px;background:rgba(14,210,200,0.08);border:1px solid rgba(14,210,200,0.25);border-radius:6px;padding:5px 8px;line-height:1.5;">
+                👴 Adults aged 55 &amp; older<br>
+                ♿ People with special needs or disabilities
+              </div>
+              <ul class="plan-features">
+                <li>Once-off lifetime payment — no monthly fees</li>
+                <li>GPS emergency alerts</li>
+                <li>Telegram &amp; WhatsApp notifications</li>
+                <li>Age or special needs verification required</li>
+              </ul>
+              <!-- Care type selector -->
+              <div id="careTypeSelector" style="display:none;margin-top:12px;padding:10px;background:rgba(14,210,200,0.06);border:1px solid rgba(14,210,200,0.2);border-radius:10px">
+                <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#0ED2C8;margin-bottom:10px">I am registering as a:</div>
+                <div style="display:flex;gap:8px">
+                  <button type="button" id="careTypeSenior" onclick="setCareType('senior')" style="flex:1;padding:10px 8px;border-radius:8px;border:1px solid rgba(14,210,200,0.4);background:rgba(14,210,200,0.15);color:#0ED2C8;font-size:12px;font-weight:700;cursor:pointer">
+                    👴 Senior (55+)
+                  </button>
+                  <button type="button" id="careTypeSpecial" onclick="setCareType('special_needs')" style="flex:1;padding:10px 8px;border-radius:8px;border:1px solid rgba(14,210,200,0.2);background:transparent;color:#888;font-size:12px;font-weight:700;cursor:pointer">
+                    ♿ Special Needs
+                  </button>
+                </div>
+                <div id="careAgeWarn" style="font-size:11px;color:#0ED2C8;margin-top:8px;min-height:16px"></div>
+              </div>
+            </div>
+            <div class="plan-price-wrap">
+              <div class="plan-price-main" style="color:var(--teal)">R199</div>
+              <div class="plan-price-per" style="color:var(--teal)">once-off</div>
+            </div>
+          </div>
+
+        </div>
+        <div id="err1" class="err-msg"></div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn-next" onclick="goStep(2)">Next — Personal Info →</button>
+    </div>
+  </div>
+
+  <div class="section" id="sec2">
+    <div class="section-spacer"></div>
+
+    <!-- Photo -->
+    <div class="form-tab tab-photo">
+      <div class="form-tab-hdr">📷 &nbsp;Profile Photo <span style="font-size:9px;font-weight:400;opacity:0.7">(optional)</span></div>
+      <div class="form-tab-body">
+        <div class="photo-upload-area" id="photoArea" onclick="document.getElementById('photoInput').click()">
+          <img id="photoPreview" alt="Preview">
+          <div id="photoPlaceholder">
+            <div class="photo-icon">🤳</div>
+            <div class="photo-label">Tap to upload photo</div>
+            <div class="photo-sub">Shown on emergency card when your tag is scanned</div>
+          </div>
+        </div>
+        <input type="file" id="photoInput" accept="image/*" style="display:none" onchange="handlePhoto(this)">
+        <div id="photoUploadStatus" style="display:none;font-size:12px;margin-top:8px;padding:8px;border-radius:8px;text-align:center"></div>
+      </div>
+    </div>
+
+    <!-- Personal Info -->
+    <div class="form-tab tab-personal">
+      <div class="form-tab-hdr">👤 &nbsp;Personal Details</div>
+      <div class="form-tab-body">
+        <div class="field-row">
+          <div class="field">
+            <label>First Name <span class="req">*</span></label>
+            <input type="text" id="firstName" placeholder="Name">
+          </div>
+          <div class="field">
+            <label>Last Name <span class="req">*</span></label>
+            <input type="text" id="lastName" placeholder="Last Name">
+          </div>
+        </div>
+        <div class="field">
+          <label>Date of Birth <span class="req">*</span></label>
+          <div class="dob-selects">
+            <select id="dobDay" onchange="onDobChange()">
+              <option value="">Day</option>
+            </select>
+            <select id="dobMonth" onchange="onDobChange()">
+              <option value="">Month</option>
+              <option value="1">January</option><option value="2">February</option>
+              <option value="3">March</option><option value="4">April</option>
+              <option value="5">May</option><option value="6">June</option>
+              <option value="7">July</option><option value="8">August</option>
+              <option value="9">September</option><option value="10">October</option>
+              <option value="11">November</option><option value="12">December</option>
+            </select>
+            <select id="dobYear" onchange="onDobChange()">
+              <option value="">Year</option>
+            </select>
+            <input type="hidden" id="dob">
+          </div>
+          <div class="field-hint">Used to display your age on the emergency card</div>
+        </div>
+        <div class="field">
+          <label>Email Address <span class="req">*</span></label>
+          <input type="email" id="email" placeholder="jan@example.com">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Phone Number <span class="req">*</span></label>
+            <input type="tel" id="phone" placeholder="072 123 4567">
+          </div>
+          <div class="field">
+            <label>Telegram Username</label>
+            <input type="text" id="telegram" placeholder="@username">
+          </div>
+        </div>
+        <div id="err2" class="err-msg"></div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn-next" onclick="goStep(3)">Next — Medical Info →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 2: MEDICAL ── -->
+  <div class="section" id="sec3">
+    <div class="section-spacer"></div>
+
+    <!-- Blood Type -->
+    <div class="form-tab tab-medical">
+      <div class="form-tab-hdr">🩸 &nbsp;Blood Type</div>
+      <div class="form-tab-body">
+        <div class="blood-grid">
+          <div class="blood-btn" onclick="selectBlood(this,'A+')">A+</div>
+          <div class="blood-btn" onclick="selectBlood(this,'A-')">A-</div>
+          <div class="blood-btn" onclick="selectBlood(this,'B+')">B+</div>
+          <div class="blood-btn" onclick="selectBlood(this,'B-')">B-</div>
+          <div class="blood-btn" onclick="selectBlood(this,'AB+')">AB+</div>
+          <div class="blood-btn" onclick="selectBlood(this,'AB-')">AB-</div>
+          <div class="blood-btn" onclick="selectBlood(this,'O+')">O+</div>
+          <div class="blood-btn" onclick="selectBlood(this,'O-')">O-</div>
+        </div>
+        <div class="field" style="margin-top:10px">
+          <label>Unknown / Other</label>
+          <input type="text" id="bloodOther" placeholder="Unknown / Other" maxlength="20"
+            style="font-size:13px;padding:8px 10px;height:38px;box-sizing:border-box;width:100%"
+            oninput="bloodSelected=this.value; document.querySelectorAll('.blood-btn').forEach(b=>b.classList.remove('selected'))">
+        </div>
+      </div>
+    </div>
+
+    <!-- Medical Alerts -->
+    <div class="form-tab tab-medical">
+      <div class="form-tab-hdr">⚠️ &nbsp;Medical Alerts — Tell Paramedics</div>
+      <div class="form-tab-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px">
+          <label class="check-row"><input type="checkbox" id="chk_heart"><div class="custom-check"></div><span class="check-text">Heart condition</span></label>
+          <label class="check-row"><input type="checkbox" id="chk_bp"><div class="custom-check"></div><span class="check-text">High blood pressure</span></label>
+          <label class="check-row"><input type="checkbox" id="chk_diabetes"><div class="custom-check"></div><span class="check-text">Diabetes</span></label>
+          <label class="check-row"><input type="checkbox" id="chk_epilepsy"><div class="custom-check"></div><span class="check-text">Epilepsy</span></label>
+          <label class="check-row"><input type="checkbox" id="chk_allergy"><div class="custom-check"></div><span class="check-text">Severe allergies</span></label>
+          <label class="check-row"><input type="checkbox" id="chk_asthma"><div class="custom-check"></div><span class="check-text">Asthma</span></label>
+          <label class="check-row"><input type="checkbox" id="chk_stroke"><div class="custom-check"></div><span class="check-text">Stroke risk</span></label>
+          <label class="check-row"><input type="checkbox" id="chk_dementia"><div class="custom-check"></div><span class="check-text">Dementia</span></label>
+        </div>
+        <div class="field">
+          <label>Additional Medical Alerts</label>
+          <textarea id="medical" placeholder="Any other conditions paramedics must know..."></textarea>
+        </div>
+        <div class="field">
+          <label>Medications</label>
+          <textarea id="meds" placeholder="Current medications and dosages..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Medical Aid -->
+    <div class="form-tab tab-medical">
+      <div class="form-tab-hdr">🏥 &nbsp;Medical Aid</div>
+      <div class="form-tab-body">
+        <div class="field-row">
+          <div class="field">
+            <label>Medical Aid Provider</label>
+            <input type="text" id="medicalAid" placeholder="e.g. Discovery Health">
+          </div>
+          <div class="field">
+            <label>Member Number</label>
+            <input type="text" id="medicalAidNumber" placeholder="e.g. 5585858DS">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Home Address + Notes -->
+    <div class="form-tab tab-address">
+      <div class="form-tab-hdr">🏠 &nbsp;Home Address &amp; Notes for Finder</div>
+      <div class="form-tab-body">
+        <div class="field">
+          <label>Address</label>
+          <input type="text" id="address" placeholder="15 Oak Avenue, Sunridge Park, 6045">
+        </div>
+        <div class="field">
+          <label>Notes for Finder</label>
+          <textarea id="notes" placeholder="e.g. Only speaks Afrikaans. Has a pacemaker. Call family first."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Emergency Contacts (merged into this step) -->
+    <div class="form-tab tab-contacts">
+      <div class="form-tab-hdr">📞 &nbsp;Emergency Contacts</div>
+      <div class="form-tab-body">
+
+        <div class="contact-card">
+          <div class="contact-card-hdr" style="color:#EF4444">Contact 1 (Primary) <span class="req" style="color:var(--orange)">*</span></div>
+          <div class="field-row">
+            <div class="field"><label>Name</label><input type="text" id="c1name" placeholder="Contact 01"></div>
+            <div class="field"><label>Relation</label><input type="text" id="c1rel" placeholder="Wife"></div>
+          </div>
+          <div class="field"><label>Phone Number</label><input type="tel" id="c1phone" placeholder="072 123 4567"></div>
+          <div class="ct-toggles">
+            <label class="ct-toggle wa-tog" id="c1waToggle" onclick="toggleCt(this,'c1wa','wa')">
+              <input type="checkbox" id="c1wa">
+              <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyNUQzNjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMjQgMTAuNUMxNi41IDEwLjUgMTAuNSAxNi41IDEwLjUgMjRjMCAyLjQuNjUgNC43IDEuOCA2LjdMMTAuNSAzNy41bDYuOTUtMS44YzEuOTUgMS4wNSA0LjE1IDEuNjUgNi41NSAxLjY1IDcuNSAwIDEzLjUtNiAxMy41LTEzLjVTMzEuNSAxMC41IDI0IDEwLjV6Ii8+PC9zdmc+">WhatsApp
+            </label>
+            <label class="ct-toggle tg-tog" id="c1tgToggle" onclick="toggleCt(this,'c1tg','tg')">
+              <input type="checkbox" id="c1tg">
+              <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyOUI2RjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMTAuNSAyMy41bDI3LTEwLjUtNCAyMi04LTctNCA0LTEtOCAxNC0xMi0xNiA5LjV6Ii8+PC9zdmc+">Telegram
+            </label>
+          </div>
+          <div class="field" id="c1tgField" style="display:none;margin-top:10px">
+            <label>Telegram Username</label>
+            <input type="text" id="c1telegram" placeholder="@username">
+          </div>
+        </div>
+
+        <div class="contact-card">
+          <div class="contact-card-hdr" style="color:#F97316">Contact 2</div>
+          <div class="field-row">
+            <div class="field"><label>Name</label><input type="text" id="c2name" placeholder="Contact 02"></div>
+            <div class="field"><label>Relation</label><input type="text" id="c2rel" placeholder="Son"></div>
+          </div>
+          <div class="field"><label>Phone Number</label><input type="tel" id="c2phone" placeholder="072 123 4567"></div>
+          <div class="ct-toggles">
+            <label class="ct-toggle wa-tog" id="c2waToggle" onclick="toggleCt(this,'c2wa','wa')">
+              <input type="checkbox" id="c2wa">
+              <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyNUQzNjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMjQgMTAuNUMxNi41IDEwLjUgMTAuNSAxNi41IDEwLjUgMjRjMCAyLjQuNjUgNC43IDEuOCA2LjdMMTAuNSAzNy41bDYuOTUtMS44YzEuOTUgMS4wNSA0LjE1IDEuNjUgNi41NSAxLjY1IDcuNSAwIDEzLjUtNiAxMy41LTEzLjVTMzEuNSAxMC41IDI0IDEwLjV6Ii8+PC9zdmc+">WhatsApp
+            </label>
+            <label class="ct-toggle tg-tog" id="c2tgToggle" onclick="toggleCt(this,'c2tg','tg')">
+              <input type="checkbox" id="c2tg">
+              <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyOUI2RjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMTAuNSAyMy41bDI3LTEwLjUtNCAyMi04LTctNCA0LTEtOCAxNC0xMi0xNiA5LjV6Ii8+PC9zdmc+">Telegram
+            </label>
+          </div>
+          <div class="field" id="c2tgField" style="display:none;margin-top:10px">
+            <label>Telegram Username</label>
+            <input type="text" id="c2telegram" placeholder="@username">
+          </div>
+        </div>
+
+        <div class="contact-card">
+          <div class="contact-card-hdr" style="color:#22C55E">Contact 3</div>
+          <div class="field-row">
+            <div class="field"><label>Name</label><input type="text" id="c3name" placeholder="Contact 03"></div>
+            <div class="field"><label>Relation</label><input type="text" id="c3rel" placeholder="GP"></div>
+          </div>
+          <div class="field"><label>Phone Number</label><input type="tel" id="c3phone" placeholder="072 123 4567"></div>
+          <div class="ct-toggles">
+            <label class="ct-toggle wa-tog" id="c3waToggle" onclick="toggleCt(this,'c3wa','wa')">
+              <input type="checkbox" id="c3wa">
+              <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyNUQzNjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMjQgMTAuNUMxNi41IDEwLjUgMTAuNSAxNi41IDEwLjUgMjRjMCAyLjQuNjUgNC43IDEuOCA2LjdMMTAuNSAzNy41bDYuOTUtMS44YzEuOTUgMS4wNSA0LjE1IDEuNjUgNi41NSAxLjY1IDcuNSAwIDEzLjUtNiAxMy41LTEzLjVTMzEuNSAxMC41IDI0IDEwLjV6Ii8+PC9zdmc+">WhatsApp
+            </label>
+            <label class="ct-toggle tg-tog" id="c3tgToggle" onclick="toggleCt(this,'c3tg','tg')">
+              <input type="checkbox" id="c3tg">
+              <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiMyOUI2RjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMTAuNSAyMy41bDI3LTEwLjUtNCAyMi04LTctNCA0LTEtOCAxNC0xMi0xNiA5LjV6Ii8+PC9zdmc+">Telegram
+            </label>
+          </div>
+          <div class="field" id="c3tgField" style="display:none;margin-top:10px">
+            <label>Telegram Username</label>
+            <input type="text" id="c3telegram" placeholder="@username">
+          </div>
+        </div>
+
+        <div id="err3" class="err-msg"></div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn-back" onclick="goStep(2)">← Back</button>
+      <button class="btn-next" onclick="goStep(5)">Next — Finish →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 4 (unused — contacts merged into step 3) ── -->
+  <div class="section" id="sec4" style="display:none"></div>
+
+  <!-- ── STEP 4: TAG ── -->
+  <div class="section" id="sec5">
+    <div class="section-spacer"></div>
+
+
+    <!-- Form Factor -->
+    <div class="form-tab tab-tag">
+      <div class="form-tab-hdr">🏷️ &nbsp;Tag Shape</div>
+      <div class="form-tab-body">
+        <div class="field">
+          <select id="formFactor">
+            <option value="Keyring Fob">Keyring Fob</option>
+            <option value="Disc Tag">Disc Tag (25mm)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tag Colour Picker -->
+    <div class="form-tab tab-tag">
+      <div class="form-tab-hdr">🎨 &nbsp;Tag Colour</div>
+      <div class="form-tab-body">
+
+        <!-- Live Preview — pixel-recoloured real tag image -->
+        <div class="tag-preview-wrap" style="margin-bottom:20px">
+          <div class="tag-preview-label">Live Preview</div>
+          <canvas id="tagPreviewCanvas" width="400" height="400"
+            style="max-width:210px;width:100%;display:block;margin:0 auto;filter:drop-shadow(0 6px 28px rgba(0,0,0,0.8))">
+          </canvas>
+          <div id="tagColourLabel" style="font-size:12px;color:#F97316;font-weight:700;letter-spacing:1px;margin-top:8px">Red + Teal</div>
+        </div>
+
+        <!-- Two dropdowns: Ring colour + Disc colour -->
+        <div class="colour-pick-grid">
+          <div>
+            <label style="font-size:10px;letter-spacing:1.5px;color:#F97316;font-family:'Orbitron',sans-serif;display:block;margin-bottom:6px">RING COLOUR</label>
+            <select id="colourRing" onchange="updateTagPreview('ringDrop')" style="
+              width:100%;padding:10px 12px;background:#0d0d14;border:1px solid #2a2a3a;
+              border-radius:8px;color:#fff;font-size:13px;font-family:'Exo 2',sans-serif;
+              outline:none;cursor:pointer
+            ">
+              <option value="Red|#ef4444">Red</option>
+              <option value="Black|#1a1a1a">Black</option>
+              <option value="White|#e8e8e8">White</option>
+              <option value="Orange|#F97316">Orange</option>
+              <option value="Blue|#3b82f6">Blue</option>
+              <option value="Green|#22c55e">Green</option>
+              <option value="Teal|#0ED2C8">Teal</option>
+              <option value="Purple|#a855f7">Purple</option>
+              <option value="Pink|#ec4899">Pink</option>
+              <option value="Yellow|#eab308">Yellow</option>
+              <option value="Sky Blue|#06b6d4">Sky Blue</option>
+              <option value="Surprise Me|#F97316">✨ Surprise Me</option>
+            </select>
+            <!-- Custom ring colour -->
+            <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
+              <input type="color" id="ringSwatchPicker" value="#ef4444"
+                onchange="document.getElementById('ringCustomHex').value=this.value; updateTagPreview('ringCustom')"
+                style="width:34px;height:34px;border:none;border-radius:6px;cursor:pointer;background:none;padding:0">
+              <input type="text" id="ringCustomHex" placeholder="#ef4444" maxlength="7"
+                oninput="var v=this.value; if(/^#[0-9a-fA-F]{6}$/.test(v)){document.getElementById('ringSwatchPicker').value=v; updateTagPreview('ringCustom');}"
+                style="flex:1;padding:8px 10px;background:#0d0d14;border:1px solid #2a2a3a;border-radius:8px;
+                       color:#fff;font-size:12px;font-family:monospace;outline:none" value="#ef4444">
+              <span style="font-size:10px;color:var(--muted);white-space:nowrap">custom hex</span>
+            </div>
+          </div>
+          <div>
+            <label style="font-size:10px;letter-spacing:1.5px;color:#0ED2C8;font-family:'Orbitron',sans-serif;display:block;margin-bottom:6px">DISC COLOUR</label>
+            <select id="colourDisc" onchange="updateTagPreview('discDrop')" style="
+              width:100%;padding:10px 12px;background:#0d0d14;border:1px solid #2a2a3a;
+              border-radius:8px;color:#fff;font-size:13px;font-family:'Exo 2',sans-serif;
+              outline:none;cursor:pointer
+            ">
+              <option value="Teal|#0ED2C8">Teal</option>
+              <option value="Black|#1a1a1a">Black</option>
+              <option value="White|#e8e8e8">White</option>
+              <option value="Orange|#F97316">Orange</option>
+              <option value="Red|#ef4444">Red</option>
+              <option value="Blue|#3b82f6">Blue</option>
+              <option value="Green|#22c55e">Green</option>
+              <option value="Purple|#a855f7">Purple</option>
+              <option value="Pink|#ec4899">Pink</option>
+              <option value="Yellow|#eab308">Yellow</option>
+              <option value="Sky Blue|#06b6d4">Sky Blue</option>
+              <option value="Surprise Me|#a855f7">✨ Surprise Me</option>
+            </select>
+            <!-- Custom disc colour -->
+            <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
+              <input type="color" id="discSwatchPicker" value="#0ED2C8"
+                onchange="document.getElementById('discCustomHex').value=this.value; updateTagPreview('discCustom')"
+                style="width:34px;height:34px;border:none;border-radius:6px;cursor:pointer;background:none;padding:0">
+              <input type="text" id="discCustomHex" placeholder="#0ED2C8" maxlength="7"
+                oninput="var v=this.value; if(/^#[0-9a-fA-F]{6}$/.test(v)){document.getElementById('discSwatchPicker').value=v; updateTagPreview('discCustom');}"
+                style="flex:1;padding:8px 10px;background:#0d0d14;border:1px solid #2a2a3a;border-radius:8px;
+                       color:#fff;font-size:12px;font-family:monospace;outline:none" value="#0ED2C8">
+              <span style="font-size:10px;color:var(--muted);white-space:nowrap">custom hex</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Colour notes -->
+        <div style="margin-top:14px">
+          <label style="font-size:10px;letter-spacing:1.5px;color:var(--muted);font-family:'Orbitron',sans-serif;display:block;margin-bottom:6px">COLOUR NOTES <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
+          <textarea id="colourNotes" rows="2" placeholder="e.g. Matte black ring with navy blue disc — match school uniform colours"
+            style="width:100%;padding:10px 12px;background:#0d0d14;border:1px solid #2a2a3a;border-radius:8px;
+                   color:#fff;font-size:12px;font-family:'Exo 2',sans-serif;outline:none;resize:vertical;
+                   line-height:1.5"></textarea>
+        </div>
+
+        <p style="font-size:10px;color:var(--muted);text-align:center;margin-top:10px">
+          Ring = outer border &amp; logo colour &nbsp;·&nbsp; Disc = inner face colour
+        </p>
+      </div>
+    </div>
+
+    <!-- Delivery -->
+    <div class="form-tab tab-address">
+      <div class="form-tab-hdr">📦 &nbsp;Delivery Address</div>
+      <div class="form-tab-body">
+        <div class="field">
+          <label>Delivery Address <span class="req">*</span></label>
+          <textarea id="delivery" placeholder="Street address, suburb, city, postal code"></textarea>
+        </div>
+        <div class="field">
+          <label>Extra Notes for Us</label>
+          <input type="text" id="extraNotes" placeholder="e.g. Gate code 1234, call before delivery">
+        </div>
+        <div id="err5" class="err-msg"></div>
+      </div>
+    </div>
+
+    <!-- Family Member Sub-Forms — shown only for Family plan -->
+    <div id="familyMemberFormsSection" style="display:none;margin-bottom:20px;">
+      <div class="form-tab" style="border:1px solid rgba(249,115,22,0.3);border-radius:14px;overflow:hidden;margin-bottom:12px;">
+        <div class="form-tab-hdr" style="background:linear-gradient(90deg,#1a0800,#f97316);color:#000;font-family:Orbitron,sans-serif;font-size:9px;font-weight:900;letter-spacing:1.5px;padding:12px 16px;">👨‍👩‍👧‍👦 &nbsp;FAMILY MEMBER PROFILES</div>
+        <div class="form-tab-body">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">Complete each member's emergency profile below. All tags are registered under your account.</div>
+          <div id="memberForms"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ✅ CONSENT CHECKBOXES -->
+    <div class="consent-section">
+      <div class="consent-hdr">📋 &nbsp;Legal Consent — Please Read &amp; Tick All Boxes</div>
+      <div class="consent-body">
+
+        <label class="consent-row" onclick="toggleConsent(this,'consent1')">
+          <input type="checkbox" id="consent1">
+          <div class="consent-check"></div>
+          <div class="consent-text">
+            <strong>Terms &amp; Conditions</strong><span class="consent-req">*</span><br>
+            I have read and agree to the <a href="https://innovat3.co.za/terms.html" target="_blank">innovat3. Terms and Conditions of Service</a>. I understand this is a legally binding agreement.
+          </div>
+        </label>
+
+        <label class="consent-row" onclick="toggleConsent(this,'consent2')">
+          <input type="checkbox" id="consent2">
+          <div class="consent-check"></div>
+          <div class="consent-text">
+            <strong>Privacy &amp; Data Processing (POPIA)</strong><span class="consent-req">*</span><br>
+            I consent to innovat3. collecting and processing my personal information, including special personal information (medical and health data), in accordance with the <a href="https://innovat3.co.za/privacy.html" target="_blank">innovat3. Privacy Policy</a> and POPIA.
+          </div>
+        </label>
+
+        <label class="consent-row" onclick="toggleConsent(this,'consent_cancel')">
+          <input type="checkbox" id="consent_cancel">
+          <div class="consent-check"></div>
+          <div class="consent-text">
+            <strong>Refund &amp; Cancellation Policy</strong><span class="consent-req">*</span><br>
+            I have read and accept the <a href="https://innovat3.co.za/cancellation/" target="_blank">innovat3. Refund &amp; Cancellation Policy</a>. I understand I may cancel my subscription at any time and that a 5-day cooling-off period applies under the Consumer Protection Act.
+          </div>
+        </label>
+
+        <label class="consent-row" onclick="toggleConsent(this,'consent3')">
+          <input type="checkbox" id="consent3">
+          <div class="consent-check"></div>
+          <div class="consent-text">
+            <strong>Public Emergency Profile Disclosure</strong><span class="consent-req">*</span><br>
+            I understand and consent that my emergency profile — including my name, blood type, medical conditions, medications, and emergency contact details — will be <strong>visible to any person who scans my NFC Tag</strong>, including members of the public, paramedics, and emergency services.
+          </div>
+        </label>
+
+        <label class="consent-row" onclick="toggleConsent(this,'consent4')">
+          <input type="checkbox" id="consent4">
+          <div class="consent-check"></div>
+          <div class="consent-text">
+            <strong>GPS Location Capture</strong><span class="consent-req">*</span><br>
+            I consent to the GPS location of any person who scans my tag being automatically captured and sent as an emergency alert to my nominated emergency contacts via Telegram and WhatsApp.
+          </div>
+        </label>
+
+        <label class="consent-row" onclick="toggleConsent(this,'consent5')">
+          <input type="checkbox" id="consent5">
+          <div class="consent-check"></div>
+          <div class="consent-text">
+            <strong>Information Accuracy</strong><span class="consent-req">*</span><br>
+            I confirm that all information I have provided is accurate and complete. I accept full responsibility for keeping my emergency profile up to date and understand that innovat3. is not liable for harm arising from inaccurate or outdated profile information.
+          </div>
+        </label>
+
+        <div class="consent-note">⚠️ All six consent boxes must be ticked before submitting. These are required under South African law (POPIA) and for the safety of yourself and your emergency contacts.</div>
+        <div id="consentErr">Please tick all five consent boxes before submitting.</div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn-back" onclick="goStep(3)">← Back</button>
+      <button class="btn-submit" onclick="proceedToPayment()">💳 &nbsp;Proceed to Payment →</button>
+    </div>
+  </div>
+
+
+<!-- ── STEP 6: CARE VERIFICATION (Care plan only) ──────────────── -->
+<div class="section" id="sec6">
+  <div class="section-spacer"></div>
+  <div class="form-tab" style="border:2px solid rgba(14,210,200,0.4)">
+    <div class="form-tab-hdr" style="background:rgba(14,210,200,0.1);color:#0ED2C8">
+      🛡️ &nbsp;<span id="careVerifyTitle">Care Plan Verification</span>
+    </div>
+    <div class="form-tab-body">
+      <div id="careVerifyDesc" style="font-size:14px;color:#aaa;line-height:1.7;margin-bottom:20px">
+        <!-- Filled dynamically based on careType -->
+      </div>
+      <script>
+      // Update step 6 content based on careType when entering step 6
+      document.addEventListener('DOMContentLoaded', function() {
+        var origGoStep = window.goStep;
+      });
+      </script>
+
+      <div style="background:rgba(14,210,200,0.06);border:1px solid rgba(14,210,200,0.25);border-radius:12px;padding:20px;margin-bottom:24px">
+        <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#0ED2C8;margin-bottom:14px">Accepted Documents</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:#ccc">
+          <div>✅ South African ID (copy — both sides)</div>
+          <div>✅ Medical certificate confirming disability / special needs</div>
+          <div>✅ SASSA disability grant letter</div>
+          <div>✅ Doctor's letter on official letterhead</div>
+        </div>
+      </div>
+
+      <!-- ID Document Upload -->
+      <div class="form-group" style="margin-bottom:20px">
+        <label class="form-label">📄 Upload ID Document <span style="color:#ef4444">*</span></label>
+        <div id="idUploadArea" style="border:2px dashed rgba(14,210,200,0.4);border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:all 0.2s;background:rgba(14,210,200,0.04)" onclick="document.getElementById('idFileInput').click()">
+          <div style="font-size:28px;margin-bottom:8px">🪪</div>
+          <div style="font-size:13px;color:#0ED2C8;font-weight:600">Click to upload ID</div>
+          <div style="font-size:11px;color:#666;margin-top:4px">JPG, PNG or PDF · Max 5MB</div>
+        </div>
+        <input type="file" id="idFileInput" accept="image/*,.pdf" style="display:none" onchange="handleCareDocUpload('id', this)">
+        <div id="idUploadStatus" style="margin-top:8px;font-size:12px;color:#0ED2C8;display:none"></div>
+      </div>
+
+      <!-- Medical Document Upload (optional if ID uploaded) -->
+      <div class="form-group" style="margin-bottom:20px">
+        <label class="form-label">🏥 Upload Medical Document <span style="color:#aaa;font-size:11px">(optional if ID provided)</span></label>
+        <div id="medUploadArea" style="border:2px dashed rgba(249,115,22,0.3);border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:all 0.2s;background:rgba(249,115,22,0.03)" onclick="document.getElementById('medFileInput').click()">
+          <div style="font-size:28px;margin-bottom:8px">📋</div>
+          <div style="font-size:13px;color:#F97316;font-weight:600">Click to upload medical document</div>
+          <div style="font-size:11px;color:#666;margin-top:4px">JPG, PNG or PDF · Max 5MB</div>
+        </div>
+        <input type="file" id="medFileInput" accept="image/*,.pdf" style="display:none" onchange="handleCareDocUpload('med', this)">
+        <div id="medUploadStatus" style="margin-top:8px;font-size:12px;color:#F97316;display:none"></div>
+      </div>
+
+      <div id="err6" style="display:none;color:#ef4444;font-size:13px;margin-bottom:12px;padding:10px;background:rgba(239,68,68,0.08);border-radius:8px;border-left:3px solid #ef4444"></div>
+
+      <div style="background:rgba(249,115,22,0.06);border:1px solid rgba(249,115,22,0.2);border-radius:10px;padding:14px;margin-bottom:8px">
+        <div style="font-size:12px;color:#aaa;line-height:1.6">
+          ⏱️ <strong style="color:#F97316">Delivery note:</strong> Care plan tags take <strong>3–5 business days</strong> longer than standard orders due to manual verification. We will contact you via email once approved.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-btns">
+    <button class="btn-back" onclick="goStep(5)">← Back</button>
+    <button class="btn-submit" onclick="proceedToPayment()">💳 &nbsp;Proceed to Payment →</button>
+  </div>
+</div>
+
+<!-- SUCCESS -->
+  <div class="success-screen" id="successScreen">
+    <div class="success-tab">
+      <div class="success-tab-hdr">✅ &nbsp;Registration Received!</div>
+      <div class="success-tab-body">
+        <div class="success-avatar" id="successAvatar">?</div>
+        <div class="success-name" id="successName">—</div>
+        <div class="success-tagid" id="successTagId">—</div>
+        <div id="successBundleId" style="display:none;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:900;color:var(--orange);letter-spacing:1px;margin:4px 0 8px;padding:6px 14px;background:rgba(249,115,22,0.1);border:1px solid rgba(249,115,22,0.3);border-radius:8px;text-align:center;"></div>
+        
+        <div class="success-steps">
+          <div class="success-step"><div class="success-step-num">1</div><div>We review your registration and confirm your spot</div></div>
+          <div class="success-step"><div class="success-step-num">2</div><div>We program your NFC tag with your unique ID</div></div>
+          <div class="success-step"><div class="success-step-num">3</div><div>Tag is shipped to your delivery address</div></div>
+          <div class="success-step"><div class="success-step-num">4</div><div>Attach to keys or bag — you are protected 24/7</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── NAVIGATION ──
+
+// Populate DOB selects — script runs after DOM so execute immediately
+(function() {
+  var dayEl  = document.getElementById('dobDay');
+  var yearEl = document.getElementById('dobYear');
+  if (dayEl) {
+    for (var d = 1; d <= 31; d++) {
+      var od = document.createElement('option');
+      od.value = d; od.textContent = d;
+      dayEl.appendChild(od);
+    }
+  }
+  if (yearEl) {
+    var cur = new Date().getFullYear();
+    for (var y = cur; y >= 1920; y--) {
+      var oy = document.createElement('option');
+      oy.value = y; oy.textContent = y;
+      yearEl.appendChild(oy);
+    }
+  }
+})();
+
+function goStep(n) {
+  if (n > currentStep && !validateStep(currentStep)) return;
+  // Care plan: insert step 6 (verification) before payment
+  if (n === 6) {
+    // Update step 6 content based on careType
+    var descEl = document.getElementById('careVerifyDesc');
+    var titleEl = document.getElementById('careVerifyTitle');
+    var idArea  = document.getElementById('idUploadArea');
+    var idLabel = idArea ? idArea.parentElement.querySelector('.form-label') : null;
+    if (careType === 'senior') {
+      if (titleEl) titleEl.textContent = 'Senior Verification (55+)';
+      if (descEl) descEl.innerHTML = 
+        '✅ Your age will be verified against your Date of Birth from Step 2. No document upload is required for Senior registration.<br><br>' +
+        '<strong style="color:#0ED2C8">Optionally</strong>, you may upload a copy of your ID for our records. Your tag will be dispatched within the standard timeframe.';
+      // Make ID upload optional for seniors
+      if (idLabel) idLabel.innerHTML = '📄 Upload ID Document <span style="color:#aaa;font-size:11px">(optional for seniors)</span>';
+    } else {
+      if (titleEl) titleEl.textContent = 'Special Needs Verification';
+      if (descEl) descEl.innerHTML =
+        'The <strong style="color:#0ED2C8">Special Needs</strong> Care plan bypasses the age requirement. To prevent abuse, please upload at least <strong>one</strong> of the accepted documents below.<br><br>' +
+        'Your tag will be reviewed and confirmed within <strong style="color:#F97316">3–5 business days</strong> of submission.';
+      // Make ID upload required for special needs
+      if (idLabel) idLabel.innerHTML = '📄 Upload ID Document <span style="color:#ef4444">*</span>';
+    }
+  }
+  // When reaching step 5 — populate delivery, update member 1 summary
+  if (n === 5) {
+    // Auto-fill delivery from home address
+    var addrVal = document.getElementById('address') ? document.getElementById('address').value.trim() : '';
+    var delivEl = document.getElementById('delivery');
+    if (delivEl && !delivEl.value.trim() && addrVal) {
+      delivEl.value = addrVal;
+    }
+    // Update member 1 summary card with actual entered name and email
+    var m1Name  = document.getElementById('m1_summaryName');
+    var m1Email = document.getElementById('m1_summaryEmail');
+    if (m1Name) {
+      var fn = document.getElementById('firstName') ? document.getElementById('firstName').value.trim() : '';
+      var ln = document.getElementById('lastName')  ? document.getElementById('lastName').value.trim()  : '';
+      m1Name.textContent = fn + (ln ? ' ' + ln : '');
+    }
+    if (m1Email) {
+      m1Email.textContent = document.getElementById('email') ? document.getElementById('email').value.trim() : '';
+    }
+    // Auto-fill member delivery addresses from their address fields
+    [2,3,4].forEach(function(mi) {
+      var mAddr = document.getElementById('m'+mi+'_address');
+      var mDel  = document.getElementById('m'+mi+'_delivery');
+      if (mAddr && mDel && !mDel.value.trim() && mAddr.value.trim()) {
+        mDel.value = mAddr.value.trim();
+      }
+    });
+  }
+  document.getElementById('sec'+currentStep).classList.remove('active');
+  document.getElementById('stepItem'+currentStep).classList.remove('active');
+  document.getElementById('stepItem'+currentStep).classList.add('done');
+  if (currentStep < 4) document.getElementById('stepLine'+currentStep).classList.add('done');
+  currentStep = n;
+  // Show step 6 progress items if needed
+  if (n === 6) {
+    document.getElementById('stepLine5').style.display = '';
+    document.getElementById('stepItem6').style.display = '';
+  }
+  document.getElementById('sec'+n).classList.add('active');
+  document.getElementById('stepItem'+n).classList.remove('done');
+  document.getElementById('stepItem'+n).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function validateStep(s) {
+  var err = document.getElementById('err'+s);
+  if (s===1) {
+    // Plan must be selected (always is — default Solo)
+    if (!planSelected) { if(err){err.textContent='Please select a plan.';err.style.display='block';} return false; }
+  }
+  if (s===2) {
+    var fn=v('firstName'),ln=v('lastName'),em=v('email'),ph=v('phone'),dob=getDobFromSelects();
+    if (!fn||!ln||!em||!ph||!dob) { if(err){err.textContent='Please fill in all required fields.';err.style.display='block';} return false; }
+    if (!/^[^@]+@[^@]+\.[^@]+$/.test(em)) { if(err){err.textContent='Please enter a valid email address.';err.style.display='block';} return false; }
+  }
+  if (s===3) {
+    if (!v('c1name')||!v('c1phone')) { if(err){err.textContent='Please add at least one emergency contact.';err.style.display='block';} return false; }
+  }
+  if (s===5) {
+    if (!v('delivery')) { var e5=document.getElementById('err5'); if(e5){e5.textContent='Please enter a delivery address.';e5.style.display='block';} return false; }
+    var allConsent = ['consent1','consent2','consent_cancel','consent3','consent4','consent5'].every(function(id){ return document.getElementById(id) && document.getElementById(id).checked; });
+    var cErr = document.getElementById('consentErr');
+    if (!allConsent) { if(cErr){cErr.style.display='block';} return false; }
+    if (cErr) cErr.style.display='none';
+  }
+  if (s===6) {
+    if (careType === 'special_needs') {
+      // Special needs: must upload at least one document
+      if (!window._careIdUploaded && !window._careMedUploaded) {
+        var e6 = document.getElementById('err6');
+        if (e6) { e6.textContent = 'Please upload at least one verification document (ID or medical certificate) to confirm special needs eligibility.'; e6.style.display='block'; }
+        return false;
+      }
+    }
+    // Senior: no doc required — age verified by DOB in step 2
+    var e6 = document.getElementById('err6');
+    if (e6) e6.style.display='none';
+  }
+  if (err) err.style.display='none';
+  return true;
+}
+
+// ── FORM HELPERS ──
+function v(id) { var el=document.getElementById(id); return el ? el.value.trim() : ''; }
+
+function toggleConsent(rowEl, checkId) {
+  var cb = document.getElementById(checkId);
+  if (!cb) return;
+  cb.checked = !cb.checked;
+  rowEl.classList.toggle('checked', cb.checked);
+  // Hide error if all are now checked
+  if (['consent1','consent2','consent_cancel','consent3','consent4','consent5'].every(function(id){ return document.getElementById(id) && document.getElementById(id).checked; })) {
+    var cErr = document.getElementById('consentErr');
+    if (cErr) cErr.style.display = 'none';
+  }
+}
+
+function formatPhone(p) {
+  var d = p.replace(/\D/g,'');
+  if (d.startsWith('0')) d = '27' + d.slice(1);
+  return d;
+}
+
+// Format DOB from date input (YYYY-MM-DD) to DD Month YYYY for sheets
+function formatDob(dobStr) {
+  if (!dobStr) return '';
+  try {
+    var parts = dobStr.split('-');
+    if (parts.length !== 3) return dobStr;
+    var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    var day = parseInt(parts[2]);
+    var month = parseInt(parts[1]) - 1;
+    var year = parseInt(parts[0]);
+    return day + ' ' + months[month] + ' ' + year;
+  } catch(e) { return dobStr; }
+}
+
+// ── BLOOD TYPE ──
+function selectBlood(el, val) {
+  document.querySelectorAll('.blood-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  bloodSelected = val;
+  document.getElementById('bloodOther').value = '';
+}
+
+// ── PLAN ──
+function getDobFromSelects() {
+  var day   = document.getElementById('dobDay')   ? document.getElementById('dobDay').value   : '';
+  var month = document.getElementById('dobMonth') ? document.getElementById('dobMonth').value : '';
+  var year  = document.getElementById('dobYear')  ? document.getElementById('dobYear').value  : '';
+  if (!day || !month || !year) return '';
+  // Build YYYY-MM-DD for hidden field
+  var mm = String(month).padStart(2,'0');
+  var dd = String(day).padStart(2,'0');
+  return year + '-' + mm + '-' + dd;
+}
+
+function getAgeFromDob() {
+  var dob = getDobFromSelects();
+  if (!dob) return null;
+  var d = new Date(dob);
+  if (isNaN(d.getTime())) return null;
+  var today = new Date();
+  var age = today.getFullYear() - d.getFullYear();
+  var m = today.getMonth() - d.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < d.getDate())) age--;
+  return age;
+}
+
+function selectPlan(el, val) {
+  if (val === 'Care') {
+    // Show the Care type selector (Senior vs Special Needs)
+    showCareTypeSelector();
+    // Default to senior — check age
+    if (careType === 'senior') {
+      var age = getAgeFromDob();
+      if (age === null) {
+        var warn = document.getElementById('careAgeWarn');
+        if (warn) warn.textContent = 'ℹ️ Enter your DOB in Step 2 to verify age. Or select Special Needs below.';
+      } else if (age < 55) {
+        // Under 55 — show selector but default to special needs with message
+        setCareType('special_needs');
+        var warn = document.getElementById('careAgeWarn');
+        if (warn) { warn.textContent = 'ℹ️ You are under 55 — switched to Special Needs. A verification doc is required.'; warn.style.color = '#F97316'; }
+      } else {
+        var warn = document.getElementById('careAgeWarn');
+        if (warn) { warn.textContent = '✓ Age verified — you qualify as a Senior.'; warn.style.color = '#0ED2C8'; }
+      }
+    }
+  } else {
+    // Hide Care type selector when another plan is selected
+    hideCareTypeSelector();
+  }
+  // Show family members name inputs in step 1
+  var fm = document.getElementById('familyMembers');
+  if (fm) fm.classList.toggle('show', val === 'Family');
+  // Show/hide the family member sub-form section in step 5
+  var fms = document.getElementById('familyMemberFormsSection');
+  if (fms) fms.style.display = (val === 'Family') ? 'block' : 'none';
+
+  document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  planSelected = val;
+}
+
+// ── BILLING TOGGLE ──────────────────────────────────────────────────────
+function setBilling(cycle) {
+  billingCycle = cycle;
+  document.getElementById('billAnnual').classList.toggle('active', cycle === 'annual');
+  document.getElementById('billMonthly').classList.toggle('active', cycle === 'monthly');
+  var note = document.getElementById('savingNote');
+
+  if (cycle === 'annual') {
+    // Annual prices (20% saving)
+    document.getElementById('soloPrice').textContent  = 'R470';
+    document.getElementById('soloPer').textContent    = '/year';
+    document.getElementById('soloWas').textContent    = 'R1,068/yr';
+    document.getElementById('familyPrice').textContent = 'R1,435';
+    document.getElementById('familyPer').textContent  = '/year';
+    document.getElementById('familyWas').textContent  = 'R1,788/yr';
+    if (note) { note.textContent = '💰 Save 20% with annual billing'; note.style.color = 'var(--green)'; }
+  } else {
+    // Monthly prices
+    document.getElementById('soloPrice').textContent  = 'R49';
+    document.getElementById('soloPer').textContent    = '/month';
+    document.getElementById('soloWas').textContent    = '';
+    document.getElementById('familyPrice').textContent = 'R149';
+    document.getElementById('familyPer').textContent  = '/month';
+    document.getElementById('familyWas').textContent  = '';
+    if (note) { note.textContent = 'Switch to annual and save 20%'; note.style.color = 'var(--muted)'; }
+  }
+}
+
+
+// ── FAMILY MEMBER DYNAMIC FORMS ─────────────────────────────────────────
+var familyMemberData = {};  // stores data per member index
+
+function onMemberNameChange(idx) {
+  var name = (document.getElementById('fm'+idx) || {}).value || '';
+  var container = document.getElementById('memberForms');
+  if (!container) return;
+
+  // Only show accordion for member if name is not empty
+  var existing = document.getElementById('memberAccordion'+idx);
+
+  if (!name.trim()) {
+    if (existing) existing.remove();
+    return;
+  }
+
+  if (existing) {
+    // Update title
+    var titleEl = existing.querySelector('.member-title');
+    if (titleEl) titleEl.textContent = 'Member ' + idx + ' — ' + name.trim();
+    // Update first/last name inputs if they exist
+    var trimmed  = name.trim();
+    var spaceIdx = trimmed.indexOf(' ');
+    var newFirst = spaceIdx > -1 ? trimmed.substring(0, spaceIdx) : trimmed;
+    var newLast  = spaceIdx > -1 ? trimmed.substring(spaceIdx + 1) : '';
+    var fnEl = document.getElementById('m'+idx+'_firstName');
+    var lnEl = document.getElementById('m'+idx+'_lastName');
+    if (fnEl) fnEl.value = newFirst;
+    if (lnEl) lnEl.value = newLast;
+    return;
+  }
+
+  // Build accordion
+  var isMain = idx === 1;
+  var html = buildMemberAccordion(idx, name.trim(), isMain);
+  container.insertAdjacentHTML('beforeend', html);
+}
+
+function buildMemberAccordion(idx, name, isMain) {
+  // Split full name into first + last — handle multi-word names correctly
+  var trimmed   = (name || '').trim();
+  var spaceIdx  = trimmed.indexOf(' ');
+  var autoFirst = spaceIdx > -1 ? trimmed.substring(0, spaceIdx) : trimmed;
+  var autoLast  = spaceIdx > -1 ? trimmed.substring(spaceIdx + 1) : '';
+
+  // Member 1 — show completed summary card; populated live when step 5 is shown
+  if (isMain) {
+    var h = '';
+    h += '<div class="member-accordion" id="memberAccordion1" style="border-color:var(--green);background:#061209;">';
+    h += '  <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;">';
+    h += '    <div style="width:28px;height:28px;border-radius:50%;background:var(--green);color:#000;font-size:14px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;">✓</div>';
+    h += '    <div style="flex:1;">';
+    h += '      <div style="font-family:Orbitron,sans-serif;font-size:10px;font-weight:900;color:var(--green);letter-spacing:1px;">MEMBER 1 (MAIN MEMBER) — PROFILE COMPLETE</div>';
+    h += '      <div id="m1_summaryName" style="font-size:12px;color:#fff;font-weight:700;margin-top:3px;"></div>';
+    h += '      <div id="m1_summaryEmail" style="font-size:10px;color:var(--muted);margin-top:2px;"></div>';
+    h += '    </div>';
+    h += '    <div style="font-size:10px;color:var(--green);font-weight:700;text-align:right;">Info captured<br>in main form ✓</div>';
+    h += '  </div>';
+    h += '</div>';
+    return h;
+  }
+
+
+  var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var monthOpts = months.map(function(m,i){ return '<option value="'+(i+1)+'">'+m+'</option>'; }).join('');
+
+  var sameRow = '<label class="same-as-main" onclick="toggleSameAsMain('+idx+',this)">'
+    + '<input type="checkbox" id="sameAs'+idx+'">'
+    + '<div class="same-check"></div>'
+    + '<div class="same-label">✓ Same as Member 1 from here onwards (Medical Aid, Address, Notes, Emergency Contact &amp; Delivery)</div>'
+    + '</label>';
+
+  var h = '';
+  h += '<div class="member-accordion" id="memberAccordion'+idx+'">';
+  h += '  <div class="member-accordion-hdr" onclick="toggleMemberAccordion('+idx+')">';
+  h += '    <div class="member-num">'+idx+'</div>';
+  h += '    <div class="member-title">Member '+idx+' — '+trimmed+'</div>';
+  h += '    <div class="member-chevron">▼</div>';
+  h += '  </div>';
+  h += '  <div class="member-accordion-body">';
+
+  // Photo
+  h += '    <div class="member-section-hdr">📷 Profile Photo</div>';
+  h += '    <div class="photo-upload-area" id="photoArea_m'+idx+'" onclick="document.getElementById(\'photoInput_m'+idx+'\').click()" style="max-width:160px;margin:0 auto 12px;">';
+  h += '      <img id="photoPreview_m'+idx+'" alt="Preview" style="width:70px;height:70px;border-radius:50%;object-fit:cover;border:2px solid var(--blue);display:none;margin:0 auto 6px;">';
+  h += '      <div id="photoPlaceholder_m'+idx+'"><div class="photo-icon" style="font-size:24px">🤳</div><div class="photo-label">Tap to upload</div></div>';
+  h += '    </div>';
+  h += '    <input type="file" id="photoInput_m'+idx+'" accept="image/*" style="display:none" onchange="handleMemberPhoto(this,'+idx+')">';
+
+  // Personal — full name auto-filled
+  h += '    <div class="member-section-hdr">👤 Personal Details</div>';
+  h += '    <div class="field-row">';
+  h += '      <div class="field"><label>First Name</label><input type="text" id="m'+idx+'_firstName" placeholder="Name" value="'+autoFirst+'"></div>';
+  h += '      <div class="field"><label>Last Name</label><input type="text" id="m'+idx+'_lastName" placeholder="Last Name" value="'+autoLast+'"></div>';
+  h += '    </div>';
+  h += '    <div class="field"><label>Date of Birth</label><div class="dob-selects">';
+  h += '      <select id="m'+idx+'_dobDay"><option value="">Day</option></select>';
+  h += '      <select id="m'+idx+'_dobMonth"><option value="">Month</option>'+monthOpts+'</select>';
+  h += '      <select id="m'+idx+'_dobYear"><option value="">Year</option></select>';
+  h += '    </div></div>';
+  h += '    <div class="field"><label>Phone Number</label><input type="tel" id="m'+idx+'_phone" placeholder="072 123 4567"></div>';
+  h += '    <div class="field"><label>Telegram Username</label><input type="text" id="m'+idx+'_telegram" placeholder="@username"></div>';
+
+  // Blood Type + Medical Alerts — always per member
+  h += '    <div class="member-section-hdr">🩺 Medical</div>';
+  h += '    <div class="field"><label>Blood Type</label><select id="m'+idx+'_blood">';
+  h += '      <option value="">Unknown</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option>';
+  h += '      <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>';
+  h += '    </select></div>';
+  h += '    <div class="field"><label>Medical Alerts</label><textarea id="m'+idx+'_medical" placeholder="Conditions, allergies..." style="min-height:60px;"></textarea></div>';
+
+  // Fields that copy from main member — starts with Medications
+  h += '    <div class="member-fields-wrap" id="memberExtra'+idx+'">';
+  h += '      <div class="field"><label>Medications</label><textarea id="m'+idx+'_meds" placeholder="Current medications..." style="min-height:60px;"></textarea></div>';
+
+  // Same as main toggle — below Medications, above Medical Aid
+  h += sameRow;
+
+  h += '      <div class="field-row">';
+  h += '        <div class="field"><label>Medical Aid</label><input type="text" id="m'+idx+'_medicalAid" placeholder="e.g. Discovery"></div>';
+  h += '        <div class="field"><label>Member No.</label><input type="text" id="m'+idx+'_medicalAidNumber" placeholder="123456"></div>';
+  h += '      </div>';
+  h += '      <div class="field"><label>Address</label><input type="text" id="m'+idx+'_address" placeholder="Street, Suburb, City" oninput="autoFillMemberDelivery('+idx+')"></div>';
+  h += '      <div class="field"><label>Notes for Finder</label><textarea id="m'+idx+'_notes" placeholder="Important info for emergency responders..." style="min-height:60px;"></textarea></div>';
+  h += '      <div class="member-section-hdr">🚨 Emergency Contact</div>';
+  h += '      <div class="field-row">';
+  h += '        <div class="field"><label>Contact Name</label><input type="text" id="m'+idx+'_c1name" placeholder="Contact 01"></div>';
+  h += '        <div class="field"><label>Relation</label><input type="text" id="m'+idx+'_c1rel" placeholder="e.g. Spouse"></div>';
+  h += '      </div>';
+  h += '      <div class="field"><label>Phone</label><input type="tel" id="m'+idx+'_c1phone" placeholder="072 123 4567"></div>';
+  h += '      <div class="field"><label>Telegram</label><input type="text" id="m'+idx+'_c1telegram" placeholder="@username"></div>';
+  h += '      <div class="member-section-hdr">📦 Tag Delivery Address</div>';
+  h += '      <div class="field"><label>Delivery Address <span class="req">*</span></label>';
+  h += '        <textarea id="m'+idx+'_delivery" placeholder="Street address, suburb, city, postal code" style="min-height:60px;"></textarea>';
+  h += '      </div>';
+  h += '    </div>';
+
+  h += '  <button class="btn-member-done" onclick="markMemberDone('+idx+')">✓ &nbsp;Member '+idx+' Profile Complete — Save &amp; Collapse</button>';
+  h += '  </div>';
+  h += '</div>';
+  return h;
+}
+
+function toggleMemberAccordion(idx) {
+  var el = document.getElementById('memberAccordion'+idx);
+  if (!el) return;
+  el.classList.toggle('open');
+  // Populate DOB selects if not done yet
+  populateMemberDob(idx);
+}
+
+function populateMemberDob(idx) {
+  var dayEl  = document.getElementById('m'+idx+'_dobDay');
+  var yearEl = document.getElementById('m'+idx+'_dobYear');
+  if (dayEl && dayEl.options.length <= 1) {
+    for (var d=1;d<=31;d++) { var o=document.createElement('option'); o.value=d; o.textContent=d; dayEl.appendChild(o); }
+  }
+  if (yearEl && yearEl.options.length <= 1) {
+    var cur = new Date().getFullYear();
+    for (var y=cur;y>=1920;y--) { var o=document.createElement('option'); o.value=y; o.textContent=y; yearEl.appendChild(o); }
+  }
+}
+
+function autoFillMemberDelivery(idx) {
+  var addrEl = document.getElementById('m'+idx+'_address');
+  var delEl  = document.getElementById('m'+idx+'_delivery');
+  if (addrEl && delEl && !delEl.value.trim()) {
+    delEl.value = addrEl.value;
+  }
+}
+
+function toggleSameAsMain(idx, labelEl) {
+  var cb    = document.getElementById('sameAs'+idx);
+  if (!cb) return;
+  cb.checked = !cb.checked;
+  labelEl.querySelector('.same-check').style.background = cb.checked ? 'var(--orange)' : '#0d0d0d';
+  labelEl.querySelector('.same-check').style.borderColor = cb.checked ? 'var(--orange)' : '#444';
+  labelEl.querySelector('.same-check').textContent = cb.checked ? '' : '';
+  var extraEl = document.getElementById('memberExtra'+idx);
+  if (extraEl) extraEl.classList.toggle('hidden', cb.checked);
+}
+
+function handleMemberPhoto(input, idx) {
+  if (!input.files||!input.files[0]) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var preview = document.getElementById('photoPreview_m'+idx);
+    var placeholder = document.getElementById('photoPlaceholder_m'+idx);
+    if (preview) { preview.src = e.target.result; preview.style.display='block'; }
+    if (placeholder) placeholder.style.display='none';
+    familyMemberData[idx] = familyMemberData[idx] || {};
+    familyMemberData[idx].photoDataUrl = e.target.result;
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function collectMemberData(idx) {
+  var gv = function(id) { var el=document.getElementById(id); return el ? el.value.trim() : ''; };
+  var sameAs = document.getElementById('sameAs'+idx);
+  var isSame = sameAs && sameAs.checked;
+  var name = gv('fm'+idx);
+  if (!name) return null;
+
+  var data = {
+    name:      name,
+    firstName: gv('m'+idx+'_firstName'),
+    lastName:  gv('m'+idx+'_lastName'),
+    phone:     gv('m'+idx+'_phone'),
+    telegram:  gv('m'+idx+'_telegram'),
+    photoDataUrl: (familyMemberData[idx]||{}).photoDataUrl || '',
+    sameAsMain: isSame
+  };
+
+  var dobD = gv('m'+idx+'_dobDay'), dobM = gv('m'+idx+'_dobMonth'), dobY = gv('m'+idx+'_dobYear');
+  data.dob = (dobD && dobM && dobY) ? dobY+'-'+String(dobM).padStart(2,'0')+'-'+String(dobD).padStart(2,'0') : '';
+
+  if (!isSame) {
+    data.blood           = gv('m'+idx+'_blood');
+    data.medical         = gv('m'+idx+'_medical');
+    data.meds            = gv('m'+idx+'_meds');
+    data.medicalAid      = gv('m'+idx+'_medicalAid');
+    data.medicalAidNumber= gv('m'+idx+'_medicalAidNumber');
+    data.address         = gv('m'+idx+'_address');
+    data.notes           = gv('m'+idx+'_notes');
+    data.c1name          = gv('m'+idx+'_c1name');
+    data.c1rel           = gv('m'+idx+'_c1rel');
+    data.c1phone         = gv('m'+idx+'_c1phone');
+    data.c1telegram      = gv('m'+idx+'_c1telegram');
+    data.delivery        = gv('m'+idx+'_delivery');
+  }
+  return data;
+}
+
+// ── AUTOFILL FOR TESTING ────────────────────────────────────────────────
+
+
+// Called when DOB changes — check Care plan eligibility
+function onDobChange() {
+  // Sync hidden dob field
+  var computed = getDobFromSelects();
+  var hiddenDob = document.getElementById('dob');
+  if (hiddenDob) hiddenDob.value = computed;
+  var age = getAgeFromDob();
+  var careCard = document.getElementById('planCare');
+  if (!careCard) return;
+  if (age !== null && age < 55 && careType !== 'special_needs') {
+    // Under 55 AND not special needs — lock Care plan
+    careCard.classList.add('care-locked');
+    careCard.title = 'Care plan is for ages 55+ or people with special needs/disabilities';
+    if (planSelected === 'Care' && careType === 'senior') {
+      // Auto-switch to special needs option instead of deselecting
+      setCareType('special_needs');
+      var warn = document.getElementById('careAgeWarn');
+      if (warn) { warn.textContent = 'ℹ️ Under 55 — switched to Special Needs. A verification doc is required in Step 6.'; warn.style.color = '#F97316'; }
+    }
+  } else if (careType === 'special_needs') {
+    // Special needs — always unlock, bypass age
+    careCard.classList.remove('care-locked');
+    careCard.title = '';
+    var warn = document.getElementById('careAgeWarn');
+    if (warn && planSelected === 'Care') { warn.textContent = '✓ Special Needs selected — age requirement bypassed.'; warn.style.color = '#0ED2C8'; }
+  } else {
+    // 55+ Senior
+    careCard.classList.remove('care-locked');
+    careCard.title = '';
+    if (age !== null) {
+      var warn = document.getElementById('careAgeWarn');
+      if (warn && planSelected === 'Care') { warn.textContent = '✓ Age verified — you qualify as a Senior (age ' + age + ').'; warn.style.color = '#0ED2C8'; }
+    }
+  }
+}
+
+
+// ── CARE PLAN TYPE ─────────────────────────────────────────────────
+var careType = 'senior'; // 'senior' | 'special_needs'
+
+function setCareType(type) {
+  careType = type;
+  var seniorBtn  = document.getElementById('careTypeSenior');
+  var specialBtn = document.getElementById('careTypeSpecial');
+  var badge      = document.getElementById('careBadge');
+  var ageWarn    = document.getElementById('careAgeWarn');
+
+  if (type === 'senior') {
+    if (seniorBtn)  { seniorBtn.style.background = 'rgba(14,210,200,0.15)'; seniorBtn.style.borderColor = 'rgba(14,210,200,0.4)'; seniorBtn.style.color = '#0ED2C8'; }
+    if (specialBtn) { specialBtn.style.background = 'transparent'; specialBtn.style.borderColor = 'rgba(14,210,200,0.2)'; specialBtn.style.color = '#888'; }
+    if (badge) badge.textContent = '55+';
+    // Re-run age check
+    onDobChange();
+  } else {
+    if (specialBtn) { specialBtn.style.background = 'rgba(14,210,200,0.15)'; specialBtn.style.borderColor = 'rgba(14,210,200,0.4)'; specialBtn.style.color = '#0ED2C8'; }
+    if (seniorBtn)  { seniorBtn.style.background = 'transparent'; seniorBtn.style.borderColor = 'rgba(14,210,200,0.2)'; seniorBtn.style.color = '#888'; }
+    if (badge) badge.textContent = '♿';
+    // Bypass age restriction
+    var careCard = document.getElementById('planCare');
+    if (careCard) careCard.classList.remove('care-locked');
+    if (ageWarn)  { ageWarn.textContent = '✓ Special Needs — age requirement bypassed. Verification doc required in Step 6.'; ageWarn.style.color = '#0ED2C8'; }
+  }
+}
+
+function showCareTypeSelector() {
+  var sel = document.getElementById('careTypeSelector');
+  if (sel) sel.style.display = 'block';
+}
+
+function hideCareTypeSelector() {
+  var sel = document.getElementById('careTypeSelector');
+  if (sel) sel.style.display = 'none';
+  careType = 'senior';
+}
+
+// ── TAG COLOUR — canvas pixel recolour ──
+var _tagImg       = null;
+var _tagImgReady  = false;
+var _tagImgSrc    = '/assets/DZCP5614.PNG';
+
+function _hexToRgb(hex) {
+  return {
+    r: parseInt(hex.slice(1,3),16),
+    g: parseInt(hex.slice(3,5),16),
+    b: parseInt(hex.slice(5,7),16)
+  };
+}
+function _rgbToHsl(r,g,b) {
+  r/=255; g/=255; b/=255;
+  var max=Math.max(r,g,b), min=Math.min(r,g,b), h,s,l=(max+min)/2;
+  if (max===min) { h=s=0; }
+  else {
+    var d=max-min;
+    s = l>0.5 ? d/(2-max-min) : d/(max+min);
+    switch(max){
+      case r: h=((g-b)/d+(g<b?6:0))/6; break;
+      case g: h=((b-r)/d+2)/6; break;
+      case b: h=((r-g)/d+4)/6; break;
+    }
+  }
+  return {h:h*360,s:s,l:l};
+}
+function _hslToRgb(h,s,l) {
+  h/=360;
+  var r,g,b;
+  if (s===0) { r=g=b=l; }
+  else {
+    function _h2r(p,q,t){ if(t<0)t+=1; if(t>1)t-=1; if(t<1/6)return p+(q-p)*6*t; if(t<1/2)return q; if(t<2/3)return p+(q-p)*(2/3-t)*6; return p; }
+    var q=l<0.5?l*(1+s):l+s-l*s, p=2*l-q;
+    r=_h2r(p,q,h+1/3); g=_h2r(p,q,h); b=_h2r(p,q,h-1/3);
+  }
+  return {r:Math.round(r*255),g:Math.round(g*255),b:Math.round(b*255)};
+}
+
+function _loadTagImg(cb) {
+  if (_tagImgReady) { cb(_tagImg); return; }
+  var img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload  = function(){ _tagImg=img; _tagImgReady=true; cb(img); };
+  img.onerror = function(){
+    // Fallback: draw placeholder
+    var cv=document.getElementById('tagPreviewCanvas'); if(!cv)return;
+    var ctx=cv.getContext('2d');
+    ctx.clearRect(0,0,cv.width,cv.height);
+    ctx.beginPath(); ctx.arc(200,200,180,0,Math.PI*2);
+    ctx.fillStyle='#e53935'; ctx.fill();
+    ctx.beginPath(); ctx.arc(200,200,140,0,Math.PI*2);
+    ctx.fillStyle='#b2dfdb'; ctx.fill();
+    ctx.fillStyle='#e53935'; ctx.font='bold 28px sans-serif'; ctx.textAlign='center';
+    ctx.fillText('innovata',200,215);
+  };
+  img.src = _tagImgSrc;
+}
+
+function _isValidHex(h) { return /^#[0-9a-fA-F]{6}$/.test(h); }
+
+function updateTagPreview(src) {
+  var ringSel   = document.getElementById('colourRing');
+  var discSel   = document.getElementById('colourDisc');
+  var ringInput = document.getElementById('ringCustomHex');
+  var discInput = document.getElementById('discCustomHex');
+  if (!ringSel || !discSel) return;
+
+  // If a dropdown changed, sync the colour picker
+  if (src === 'ringDrop' && ringInput) {
+    var hex = ringSel.value.split('|')[1] || '#ef4444';
+    ringInput.value = hex;
+    document.getElementById('ringSwatchPicker').value = hex;
+  }
+  if (src === 'discDrop' && discInput) {
+    var hex = discSel.value.split('|')[1] || '#0ED2C8';
+    discInput.value = hex;
+    document.getElementById('discSwatchPicker').value = hex;
+  }
+
+  var ringParts = ringSel.value.split('|');
+  var discParts = discSel.value.split('|');
+  // Custom hex overrides dropdown if valid
+  var ringHex  = (ringInput && _isValidHex(ringInput.value)) ? ringInput.value : (ringParts[1] || '#ef4444');
+  var discHex  = (discInput && _isValidHex(discInput.value)) ? discInput.value : (discParts[1] || '#0ED2C8');
+  var ringName = (ringInput && _isValidHex(ringInput.value) && ringInput.value !== (ringParts[1]||'')) ? ringInput.value : ringParts[0];
+  var discName = (discInput && _isValidHex(discInput.value) && discInput.value !== (discParts[1]||'')) ? discInput.value : discParts[0];
+
+  var label = document.getElementById('tagColourLabel');
+  if (label) label.textContent = ringName + ' + ' + discName;
+  coloursSelected = [ringName, discName];
+
+  _loadTagImg(function(img) {
+    var cv = document.getElementById('tagPreviewCanvas'); if(!cv) return;
+    cv.width  = img.naturalWidth  || 400;
+    cv.height = img.naturalHeight || 400;
+    var ctx = cv.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+
+    var imgData;
+    try { imgData = ctx.getImageData(0,0,cv.width,cv.height); }
+    catch(e) { return; } // canvas tainted (CORS) — image shows as-is
+
+    var data     = imgData.data;
+    var ringRgb  = _hexToRgb(ringHex), discRgb = _hexToRgb(discHex);
+    var ringHsl  = _rgbToHsl(ringRgb.r,ringRgb.g,ringRgb.b);
+    var discHsl  = _rgbToHsl(discRgb.r,discRgb.g,discRgb.b);
+
+    // Base luminance of original source colours in this image
+    // Red ring: ~L 0.46  |  Mint disc: ~L 0.79
+    var SRC_RING_L = 0.46;
+    var SRC_DISC_L = 0.79;
+
+    function _clamp01(v) { return Math.max(0, Math.min(1, v)); }
+
+    for (var i=0; i<data.length; i+=4) {
+      var r=data[i], g=data[i+1], b=data[i+2], a=data[i+3];
+      if (a < 20) continue;
+
+      var hsl = _rgbToHsl(r,g,b);
+      var h=hsl.h, s=hsl.s, l=hsl.l;
+
+      // Ring pixels: vivid red (ring shell, mascot, text)
+      // High saturation floor (>0.55) to exclude water reflections which are desaturated
+      // Narrow lightness window to exclude very dark shadows and washed-out highlights
+      var isRing = (h>=338 || h<=22) && s>0.55 && l>0.22 && l<0.72;
+      // Disc pixels: mint/seafoam face only — narrow hue 135°–178° to avoid water (190°+)
+      // Higher sat floor than before to exclude desaturated reflection areas
+      var isDisc = (h>=135 && h<=178) && s>0.12 && l>0.50 && l<0.92;
+
+      if (isRing) {
+        // Scale target luminance proportionally to original pixel vs source base
+        var relL = _clamp01(l / SRC_RING_L);
+        var newL = _clamp01(ringHsl.l * relL * 1.05);
+        var nr   = _hslToRgb(ringHsl.h, ringHsl.s, newL);
+        data[i]=nr.r; data[i+1]=nr.g; data[i+2]=nr.b;
+      } else if (isDisc) {
+        var relL = _clamp01(l / SRC_DISC_L);
+        var newL = _clamp01(discHsl.l * relL * 1.05);
+        var nd   = _hslToRgb(discHsl.h, discHsl.s, newL);
+        data[i]=nd.r; data[i+1]=nd.g; data[i+2]=nd.b;
+      }
+    }
+    ctx.putImageData(imgData, 0, 0);
+  });
+}
+
+// Keep toggleColour as no-op for backward compat
+function toggleColour(el, val) {}
+
+// ── PHOTO ──
+// ── CROP SYSTEM ──────────────────────────────────────────────────────
+// ── CROP SYSTEM ──────────────────────────────────────────────────────────
+var _ci         = new Image();   // source image
+var _cSize      = 320;           // canvas pixel size
+var _cFit       = 1;             // scale so image SHORT side = canvas (fills circle)
+var _cZoom      = 1;             // user zoom multiplier (1 = default fit)
+var _cX         = 0;             // offset from centre x
+var _cY         = 0;             // offset from centre y
+var _drag       = null;          // {x,y,ox,oy}
+var _pinch0     = 0;
+var _pinchZ0    = 1;
+
+function handlePhoto(input) {
+  if (!input.files || !input.files[0]) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var img = new Image();
+    img.onload = function() {
+      _ci = img;
+      // Show modal FIRST so getBoundingClientRect returns real dimensions
+      document.getElementById('cropModal').classList.add('open');
+      var canvas = document.getElementById('cropCanvas');
+      var wrap   = canvas.parentElement;
+      var sz     = Math.round(wrap.getBoundingClientRect().width) || 300;
+      _cSize     = sz;
+      canvas.width = canvas.height = sz;
+      // Cover scale: shorter side fills canvas circle
+      _cFit  = sz / Math.min(img.naturalWidth, img.naturalHeight);
+      _cZoom = 1;
+      _cX = 0; _cY = 0;
+      var zoomEl  = document.getElementById('cropZoom');
+      zoomEl.min   = '0.5';
+      zoomEl.max   = '4';
+      zoomEl.value = '1';
+      _cDraw();
+      _cBindEvents();
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function _cDraw() {
+  var canvas = document.getElementById('cropCanvas');
+  var ctx    = canvas.getContext('2d');
+  var sz     = _cSize;
+  var scale  = _cFit * _cZoom;
+  var dw     = _ci.naturalWidth  * scale;
+  var dh     = _ci.naturalHeight * scale;
+  var x      = (sz - dw) / 2 + _cX;
+  var y      = (sz - dh) / 2 + _cY;
+  ctx.clearRect(0, 0, sz, sz);
+  ctx.fillStyle = '#111';
+  ctx.fillRect(0, 0, sz, sz);
+  ctx.drawImage(_ci, x, y, dw, dh);
+  // Draw circle guide (semi-transparent outside)
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(0, 0, sz, sz);
+  ctx.arc(sz/2, sz/2, sz/2 - 2, 0, Math.PI*2, true);
+  ctx.fillStyle = 'rgba(0,0,0,0.55)';
+  ctx.fill();
+  // Circle border
+  ctx.beginPath();
+  ctx.arc(sz/2, sz/2, sz/2 - 2, 0, Math.PI*2);
+  ctx.strokeStyle = 'rgba(59,130,246,0.8)';
+  ctx.lineWidth   = 2;
+  ctx.stroke();
+  ctx.restore();
+}
+
+function _cBindEvents() {
+  var canvas = document.getElementById('cropCanvas');
+  // Remove old listeners by cloning
+  var fresh = canvas.cloneNode(true);
+  canvas.parentNode.replaceChild(fresh, canvas);
+  canvas = fresh;
+
+  // Helper: CSS px → canvas buffer px ratio
+  function getScale() {
+    var r = canvas.getBoundingClientRect();
+    return r.width > 0 ? _cSize / r.width : 1;
+  }
+
+  // Mouse
+  canvas.addEventListener('mousedown', function(e) {
+    var sc = getScale();
+    _drag = {x: e.clientX * sc, y: e.clientY * sc, ox: _cX, oy: _cY};
+    e.preventDefault();
+  });
+  canvas.addEventListener('mousemove', function(e) {
+    if (!_drag) return;
+    var sc = getScale();
+    _cX = _drag.ox + (e.clientX * sc - _drag.x);
+    _cY = _drag.oy + (e.clientY * sc - _drag.y);
+    _cDraw(); e.preventDefault();
+  });
+  canvas.addEventListener('mouseup',   function() { _drag = null; });
+  canvas.addEventListener('mouseleave',function() { _drag = null; });
+
+  // Mouse wheel zoom
+  canvas.addEventListener('wheel', function(e) {
+    var delta = e.deltaY > 0 ? -0.08 : 0.08;
+    _cZoom = Math.min(4, Math.max(0.5, _cZoom + delta));
+    document.getElementById('cropZoom').value = _cZoom;
+    _cDraw(); e.preventDefault();
+  }, {passive: false});
+
+  // Touch drag + pinch
+  canvas.addEventListener('touchstart', function(e) {
+    var sc = getScale();
+    if (e.touches.length === 1) {
+      _drag = {x: e.touches[0].clientX * sc, y: e.touches[0].clientY * sc, ox: _cX, oy: _cY};
+      _pinch0 = 0;
+    } else if (e.touches.length === 2) {
+      _pinch0  = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      _pinchZ0 = _cZoom;
+      _drag = null;
+    }
+    e.preventDefault();
+  }, {passive: false});
+
+  canvas.addEventListener('touchmove', function(e) {
+    var sc = getScale();
+    if (e.touches.length === 1 && _drag) {
+      _cX = _drag.ox + (e.touches[0].clientX * sc - _drag.x);
+      _cY = _drag.oy + (e.touches[0].clientY * sc - _drag.y);
+      _cDraw();
+    } else if (e.touches.length === 2 && _pinch0) {
+      var dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      _cZoom = Math.min(4, Math.max(0.5, _pinchZ0 * (dist / _pinch0)));
+      document.getElementById('cropZoom').value = _cZoom;
+      _cDraw();
+    }
+    e.preventDefault();
+  }, {passive: false});
+
+  canvas.addEventListener('touchend', function(e) {
+    if (e.touches.length === 0) { _drag = null; _pinch0 = 0; }
+  }, {passive: false});
+}
+
+function cropDraw() { _cDraw(); }   // called by zoom slider oninput
+
+function applyCrop() {
+  // Export a clean 400×400 circular crop
+  var out    = document.createElement('canvas');
+  out.width  = out.height = 400;
+  var ctx    = out.getContext('2d');
+  var ratio  = 400 / _cSize;
+  var scale  = _cFit * _cZoom;
+  var dw     = _ci.naturalWidth  * scale * ratio;
+  var dh     = _ci.naturalHeight * scale * ratio;
+  var x      = ((_cSize - _ci.naturalWidth  * scale) / 2 + _cX) * ratio;
+  var y      = ((_cSize - _ci.naturalHeight * scale) / 2 + _cY) * ratio;
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(200, 200, 200, 0, Math.PI * 2);
+  ctx.clip();
+  ctx.drawImage(_ci, x, y, dw, dh);
+  ctx.restore();
+
+  photoDataUrl = out.toDataURL('image/jpeg', 0.88);
+
+  var preview     = document.getElementById('photoPreview');
+  var placeholder = document.getElementById('photoPlaceholder');
+  preview.src           = photoDataUrl;
+  preview.style.display = 'block';
+  placeholder.style.display = 'none';
+  document.getElementById('photoArea').classList.add('has-photo');
+  closeCrop();
+}
+
+function closeCrop() {
+  document.getElementById('cropModal').classList.remove('open');
+  document.getElementById('photoInput').value = '';
+}
+
+async function uploadPhotoToImgbb(dataUrl) {
+  try {
+    var base64 = dataUrl.split(',')[1];
+    if (!base64) { console.error('[IN3] Photo: no base64 data'); return ''; }
+    var fd = new FormData();
+    fd.append('image', base64);
+    var resp = await fetch('https://api.innovat3.co.za/upload-photo', { method:'POST', body:fd });
+    var json = await resp.json();
+    console.log('[IN3] upload-photo response:', JSON.stringify(json));
+    if (json.success) return json.url;
+    // Show error so user knows photo failed
+    var msg = (json.error && json.error.message) ? json.error.message : 'Upload failed (status ' + resp.status + ')';
+    console.error('[IN3] imgbb error:', msg);
+    // Don't block registration — just warn
+    var photoStatus = document.getElementById('photoUploadStatus');
+    if (photoStatus) { photoStatus.textContent = '⚠️ Photo upload failed: ' + msg + '. Registration will proceed without photo.'; photoStatus.style.color='#EAB308'; photoStatus.style.display='block'; }
+  } catch(e) { console.error('[IN3] imgbb exception:', e.message); }
+  return '';
+}
+
+// ── CARE DOCUMENT UPLOAD ──
+async function handleCareDocUpload(type, input) {
+  var file = input.files[0];
+  if (!file) return;
+
+  var areaId   = type === 'id' ? 'idUploadArea'   : 'medUploadArea';
+  var statusId = type === 'id' ? 'idUploadStatus' : 'medUploadStatus';
+  var area     = document.getElementById(areaId);
+  var status   = document.getElementById(statusId);
+  var color    = type === 'id' ? '#0ED2C8' : '#F97316';
+  var icon     = type === 'id' ? '🪪' : '📋';
+
+  // 5 MB limit
+  if (file.size > 5 * 1024 * 1024) {
+    if (status) { status.textContent = '⚠️ File too large. Max 5 MB.'; status.style.color = '#ef4444'; status.style.display = 'block'; }
+    input.value = '';
+    return;
+  }
+
+  // Show uploading state
+  if (area) area.innerHTML = '<div style="font-size:20px;margin-bottom:6px">⏳</div><div style="font-size:13px;color:' + color + ';font-weight:600">Uploading…</div>';
+  if (status) status.style.display = 'none';
+
+  var isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+
+  if (isPdf) {
+    // PDFs cannot be previewed via imgbb — record filename and mark uploaded
+    if (area) area.innerHTML = '<div style="font-size:24px;margin-bottom:6px">' + icon + '</div><div style="font-size:13px;color:' + color + ';font-weight:600">✅ ' + file.name + '</div><div style="font-size:11px;color:#aaa">PDF received</div>';
+    if (type === 'id') { window._careIdUploaded  = true; window._careIdUrl  = 'pdf:' + file.name; }
+    else               { window._careMedUploaded = true; window._careMedUrl = 'pdf:' + file.name; }
+    if (status) { status.textContent = '✅ Document received.'; status.style.color = color; status.style.display = 'block'; }
+    return;
+  }
+
+  // Image — upload to imgbb via worker proxy
+  var reader = new FileReader();
+  reader.onload = async function(e) {
+    var base64 = e.target.result.split(',')[1];
+    if (!base64) {
+      if (area) area.innerHTML = '<div style="font-size:24px">' + icon + '</div>';
+      if (status) { status.textContent = '⚠️ Could not read file.'; status.style.color = '#ef4444'; status.style.display = 'block'; }
+      return;
+    }
+    try {
+      var fd = new FormData();
+      fd.append('image', base64);
+      var resp = await fetch('https://api.innovat3.co.za/upload-photo', { method: 'POST', body: fd });
+      var json = await resp.json();
+      if (json.success && json.url) {
+        if (area) area.innerHTML = '<img src="' + json.url + '" style="max-height:80px;border-radius:8px;object-fit:contain">';
+        if (type === 'id') { window._careIdUploaded  = true; window._careIdUrl  = json.url; }
+        else               { window._careMedUploaded = true; window._careMedUrl = json.url; }
+        if (status) { status.textContent = '✅ Uploaded successfully.'; status.style.color = color; status.style.display = 'block'; }
+      } else {
+        if (area) area.innerHTML = '<div style="font-size:24px">⚠️</div><div style="font-size:12px;color:#ef4444">Upload failed — try again</div>';
+        if (status) { status.textContent = '⚠️ Upload failed. Please try again.'; status.style.color = '#ef4444'; status.style.display = 'block'; }
+        input.value = '';
+      }
+    } catch(err) {
+      if (area) area.innerHTML = '<div style="font-size:24px">⚠️</div><div style="font-size:12px;color:#ef4444">Network error</div>';
+      if (status) { status.textContent = '⚠️ Network error. Please try again.'; status.style.color = '#ef4444'; status.style.display = 'block'; }
+      input.value = '';
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── WA/TG TOGGLES ──
+function toggleCt(toggleEl, checkId, type) {
+  var cb = document.getElementById(checkId);
+  cb.checked = !cb.checked;
+  var n = checkId.charAt(1);
+  if (type === 'wa') {
+    toggleEl.classList.toggle('active-wa', cb.checked);
+  } else {
+    toggleEl.classList.toggle('active-tg', cb.checked);
+    var tgField = document.getElementById('c'+n+'tgField');
+    if (tgField) tgField.style.display = cb.checked ? 'block' : 'none';
+  }
+}
+
+// ── BUILD MEDICAL STRING ──
+function buildMedical() {
+  var checks = ['heart','bp','diabetes','epilepsy','allergy','asthma','stroke','dementia'];
+  var labels = ['Heart condition','High blood pressure','Diabetes','Epilepsy','Severe allergies','Asthma','Stroke risk','Dementia'];
+  var sel = [];
+  checks.forEach(function(c,i){
+    if (document.getElementById('chk_'+c).checked) sel.push(labels[i]);
+  });
+  var extra = v('medical');
+  if (extra) sel.push(extra);
+  return sel.join(' · ') || 'None';
+}
+
+// ── GENERATE TAG ID ──
+function genTagId() {
+  var y = new Date().getFullYear();
+  var n = String(Math.floor(Math.random()*9000)+1000);
+  return 'IN3-' + y + '-B' + n;
+}
+
+function genBundleId() {
+  var y = new Date().getFullYear();
+  var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  var code = '';
+  for (var i = 0; i < 6; i++) code += chars[Math.floor(Math.random()*chars.length)];
+  return 'FAM-' + y + '-' + code;
+}
+
+// ── SUBMIT ──
+
+// ── MARK FAMILY MEMBER AS COMPLETE ──────────────────────────────────────
+function markMemberDone(idx) {
+  var el = document.getElementById('memberAccordion'+idx);
+  if (!el) return;
+
+  // Get name for summary
+  var fn  = document.getElementById('m'+idx+'_firstName') ? document.getElementById('m'+idx+'_firstName').value.trim() : '';
+  var ln  = document.getElementById('m'+idx+'_lastName')  ? document.getElementById('m'+idx+'_lastName').value.trim()  : '';
+  var fullName = fn + (ln ? ' ' + ln : '') || document.getElementById('fm'+idx) ? document.getElementById('fm'+idx).value.trim() : 'Member '+idx;
+
+  // Close accordion and mark done
+  el.classList.remove('open');
+  el.classList.add('member-done');
+
+  // Update header to show green checkmark summary
+  var hdr = el.querySelector('.member-accordion-hdr');
+  if (hdr) {
+    hdr.innerHTML =
+      '<div style="width:28px;height:28px;border-radius:50%;background:var(--green);color:#000;font-size:14px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;">✓</div>' +
+      '<div style="flex:1;">' +
+        '<div style="font-family:Orbitron,sans-serif;font-size:9px;font-weight:900;color:var(--green);letter-spacing:1px;">MEMBER '+idx+' — PROFILE COMPLETE</div>' +
+        '<div style="font-size:11px;color:#fff;margin-top:2px;font-weight:700;">'+fullName+'</div>' +
+      '</div>' +
+      '<div style="font-size:10px;color:var(--green);font-weight:700;text-align:right;">✓ Done<br><span style="font-size:9px;color:var(--muted);cursor:pointer;" onclick="editMember('+idx+',event)">Edit</span></div>';
+    // Make header re-openable via Edit only
+    hdr.onclick = null;
+  }
+  // Scroll to next unfilled member or consent
+  var next = null;
+  for (var i = idx+1; i <= 4; i++) {
+    var nextEl = document.getElementById('memberAccordion'+i);
+    if (nextEl && !nextEl.classList.contains('member-done')) { next = nextEl; break; }
+  }
+  var target = next || document.getElementById('consentSection');
+  if (target) target.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function editMember(idx, e) {
+  if (e) e.stopPropagation();
+  var el = document.getElementById('memberAccordion'+idx);
+  if (!el) return;
+  el.classList.remove('member-done');
+  el.classList.add('open');
+  // Restore header
+  var hdr = el.querySelector('.member-accordion-hdr');
+  var nameEl = document.getElementById('fm'+idx);
+  var name = nameEl ? nameEl.value.trim() : 'Member '+idx;
+  if (hdr) {
+    hdr.innerHTML =
+      '<div class="member-num">'+idx+'</div>' +
+      '<div class="member-title">Member '+idx+' — '+name+'</div>' +
+      '<div class="member-chevron">▼</div>';
+    hdr.onclick = function() { toggleMemberAccordion(idx); };
+  }
+}
+
+async function submitForm() {
+  if (!validateStep(5)) return;
+
+  var btn = document.querySelector('.btn-submit');
+  btn.textContent = 'Uploading...';
+  btn.disabled = true;
+
+  // Upload photo
+  if (photoDataUrl) {
+    photoUploadedUrl = await uploadPhotoToImgbb(photoDataUrl);
+  }
+
+  // Check for duplicate email via GAS before submitting
+  btn.textContent = 'Checking...';
+  try {
+    var dupResp = await fetch('https://api.innovat3.co.za/register', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ action: 'checkEmail', email: v('email') })
+    });
+    if (dupResp.ok) {
+      var dupJson = await dupResp.json();
+      if (dupJson.status === 'duplicate') {
+        btn.textContent = '✓  Submit Registration';
+        btn.disabled = false;
+        alert('This email address is already registered! If you need help with your existing registration, please contact us at hello@innovat3.co.za');
+        return;
+      }
+    }
+  } catch(dupErr) {
+    // If duplicate check fails, allow submission to proceed
+    console.log('Duplicate check skipped:', dupErr.message);
+  }
+
+  var tagId     = genTagId();
+  var bundleId  = (planSelected === 'Family') ? genBundleId() : '';
+  var timestamp = new Date().toLocaleString('en-ZA', {timeZone:'Africa/Johannesburg'});
+  var dobRaw    = getDobFromSelects(); // YYYY-MM-DD from selects
+  var dobFormatted = formatDob(dobRaw); // DD Month YYYY for display
+
+  var colour = coloursSelected.length > 0 ? coloursSelected.join(' + ') : 'Not selected';
+  var blood  = bloodSelected || v('bloodOther') || 'Unknown';
+
+  var data = {
+    type:             'REGISTRATION',
+    tagId:            tagId,
+    timestamp:        timestamp,
+    dob:              dobFormatted,
+    firstName:        v('firstName'),
+    lastName:         v('lastName'),
+    name:             v('firstName') + ' ' + v('lastName'),
+    email:            v('email'),
+    phone:            formatPhone(v('phone')),
+    telegram:         v('telegram'),
+    plan:             planSelected + (billingCycle === 'annual' ? ' (Annual)' : ' (Monthly)'),
+    blood:            blood,
+    medical:          buildMedical(),
+    meds:             v('meds'),
+    address:          v('address'),
+    notes:            v('notes'),
+    medicalAid:       v('medicalAid'),
+    medicalAidNumber: v('medicalAidNumber'),
+    colour:           colour,
+    formFactor:       document.getElementById('formFactor').value,
+    delivery:         v('delivery'),
+    extraNotes:       v('extraNotes'),
+    photoUrl:         photoUploadedUrl,
+    consentDate:      timestamp,
+    bundleId:         bundleId,
+    referredBy:       urlRef,
+    contacts: [
+      v('c1name') ? { name:v('c1name'), rel:v('c1rel'), phone:formatPhone(v('c1phone')), wa:document.getElementById('c1wa').checked, telegram:v('c1telegram') } : null,
+      v('c2name') ? { name:v('c2name'), rel:v('c2rel'), phone:formatPhone(v('c2phone')), wa:document.getElementById('c2wa').checked, telegram:v('c2telegram') } : null,
+      v('c3name') ? { name:v('c3name'), rel:v('c3rel'), phone:formatPhone(v('c3phone')), wa:document.getElementById('c3wa').checked, telegram:v('c3telegram') } : null,
+    ].filter(Boolean)
+  };
+
+  // Collect family member data
+  var familyMembersData = [];
+  if (planSelected === 'Family') {
+    familyMembersData = [2,3,4].map(function(idx) {
+      return collectMemberData(idx);
+    }).filter(Boolean);
+    data.familyMembers = familyMembersData;
+    data.familyGroupEmail = v('email'); // ties all members to main account
+    data.familyCount = familyMembersData.length + 1; // include main member
+    data.bundleId = bundleId; // unique family bundle identifier
+  }
+
+  // Telegram alert to owner
+  var careNote = (planSelected === 'Care') ? 
+    "\n\n🛡️ *CARE PLAN — " + (careType === "special_needs" ? "SPECIAL NEEDS" : "SENIOR 55+") + "*\n" +
+    "📄 ID Doc: " + (window._careIdUrl ? window._careIdUrl : 'Not uploaded') + "\n" +
+    "🏥 Med Doc: " + (window._careMedUrl ? window._careMedUrl : 'Not uploaded') : '';
+
+  var msg =
+    "\ud83c\udd95 *NEW REGISTRATION*\n\n" +
+    "*" + data.name + "*\n" +
+    "\ud83d\udce7 " + data.email + "\n" +
+    "\ud83d\udcf1 +" + data.phone + "\n" +
+    (data.telegram ? "\ud83d\udcac Telegram: " + data.telegram + "\n" : '') +
+    "\n\ud83c\udff7\ufe0f Tag: *" + tagId + "*\n" +
+    "\ud83c\udf82 DOB: " + dobFormatted + "\n" +
+    "\ud83d\udce6 Plan: " + planSelected + "\n" +
+    "\ud83c\udfa8 Colour: " + colour + "\n" +
+    "\ud83e\ude78 Blood: " + blood + "\n" +
+    "\u26a0\ufe0f Medical: " + data.medical + "\n" +
+    "\ud83d\udcc5 Timestamp: " + timestamp + careNote;
+
+  // Owner notification handled by GAS after registration
+
+  // Send main member to Google Sheets via GAS
+  try {
+    await fetch('https://api.innovat3.co.za/register', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(data)
+    });
+  } catch(e) {}
+
+  // Send each family member as their own separate registration row
+  if (planSelected === 'Family' && familyMembersData.length > 0) {
+    for (var mi = 0; mi < familyMembersData.length; mi++) {
+      var md = familyMembersData[mi];
+      if (!md) continue;
+      var memberTagId = genTagId();
+      var isSame = md.sameAsMain;
+      // Build member registration — copy main member medical fields if sameAsMain
+      var memberReg = {
+        type:             'REGISTRATION',
+        tagId:            memberTagId,
+        timestamp:        timestamp,
+        dob:              md.dob ? formatDob(md.dob) : '',
+        firstName:        md.firstName || md.name.split(' ')[0] || '',
+        lastName:         md.lastName  || md.name.split(' ').slice(1).join(' ') || '',
+        name:             md.name,
+        email:            v('email'),             // tied to main member email
+        phone:            formatPhone(md.phone || v('phone')),
+        telegram:         md.telegram || '',
+        plan:             planSelected + ' (Family Member ' + (mi+2) + ') ' + (billingCycle === 'annual' ? '(Annual)' : '(Monthly)'),
+        blood:            md.blood            || (isSame ? data.blood            : 'Unknown'),
+        medical:          md.medical          || (isSame ? data.medical          : ''),
+        meds:             md.meds             || (isSame ? data.meds             : ''),
+        medicalAid:       md.medicalAid       || (isSame ? data.medicalAid       : ''),
+        medicalAidNumber: md.medicalAidNumber || (isSame ? data.medicalAidNumber : ''),
+        address:          md.address          || (isSame ? v('address')          : ''),
+        notes:            md.notes            || (isSame ? data.notes            : ''),
+        colour:           colour,
+        formFactor:       document.getElementById('formFactor').value,
+        delivery:         md.delivery         || (isSame ? v('delivery')         : ''),
+        extraNotes:       v('extraNotes'),
+        photoUrl:         '',
+        consentDate:      timestamp,
+        familyGroupEmail: v('email'),
+        familyMainTagId:  tagId,
+        bundleId:         bundleId,
+        referredBy:       urlRef,
+        contacts: isSame ? data.contacts : (md.c1name ? [{
+          name: md.c1name, rel: md.c1rel,
+          phone: formatPhone(md.c1phone || ''),
+          wa: false, telegram: md.c1telegram || ''
+        }] : data.contacts)
+      };
+      // Upload member photo if provided
+      if (md.photoDataUrl) {
+        try {
+          var mPhotoUrl = await uploadPhotoToImgbb(md.photoDataUrl);
+          memberReg.photoUrl = mPhotoUrl;
+        } catch(e) {}
+      }
+      try {
+        await fetch('https://api.innovat3.co.za/register', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify(memberReg)
+        });
+      } catch(e) {}
+    }
+  }
+
+  // Hide all sections and show ONLY success screen
+  [1,2,3,4,5].forEach(function(n) {
+    var s = document.getElementById('sec'+n);
+    if (s) s.classList.remove('active');
+    var si = document.getElementById('stepItem'+n);
+    if (si) { si.classList.remove('active'); si.classList.add('done'); }
+  });
+  document.getElementById('progressBar').style.display = 'none';
+  document.querySelector('.page').style.paddingTop = '0';
+  // Don't show success screen yet — show payment section first
+  // Success screen will show on success.html after PayFast payment
+
+  var av = document.getElementById('successAvatar');
+  if (photoUploadedUrl) {
+    av.innerHTML = '<img src="' + photoUploadedUrl + '">';
+  } else if (photoDataUrl) {
+    av.innerHTML = '<img src="' + photoDataUrl + '">';
+  } else {
+    var fn = v('firstName'), ln = v('lastName');
+    av.textContent = ((fn[0]||'')+(ln[0]||'')).toUpperCase();
+  }
+  document.getElementById('successName').textContent  = data.name;
+  document.getElementById('successTagId').textContent = '\ud83c\udff7\ufe0f ' + tagId;
+  if (bundleId) {
+    var bundleEl = document.getElementById('successBundleId');
+    if (bundleEl) { bundleEl.textContent = '👨\u200d👩\u200d👧\u200d👦 Bundle: ' + bundleId; bundleEl.style.display='block'; }
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+
+
+<!-- ── CROP MODAL ── -->
+<div class="crop-modal" id="cropModal">
+  <div class="crop-box">
+    <div class="crop-title">✂️ &nbsp;Crop Photo</div>
+    <div class="crop-canvas-wrap">
+      <canvas id="cropCanvas"></canvas>
+      </div>
+    <p class="crop-hint">Drag to position · Scroll or slider to zoom · Pinch on mobile</p>
+    <div class="crop-zoom">
+      <label>Zoom</label>
+      <input type="range" id="cropZoom" min="0.3" max="4" step="0.01" value="1" oninput="cropDraw()">
+    </div>
+    <div class="crop-btns">
+      <button class="btn-crop-cancel" onclick="closeCrop()">Cancel</button>
+      <button class="btn-crop-apply" onclick="applyCrop()">✓ &nbsp;Use Photo</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── PAYFAST PAYMENT SECTION ─────────────────────────────────── -->
+<div class="payfast-section" id="payfastSection" style="display:none;padding:20px">
+  <div class="step-card" style="background:#111;border:1px solid rgba(249,115,22,0.3);border-radius:20px;padding:32px 28px;max-width:520px;margin:0 auto">
+    <h3 style="font-family:'Orbitron',sans-serif;font-size:18px;color:#F97316;margin-bottom:8px">💳 Complete Payment</h3>
+    <p style="color:#888;font-size:14px;margin-bottom:24px">Your registration is saved. Complete payment to activate your tag.</p>
+
+    <div id="paymentSummary" style="background:rgba(249,115,22,0.08);border:1px solid rgba(249,115,22,0.3);border-radius:12px;padding:20px;margin-bottom:24px"></div>
+
+    <!-- PayFast form — fields populated dynamically by payWithPayFast() -->
+    <form id="payfastForm" action="https://www.payfast.co.za/eng/process" method="post"></form>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <button type="button" id="payfastPayBtn" onclick="payWithPayFast()" style="background:#F97316;color:#fff;border:none;border-radius:12px;padding:16px 24px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Exo 2',sans-serif;letter-spacing:1px;box-shadow:0 4px 20px rgba(249,115,22,0.4)">
+        💳 Pay with PayFast
+      </button>
+    </div>
+    <p style="font-size:11px;color:#444;text-align:center;margin-top:16px">🔒 Secured by PayFast · SSL encrypted · South Africa</p>
+  </div>
+</div>
+
+<script>
+var PRICES = {
+  'Solo':   { monthly:49,   annual:470,  label:'Solo' },
+  'Family': { monthly:149,  annual:1435, label:'Family' },
+  'Care':   { once:199,                  label:'Care (Lifetime)' }
+};
+
+async function proceedToPayment() {
+  // For Care plan: must go through step 6 first
+  if (planSelected === 'Care') {
+    if (currentStep === 5) {
+      // Validate step 5 first
+      if (!validateStep(5)) return;
+      // Then go to step 6
+      goStep(6);
+      return;
+    }
+    if (currentStep === 6) {
+      // Validate step 6 (docs)
+      if (!validateStep(6)) return;
+    }
+  } else {
+    // Non-Care: validate step 5
+    if (!validateStep(5)) return;
+  }
+
+  // Defer photo upload to success page
+  if (photoDataUrl && !photoUploadedUrl) {
+    try { localStorage.setItem('in3_pending_photo', photoDataUrl); } catch(e) {}
+  }
+
+  // Hide form sections
+  [1,2,3,4,5].forEach(function(n) {
+    var s = document.getElementById('sec'+n);
+    if (s) s.classList.remove('active');
+    var si = document.getElementById('stepItem'+n);
+    if (si) { si.classList.remove('active'); si.classList.add('done'); }
+  });
+  document.getElementById('progressBar').style.display = 'none';
+  document.querySelector('.page').style.paddingTop = '0';
+
+  // Build registration data — stored in memory, saved by ITN after payment
+  var tagId     = genTagId();
+  var bundleId  = (planSelected === 'Family') ? genBundleId() : '';
+  var timestamp = new Date().toLocaleString('en-ZA', {timeZone:'Africa/Johannesburg'});
+  var dobRaw    = getDobFromSelects();
+  var colour    = coloursSelected.length > 0 ? coloursSelected.join(' + ') : 'Not selected';
+  var blood     = bloodSelected || v('bloodOther') || 'Unknown';
+
+  var registrationData = {
+    type: 'REGISTRATION',
+    tagId: tagId, bundleId: bundleId, timestamp: timestamp,
+    dob: formatDob(dobRaw), firstName: v('firstName'), lastName: v('lastName'),
+    name: v('firstName') + ' ' + v('lastName'),
+    email: v('email'), phone: formatPhone(v('phone')), telegram: v('telegram'),
+    plan: planSelected + (billingCycle === 'annual' ? ' (Annual)' : ' (Monthly)'),
+    blood: blood, medical: buildMedical(), meds: v('meds'),
+    address: v('address'), notes: v('notes'),
+    medicalAid: v('medicalAid'), medicalAidNumber: v('medicalAidNumber'),
+    colour: colour, colourNotes: v('colourNotes'),
+    formFactor: document.getElementById('formFactor').value,
+    delivery: v('delivery'), extraNotes: v('extraNotes'),
+    photoUrl: '', consentDate: timestamp,
+    careType: careType || 'senior', careIdDocUrl: window._careIdUrl || '', careMedDocUrl: window._careMedUrl || '',
+    contacts: [
+      v('c1name') ? {name:v('c1name'),rel:v('c1rel'),phone:formatPhone(v('c1phone')),wa:document.getElementById('c1wa').checked,telegram:v('c1telegram')} : null,
+      v('c2name') ? {name:v('c2name'),rel:v('c2rel'),phone:formatPhone(v('c2phone')),wa:document.getElementById('c2wa').checked,telegram:v('c2telegram')} : null,
+      v('c3name') ? {name:v('c3name'),rel:v('c3rel'),phone:formatPhone(v('c3phone')),wa:document.getElementById('c3wa').checked,telegram:v('c3telegram')} : null,
+    ].filter(Boolean)
+  };
+
+  var tagCount = (planSelected === 'Family') ?
+    ([2,3,4].filter(function(i){ return collectMemberData(i); }).length + 1) : 1;
+
+  // Store registration data in sessionStorage — Worker /prepare-payment picks it up
+  try { sessionStorage.setItem('in3_reg_data', JSON.stringify(registrationData)); } catch(e) {}
+  try { localStorage.setItem('in3_pending_tagid', tagId); } catch(e) {}
+
+  // Show payment section
+  showPaymentSection(tagId, v('firstName'), v('lastName'), v('email'),
+    v('phone'), planSelected, billingCycle, tagCount, registrationData);
+}
+
+function showPaymentSection(tagId, firstName, lastName, email, phone, plan, billing, tagCount, registrationData) {
+  var section = document.getElementById('payfastSection');
+  if (section) { section.style.display = 'block'; section.scrollIntoView({behavior:'smooth'}); }
+
+  var planData    = PRICES[plan] || PRICES['Solo'];
+  var subAmount   = 0, billingLabel = '';
+
+  if (plan === 'Care') {
+    subAmount    = planData.once || 0;
+    billingLabel = 'Once-off Lifetime';
+  } else if (billing === 'monthly') {
+    subAmount    = planData.monthly;
+    billingLabel = 'Monthly';
+  } else {
+    subAmount    = planData.annual;
+    billingLabel = 'Annual';
+  }
+
+  var hardwareAmount = (tagCount || 1) * 199;
+  var totalAmount    = subAmount + hardwareAmount;
+
+  var summary = document.getElementById('paymentSummary');
+  if (summary) {
+    var renewalNote = billing === 'monthly'
+      ? '<div style="margin-top:10px;padding:8px 12px;background:rgba(14,210,200,0.07);border:1px solid rgba(14,210,200,0.2);border-radius:8px;font-size:12px;color:#0ED2C8">🔁 <strong>Auto-recurring:</strong> R' + subAmount.toFixed(2) + '/month charged automatically. Cancel anytime via PayFast dashboard.</div>'
+      : '';
+    summary.innerHTML =
+      '<div style="font-family:\'Orbitron\',sans-serif;font-size:10px;letter-spacing:2px;color:#F97316;margin-bottom:14px">PAYMENT SUMMARY</div>' +
+      '<div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:14px"><span style="color:#aaa">' + planData.label + ' (' + billingLabel + ')</span><span style="color:#fff;font-weight:600">R' + subAmount.toFixed(2) + '</span></div>' +
+      '<div style="display:flex;justify-content:space-between;margin-bottom:14px;font-size:14px"><span style="color:#aaa">Tag Hardware (' + (tagCount||1) + ' tag' + (tagCount>1?'s':'') + ') — once-off</span><span style="color:#fff;font-weight:600">R' + hardwareAmount.toFixed(2) + '</span></div>' +
+      '<div style="border-top:1px solid rgba(249,115,22,0.3);padding-top:12px;display:flex;justify-content:space-between"><span style="color:#fff;font-weight:700;font-size:16px">Total</span><span style="color:#F97316;font-weight:900;font-size:22px;font-family:\'Orbitron\',sans-serif">R' + totalAmount.toFixed(2) + '</span></div>' +
+      renewalNote;
+  }
+
+  window._paymentData = {
+    tagId: tagId, firstName: firstName, lastName: lastName,
+    email: email, phone: phone, plan: plan, billing: billing,
+    amount: totalAmount.toFixed(2),
+    renewalAmount: subAmount.toFixed(2),
+    itemName: 'Innovat3 ' + planData.label + ' ' + billingLabel,
+    registrationData: registrationData || {}
+  };
+}
+
+// ── MD5 (verified correct implementation) ────────────────────────
+function md5(str) {
+  function safeAdd(x,y){var l=(x&0xffff)+(y&0xffff);return(((x>>>16)+(y>>>16)+(l>>>16))<<16)|(l&0xffff);}
+  function rol(n,s){return(n<<s)|(n>>>(32-s));}
+  function cmn(q,a,b,x,s,t){return safeAdd(rol(safeAdd(safeAdd(a,q),safeAdd(x,t)),s),b);}
+  function ff(a,b,c,d,x,s,t){return cmn((b&c)|(~b&d),a,b,x,s,t);}
+  function gg(a,b,c,d,x,s,t){return cmn((b&d)|(c&~d),a,b,x,s,t);}
+  function hh(a,b,c,d,x,s,t){return cmn(b^c^d,a,b,x,s,t);}
+  function ii(a,b,c,d,x,s,t){return cmn(c^(b|~d),a,b,x,s,t);}
+  // UTF-8 encode then build little-endian word array
+  var utf='';
+  for(var ci=0;ci<str.length;ci++){var cc=str.charCodeAt(ci);if(cc<128){utf+=String.fromCharCode(cc);}else if(cc<2048){utf+=String.fromCharCode((cc>>6)|0xC0,(cc&0x3F)|0x80);}else{utf+=String.fromCharCode((cc>>12)|0xE0,((cc>>6)&0x3F)|0x80,(cc&0x3F)|0x80);}}
+  var l=utf.length,n=((l+8)>>>6)+1,m=new Array(n*16);
+  for(var i=0;i<n*16;i++)m[i]=0;
+  for(var i=0;i<l;i++)m[i>>>2]|=utf.charCodeAt(i)<<((i&3)<<3);
+  m[l>>>2]|=0x80<<((l&3)<<3);m[n*16-2]=l*8;
+  var a=1732584193,b=-271733879,c=-1732584194,d=271733878;
+  for(var i=0;i<m.length;i+=16){
+    var oa=a,ob=b,oc=c,od=d;
+    a=ff(a,b,c,d,m[i+0],7,-680876936);d=ff(d,a,b,c,m[i+1],12,-389564586);c=ff(c,d,a,b,m[i+2],17,606105819);b=ff(b,c,d,a,m[i+3],22,-1044525330);
+    a=ff(a,b,c,d,m[i+4],7,-176418897);d=ff(d,a,b,c,m[i+5],12,1200080426);c=ff(c,d,a,b,m[i+6],17,-1473231341);b=ff(b,c,d,a,m[i+7],22,-45705983);
+    a=ff(a,b,c,d,m[i+8],7,1770035416);d=ff(d,a,b,c,m[i+9],12,-1958414417);c=ff(c,d,a,b,m[i+10],17,-42063);b=ff(b,c,d,a,m[i+11],22,-1990404162);
+    a=ff(a,b,c,d,m[i+12],7,1804603682);d=ff(d,a,b,c,m[i+13],12,-40341101);c=ff(c,d,a,b,m[i+14],17,-1502002290);b=ff(b,c,d,a,m[i+15],22,1236535329);
+    a=gg(a,b,c,d,m[i+1],5,-165796510);d=gg(d,a,b,c,m[i+6],9,-1069501632);c=gg(c,d,a,b,m[i+11],14,643717713);b=gg(b,c,d,a,m[i+0],20,-373897302);
+    a=gg(a,b,c,d,m[i+5],5,-701558691);d=gg(d,a,b,c,m[i+10],9,38016083);c=gg(c,d,a,b,m[i+15],14,-660478335);b=gg(b,c,d,a,m[i+4],20,-405537848);
+    a=gg(a,b,c,d,m[i+9],5,568446438);d=gg(d,a,b,c,m[i+14],9,-1019803690);c=gg(c,d,a,b,m[i+3],14,-187363961);b=gg(b,c,d,a,m[i+8],20,1163531501);
+    a=gg(a,b,c,d,m[i+13],5,-1444681467);d=gg(d,a,b,c,m[i+2],9,-51403784);c=gg(c,d,a,b,m[i+7],14,1735328473);b=gg(b,c,d,a,m[i+12],20,-1926607734);
+    a=hh(a,b,c,d,m[i+5],4,-378558);d=hh(d,a,b,c,m[i+8],11,-2022574463);c=hh(c,d,a,b,m[i+11],16,1839030562);b=hh(b,c,d,a,m[i+14],23,-35309556);
+    a=hh(a,b,c,d,m[i+1],4,-1530992060);d=hh(d,a,b,c,m[i+4],11,1272893353);c=hh(c,d,a,b,m[i+7],16,-155497632);b=hh(b,c,d,a,m[i+10],23,-1094730640);
+    a=hh(a,b,c,d,m[i+13],4,681279174);d=hh(d,a,b,c,m[i+0],11,-358537222);c=hh(c,d,a,b,m[i+3],16,-722521979);b=hh(b,c,d,a,m[i+6],23,76029189);
+    a=hh(a,b,c,d,m[i+9],4,-640364487);d=hh(d,a,b,c,m[i+12],11,-421815835);c=hh(c,d,a,b,m[i+15],16,530742520);b=hh(b,c,d,a,m[i+2],23,-995338651);
+    a=ii(a,b,c,d,m[i+0],6,-198630844);d=ii(d,a,b,c,m[i+7],10,1126891415);c=ii(c,d,a,b,m[i+14],15,-1416354905);b=ii(b,c,d,a,m[i+5],21,-57434055);
+    a=ii(a,b,c,d,m[i+12],6,1700485571);d=ii(d,a,b,c,m[i+3],10,-1894986606);c=ii(c,d,a,b,m[i+10],15,-1051523);b=ii(b,c,d,a,m[i+1],21,-2054922799);
+    a=ii(a,b,c,d,m[i+8],6,1873313359);d=ii(d,a,b,c,m[i+15],10,-30611744);c=ii(c,d,a,b,m[i+6],15,-1560198380);b=ii(b,c,d,a,m[i+13],21,1309151649);
+    a=ii(a,b,c,d,m[i+4],6,-145523070);d=ii(d,a,b,c,m[i+11],10,-1120210379);c=ii(c,d,a,b,m[i+2],15,718787259);b=ii(b,c,d,a,m[i+9],21,-343485551);
+    a=safeAdd(a,oa);b=safeAdd(b,ob);c=safeAdd(c,oc);d=safeAdd(d,od);
+  }
+  function hex(n){var s='',v;for(var i=0;i<4;i++){v=(n>>>(i*8))&0xff;s+=('0'+v.toString(16)).slice(-2);}return s;}
+  return hex(a)+hex(b)+hex(c)+hex(d);
+}
+
+async function payWithPayFast() {
+  var d = window._paymentData;
+  if (!d) { alert('Payment data not ready.'); return; }
+
+  var btn = document.getElementById('payfastPayBtn');
+  if (btn) { btn.textContent = '\u23F3 Preparing payment...'; btn.disabled = true; }
+
+  var form = document.getElementById('payfastForm');
+
+  // Format phone: PayFast requires 27XXXXXXXXX (digits only)
+  var rawPhone = (d.phone||'').replace(/\D/g,'');
+  if (rawPhone.startsWith('0') && rawPhone.length === 10) rawPhone = '27' + rawPhone.slice(1);
+  var phone = (rawPhone.length >= 10) ? rawPhone : '';
+
+  // Build params object
+  // Fields in PayFast canonical order (confirmed from official PHP SDK Auth.php)
+  var pfParams = {};
+  pfParams['merchant_id']   = '34168603';
+  pfParams['merchant_key']  = 'frbiyqgqpun0a';
+  pfParams['return_url']    = 'https://innovat3.co.za/success.html';
+  pfParams['cancel_url']    = 'https://innovat3.co.za/register/';
+  pfParams['notify_url']    = 'https://api.innovat3.co.za/itn';
+  pfParams['name_first']    = d.firstName;
+  pfParams['name_last']     = d.lastName;
+  pfParams['email_address'] = d.email;
+  if (phone) pfParams['cell_number'] = phone;
+  pfParams['m_payment_id']  = d.tagId;
+  pfParams['amount']        = d.amount;
+  pfParams['item_name']     = d.itemName;
+
+  // ── RECURRING BILLING — monthly plans only ─────────────────────────────
+  // subscription_type, billing_date, recurring_amount, frequency, cycles
+  // must be in canonical order (matches PF_FIELD_ORDER in Worker)
+  if (d.billing === 'monthly') {
+    pfParams['subscription_type'] = '1';
+    pfParams['recurring_amount']  = parseFloat(d.renewalAmount).toFixed(2);
+    pfParams['frequency']         = '3';
+    pfParams['cycles']            = '0';
+  }
+
+  // Get signature from worker — no passphrase (cleared in PayFast settings)
+  var signature = '';
+  try {
+    var regData = null;
+    try { regData = JSON.parse(sessionStorage.getItem('in3_reg_data') || 'null'); } catch(e) {}
+    var resp = await fetch('https://api.innovat3.co.za/prepare-payment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pfParams: pfParams, regData: regData || {} })
+    });
+    var json = await resp.json();
+    if (json.status === 'ok' && json.signature) {
+      signature = json.signature;
+    } else {
+      throw new Error(json.message || 'prepare-payment failed');
+    }
+  } catch(e) {
+    console.error('[IN3] prepare-payment error:', e.message);
+    if (btn) { btn.textContent = '\uD83D\uDCB3 Pay with PayFast'; btn.disabled = false; }
+    alert('Could not prepare payment. Please try again.');
+    return;
+  }
+
+  pfParams['signature'] = signature;
+
+  // Populate form and submit
+  form.innerHTML = '';
+  Object.keys(pfParams).forEach(function(k) {
+    var inp = document.createElement('input');
+    inp.type  = 'hidden';
+    inp.name  = k;
+    inp.value = pfParams[k];
+    form.appendChild(inp);
+  });
+
+  form.action = 'https://www.payfast.co.za/eng/process';
+  form.submit();
+}
+</script>
+
+<script>
+// Apply URL-param plan pre-selection and skip straight to step 2
+document.addEventListener('DOMContentLoaded', function() {
+  var params = new URLSearchParams(window.location.search);
+  var p = (params.get('plan') || '').toLowerCase();
+  var idMap  = { solo: 'planSolo', family: 'planFamily', care: 'planCare' };
+  var valMap = { solo: 'Solo', family: 'Family', care: 'Care' };
+  if (idMap[p]) {
+    var el = document.getElementById(idMap[p]);
+    if (el) {
+      // Visually select the plan card
+      document.querySelectorAll('.plan-card').forEach(function(c) { c.classList.remove('selected'); });
+      el.classList.add('selected');
+      planSelected = valMap[p];
+      // Show family member inputs if family plan
+      var fm = document.getElementById('familyMembers');
+      if (fm) fm.classList.toggle('show', p === 'family');
+      var fms = document.getElementById('familyMemberFormsSection');
+      if (fms) fms.style.display = (p === 'family') ? 'block' : 'none';
+      // Show care type selector if care plan
+      if (p === 'care') {
+        var sel = document.getElementById('careTypeSelector');
+        if (sel) sel.style.display = 'block';
+      }
+      // Skip step 1 — go directly to personal info
+      goStep(2);
+    }
+  }
+});
+</script>
+
+<!-- ══════════════════════════════════════════════════════════════
+     ANALYTICS & TRACKING
+     SETUP REQUIRED: Replace placeholder IDs before going live.
+     1. GA4: Create property at analytics.google.com → replace G-HGR0GKWPGZ
+     2. Meta Pixel: Create at business.facebook.com → replace 943871728392567
+     3. WhatsApp: Replace +27725883875 with your actual WhatsApp Business number
+     ══════════════════════════════════════════════════════════════ -->
+
+<!-- Google Analytics 4 — replace G-HGR0GKWPGZ with your Measurement ID -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HGR0GKWPGZ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-HGR0GKWPGZ');
+  // Track key registration funnel events
+  function trackEvent(name, params) {
+    if (typeof gtag !== 'undefined') gtag('event', name, params || {});
+  }
+</script>
+
+<!-- Meta Pixel — replace 943871728392567 with your Pixel ID (set up now, run ads later) -->
+<script>
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+  n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+  document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '943871728392567');
+  fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=943871728392567&ev=PageView&noscript=1"/></noscript>
+
+<!-- WhatsApp Floating Button -->
+<style>
+  .wa-float {
+    position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+    background: #25D366; color: #fff; border-radius: 50px;
+    padding: 12px 20px 12px 16px; box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+    text-decoration: none; font-family: 'Exo 2', sans-serif; font-size: 13px;
+    font-weight: 700; display: flex; align-items: center; gap: 8px;
+    transition: all 0.2s; border: none; cursor: pointer;
+  }
+  .wa-float:hover { background: #1da851; transform: translateY(-2px); box-shadow: 0 6px 24px rgba(37,211,102,0.5); }
+  .wa-float svg { width: 20px; height: 20px; fill: #fff; flex-shrink: 0; }
+  @media(max-width:480px) { .wa-float span { display: none; } .wa-float { padding: 14px; border-radius: 50%; } }
+</style>
+<a class="wa-float" href="https://wa.me/27725883875?text=Hi%20Innovat3%2C%20I%20need%20help%20with%20my%20registration." target="_blank" rel="noopener" aria-label="WhatsApp Support">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  <span>Need Help?</span>
+</a>
+
+<!-- POPIA Cookie Consent Banner -->
+<style>
+  #popia-banner {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 10000;
+    background: #111; border-top: 1px solid #2a2a2a;
+    padding: 14px 20px; display: flex; align-items: center; gap: 14px;
+    flex-wrap: wrap; font-family: 'Exo 2', sans-serif; font-size: 12px;
+    color: #aaa; box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+    transform: translateY(100%); transition: transform 0.3s ease;
+  }
+  #popia-banner.show { transform: translateY(0); }
+  #popia-banner p { flex: 1; min-width: 200px; line-height: 1.5; }
+  #popia-banner a { color: #F97316; text-decoration: none; }
+  #popia-banner a:hover { text-decoration: underline; }
+  #popia-accept {
+    background: #F97316; color: #000; border: none; border-radius: 6px;
+    padding: 8px 18px; font-family: 'Exo 2', sans-serif; font-size: 12px;
+    font-weight: 700; cursor: pointer; white-space: nowrap;
+  }
+  #popia-accept:hover { background: #ea6c0a; }
+</style>
+<div id="popia-banner" role="dialog" aria-label="Cookie consent">
+  <p>We use cookies and analytics to improve your experience. By continuing, you agree to our <a href="/privacy">Privacy Policy</a> and the use of analytics in accordance with POPIA.</p>
+  <button id="popia-accept" onclick="acceptCookies()">Accept</button>
+</div>
+<script>
+  (function() {
+    if (!localStorage.getItem('popia_consent')) {
+      setTimeout(function() {
+        var b = document.getElementById('popia-banner');
+        if (b) b.classList.add('show');
+      }, 1500);
+    }
+  })();
+  function acceptCookies() {
+    localStorage.setItem('popia_consent', '1');
+    var b = document.getElementById('popia-banner');
+    if (b) { b.style.transform = 'translateY(100%)'; }
+    // Now that consent is given, init tracking
+    if (typeof gtag !== 'undefined') gtag('consent', 'update', { analytics_storage: 'granted' });
+    if (typeof fbq !== 'undefined') fbq('consent', 'grant');
+  }
+</script>
+</body>
+</html>

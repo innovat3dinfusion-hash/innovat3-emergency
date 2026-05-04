@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Payment Successful — innovat3</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet"/>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#0A0A0A;color:#f0f0f0;font-family:'Exo 2',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+  .card{max-width:480px;width:100%;background:#111;border:1px solid rgba(255,255,255,0.07);border-radius:24px;padding:48px 40px;text-align:center}
+  .icon{font-size:64px;margin-bottom:24px;animation:bounce 0.6s ease}
+  @keyframes bounce{0%{transform:scale(0)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
+  h1{font-family:'Orbitron',sans-serif;font-size:28px;font-weight:900;color:#F97316;margin-bottom:12px;letter-spacing:2px}
+  .sub{font-size:15px;color:#888;line-height:1.6;margin-bottom:32px}
+  .tag-box{background:rgba(249,115,22,0.08);border:1px solid rgba(249,115,22,0.3);border-radius:12px;padding:20px;margin-bottom:32px}
+  .tag-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#666;margin-bottom:8px}
+  .tag-id{font-family:'Orbitron',sans-serif;font-size:20px;font-weight:900;color:#F97316;letter-spacing:2px}
+  .steps{text-align:left;margin-bottom:32px}
+  .step{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+  .step:last-child{border-bottom:none}
+  .step-num{width:28px;height:28px;border-radius:50%;background:rgba(14,210,200,0.15);color:#0ED2C8;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+  .step-text{font-size:13px;color:#aaa;line-height:1.5}
+  .step-text strong{color:#f0f0f0}
+  .btn{display:inline-block;background:#F97316;color:#fff;text-decoration:none;padding:14px 32px;border-radius:12px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;transition:all 0.2s}
+  .btn:hover{background:#c45a0d;transform:translateY(-1px)}
+  .footer-note{font-size:11px;color:#444;margin-top:20px}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="icon">✅</div>
+  <h1>Payment Confirmed!</h1>
+  <p class="sub">Your innovat3 NFC tag subscription is now active. You're protected.</p>
+
+  <div class="tag-box" id="tagBox" style="display:none">
+    <div class="tag-label">Your Tag ID</div>
+    <div class="tag-id" id="tagIdDisplay">—</div>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-text"><strong>Check your email</strong><br>Your profile link and tag details have been sent.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-text"><strong>Your tag ships within 3 business days</strong><br>Handcrafted in South Africa 🇿🇦</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-text"><strong>Register your Telegram</strong><br>Message <a href="https://t.me/innovat3bot" style="color:#0ED2C8">@innovat3bot</a> to receive GPS alerts when your tag is scanned.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-text"><strong>Ask your emergency contacts to register</strong><br>They each need to message @innovat3bot once to receive alerts.</div>
+    </div>
+  </div>
+
+  <a href="https://innovat3.co.za" class="btn">← Back to innovat3.co.za</a>
+  <p class="footer-note">Questions? <a href="mailto:Info@innovat3.co.za" style="color:#F97316">Info@innovat3.co.za</a></p>
+</div>
+
+<script>
+// Extract tag ID from URL params or localStorage
+var urlParams = new URLSearchParams(window.location.search);
+var tagId = urlParams.get('m_payment_id') || urlParams.get('tag') || '';
+try { if (!tagId) tagId = localStorage.getItem('in3_pending_tagid') || ''; } catch(e) {}
+if (tagId) {
+  document.getElementById('tagIdDisplay').textContent = tagId;
+  document.getElementById('tagBox').style.display = 'block';
+}
+try { localStorage.removeItem('in3_pending_tagid'); } catch(e) {}
+
+// Upload deferred photo from registration
+(async function() {
+  var pending;
+  try { pending = localStorage.getItem('in3_pending_photo'); } catch(e) {}
+  if (!pending) return;
+  try {
+    var fd = new FormData();
+    fd.append('image', pending.split(',')[1]);
+    var resp = await fetch('https://api.innovat3.co.za/upload-photo', { method:'POST', body:fd });
+    var json = await resp.json();
+    if (json.success && json.url && tagId) {
+      // Update the registration sheet with the photo URL
+      await fetch('https://api.innovat3.co.za/update-photo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tagId: tagId, photoUrl: json.url })
+      });
+    }
+    localStorage.removeItem('in3_pending_photo');
+  } catch(e) { console.log('Photo upload error:', e); }
+})();
+</script>
+</body>
+</html>

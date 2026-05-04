@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Innovat3 — Bulk & Institutional Pricing</title>
+<style>
+  /* ── PRINT STYLES ── */
+  @media print {
+    body { background: white !important; }
+    .no-print { display: none !important; }
+    .page { box-shadow: none !important; margin: 0 !important; padding: 20mm 18mm !important; }
+    @page { size: A4; margin: 0; }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #e8e8e8;
+    font-family: 'Segoe UI', Calibri, Arial, sans-serif;
+    font-size: 11pt;
+    color: #1a1a1a;
+    line-height: 1.6;
+  }
+
+  /* PRINT BUTTON */
+  .no-print {
+    position: fixed; top: 20px; right: 20px; z-index: 100;
+    display: flex; gap: 10px;
+  }
+  .btn-print {
+    background: #F97316; color: white; border: none;
+    padding: 10px 20px; border-radius: 6px; font-size: 12px;
+    font-weight: 700; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  .btn-print:hover { background: #ea6c0a; }
+
+  /* PAGE */
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    background: white;
+    margin: 30px auto;
+    padding: 18mm 18mm 16mm;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+  }
+
+  /* HEADER */
+  .doc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 3px solid #F97316;
+    padding-bottom: 14px;
+    margin-bottom: 20px;
+  }
+  .brand-block .brand-name {
+    font-size: 26pt;
+    font-weight: 900;
+    color: #F97316;
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+  .brand-block .brand-name span { color: #0ED2C8; }
+  .brand-block .brand-tag {
+    font-size: 7.5pt;
+    font-weight: 700;
+    color: #0ED2C8;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .doc-meta { text-align: right; font-size: 9pt; color: #666; line-height: 1.8; }
+  .doc-meta strong { color: #1a1a1a; }
+
+  /* DOCUMENT TITLE */
+  .doc-title {
+    background: linear-gradient(135deg, #0A0A0A 0%, #1a1a1a 100%);
+    color: white;
+    padding: 14px 20px;
+    border-radius: 8px;
+    margin-bottom: 22px;
+  }
+  .doc-title h1 { font-size: 15pt; font-weight: 700; color: #F97316; }
+  .doc-title p { font-size: 9.5pt; color: #aaa; margin-top: 3px; }
+
+  /* INTRO BOX */
+  .intro-box {
+    background: #fff8f4;
+    border-left: 4px solid #F97316;
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 22px;
+    font-size: 10pt;
+    color: #333;
+  }
+  .intro-box strong { color: #F97316; }
+
+  /* SECTION HEADING */
+  .section-title {
+    font-size: 10pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #F97316;
+    border-bottom: 1px solid #fde8d8;
+    padding-bottom: 5px;
+    margin-bottom: 12px;
+    margin-top: 22px;
+  }
+
+  /* RETAIL PRICING TABLE */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 6px;
+    font-size: 10pt;
+  }
+  thead th {
+    background: #0A0A0A;
+    color: white;
+    padding: 9px 12px;
+    text-align: left;
+    font-size: 9pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  thead th:first-child { border-radius: 6px 0 0 0; }
+  thead th:last-child  { border-radius: 0 6px 0 0; }
+  tbody tr:nth-child(even) { background: #f9f9f9; }
+  tbody tr:hover { background: #fff5ee; }
+  tbody td {
+    padding: 9px 12px;
+    border-bottom: 1px solid #ebebeb;
+    vertical-align: top;
+  }
+  .price-highlight { color: #F97316; font-weight: 700; font-size: 11pt; }
+  .price-old { color: #999; text-decoration: line-through; font-size: 9pt; }
+  .saving-badge {
+    display: inline-block;
+    background: #dcfce7;
+    color: #16a34a;
+    font-size: 8pt;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+    margin-left: 4px;
+  }
+  .tier-badge {
+    display: inline-block;
+    background: #0A0A0A;
+    color: #F97316;
+    font-size: 8pt;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  /* BULK TIERS */
+  .bulk-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .bulk-card {
+    border: 1.5px solid #e8e8e8;
+    border-radius: 8px;
+    padding: 14px 12px;
+    text-align: center;
+  }
+  .bulk-card.popular {
+    border-color: #F97316;
+    background: #fff8f4;
+  }
+  .bulk-card .tier-name {
+    font-size: 8pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #888;
+    margin-bottom: 4px;
+  }
+  .bulk-card.popular .tier-name { color: #F97316; }
+  .bulk-card .qty-range {
+    font-size: 13pt;
+    font-weight: 900;
+    color: #1a1a1a;
+    line-height: 1.2;
+  }
+  .bulk-card .qty-label { font-size: 8pt; color: #888; margin-bottom: 8px; }
+  .bulk-card .hw-price {
+    font-size: 14pt;
+    font-weight: 900;
+    color: #F97316;
+  }
+  .bulk-card .hw-label { font-size: 8pt; color: #888; }
+  .bulk-card .sub-price {
+    font-size: 10pt;
+    font-weight: 700;
+    color: #0ED2C8;
+    margin-top: 6px;
+  }
+  .bulk-card .sub-label { font-size: 8pt; color: #888; }
+  .bulk-card .discount-tag {
+    background: #dcfce7;
+    color: #16a34a;
+    font-size: 8pt;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    display: inline-block;
+    margin-top: 8px;
+  }
+  .popular-label {
+    background: #F97316;
+    color: white;
+    font-size: 7.5pt;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    display: inline-block;
+    margin-bottom: 6px;
+  }
+
+  /* WHATS INCLUDED */
+  .included-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .included-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 9.5pt;
+    padding: 6px 0;
+  }
+  .check { color: #16a34a; font-weight: 700; flex-shrink: 0; }
+
+  /* PAYMENT TERMS */
+  .terms-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .term-card {
+    background: #f5f5f5;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 9.5pt;
+  }
+  .term-card .term-label {
+    font-size: 8pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 3px;
+  }
+
+  /* FOOTER */
+  .doc-footer {
+    border-top: 2px solid #F97316;
+    margin-top: 28px;
+    padding-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    font-size: 8.5pt;
+    color: #666;
+  }
+  .doc-footer .contact strong { color: #F97316; font-size: 9.5pt; }
+  .doc-footer .validity { text-align: right; color: #999; }
+
+  /* NOTE BOX */
+  .note-box {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 9.5pt;
+    color: #166534;
+    margin-top: 10px;
+  }
+  .note-box strong { color: #15803d; }
+
+  .teal { color: #0ED2C8; }
+  .orange { color: #F97316; }
+</style>
+</head>
+<body>
+
+<!-- PRINT / SAVE BUTTON -->
+<div class="no-print">
+  <button class="btn-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+</div>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="doc-header">
+    <div class="brand-block">
+      <div class="brand-name">innovat3<span>.</span></div>
+      <div class="brand-tag">Smart NFC Emergency Tags</div>
+    </div>
+    <div class="doc-meta">
+      <strong>CONFIDENTIAL PRICING DOCUMENT</strong><br>
+      Version 1.0 &nbsp;·&nbsp; April 2026<br>
+      Valid until: 31 July 2026<br>
+      innovat3.co.za &nbsp;·&nbsp; info@innovat3.co.za
+    </div>
+  </div>
+
+  <!-- TITLE -->
+  <div class="doc-title">
+    <h1>Bulk &amp; Institutional Pricing Sheet</h1>
+    <p>Schools · Sports Clubs · Hiking Clubs · Corporate · Care Facilities · Community Organisations</p>
+  </div>
+
+  <!-- INTRO -->
+  <div class="intro-box">
+    <strong>What is Innovat3?</strong> A smart NFC + QR emergency safety tag worn on the body. When scanned by any smartphone (no app needed), it instantly displays the wearer's emergency profile and sends a real-time GPS alert to nominated family members via WhatsApp and Telegram. Made in South Africa. Ideal for children, hikers, elderly individuals, and persons with disabilities.
+  </div>
+
+  <!-- RETAIL PRICING -->
+  <div class="section-title">Standard Retail Pricing (Single Units)</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Plan</th>
+        <th>Best For</th>
+        <th>Hardware (once-off)</th>
+        <th>Monthly Subscription</th>
+        <th>Annual Option</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Solo</strong></td>
+        <td>Individual — child, hiker, adult</td>
+        <td class="price-highlight">R199</td>
+        <td class="price-highlight">R49<span style="font-size:9pt;font-weight:400;color:#888;">/month</span></td>
+        <td>R470/year <span class="saving-badge">Save 20%</span></td>
+      </tr>
+      <tr>
+        <td><strong>Family</strong></td>
+        <td>Up to 4 family members</td>
+        <td class="price-highlight">R199 <span style="font-size:8.5pt;font-weight:400;color:#888;">per tag</span></td>
+        <td class="price-highlight">R149<span style="font-size:9pt;font-weight:400;color:#888;">/month</span></td>
+        <td>R1,435/year <span class="saving-badge">Save 20%</span></td>
+      </tr>
+      <tr>
+        <td><strong>Care</strong></td>
+        <td>Adults 55+ · Persons with disabilities</td>
+        <td class="price-highlight">R199 <span style="font-size:8.5pt;font-weight:400;color:#888;">once-off</span></td>
+        <td style="color:#16a34a;font-weight:700;">No monthly fee</td>
+        <td style="color:#888;">—</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- BULK TIERS -->
+  <div class="section-title">Bulk Pricing Tiers — Hardware Discount</div>
+  <div class="bulk-grid">
+    <div class="bulk-card">
+      <div class="tier-name">Starter</div>
+      <div class="qty-range">10–24</div>
+      <div class="qty-label">tags</div>
+      <div class="hw-price">R179</div>
+      <div class="hw-label">per tag (hardware)</div>
+      <div class="sub-price">R44/tag/mo</div>
+      <div class="sub-label">subscription</div>
+      <div class="discount-tag">10% off</div>
+    </div>
+    <div class="bulk-card popular">
+      <div class="popular-label">⭐ Most Popular</div>
+      <div class="tier-name">School</div>
+      <div class="qty-range">25–99</div>
+      <div class="qty-label">tags</div>
+      <div class="hw-price">R159</div>
+      <div class="hw-label">per tag (hardware)</div>
+      <div class="sub-price">R39/tag/mo</div>
+      <div class="sub-label">subscription</div>
+      <div class="discount-tag">20% off</div>
+    </div>
+    <div class="bulk-card">
+      <div class="tier-name">Organisation</div>
+      <div class="qty-range">100–249</div>
+      <div class="qty-label">tags</div>
+      <div class="hw-price">R139</div>
+      <div class="hw-label">per tag (hardware)</div>
+      <div class="sub-price">R34/tag/mo</div>
+      <div class="sub-label">subscription</div>
+      <div class="discount-tag">30% off</div>
+    </div>
+    <div class="bulk-card">
+      <div class="tier-name">Enterprise</div>
+      <div class="qty-range">250+</div>
+      <div class="qty-label">tags</div>
+      <div class="hw-price">POA</div>
+      <div class="hw-label">negotiated rate</div>
+      <div class="sub-price">Custom</div>
+      <div class="sub-label">subscription</div>
+      <div class="discount-tag">Custom deal</div>
+    </div>
+  </div>
+
+  <!-- BULK PRICING TABLE DETAIL -->
+  <table style="margin-top:10px;">
+    <thead>
+      <tr>
+        <th>Qty</th>
+        <th>Hardware per Tag</th>
+        <th>Hardware Total (25 tags)</th>
+        <th>Subscription per Tag</th>
+        <th>Monthly Total (25 tags)</th>
+        <th>Saving vs Retail</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="tier-badge">10–24</span></td>
+        <td class="price-highlight">R179</td>
+        <td>R4,475 <span style="font-size:8.5pt;color:#888;">(20 tags)</span></td>
+        <td>R44/mo</td>
+        <td>R880/mo <span style="font-size:8.5pt;color:#888;">(20 tags)</span></td>
+        <td><span class="saving-badge">Save R500+</span></td>
+      </tr>
+      <tr>
+        <td><span class="tier-badge">25–99</span></td>
+        <td class="price-highlight">R159</td>
+        <td class="price-highlight">R3,975</td>
+        <td>R39/mo</td>
+        <td class="price-highlight">R975/mo</td>
+        <td><span class="saving-badge">Save R1,525+</span></td>
+      </tr>
+      <tr>
+        <td><span class="tier-badge">100–249</span></td>
+        <td class="price-highlight">R139</td>
+        <td>R13,900 <span style="font-size:8.5pt;color:#888;">(100 tags)</span></td>
+        <td>R34/mo</td>
+        <td>R3,400/mo <span style="font-size:8.5pt;color:#888;">(100 tags)</span></td>
+        <td><span class="saving-badge">Save R9,000+</span></td>
+      </tr>
+      <tr>
+        <td><span class="tier-badge">250+</span></td>
+        <td colspan="4" style="color:#888;font-style:italic;">Contact us for a tailored proposal — info@innovat3.co.za / +27 72 588 3875</td>
+        <td><span class="saving-badge">Best Rate</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- WHATS INCLUDED -->
+  <div class="section-title">What's Included in Every Tag</div>
+  <div class="included-grid">
+    <div class="included-item"><span class="check">✅</span><span>Physical 3D-printed NFC + QR tag (Made in SA)</span></div>
+    <div class="included-item"><span class="check">✅</span><span>Digital emergency profile (name, photo, blood type, medical info)</span></div>
+    <div class="included-item"><span class="check">✅</span><span>Real-time WhatsApp + Telegram GPS alert on scan</span></div>
+    <div class="included-item"><span class="check">✅</span><span>Up to 3 emergency contacts per tag</span></div>
+    <div class="included-item"><span class="check">✅</span><span>Works with any smartphone — no app needed</span></div>
+    <div class="included-item"><span class="check">✅</span><span>Instant profile update — changes reflect immediately</span></div>
+    <div class="included-item"><span class="check">✅</span><span>Scanner's GPS coordinates sent to family</span></div>
+    <div class="included-item"><span class="check">✅</span><span>24/7 tag accessibility — always online</span></div>
+  </div>
+
+  <!-- BULK ADD-ONS -->
+  <div class="section-title">Bulk Order Add-Ons (Optional)</div>
+  <table>
+    <thead>
+      <tr><th>Add-On</th><th>Description</th><th>Price</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>School/Org Branding</strong></td>
+        <td>Custom logo or text engraved on tag (school name, club name)</td>
+        <td>R15 per tag</td>
+      </tr>
+      <tr>
+        <td><strong>Lanyard Attachment</strong></td>
+        <td>Tag pre-fitted with school lanyard hole for ID card wear</td>
+        <td>R10 per tag</td>
+      </tr>
+      <tr>
+        <td><strong>Bulk Setup Assistance</strong></td>
+        <td>Remote onboarding session — we help register all users</td>
+        <td>R500 once-off (per organisation)</td>
+      </tr>
+      <tr>
+        <td><strong>Annual Subscription</strong></td>
+        <td>Pay annually upfront — save an additional 20% on subscription</td>
+        <td>20% off monthly rate</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- PAYMENT TERMS -->
+  <div class="section-title">Payment &amp; Delivery Terms</div>
+  <div class="terms-grid">
+    <div class="term-card">
+      <div class="term-label">Payment</div>
+      50% deposit on order confirmation.<br>50% on delivery.<br>EFT or PayFast accepted.
+    </div>
+    <div class="term-card">
+      <div class="term-label">Lead Time</div>
+      5–10 business days for orders up to 50 tags.<br>10–15 business days for 50–100 tags.<br>Custom timeline for 100+.
+    </div>
+    <div class="term-card">
+      <div class="term-label">Delivery</div>
+      Courier Guy door-to-door across South Africa.<br>Delivery cost quoted separately based on location and quantity.
+    </div>
+  </div>
+
+  <div class="note-box">
+    <strong>School Safety Programme:</strong> Innovat3 offers schools a <strong>pilot programme</strong> — start with 25 tags for your Grade R–3 learners at the 25-tag bulk rate. Once the programme proves its value, expand to the full school at the 100+ rate. We'll provide a presentation for your SGB meeting on request.
+  </div>
+
+  <!-- FOOTER -->
+  <div class="doc-footer">
+    <div class="contact">
+      <strong>Get a Quote or Place an Order</strong><br>
+      📧 info@innovat3.co.za<br>
+      📱 WhatsApp: +27 72 588 3875<br>
+      🌐 innovat3.co.za
+    </div>
+    <div class="validity">
+      Reg. No. 202603000127<br>
+      Prices valid until 31 July 2026<br>
+      All prices include VAT where applicable<br>
+      Subject to stock availability
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+</body>
+</html>

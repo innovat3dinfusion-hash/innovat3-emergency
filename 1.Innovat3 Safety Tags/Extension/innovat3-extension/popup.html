@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>innovat3 Deploy</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --orange:#F97316; --teal:#0ED2C8; --black:#080808;
+  --card:#111; --border:#1e1e1e; --border2:#2a2a2a;
+  --text:#F0F0F0; --muted:#666; --red:#EF4444;
+  --green:#22C55E; --yellow:#EAB308; --blue:#3B82F6;
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+body {
+  width: 520px; min-height: 400px;
+  font-family:'Exo 2',sans-serif;
+  background:var(--black); color:var(--text);
+}
+
+/* ── HEADER ── */
+.hdr {
+  background:linear-gradient(135deg,#0d0d0d,#1a0a00);
+  border-bottom:3px solid var(--orange);
+  padding:12px 18px; display:flex; align-items:center; gap:12px;
+}
+.logo { width:36px;height:36px;border-radius:9px;border:2px solid var(--orange);background:#1a0a00;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--orange);box-shadow:0 0 14px rgba(249,115,22,0.3); }
+.brand { font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;color:var(--orange); }
+.brand span { color:#fff; }
+.brand-sub { font-size:8px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:2px; }
+.hdr-right { margin-left:auto;display:flex;align-items:center;gap:8px; }
+.dot { width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:p 2s infinite; }
+@keyframes p { 0%,100%{opacity:1}50%{opacity:.4} }
+.status-txt { font-size:9px;color:var(--green);font-weight:700;letter-spacing:1px; }
+
+/* ── TABS ── */
+.tabs { display:flex; border-bottom:1px solid var(--border2); background:#0d0d0d; }
+.tab { flex:1;padding:10px 4px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;user-select:none;-webkit-user-select:none; }
+.tab:hover { color:var(--text); }
+.tab.active { color:var(--orange);border-bottom-color:var(--orange); }
+.tab-panel { display:none;padding:16px; }
+.tab-panel.active { display:block; }
+
+/* ── INPUTS ── */
+.field-label { font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:5px; }
+.field-input {
+  width:100%;background:#0a0a0a;border:1px solid var(--border2);
+  border-radius:7px;padding:8px 12px;color:var(--text);
+  font-family:'JetBrains Mono',monospace;font-size:10px;outline:none;
+  transition:border-color .15s;margin-bottom:8px;
+}
+.field-input:focus { border-color:var(--orange); }
+.input-row { display:flex;gap:6px;margin-bottom:12px; }
+.btn-sm {
+  padding:7px 14px;border-radius:7px;font-size:10px;font-weight:700;
+  cursor:pointer;font-family:'Exo 2',sans-serif;border:none;transition:all .15s;white-space:nowrap;
+}
+.btn-save { background:rgba(249,115,22,.15);border:1px solid rgba(249,115,22,.4);color:var(--orange); }
+.btn-save:hover { background:rgba(249,115,22,.25); }
+.btn-clear { background:transparent;border:1px solid var(--border2);color:var(--muted); }
+.field-status { font-size:10px;margin-top:-6px;margin-bottom:8px; }
+.field-status.ok { color:var(--green); }
+.field-status.err { color:var(--red); }
+
+/* ── DEPLOY BUTTONS ── */
+.deploy-section { margin-bottom:12px; }
+.btn-deploy {
+  width:100%;padding:11px;border:none;border-radius:10px;
+  font-family:'Orbitron',sans-serif;font-size:10px;font-weight:900;
+  letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;
+  transition:all .2s;margin-bottom:8px;position:relative;
+}
+.btn-all { background:linear-gradient(135deg,#b85200,#f97316,#ffb347);color:#000;box-shadow:0 0 24px rgba(249,115,22,.25); }
+.btn-all:hover { box-shadow:0 0 40px rgba(249,115,22,.4);transform:translateY(-1px); }
+.btn-gh { background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;border:1px solid #333; }
+.btn-gh:hover { border-color:#4a90d9; }
+.btn-cf { background:linear-gradient(135deg,#1a0e00,#2d1500);color:var(--orange);border:1px solid rgba(249,115,22,.3); }
+.btn-cf:hover { border-color:var(--orange); }
+.btn-gas { background:linear-gradient(135deg,#0a1a00,#162800);color:var(--green);border:1px solid rgba(34,197,94,.3); }
+.btn-verify { background:linear-gradient(135deg,#0a0e1a,#0f1830);color:var(--blue);border:1px solid rgba(59,130,246,.3); }
+.btn-deploy:disabled { opacity:.5;cursor:not-allowed;transform:none; }
+.spin { display:none;width:12px;height:12px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto; }
+.btn-deploy.loading .btn-txt { display:none; }
+.btn-deploy.loading .spin { display:block; }
+@keyframes spin { to{transform:rotate(360deg)} }
+
+/* ── LOG ── */
+#log {
+  background:#0a0a0a;border:1px solid var(--border2);border-radius:8px;
+  padding:10px 12px;height:160px;overflow-y:auto;
+  font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.8;
+}
+.ll { display:flex;gap:10px; }
+.lt { color:var(--muted);flex-shrink:0; }
+.lok { color:var(--green); }
+.lerr { color:var(--red); }
+.linf { color:var(--teal); }
+.lwarn { color:var(--yellow); }
+.log-hdr { display:flex;justify-content:space-between;align-items:center;margin-bottom:6px; }
+.log-title { font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted); }
+.btn-clr-log { background:none;border:none;color:var(--muted);font-size:10px;cursor:pointer; }
+
+/* ── GAS STEPS ── */
+.gas-steps { display:flex;flex-direction:column;gap:10px; }
+.gas-step { background:#0d0d0d;border:1px solid var(--border2);border-radius:10px;padding:12px; }
+.gas-step-hdr { display:flex;align-items:center;gap:10px;margin-bottom:6px; }
+.step-n { width:22px;height:22px;border-radius:50%;background:rgba(34,197,94,.15);border:1.5px solid var(--green);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:900;color:var(--green);flex-shrink:0; }
+.step-t { font-size:12px;font-weight:700;color:#fff; }
+.step-d { font-size:11px;color:var(--muted);line-height:1.6; }
+.btn-gas-action { margin-top:8px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:var(--green);font-size:10px;font-weight:700;padding:7px 14px;border-radius:7px;cursor:pointer;font-family:'Exo 2',sans-serif;width:100%; }
+.url-input { width:100%;background:#0a0a0a;border:1px solid var(--border2);border-radius:7px;padding:8px 12px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:10px;outline:none;margin-top:6px; }
+.url-input:focus { border-color:var(--green); }
+
+/* ── STATUS BADGES ── */
+.badges { display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:12px; }
+.badge { background:#0d0d0d;border:1px solid var(--border2);border-radius:8px;padding:10px;text-align:center; }
+.badge-label { font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:4px; }
+.badge-val { font-size:10px;font-weight:700; }
+.badge-val.ok { color:var(--green); }
+.badge-val.pending { color:var(--yellow); }
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="logo">IN3</div>
+  <div>
+    <div class="brand">innovat3<span>.</span></div>
+    <div class="brand-sub">Deploy Dashboard</div>
+  </div>
+  <div class="hdr-right">
+    <div class="dot"></div>
+    <div class="status-txt" id="statusTxt">READY</div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab active" id="tabn-deploy">🚀 Deploy</div>
+  <div class="tab" id="tabn-gas">📋 GAS</div>
+  <div class="tab" id="tabn-creds">🔑 Creds</div>
+  <div class="tab" id="tabn-log">📡 Log</div>
+</div>
+
+<!-- DEPLOY TAB -->
+<div class="tab-panel active" id="tab-deploy">
+  <button class="btn-deploy btn-all" id="btnAll">
+    <span class="btn-txt">🚀 &nbsp;Deploy All — GitHub + Cloudflare</span>
+    <div class="spin"></div>
+  </button>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+    <button class="btn-deploy btn-gh" id="btnGh">
+      <span class="btn-txt">🐙 Push GitHub</span>
+      <div class="spin"></div>
+    </button>
+    <button class="btn-deploy btn-cf" id="btnCf">
+      <span class="btn-txt">☁️ Deploy Worker</span>
+      <div class="spin"></div>
+    </button>
+  </div>
+
+  <button class="btn-deploy btn-verify" style="margin-top:0" id="btnVerify">
+    <span class="btn-txt">🔍 Run Health Check</span>
+    <div class="spin"></div>
+  </button>
+
+  <div class="badges">
+    <div class="badge">
+      <div class="badge-label">GitHub</div>
+      <div class="badge-val pending" id="badgeGh">⏳ Pending</div>
+    </div>
+    <div class="badge">
+      <div class="badge-label">Cloudflare</div>
+      <div class="badge-val pending" id="badgeCf">⏳ Pending</div>
+    </div>
+    <div class="badge">
+      <div class="badge-label">GAS</div>
+      <div class="badge-val pending" id="badgeGas">📋 Manual</div>
+    </div>
+    <div class="badge">
+      <div class="badge-label">Live Site</div>
+      <div class="badge-val pending" id="badgeLive">— Not checked</div>
+    </div>
+  </div>
+</div>
+
+<!-- GAS TAB -->
+<div class="tab-panel" id="tab-gas">
+  <div class="gas-steps">
+    <div class="gas-step">
+      <div class="gas-step-hdr"><div class="step-n">1</div><div class="step-t">Copy GAS code</div></div>
+      <div class="step-d">Copies the latest GAS code to your clipboard.</div>
+      <button class="btn-gas-action" id="btnCopyGas">📋 Copy GAS Code to Clipboard</button>
+    </div>
+    <div class="gas-step">
+      <div class="gas-step-hdr"><div class="step-n">2</div><div class="step-t">Paste into Apps Script</div></div>
+      <div class="step-d">Open your script → Ctrl+A → Ctrl+V → Save (Ctrl+S)</div>
+      <button class="btn-gas-action" id="btnOpenGas">🔗 Open Apps Script Editor</button>
+    </div>
+    <div class="gas-step">
+      <div class="gas-step-hdr"><div class="step-n">3</div><div class="step-t">New Deployment</div></div>
+      <div class="step-d">Deploy → New Deployment → Web App → Execute as Me → Anyone → Deploy. Paste the new /exec URL below:</div>
+      <input type="text" class="url-input" id="newGasUrl" placeholder="https://script.google.com/macros/s/.../exec">
+      <button class="btn-gas-action" id="btnUpdateGas">⚡ Update Worker + GitHub with new URL</button>
+    </div>
+  </div>
+</div>
+
+<!-- CREDENTIALS TAB -->
+<div class="tab-panel" id="tab-creds">
+  <div class="field-label">GitHub Personal Access Token</div>
+  <input type="password" class="field-input" id="ghToken" placeholder="github_pat_...">
+  <div class="input-row">
+    <div class="field-status" id="ghSt" style="flex:1"></div>
+    <button class="btn-sm btn-clear" id="btnClearGh">Clear</button>
+    <button class="btn-sm btn-save" id="btnSaveGh">Save</button>
+  </div>
+
+  <div class="field-label">Cloudflare API Token</div>
+  <input type="password" class="field-input" id="cfToken" placeholder="cfut_...">
+  <div class="input-row">
+    <div class="field-status" id="cfSt" style="flex:1"></div>
+    <button class="btn-sm btn-clear" id="btnClearCf">Clear</button>
+    <button class="btn-sm btn-save" id="btnSaveCf">Save</button>
+  </div>
+
+  <div style="background:rgba(14,210,200,.06);border:1px solid rgba(14,210,200,.2);border-radius:8px;padding:10px 12px;font-size:10px;color:#0ED2C8;line-height:1.6;margin-top:4px">
+    🔒 Tokens stored in Chrome extension storage — encrypted, device-only, never transmitted except to GitHub and Cloudflare directly.
+  </div>
+</div>
+
+<!-- LOG TAB -->
+<div class="tab-panel" id="tab-log">
+  <div class="log-hdr">
+    <div class="log-title">Deploy Log</div>
+    <button class="btn-clr-log" id="btnClearLog">Clear</button>
+  </div>
+  <div id="log">
+    <div class="ll"><span class="lt">--:--:--</span><span class="linf">Extension loaded. Ready to deploy.</span></div>
+  </div>
+</div>
+
+<script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,1936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.innovat3.co.za;">
+<meta http-equiv="X-Frame-Options" content="DENY">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="Referrer-Policy" content="no-referrer">
+<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>innovat3 — Admin Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --orange: #F97316;
+    --orange-dim: #c45a0d;
+    --teal: #0ED2C8;
+    --teal-dim: #09a09a;
+    --black: #0A0A0A;
+    --surface: #111111;
+    --surface2: #1a1a1a;
+    --surface3: #222222;
+    --border: rgba(255,255,255,0.07);
+    --border-orange: rgba(249,115,22,0.25);
+    --border-teal: rgba(14,210,200,0.25);
+    --text: #f0f0f0;
+    --text-muted: #888;
+    --text-dim: #555;
+    --font-head: 'Orbitron', monospace;
+    --font-body: 'Exo 2', sans-serif;
+    --radius: 10px;
+    --radius-lg: 16px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--black);
+    background-image: url('https://innovat3dinfusion-hash.github.io/innovat3-emergency/assets/turtle-bg.jpg');
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 14px;
+    min-height: 100vh;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: rgba(10,10,10,0.88);
+    z-index: 0;
+    pointer-events: none;
+  }
+  .sidebar, .main { position: relative; z-index: 1; }
+
+  /* ── LOGIN SCREEN ── */
+  #login-screen {
+    position: fixed;
+    inset: 0;
+    background: var(--black);
+    background-image: url('https://innovat3dinfusion-hash.github.io/innovat3-emergency/assets/turtle-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    flex-direction: column;
+  }
+  #login-screen::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(10,10,10,0.72);
+    backdrop-filter: blur(3px);
+    z-index: 0;
+  }
+  #login-screen > * { position: relative; z-index: 1; }
+  #login-screen.hidden { display: none; }
+  .login-card {
+    width: 100%;
+    max-width: 380px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 40px 36px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+  .login-logo {
+    font-family: var(--font-head);
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--orange);
+    letter-spacing: 4px;
+    margin-bottom: 4px;
+  }
+  .login-sub {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 36px;
+  }
+  .login-label {
+    width: 100%;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+  .login-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.15s;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+  }
+  .login-input:focus { border-color: var(--border-orange); }
+  .login-btn {
+    width: 100%;
+    padding: 13px;
+    background: var(--orange);
+    border: none;
+    border-radius: var(--radius);
+    color: #fff;
+    font-family: var(--font-head);
+    font-size: 12px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: background 0.15s;
+    margin-bottom: 16px;
+  }
+  .login-btn:hover { background: var(--orange-dim); }
+  .login-error {
+    font-size: 12px;
+    color: #ef4444;
+    text-align: center;
+    height: 16px;
+    letter-spacing: 0.5px;
+  }
+
+  .login-divider {
+    width: 40px;
+    height: 2px;
+    background: var(--border-orange);
+    border-radius: 1px;
+    margin-bottom: 28px;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 220px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+  }
+  .sidebar-logo {
+    padding: 24px 20px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .logo-text {
+    font-family: var(--font-head);
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--orange);
+    letter-spacing: 2px;
+  }
+  .logo-sub {
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .nav {
+    flex: 1;
+    padding: 16px 0;
+    overflow-y: auto;
+  }
+  .nav-section {
+    padding: 6px 16px 2px;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-top: 12px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 20px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-muted);
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+    text-decoration: none;
+  }
+  .nav-item:hover { color: var(--text); background: var(--surface2); }
+  .nav-item.active {
+    color: var(--orange);
+    background: rgba(249,115,22,0.08);
+    border-left-color: var(--orange);
+  }
+  .nav-item .icon { font-size: 15px; width: 18px; text-align: center; }
+  .sidebar-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  .status-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--teal);
+    margin-right: 6px;
+    box-shadow: 0 0 6px var(--teal);
+  }
+
+  /* ── MAIN ── */
+  .main {
+    margin-left: 220px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    height: 60px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .page-title {
+    font-family: var(--font-head);
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: var(--text);
+  }
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .refresh-btn {
+    padding: 6px 14px;
+    border: 1px solid var(--border-orange);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--orange);
+    font-family: var(--font-body);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 1px;
+  }
+  .refresh-btn:hover { background: rgba(249,115,22,0.1); }
+  .last-updated {
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  .admin-badge {
+    font-size: 10px;
+    letter-spacing: 2px;
+    background: rgba(14,210,200,0.1);
+    color: var(--teal);
+    border: 1px solid var(--border-teal);
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  /* ── CONTENT ── */
+  .content {
+    padding: 28px;
+    flex: 1;
+  }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ── METRIC CARDS ── */
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .metric-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px 22px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .metric-card:hover { border-color: rgba(255,255,255,0.12); }
+  .metric-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+  }
+  .metric-card.orange::before { background: var(--orange); }
+  .metric-card.teal::before { background: var(--teal); }
+  .metric-card.gray::before { background: #444; }
+  .metric-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+  }
+  .metric-value {
+    font-family: var(--font-head);
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .metric-card.orange .metric-value { color: var(--orange); }
+  .metric-card.teal .metric-value { color: var(--teal); }
+  .metric-card.gray .metric-value { color: #ccc; }
+  .metric-sub {
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  .metric-badge {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+  }
+  .badge-green { background: rgba(16,185,129,0.15); color: #10b981; }
+  .badge-orange { background: rgba(249,115,22,0.15); color: var(--orange); }
+  .badge-teal { background: rgba(14,210,200,0.15); color: var(--teal); }
+  .badge-gray { background: rgba(255,255,255,0.06); color: #777; }
+
+  /* ── TWO-COL GRID ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; }
+  .three-col { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 20px; margin-bottom: 28px; }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .card-title {
+    font-family: var(--font-head);
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--text);
+  }
+  .card-body { padding: 20px; }
+  .card-badge {
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 10px;
+    letter-spacing: 1px;
+  }
+
+  /* ── TABLE ── */
+  .table-wrap { overflow-x: auto; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  th {
+    text-align: left;
+    padding: 10px 14px;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+    font-weight: 400;
+  }
+  td {
+    padding: 11px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    color: var(--text-muted);
+    vertical-align: middle;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); color: var(--text); }
+  .td-primary { color: var(--text) !important; font-weight: 500; }
+  .tag-id { font-family: var(--font-head); font-size: 11px; color: var(--orange); letter-spacing: 1px; }
+
+  /* ── STATUS PILL ── */
+  .pill {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  .pill-active   { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.25); }
+  .pill-beta     { background: rgba(14,210,200,0.12); color: var(--teal); border: 1px solid var(--border-teal); }
+  .pill-pending  { background: rgba(249,115,22,0.12); color: var(--orange); border: 1px solid var(--border-orange); }
+  .pill-inactive { background: rgba(255,255,255,0.05); color: #555; border: 1px solid var(--border); }
+  .pill-solo     { background: rgba(249,115,22,0.08); color: var(--orange); border: 1px solid var(--border-orange); }
+  .pill-family   { background: rgba(14,210,200,0.08); color: var(--teal); border: 1px solid var(--border-teal); }
+  .pill-care     { background: rgba(168,85,247,0.1); color: #a855f7; border: 1px solid rgba(168,85,247,0.2); }
+
+  /* ── PLAN BAR CHART ── */
+  .plan-bars { display: flex; flex-direction: column; gap: 12px; }
+  .plan-row { display: flex; align-items: center; gap: 12px; }
+  .plan-name { font-size: 12px; color: var(--text-muted); width: 80px; flex-shrink: 0; }
+  .bar-track { flex: 1; height: 6px; background: var(--surface3); border-radius: 3px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 3px; transition: width 0.8s ease; }
+  .bar-orange { background: var(--orange); }
+  .bar-teal   { background: var(--teal); }
+  .bar-gray   { background: #555; }
+  .plan-count { font-family: var(--font-head); font-size: 12px; color: var(--text); width: 24px; text-align: right; }
+
+  /* ── SCAN LOG ── */
+  .scan-entry {
+    display: flex;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .scan-entry:last-child { border-bottom: none; }
+  .scan-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-top: 5px;
+    flex-shrink: 0;
+  }
+  .scan-dot-orange { background: var(--orange); box-shadow: 0 0 6px var(--orange); }
+  .scan-dot-teal   { background: var(--teal);   box-shadow: 0 0 6px var(--teal); }
+  .scan-info { flex: 1; }
+  .scan-name { font-size: 13px; color: var(--text); font-weight: 500; }
+  .scan-meta { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .scan-time { font-size: 11px; color: var(--text-dim); text-align: right; }
+
+  /* ── SEARCH / FILTER ── */
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .search-box {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 8px 14px;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-box:focus { border-color: var(--border-orange); }
+  .search-box::placeholder { color: var(--text-dim); }
+  .filter-btn {
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface2);
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.5px;
+  }
+  .filter-btn:hover, .filter-btn.active { border-color: var(--border-orange); color: var(--orange); background: rgba(249,115,22,0.06); }
+
+  /* ── PENDING TASKS ── */
+  .task-list { display: flex; flex-direction: column; gap: 2px; }
+  .task-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  .task-item:hover { background: var(--surface2); }
+  .task-check {
+    width: 16px; height: 16px;
+    border: 1.5px solid var(--text-dim);
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .task-item.done .task-check {
+    background: var(--teal);
+    border-color: var(--teal);
+  }
+  .task-item.done .task-check::after {
+    content: '✓';
+    position: absolute;
+    top: -1px; left: 2px;
+    font-size: 11px;
+    color: var(--black);
+    font-weight: 700;
+  }
+  .task-text { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
+  .task-item.done .task-text { text-decoration: line-through; color: var(--text-dim); }
+  .task-tag {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 8px;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+  .tag-critical { background: rgba(239,68,68,0.12); color: #ef4444; }
+  .tag-revenue  { background: rgba(249,115,22,0.12); color: var(--orange); }
+  .tag-legal    { background: rgba(168,85,247,0.12); color: #a855f7; }
+  .tag-ops      { background: rgba(14,210,200,0.12); color: var(--teal); }
+  .tag-dev      { background: rgba(59,130,246,0.12); color: #3b82f6; }
+
+  /* ── REVENUE CARD ── */
+  .rev-split { display: flex; gap: 24px; align-items: flex-start; }
+  .rev-item { flex: 1; }
+  .rev-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; }
+  .rev-val { font-family: var(--font-head); font-size: 22px; color: var(--orange); }
+  .rev-sub { font-size: 11px; color: var(--text-dim); margin-top: 3px; }
+  .rev-divider { width: 1px; background: var(--border); align-self: stretch; }
+
+  /* ── LOADING ── */
+  .loading { text-align: center; padding: 40px; color: var(--text-dim); font-size: 13px; letter-spacing: 1px; }
+  .spinner {
+    display: inline-block;
+    width: 20px; height: 20px;
+    border: 2px solid var(--border);
+    border-top-color: var(--orange);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── TELEGRAM SECTION ── */
+  .chat-id-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .chat-id-row:last-child { border-bottom: none; }
+  .chat-avatar {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--surface3);
+    border: 1px solid var(--border-teal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: var(--teal);
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .chat-name { font-size: 13px; color: var(--text); }
+  .chat-id { font-family: var(--font-head); font-size: 10px; color: var(--text-dim); margin-top: 2px; }
+  .chat-status { margin-left: auto; }
+
+  /* ── ALERT BOX ── */
+  .alert-box {
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    margin-bottom: 16px;
+    border-left: 3px solid;
+  }
+  .alert-orange { background: rgba(249,115,22,0.08); border-color: var(--orange); color: #f5a96a; }
+  .alert-teal   { background: rgba(14,210,200,0.08); border-color: var(--teal);   color: #6edbd6; }
+  .alert-red    { background: rgba(239,68,68,0.08);  border-color: #ef4444;       color: #f87171; }
+
+  /* ── DONUT ── */
+  .donut-wrap { display: flex; align-items: center; gap: 24px; }
+  .donut-legend { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+  .legend-item { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text-muted); }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .legend-val { margin-left: auto; font-family: var(--font-head); font-size: 12px; color: var(--text); }
+
+  /* ── EMPTY STATE ── */
+  .empty {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-dim);
+    font-size: 13px;
+  }
+
+  /* ── ACTION BUTTONS ── */
+  .action-btn {
+    padding: 7px 14px;
+    border-radius: var(--radius);
+    font-family: var(--font-body);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.5px;
+    border: none;
+  }
+  .btn-orange { background: var(--orange); color: #fff; }
+  .btn-orange:hover { background: var(--orange-dim); }
+  .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-muted); }
+  .btn-outline:hover { border-color: var(--border-orange); color: var(--orange); }
+  .btn-teal { background: var(--teal); color: var(--black); }
+  .btn-teal:hover { background: var(--teal-dim); }
+
+  /* ── PAGINATION ── */
+  .pagination { display: flex; align-items: center; gap: 8px; margin-top: 16px; }
+  .page-btn {
+    padding: 5px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .page-btn:hover, .page-btn.active { border-color: var(--border-orange); color: var(--orange); }
+  .page-info { font-size: 12px; color: var(--text-dim); margin-left: auto; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .metric-grid { grid-template-columns: 1fr 1fr; }
+    .two-col, .three-col { grid-template-columns: 1fr; }
+    .sidebar { transform: translateX(-220px); }
+    .main { margin-left: 0; }
+  }
+  .form-label {
+    display:block;font-size:11px;color:var(--text-muted);margin-bottom:4px;letter-spacing:.5px;
+  }
+  .cash-input {
+    width:100%;padding:9px 12px;background:#0d0d14;border:1px solid #2a2a3a;
+    border-radius:8px;color:#fff;font-size:13px;font-family:'Exo 2',sans-serif;
+    box-sizing:border-box;outline:none;transition:border-color .2s;
+  }
+  .cash-input:focus { border-color:#F97316; }
+  .cash-input option { background:#111; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="login-card" style="position:relative;overflow:hidden;">
+    <div style="position:absolute;bottom:-30px;right:-30px;width:140px;height:140px;opacity:0.13;background-image:url('https://innovat3dinfusion-hash.github.io/innovat3-emergency/assets/water-tag.png');background-size:cover;background-position:center;border-radius:50%;pointer-events:none;z-index:0;"></div>
+    <div style="position:relative;z-index:1;display:contents;">
+    <img src="data:image/png;base64,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" style="width:64px;height:64px;object-fit:cover;border-radius:14px;border:2px solid #F97316;box-shadow:0 0 22px rgba(249,115,22,0.5);margin-bottom:16px;" alt="innovat3 logo"/>
+    <div class="login-logo">innovat3</div>
+    <div class="login-sub">Admin Console</div>
+    <div class="login-divider"></div>
+    <div class="login-label">Password</div>
+    <input
+      class="login-input"
+      type="password"
+      id="login-pw"
+      placeholder="••••••••••••"
+      autocomplete="current-password"
+      onkeydown="if(event.key==='Enter')doLogin()"
+      autofocus
+    />
+    <button class="login-btn" onclick="doLogin()">ACCESS DASHBOARD</button>
+    <div class="login-error" id="login-error"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+      <img src="data:image/png;base64,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" style="width:32px;height:32px;object-fit:contain;" alt="logo"/>
+      <div class="logo-text" style="margin:0">innovat3</div>
+    </div>
+    <div class="logo-sub">Admin Console</div>
+  </div>
+  <nav class="nav">
+    <div class="nav-section">Overview</div>
+    <a class="nav-item active" onclick="showSection('dashboard')">
+      <span class="icon">◈</span> Dashboard
+    </a>
+    <div class="nav-section">Subscribers</div>
+    <a class="nav-item" onclick="showSection('subscribers')">
+      <span class="icon">◉</span> All Subscribers
+    </a>
+    <a class="nav-item" onclick="showSection('family')">
+      <span class="icon">◎</span> Family Bundles
+    </a>
+    <a class="nav-item" onclick="showSection('expiring')">
+      <span class="icon" style="color:#F97316">⏰</span> Expiring Soon
+    </a>
+    <div class="nav-section">Activity</div>
+    <a class="nav-item" onclick="showSection('scans')">
+      <span class="icon">◇</span> Scan Logs
+    </a>
+    <a class="nav-item" onclick="showSection('telegram')">
+      <span class="icon">◈</span> Telegram IDs
+    </a>
+    <div class="nav-section">System</div>
+    <a class="nav-item" onclick="showSection('tasks')">
+      <span class="icon">◻</span> Pending Tasks
+    </a>
+    <a class="nav-item" onclick="showSection('revenue')">
+      <span class="icon">◈</span> Revenue
+    </a>
+    <a class="nav-item" onclick="showSection('cashReg')">
+      <span class="icon">💵</span> Cash Registration
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <span class="status-dot"></span>Systems live
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="page-title" id="page-title">DASHBOARD</div>
+    <div class="topbar-right">
+      <span class="last-updated" id="last-updated">Loading…</span>
+      <button class="refresh-btn" onclick="loadAll()">↺ Refresh</button>
+      <span class="admin-badge">ADMIN</span>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ════════════ DASHBOARD ════════════ -->
+    <div class="section active" id="section-dashboard">
+
+      <div class="metric-grid" id="metric-grid">
+        <div class="metric-card orange">
+          <div class="metric-label">Total Subscribers</div>
+          <div class="metric-value" id="m-total">—</div>
+          <div class="metric-sub"><span class="metric-badge badge-teal" id="m-beta-badge">— beta</span></div>
+        </div>
+        <div class="metric-card teal">
+          <div class="metric-label">Active Tags</div>
+          <div class="metric-value" id="m-active">—</div>
+          <div class="metric-sub" id="m-pending-sub">— pending</div>
+        </div>
+        <div class="metric-card orange">
+          <div class="metric-label">Total Scans</div>
+          <div class="metric-value" id="m-scans">—</div>
+          <div class="metric-sub">all time</div>
+        </div>
+        <div class="metric-card gray">
+          <div class="metric-label">Family Bundles</div>
+          <div class="metric-value" id="m-families">—</div>
+          <div class="metric-sub">registered</div>
+        </div>
+      </div>
+
+      <div class="three-col">
+        <!-- Recent Subscribers -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">RECENT SUBSCRIBERS</span>
+            <span class="card-badge badge-orange" id="recent-count">—</span>
+          </div>
+          <div class="card-body" style="padding:0">
+            <div class="table-wrap">
+              <table>
+                <thead><tr>
+                  <th>Tag ID</th>
+                  <th>Name</th>
+                  <th>Plan</th>
+                  <th>Status</th>
+                  <th>Expiry</th>
+                </tr></thead>
+                <tbody id="recent-table">
+                  <tr><td colspan="4"><div class="loading"><div class="spinner"></div><br>Loading…</div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Plan Breakdown -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">PLAN BREAKDOWN</span>
+          </div>
+          <div class="card-body">
+            <div class="plan-bars" id="plan-bars">
+              <div class="loading"><div class="spinner"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Scans -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">RECENT SCANS</span>
+            <span id="scans-today-badge" style="background:rgba(14,210,200,0.15);color:#0ED2C8;font-size:10px;letter-spacing:1px;padding:3px 8px;border-radius:10px;border:1px solid rgba(14,210,200,0.3)">0 today</span>
+          </div>
+          <div class="card-body" style="padding: 8px 16px" id="recent-scans">
+            <div class="loading"><div class="spinner"></div><br>Loading…</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pending tasks alert strip -->
+      <div class="alert-box alert-orange" id="pending-alert" style="display:none"></div>
+
+      <!-- Telegram status -->
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">TELEGRAM CONTACTS</span>
+            <span class="card-badge badge-teal" id="tg-count-badge">—</span>
+          </div>
+          <div class="card-body" style="padding: 8px 16px" id="tg-preview">
+            <div class="loading"><div class="spinner"></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">QUICK ACTIONS</span>
+          </div>
+          <div class="card-body">
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <button class="action-btn btn-outline" onclick="window.open('https://script.google.com/macros/s/AKfycbxmnSw493AHOdXHruQJODMzKbUSg--9XwF1L8rFdWedeGDP9qBAjuKHCD92tOGNpSVE/exec','_blank')">⚙ Open GAS Console</button>
+              <button class="action-btn btn-outline" onclick="window.open('https://docs.google.com/spreadsheets/d/1_ZvLT_SnRkIgP7xiYBdDJ5DRtn9lwPnc6V3dmb-bSVI','_blank')">📊 Open Google Sheet</button>
+              <button class="action-btn btn-outline" onclick="window.open('https://innovat3dinfusion-hash.github.io/innovat3-emergency/register/','_blank')">📝 Registration Form</button>
+              <button class="action-btn btn-orange" onclick="showSection('tasks')">✓ View All Tasks</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════ SUBSCRIBERS ════════════ -->
+    <div class="section" id="section-subscribers">
+      <div class="toolbar">
+        <input class="search-box" placeholder="Search by name, tag ID, email…" id="sub-search" oninput="filterSubscribers()"/>
+        <button class="filter-btn active" onclick="filterPlan(this,'all')">All</button>
+        <button class="filter-btn" onclick="filterPlan(this,'Solo')">Solo</button>
+        <button class="filter-btn" onclick="filterPlan(this,'Beta')">Beta</button>
+        <button class="filter-btn" onclick="filterPlan(this,'Family')">Family</button>
+        <button class="filter-btn" onclick="filterPlan(this,'Care')">Care</button>
+      </div>
+      <div class="card">
+        <div class="card-body" style="padding:0">
+          <div class="table-wrap">
+            <table>
+              <thead><tr>
+                <th>Tag ID</th>
+                <th>Name</th>
+                <th>Plan</th>
+                <th>Status</th>
+                <th>Blood Type</th>
+                <th>Medical Aid</th>
+                <th>Contacts</th>
+                <th>Registered</th>
+                <th>Dispatch</th>
+                <th>Tracking #</th>
+              </tr></thead>
+              <tbody id="sub-table">
+                <tr><td colspan="10"><div class="loading"><div class="spinner"></div><br>Loading…</div></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="pagination" style="padding:12px 16px">
+            <button class="page-btn" onclick="navSubPage(-1)">← Prev</button>
+            <span id="sub-page-info" class="page-info"></span>
+            <button class="page-btn" onclick="navSubPage(1)">Next →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════ FAMILY BUNDLES ════════════ -->
+    <div class="section" id="section-family">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">FAMILY BUNDLES</span>
+          <span class="card-badge badge-teal" id="fam-count-badge">—</span>
+        </div>
+        <div class="card-body" style="padding:0">
+          <div class="table-wrap">
+            <table>
+              <thead><tr>
+                <th>Bundle ID</th>
+                <th>Main Member</th>
+                <th>Plan</th>
+                <th>Members</th>
+                <th>Status</th>
+                <th>Annual Value</th>
+              </tr></thead>
+              <tbody id="fam-table">
+                <tr><td colspan="6"><div class="loading"><div class="spinner"></div><br>Loading…</div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════ SCAN LOGS ════════════ -->
+    <div class="section" id="section-scans">
+      <div class="toolbar">
+        <input class="search-box" placeholder="Search by name or tag ID…" id="scan-search" oninput="filterScans()"/>
+        <span class="metric-badge badge-orange" id="scan-total-badge">— scans</span>
+      </div>
+      <div class="card">
+        <div class="card-body" style="padding:0">
+          <div class="table-wrap">
+            <table>
+              <thead><tr>
+                <th>Time</th>
+                <th>Tag ID</th>
+                <th>Name</th>
+                <th>Location</th>
+                <th>GPS</th>
+              </tr></thead>
+              <tbody id="scan-table">
+                <tr><td colspan="5"><div class="loading"><div class="spinner"></div><br>Loading…</div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════ TELEGRAM ════════════ -->
+    <div class="section" id="section-telegram">
+      <div class="alert-box alert-teal">All emergency contacts must message the Telegram bot at least once to register their Chat ID for automatic scan alerts.</div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">REGISTERED CHAT IDs</span>
+            <span class="card-badge badge-teal" id="tg-count-badge2">—</span>
+          </div>
+          <div class="card-body" style="padding: 8px 16px" id="tg-list">
+            <div class="loading"><div class="spinner"></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">BOT INFO</span></div>
+          <div class="card-body">
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <div>
+                <div class="rev-label">Bot Token</div>
+                <div style="font-family:var(--font-head);font-size:11px;color:var(--teal);word-break:break-all">8785184944:••••••••••• (secured)</div>
+              </div>
+              <div>
+                <div class="rev-label">Owner Chat ID</div>
+                <div style="font-family:var(--font-head);font-size:14px;color:var(--orange)">8737168646</div>
+              </div>
+              <div>
+                <div class="rev-label">Webhook URL</div>
+                <div style="font-size:11px;color:var(--text-dim);word-break:break-all">…AKfycbxjclapRIKMPYhQSUpBLuEOqdLctVYVImhXlnpI41lCJrmeTS41rWdXajekN-GW9zFS-7CcGstV2p95UBCaPvtl6bgHUo-sov-dnmIB5D5-36Ynu-CKhkunAf3G…/exec</div>
+              </div>
+              <button class="action-btn btn-teal" onclick="window.open('https://t.me/innovat3bot','_blank')">Open Telegram Bot</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════ EXPIRING ════════════ -->
+    <div class="section hidden" id="section-expiring">
+      <div class="section-header">
+        <h2 class="section-title">⏰ Expiring Subscribers</h2>
+        <span id="expiring-badge" class="badge">0</span>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">SUBSCRIPTIONS EXPIRING WITHIN 30 DAYS</span></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Tag ID</th><th>Name</th><th>Plan</th><th>Status</th><th>Expiry Date</th><th>Days Left</th></tr></thead>
+            <tbody id="expiring-table"><tr><td colspan="6" class="empty">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+<!-- ════════════ TASKS ════════════ -->
+    <div class="section" id="section-tasks">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">PENDING TASKS</span>
+          <span class="card-badge badge-orange" id="tasks-remaining">— remaining</span>
+        </div>
+        <div class="card-body">
+          <div class="task-list" id="task-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════ CASH REGISTRATION ════════════ -->
+    <div class="section" id="section-cashReg">
+      <div class="card" style="max-width:680px;margin:0 auto">
+        <div class="card-header">
+          <span class="card-title">💵 CASH REGISTRATION</span>
+          <span style="font-size:11px;color:var(--text-muted)">Bypasses PayFast · Status set to Active immediately</span>
+        </div>
+        <div class="card-body">
+
+          <div id="cashRegMsg" style="display:none;margin-bottom:16px;padding:12px 16px;border-radius:8px;font-size:13px"></div>
+
+          <!-- Admin key -->
+          <div style="margin-bottom:20px;padding:14px;background:rgba(249,115,22,0.06);border:1px solid rgba(249,115,22,0.2);border-radius:10px">
+            <label style="font-size:11px;letter-spacing:1px;color:#F97316;font-family:'Orbitron',sans-serif">ADMIN CASH KEY</label>
+            <input type="password" id="cr_adminKey" placeholder="Enter your Admin Cash Key" style="
+              width:100%;margin-top:8px;padding:10px 14px;background:#111;border:1px solid #333;
+              border-radius:8px;color:#fff;font-size:13px;font-family:'Exo 2',sans-serif;box-sizing:border-box
+            ">
+          </div>
+
+          <!-- Personal details -->
+          <div style="font-size:11px;letter-spacing:1px;color:#F97316;font-family:'Orbitron',sans-serif;margin-bottom:10px">PERSONAL DETAILS</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+            <div>
+              <label class="form-label">First Name *</label>
+              <input type="text" id="cr_firstName" class="cash-input" placeholder="First name">
+            </div>
+            <div>
+              <label class="form-label">Last Name *</label>
+              <input type="text" id="cr_lastName" class="cash-input" placeholder="Last name">
+            </div>
+            <div>
+              <label class="form-label">Email *</label>
+              <input type="email" id="cr_email" class="cash-input" placeholder="email@example.com">
+            </div>
+            <div>
+              <label class="form-label">Phone *</label>
+              <input type="tel" id="cr_phone" class="cash-input" placeholder="0821234567">
+            </div>
+            <div>
+              <label class="form-label">Date of Birth</label>
+              <input type="date" id="cr_dob" class="cash-input">
+            </div>
+            <div>
+              <label class="form-label">Telegram Handle</label>
+              <input type="text" id="cr_telegram" class="cash-input" placeholder="@username">
+            </div>
+          </div>
+
+          <!-- Plan -->
+          <div style="font-size:11px;letter-spacing:1px;color:#F97316;font-family:'Orbitron',sans-serif;margin-bottom:10px">PLAN &amp; BILLING</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px">
+            <div>
+              <label class="form-label">Plan *</label>
+              <select id="cr_plan" class="cash-input">
+                <option value="Solo">Solo</option>
+                <option value="Family">Family</option>
+                <option value="Care">Care (Lifetime)</option>
+                <option value="Beta">Beta (Free)</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Billing</label>
+              <select id="cr_billing" class="cash-input">
+                <option value="annual">Annual</option>
+                <option value="monthly">Monthly</option>
+                <option value="once">Once-off</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Cash Amount (R)</label>
+              <input type="number" id="cr_cashAmount" class="cash-input" placeholder="0.00" step="0.01">
+            </div>
+          </div>
+
+          <!-- Medical -->
+          <div style="font-size:11px;letter-spacing:1px;color:#F97316;font-family:'Orbitron',sans-serif;margin-bottom:10px">MEDICAL INFO</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+            <div>
+              <label class="form-label">Blood Type</label>
+              <select id="cr_bloodType" class="cash-input">
+                <option value="">Unknown</option>
+                <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+                <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Medical Aid</label>
+              <input type="text" id="cr_medicalAid" class="cash-input" placeholder="Discovery, Momentum…">
+            </div>
+            <div>
+              <label class="form-label">Medical Aid Number</label>
+              <input type="text" id="cr_medAidNo" class="cash-input" placeholder="Member number">
+            </div>
+            <div>
+              <label class="form-label">Tag Colour</label>
+              <input type="text" id="cr_colours" class="cash-input" placeholder="Black, White…">
+            </div>
+          </div>
+          <div style="margin-bottom:16px">
+            <label class="form-label">Medical Conditions / Alerts</label>
+            <textarea id="cr_conditions" class="cash-input" rows="2" placeholder="Allergies, chronic conditions…" style="resize:vertical"></textarea>
+          </div>
+          <div style="margin-bottom:16px">
+            <label class="form-label">Medications</label>
+            <textarea id="cr_medications" class="cash-input" rows="2" placeholder="Current medications…" style="resize:vertical"></textarea>
+          </div>
+
+          <!-- Contacts -->
+          <div style="font-size:11px;letter-spacing:1px;color:#F97316;font-family:'Orbitron',sans-serif;margin-bottom:10px">EMERGENCY CONTACTS</div>
+          <div id="cr_contacts">
+            <!-- Contact 1 -->
+            <div style="background:#111;border:1px solid #222;border-radius:10px;padding:14px;margin-bottom:10px">
+              <div style="font-size:12px;color:#aaa;margin-bottom:10px">Contact 1</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                <input type="text" id="cr_c1Name" class="cash-input" placeholder="Full name">
+                <input type="text" id="cr_c1Rel" class="cash-input" placeholder="Relationship">
+                <input type="tel" id="cr_c1Phone" class="cash-input" placeholder="Phone">
+                <input type="text" id="cr_c1TG" class="cash-input" placeholder="Telegram @handle">
+              </div>
+            </div>
+            <!-- Contact 2 -->
+            <div style="background:#111;border:1px solid #222;border-radius:10px;padding:14px;margin-bottom:10px">
+              <div style="font-size:12px;color:#aaa;margin-bottom:10px">Contact 2</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                <input type="text" id="cr_c2Name" class="cash-input" placeholder="Full name">
+                <input type="text" id="cr_c2Rel" class="cash-input" placeholder="Relationship">
+                <input type="tel" id="cr_c2Phone" class="cash-input" placeholder="Phone">
+                <input type="text" id="cr_c2TG" class="cash-input" placeholder="Telegram @handle">
+              </div>
+            </div>
+            <!-- Contact 3 -->
+            <div style="background:#111;border:1px solid #222;border-radius:10px;padding:14px;margin-bottom:10px">
+              <div style="font-size:12px;color:#aaa;margin-bottom:10px">Contact 3</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                <input type="text" id="cr_c3Name" class="cash-input" placeholder="Full name">
+                <input type="text" id="cr_c3Rel" class="cash-input" placeholder="Relationship">
+                <input type="tel" id="cr_c3Phone" class="cash-input" placeholder="Phone">
+                <input type="text" id="cr_c3TG" class="cash-input" placeholder="Telegram @handle">
+              </div>
+            </div>
+          </div>
+
+          <!-- Notes -->
+          <div style="margin-bottom:20px">
+            <label class="form-label">Notes for Finder</label>
+            <textarea id="cr_notes" class="cash-input" rows="2" placeholder="What a first responder should know…" style="resize:vertical"></textarea>
+          </div>
+          <div style="margin-bottom:24px">
+            <label class="form-label">Admin Notes (internal)</label>
+            <textarea id="cr_extraNotes" class="cash-input" rows="2" placeholder="Internal admin notes, not shown on card…" style="resize:vertical"></textarea>
+          </div>
+
+          <button onclick="submitCashReg()" id="cr_submitBtn" style="
+            width:100%;padding:16px;background:#F97316;color:#fff;border:none;border-radius:12px;
+            font-size:14px;font-weight:700;letter-spacing:1px;cursor:pointer;
+            font-family:'Exo 2',sans-serif;box-shadow:0 4px 20px rgba(249,115,22,0.35);
+            transition:opacity 0.2s
+          ">💵 Register as Cash Payment</button>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════ REVENUE ════════════ -->
+    <div class="section" id="section-revenue">
+      <div class="metric-grid">
+        <div class="metric-card orange">
+          <div class="metric-label">MRR (if all paid)</div>
+          <div class="metric-value" id="r-mrr">—</div>
+          <div class="metric-sub">monthly recurring</div>
+        </div>
+        <div class="metric-card teal">
+          <div class="metric-label">ARR Potential</div>
+          <div class="metric-value" id="r-arr">—</div>
+          <div class="metric-sub">annual recurring</div>
+        </div>
+        <div class="metric-card orange">
+          <div class="metric-label">Tag Hardware Fees</div>
+          <div class="metric-value" id="r-hardware">—</div>
+          <div class="metric-sub">R199 per tag</div>
+        </div>
+        <div class="metric-card gray">
+          <div class="metric-label">Beta (free) subs</div>
+          <div class="metric-value" id="r-beta">—</div>
+          <div class="metric-sub">convert to Solo after 3mo</div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header"><span class="card-title">PRICING REFERENCE</span></div>
+          <div class="card-body" style="padding:0">
+            <table>
+              <thead><tr><th>Plan</th><th>Monthly</th><th>Annual</th><th>Saving</th></tr></thead>
+              <tbody>
+                <tr><td class="td-primary">Solo</td><td>R49/mo</td><td>R470/yr</td><td><span class="pill pill-active">20%</span></td></tr>
+                <tr><td class="td-primary">Family</td><td>R149/mo</td><td>R1,435/yr</td><td><span class="pill pill-active">20%</span></td></tr>
+                <tr><td class="td-primary">Care</td><td colspan="2">R199 once-off</td><td>—</td></tr>
+                <tr><td class="td-primary">Beta</td><td colspan="2">Free 3 months</td><td><span class="pill pill-beta">→ Solo</span></td></tr>
+                <tr><td class="td-primary">Tag Hardware</td><td colspan="2">R199 once-off</td><td>—</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">REVENUE BREAKDOWN</span></div>
+          <div class="card-body">
+            <div class="plan-bars" id="rev-bars">
+              <div class="loading"><div class="spinner"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── CONFIG ──
+const SHEET_ID = '1_ZvLT_SnRkIgP7xiYBdDJ5DRtn9lwPnc6V3dmb-bSVI';
+const GAS_URL  = 'https://script.google.com/macros/s/AKfycbyLJPu_nGH3AdZ8WSULCUpOrnAYOkGVcSGnb2LI5eJDt2Vpm-D45s_KGh3Uj1Q9y3ah/exec';
+// ADMIN_CASH_KEY must match the ADMIN_CASH_KEY Script Property set in GAS.
+// You enter this key in the Cash Registration form — it is never stored here.
+
+// ── STATE ──
+let allSubs = [], allScans = [], allTelegram = [], allFamilies = [];
+let subFilter = 'all';
+let currentSubPage = 0;
+let subSearchTerm = '';
+const PAGE_SIZE = 20;
+
+// ── TASKS DATA ──
+// Tasks stored in localStorage for persistence
+let tasks = [];
+const TASKS_KEY = 'innovat3_tasks_v2';
+const defaultTasks = [
+  { text: 'Programme physical NFC tags with NFC Tools app', tag: 'ops', done: true },
+  { text: 'Get custom domain innovat3.co.za → GitHub Pages', tag: 'ops', done: true },
+  { text: 'PayFast live payments + ITN webhook active', tag: 'revenue', done: true },
+  { text: 'Register as Information Officer', tag: 'legal', done: true },
+  { text: 'Provisional patent filed ✅ ZA 2026/1539553', tag: 'legal', done: true },
+  { text: 'INNOVAT3 trademark filed ✅ ZA 2026/1540827 Class 42', tag: 'legal', done: true },
+  { text: 'NTAG215 inlays ordered and received', tag: 'ops', done: true },
+  { text: 'GPS guardrail (500m threshold) on card page', tag: 'dev', done: true },
+  { text: 'Subscription expiry tracking + card expiry warning', tag: 'dev', done: true },
+  { text: 'PayFast recurring billing for monthly plans', tag: 'revenue', done: true },
+  { text: 'Attorney review of T&Cs before scaling', tag: 'legal', done: false },
+  { text: 'Logo trademark (device mark) at CIPC — R590', tag: 'legal', done: false },
+  { text: 'PayFast business account full verification', tag: 'revenue', done: false },
+  { text: 'Set up The Courier Guy account for tag shipments', tag: 'ops', done: false },
+  { text: 'Have all emergency contacts message @innovat3bot to register', tag: 'ops', done: false },
+  { text: 'Launch first paid subscriber campaign', tag: 'revenue', done: false },
+];
+
+// Load tasks from localStorage for persistence
+function loadTasks() {
+  try {
+    const saved = localStorage.getItem('innovat3_tasks_v2');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      tasks = defaultTasks.map((t, i) => ({...t, done: parsed[i] !== undefined ? parsed[i] : t.done}));
+    } else { tasks = defaultTasks.map(t => ({...t})); }
+  } catch(e) { tasks = defaultTasks.map(t => ({...t})); }
+}
+function saveTasks() {
+  try { localStorage.setItem('innovat3_tasks_v2', JSON.stringify(tasks.map(t => t.done))); } catch(e) {}
+}
+
+
+// ── ADMIN DATA QUERY (via Cloudflare Worker — avoids CORS) ──
+async function gvizQuery(sheetName, query = 'select *') {
+  const url = 'https://api.innovat3.co.za/admin?sheet=' + encodeURIComponent(sheetName);
+  let res;
+  try { res = await fetch(url); } catch(e) { throw new Error('Network error: ' + e.message); }
+  if (!res.ok) throw new Error('Worker HTTP ' + res.status);
+  const json = await res.json();
+  if (json.status !== 'ok') throw new Error(json.message || 'Error fetching data');
+  return json.rows || [];
+}
+
+// ── LOAD ALL DATA ──
+async function loadAll() {
+  document.getElementById('last-updated').textContent = 'Refreshing…';
+  try {
+    const results = await Promise.allSettled([
+      gvizQuery('Registrations'),
+      gvizQuery('Scan Logs'),
+      gvizQuery('Telegram Chat IDs'),
+      gvizQuery('Family Bundles'),
+    ]);
+    allSubs      = results[0].status === 'fulfilled' ? results[0].value : [];
+    allScans     = results[1].status === 'fulfilled' ? results[1].value : [];
+    allTelegram  = results[2].status === 'fulfilled' ? results[2].value : [];
+    allFamilies  = results[3].status === 'fulfilled' ? results[3].value : [];
+
+    // Check if sheet is accessible
+    const failed = results.filter(r => r.status === 'rejected');
+    if (failed.length === results.length) {
+      // All failed — sheet not public
+      document.getElementById('last-updated').textContent = 'Error: Check Sheet sharing settings (must be Anyone with link can view)';
+      console.error('All gviz queries failed:', failed[0].reason);
+      return;
+    }
+
+    renderAll();
+    const t = new Date().toLocaleTimeString('en-ZA');
+    document.getElementById('last-updated').textContent = 'Updated ' + t + (failed.length ? ' (some sheets missing)' : '');
+  } catch (e) {
+    console.error('loadAll error:', e);
+    document.getElementById('last-updated').textContent = 'Error: ' + e.message;
+  }
+}
+
+function renderAll() {
+  loadTasks();
+  renderMetrics();
+  renderRecentSubs();
+  renderPlanBars();
+  renderRecentScans();
+  renderSubscriberTable();
+  renderScanTable();
+  renderTelegram();
+  renderFamilies();
+  renderTasks();
+  renderExpiring();
+  renderRevenue();
+}
+
+// ── DATE HELPER — handles YYYY-MM-DD and DD/MM/YYYY HH:MM ──
+function parseExpiry(str) {
+  if (!str) return null;
+  str = str.toString().trim();
+  // YYYY-MM-DD (date-only stored as string or returned from fixed GAS)
+  var m1 = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (m1) return new Date(+m1[1], +m1[2]-1, +m1[3]);
+  // DD/MM/YYYY (GAS date serialization, with optional HH:MM)
+  var m2 = str.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+  if (m2) return new Date(+m2[3], +m2[2]-1, +m2[1]);
+  return null;
+}
+
+// ── METRICS ──
+function renderMetrics() {
+  const total  = allSubs.length;
+  const active = allSubs.filter(r => (r['Status']||'').toLowerCase() === 'active').length;
+  const beta   = allSubs.filter(r => (r['Plan']||'').toLowerCase().includes('beta')).length;
+  const pend   = allSubs.filter(r => (r['Status']||'').toLowerCase() === 'pending').length;
+  const fams   = allFamilies.length;
+  const scans  = allScans.length;
+
+  // Expiry stats
+  const now = new Date();
+  const expiringSoon = allSubs.filter(r => {
+    const d = parseExpiry(r['Expiry Date']);
+    if (!d) return false;
+    const days = Math.ceil((d - now) / (1000*60*60*24));
+    return days >= 0 && days <= 3;
+  }).length;
+  const expired = allSubs.filter(r => {
+    const d = parseExpiry(r['Expiry Date']);
+    return d && d < now;
+  }).length;
+  const mExp = document.getElementById('m-expiring');
+  if (mExp) mExp.textContent = expiringSoon + (expired ? ' ('+expired+' expired)' : '');
+
+  document.getElementById('m-total').textContent = total;
+  document.getElementById('m-active').textContent = active;
+  document.getElementById('m-scans').textContent = scans;
+  document.getElementById('m-families').textContent = fams;
+  document.getElementById('m-beta-badge').textContent = beta + ' beta';
+  document.getElementById('m-pending-sub').textContent = pend + ' pending';
+
+  const pendTask = tasks.filter(t => !t.done).length;
+  if (pendTask > 0) {
+    const el = document.getElementById('pending-alert');
+    el.style.display = 'block';
+    el.textContent = `⚠ ${pendTask} pending tasks require attention — check the Tasks section`;
+  }
+}
+
+// ── RECENT SUBSCRIBERS ──
+function renderRecentSubs() {
+  const recent = [...allSubs].slice(-10).reverse();
+  document.getElementById('recent-count').textContent = allSubs.length;
+  document.getElementById('recent-table').innerHTML = recent.length ? recent.map(r => {
+    const expiry = r['Expiry Date'] || '';
+    let expiryCell = '<span style="color:#666">—</span>';
+    const expDate = parseExpiry(expiry);
+    if (expDate) {
+      const daysLeft = Math.ceil((expDate - new Date()) / (1000*60*60*24));
+      if (daysLeft <= 0)
+        expiryCell = '<span style="color:#ef4444;font-weight:700">EXPIRED</span>';
+      else if (daysLeft <= 3)
+        expiryCell = '<span style="color:#F97316;font-weight:700">' + daysLeft + 'd left</span>';
+      else
+        expiryCell = '<span style="color:#22c55e">' + expiry + '</span>';
+    }
+    return `<tr>
+      <td><span class="tag-id">${r['Tag ID']||'—'}</span></td>
+      <td class="td-primary">${r['First Name']||''} ${r['Last Name']||''}</td>
+      <td>${planPill(r['Plan']||'')}</td>
+      <td>${statusPill(r['Status']||'')}</td>
+      <td>${expiryCell}</td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="5" class="empty">No subscribers yet</td></tr>';
+}
+
+// ── PLAN BARS ──
+function renderPlanBars() {
+  const plans = {};
+  allSubs.forEach(r => {
+    const p = (r['Plan']||'Unknown').split(' ')[0];
+    plans[p] = (plans[p]||0) + 1;
+  });
+  const total = allSubs.length || 1;
+  const colors = { Solo:'bar-orange', Beta:'bar-teal', Family:'bar-teal', Care:'bar-gray' };
+  document.getElementById('plan-bars').innerHTML = Object.entries(plans).map(([k,v]) => `
+    <div class="plan-row">
+      <div class="plan-name">${k}</div>
+      <div class="bar-track"><div class="bar-fill ${colors[k]||'bar-gray'}" style="width:${Math.round(v/total*100)}%"></div></div>
+      <div class="plan-count">${v}</div>
+    </div>`).join('');
+}
+
+// ── RECENT SCANS ──
+function renderRecentScans() {
+  // Count today's scans
+  const todayStr = new Date().toLocaleDateString('en-ZA');
+  const todayScans = allScans.filter(r => {
+    const ts = (r['Timestamp']||'').toString();
+    return ts.includes(new Date().toISOString().split('T')[0]) ||
+           ts.startsWith(new Date().toLocaleDateString('en-ZA').split('/').reverse().join('/'));
+  });
+  const todayBadge = document.getElementById('scans-today-badge');
+  if (todayBadge) todayBadge.textContent = todayScans.length + ' today';
+
+  const recent = [...allScans].slice(-6).reverse();
+  document.getElementById('recent-scans').innerHTML = recent.length ? recent.map((r,i) => {
+    const name = r['Name'] || r['Full Name'] || r['First Name'] || 'Unknown';
+    const addr = r['Address'] || r['GPS Address'] || '';
+    const lat  = r['Latitude'] || r['GPS Lat'] || '';
+    const lng  = r['Longitude'] || r['GPS Lng'] || '';
+    const mapsLink = lat && lng
+      ? `<a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" style="color:var(--teal);font-size:10px;margin-left:6px">📍 Map</a>`
+      : '';
+    return `<div class="scan-entry">
+      <div class="scan-dot ${i%2===0?'scan-dot-orange':'scan-dot-teal'}"></div>
+      <div class="scan-info" style="flex:1">
+        <div class="scan-name">${name} ${mapsLink}</div>
+        <div class="scan-meta">${r['Tag ID']||''} · ${addr.substring(0,45) || 'Location not shared'}</div>
+      </div>
+      <div class="scan-time">${formatTime(r['Timestamp'])}</div>
+    </div>`;
+  }).join('') : '<div class="empty">No scans yet</div>';
+}
+
+// ── SUBSCRIBER TABLE ──
+
+// ── DISPATCH TRACKING (localStorage) ──────────────────────────────
+const DISPATCH_KEY = 'innovat3_dispatch_v1';
+function getDispatchStore() {
+  try { return JSON.parse(localStorage.getItem(DISPATCH_KEY)) || {}; } catch(e) { return {}; }
+}
+function saveDispatchStore(store) {
+  localStorage.setItem(DISPATCH_KEY, JSON.stringify(store));
+}
+function getDispatch(tagId) {
+  return getDispatchStore()[tagId] || { status: 'pending', tracking: '' };
+}
+function markDispatched(tagId) {
+  const store = getDispatchStore();
+  const tracking = document.getElementById('trk-' + tagId);
+  store[tagId] = { status: 'dispatched', tracking: tracking ? tracking.value : '', date: new Date().toISOString() };
+  saveDispatchStore(store);
+  renderSubscriberTable();
+}
+function saveTracking(tagId, value) {
+  const store = getDispatchStore();
+  if (!store[tagId]) store[tagId] = { status: 'pending', tracking: '' };
+  store[tagId].tracking = value;
+  saveDispatchStore(store);
+}
+function editTracking(tagId) {
+  const store = getDispatchStore();
+  const newTracking = prompt('Update tracking number:', store[tagId]?.tracking || '');
+  if (newTracking !== null) {
+    store[tagId].tracking = newTracking;
+    saveDispatchStore(store);
+    renderSubscriberTable();
+  }
+}
+
+function renderSubscriberTable() {
+  let data = allSubs.filter(r => {
+    const name = `${r['First Name']||''} ${r['Last Name']||''}`.toLowerCase();
+    const tag = (r['Tag ID']||'').toLowerCase();
+    const email = (r['Email']||'').toLowerCase();
+    const match = name.includes(subSearchTerm) || tag.includes(subSearchTerm) || email.includes(subSearchTerm);
+    const planMatch = subFilter === 'all' || (r['Plan']||'').toLowerCase().includes(subFilter.toLowerCase());
+    return match && planMatch;
+  });
+  const total = data.length;
+  const start = currentSubPage * PAGE_SIZE;
+  const page  = data.slice(start, start + PAGE_SIZE);
+  document.getElementById('sub-table').innerHTML = page.length ? page.map(r => {
+    const contacts = [r['Contact 1 Name'], r['Contact 2 Name'], r['Contact 3 Name']].filter(Boolean).length;
+    const tagId = r['Tag ID'] || '';
+    const dispatch = getDispatch(tagId);
+    const isDispatched = dispatch.status === 'dispatched';
+    const dispatchPill = isDispatched
+      ? `<span style="background:rgba(34,197,94,0.15);color:#22C55E;border:1px solid rgba(34,197,94,0.3);border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;white-space:nowrap;">✅ Sent</span>`
+      : `<button onclick="markDispatched('${tagId}')" style="background:rgba(249,115,22,0.15);color:var(--orange);border:1px solid rgba(249,115,22,0.3);border-radius:6px;padding:4px 10px;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;">📦 Mark Sent</button>`;
+    const trackingCell = isDispatched
+      ? `<span style="font-size:11px;color:var(--teal);">${dispatch.tracking || '—'}</span>
+         <button onclick="editTracking('${tagId}')" style="background:none;border:none;color:var(--text-dim);font-size:10px;cursor:pointer;margin-left:4px;">✏️</button>`
+      : `<input id="trk-${tagId}" type="text" placeholder="Enter tracking #"
+           style="background:var(--surface3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:11px;padding:4px 8px;width:130px;font-family:var(--font-body);"
+           onchange="saveTracking('${tagId}', this.value)" value="${dispatch.tracking||''}">`;
+    return `<tr style="${isDispatched ? 'opacity:0.7' : ''}">
+      <td><span class="tag-id">${tagId||'—'}</span></td>
+      <td class="td-primary">${r['First Name']||''} ${r['Last Name']||''}</td>
+      <td>${planPill(r['Plan']||'')}</td>
+      <td>${statusPill(r['Status']||'')}</td>
+      <td>${r['Blood Type']||'—'}</td>
+      <td style="font-size:11px;color:var(--text-dim)">${r['Medical Aid']||'—'}</td>
+      <td style="text-align:center">${contacts}</td>
+      <td style="font-size:11px;color:var(--text-dim)">${formatDate(r['Timestamp'])}</td>
+      <td style="white-space:nowrap">${dispatchPill}</td>
+      <td style="white-space:nowrap">${trackingCell}</td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="10" class="empty">No results</td></tr>';
+  const totalPages = Math.ceil(total / PAGE_SIZE);
+  document.getElementById('sub-page-info').textContent = `${start+1}–${Math.min(start+PAGE_SIZE, total)} of ${total}`;
+}
+
+function filterSubscribers() {
+  subSearchTerm = document.getElementById('sub-search').value.toLowerCase();
+  currentSubPage = 0;
+  renderSubscriberTable();
+}
+
+function filterPlan(btn, plan) {
+  subFilter = plan;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentSubPage = 0;
+  renderSubscriberTable();
+}
+
+function navSubPage(dir) {
+  currentSubPage = Math.max(0, currentSubPage + dir);
+  renderSubscriberTable();
+}
+
+// ── SCAN TABLE ──
+let scanSearchTerm = '';
+function renderScanTable() {
+  let data = allScans.filter(r => {
+    const name = (r['Name']||r['Full Name']||r['First Name']||'').toLowerCase();
+    const tag  = (r['Tag ID']||'').toLowerCase();
+    return name.includes(scanSearchTerm) || tag.includes(scanSearchTerm);
+  });
+  document.getElementById('scan-total-badge').textContent = data.length + ' scans';
+  document.getElementById('scan-table').innerHTML = data.length ? [...data].reverse().map(r => {
+    const name = r['Name'] || r['Full Name'] || r['First Name'] || '—';
+    const addr = r['Address'] || r['GPS Address'] || '—';
+    const lat  = r['Latitude'] || r['GPS Lat'] || '';
+    const lng  = r['Longitude'] || r['GPS Lng'] || '';
+    const acc  = r['Accuracy (m)'] || '';
+    const mapCell = lat && lng
+      ? `<a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" style="color:var(--teal);font-size:11px;white-space:nowrap">📍 Open Map</a>`
+      : '—';
+    return `<tr>
+      <td style="font-size:11px;color:var(--text-dim)">${formatTime(r['Timestamp'])}</td>
+      <td><span class="tag-id">${r['Tag ID']||'—'}</span></td>
+      <td class="td-primary">${name}</td>
+      <td style="font-size:11px;color:var(--text-muted)">${addr.substring(0,50)}${acc?' <span style="color:#666">(±'+acc+'m)</span>':''}</td>
+      <td>${mapCell}</td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="5" class="empty">No scans yet</td></tr>';
+}
+
+function filterScans() {
+  scanSearchTerm = document.getElementById('scan-search').value.toLowerCase();
+  renderScanTable();
+}
+
+// ── TELEGRAM ──
+function renderTelegram() {
+  const count = allTelegram.length;
+  ['tg-count-badge','tg-count-badge2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = count + ' registered';
+  });
+  const html = count ? allTelegram.map(r => {
+    const name = r['First Name'] || r['Username'] || '?';
+    const initials = name.slice(0,2).toUpperCase();
+    return `<div class="chat-id-row">
+      <div class="chat-avatar">${initials}</div>
+      <div>
+        <div class="chat-name">${name}</div>
+        <div class="chat-id">@${r['Username']||'—'} · ID: ${r['Chat ID']||'—'}</div>
+      </div>
+      <div class="chat-status"><span class="pill pill-active">✓ Active</span></div>
+    </div>`;
+  }).join('') : '<div class="empty">No Telegram contacts registered yet</div>';
+  ['tg-preview','tg-list'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = html;
+  });
+}
+
+// ── FAMILIES ──
+function renderFamilies() {
+  const count = allFamilies.length;
+  document.getElementById('fam-count-badge').textContent = count + ' bundles';
+  document.getElementById('fam-table').innerHTML = count ? allFamilies.map(r => `
+    <tr>
+      <td><span class="tag-id">${r['Bundle ID']||'—'}</span></td>
+      <td class="td-primary">${r['Main Member Name']||'—'}</td>
+      <td>${planPill(r['Plan']||'Family')}</td>
+      <td style="text-align:center">${r['Total Members']||'—'}</td>
+      <td>${statusPill(r['Status']||'')}</td>
+      <td style="color:var(--orange);font-weight:500">${r['Annual Value']||'—'}</td>
+    </tr>`).join('') : '<tr><td colspan="6" class="empty">No family bundles yet</td></tr>';
+}
+
+// ── TASKS ──
+function renderTasks() {
+  const remaining = tasks.filter(t => !t.done).length;
+  document.getElementById('tasks-remaining').textContent = remaining + ' remaining';
+  document.getElementById('task-list').innerHTML = tasks.map((t,i) => `
+    <div class="task-item ${t.done?'done':''}" onclick="toggleTask(${i})">
+      <div class="task-check"></div>
+      <div class="task-text">${t.text}</div>
+      <span class="task-tag tag-${t.tag}">${t.tag}</span>
+    </div>`).join('');
+}
+
+function toggleTask(i) {
+  tasks[i].done = !tasks[i].done;
+  saveTasks();
+  renderTasks();
+  const remaining = tasks.filter(t=>!t.done).length;
+  if (remaining > 0) {
+    const el = document.getElementById('pending-alert');
+    el.style.display = 'block';
+    el.textContent = `⚠ ${remaining} pending tasks require attention`;
+  }
+}
+
+// ── REVENUE ──
+function renderExpiring() {
+  const now = new Date();
+  const expiring = allSubs.filter(r => {
+    const d = parseExpiry(r['Expiry Date']);
+    if (!d) return false;
+    const days = Math.ceil((d - now) / (1000*60*60*24));
+    return days <= 30;
+  }).sort((a, b) => {
+    const da = parseExpiry(a['Expiry Date']), db = parseExpiry(b['Expiry Date']);
+    return (da||0) - (db||0);
+  });
+
+  document.getElementById('expiring-badge').textContent = expiring.length;
+
+  document.getElementById('expiring-table').innerHTML = expiring.length ? expiring.map(r => {
+    const exp  = (r['Expiry Date']||'').toString().trim();
+    const d    = parseExpiry(exp);
+    const days = d ? Math.ceil((d - now) / (1000*60*60*24)) : null;
+    const daysLabel = days === null ? '—'
+      : days <= 0  ? '<span style="color:#ef4444;font-weight:700">EXPIRED</span>'
+      : days <= 7  ? '<span style="color:#ef4444;font-weight:700">' + days + ' days</span>'
+      : days <= 14 ? '<span style="color:#F97316;font-weight:700">' + days + ' days</span>'
+      : '<span style="color:#eab308">' + days + ' days</span>';
+    return `<tr>
+      <td><span class="tag-id">${r['Tag ID']||'—'}</span></td>
+      <td class="td-primary">${r['First Name']||''} ${r['Last Name']||''}</td>
+      <td>${planPill(r['Plan']||'')}</td>
+      <td>${statusPill(r['Status']||'')}</td>
+      <td style="font-size:12px">${exp||'—'}</td>
+      <td>${daysLabel}</td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="6" class="empty" style="color:#22c55e">✓ No subscribers expiring within 30 days</td></tr>';
+}
+
+function renderRevenue() {
+  const planRates = { 'Solo Monthly': 49, 'Solo Annual': 470/12, 'Family Monthly': 149, 'Family Annual': 1435/12, 'Care': 0, 'Beta': 0 };
+  let mrr = 0;
+  allSubs.forEach(r => {
+    const p = r['Plan']||'';
+    for (const [key, rate] of Object.entries(planRates)) {
+      if (p.toLowerCase().includes(key.toLowerCase())) { mrr += rate; break; }
+    }
+  });
+  const hardware = allSubs.length * 199;
+  const beta = allSubs.filter(r => (r['Plan']||'').toLowerCase().includes('beta')).length;
+  document.getElementById('r-mrr').textContent = 'R' + Math.round(mrr);
+  document.getElementById('r-arr').textContent = 'R' + Math.round(mrr * 12).toLocaleString();
+  document.getElementById('r-hardware').textContent = 'R' + hardware.toLocaleString();
+  document.getElementById('r-beta').textContent = beta;
+
+  const plans = {};
+  allSubs.forEach(r => {
+    const p = (r['Plan']||'Unknown').split(' ')[0];
+    plans[p] = (plans[p]||0) + 1;
+  });
+  const total = allSubs.length || 1;
+  const colors = { Solo:'bar-orange', Beta:'bar-gray', Family:'bar-teal', Care:'bar-gray' };
+  document.getElementById('rev-bars').innerHTML = Object.entries(plans).map(([k,v]) => `
+    <div class="plan-row">
+      <div class="plan-name">${k}</div>
+      <div class="bar-track"><div class="bar-fill ${colors[k]||'bar-gray'}" style="width:${Math.round(v/total*100)}%"></div></div>
+      <div class="plan-count">${v}</div>
+    </div>`).join('');
+}
+
+// ── HELPERS ──
+function planPill(plan) {
+  const p = plan.toLowerCase();
+  if (p.includes('solo'))   return `<span class="pill pill-solo">${plan}</span>`;
+  if (p.includes('family')) return `<span class="pill pill-family">${plan}</span>`;
+  if (p.includes('care'))   return `<span class="pill pill-care">${plan}</span>`;
+  if (p.includes('beta'))   return `<span class="pill pill-beta">${plan}</span>`;
+  return `<span class="pill pill-inactive">${plan||'—'}</span>`;
+}
+function statusPill(status) {
+  const s = status.toLowerCase();
+  if (s === 'active')  return `<span class="pill pill-active">Active</span>`;
+  if (s === 'pending') return `<span class="pill pill-pending">Pending</span>`;
+  return `<span class="pill pill-inactive">${status||'—'}</span>`;
+}
+function formatTime(ts) {
+  if (!ts) return '—';
+  // After gviz parsing, dates arrive as formatted strings or Date objects
+  if (ts instanceof Date) {
+    return ts.toLocaleDateString('en-ZA') + ' ' + ts.toLocaleTimeString('en-ZA', {hour:'2-digit', minute:'2-digit'});
+  }
+  if (typeof ts === 'string') {
+    if (ts.startsWith('Date(')) {
+      const m = ts.match(/Date\((\d+),(\d+),(\d+)(?:,(\d+),(\d+))?/);
+      if (m) {
+        const d = new Date(+m[1], +m[2], +m[3], +(m[4]||0), +(m[5]||0));
+        return d.toLocaleDateString('en-ZA') + ' ' + d.toLocaleTimeString('en-ZA', {hour:'2-digit', minute:'2-digit'});
+      }
+    }
+    return ts || '—';
+  }
+  return '—';
+}
+function formatDate(ts) {
+  if (!ts) return '—';
+  if (ts instanceof Date) return ts.toLocaleDateString('en-ZA');
+  if (typeof ts === 'string') {
+    if (ts.startsWith('Date(')) {
+      const m = ts.match(/Date\((\d+),(\d+),(\d+)/);
+      if (m) return new Date(+m[1], +m[2], +m[3]).toLocaleDateString('en-ZA');
+    }
+    return ts || '—';
+  }
+  return '—';
+}
+
+// ── NAV ──
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('section-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  const titles = {
+    dashboard:'DASHBOARD', subscribers:'SUBSCRIBERS', family:'FAMILY BUNDLES',
+    scans:'SCAN LOGS', telegram:'TELEGRAM', tasks:'PENDING TASKS', revenue:'REVENUE'
+  };
+  document.getElementById('page-title').textContent = titles[id] || id.toUpperCase();
+}
+
+// ── AUTH ──
+const ADMIN_PW_HASH = '52f4377d872e0096b33aa94877f5435ccf6f1da88f03f91bc460473a41b672b0'; // SHA-256 hashed
+const SESSION_KEY = 'in3_admin_auth';
+
+async function doLogin() {
+  const entered = document.getElementById('login-pw').value;
+  const errEl = document.getElementById('login-error');
+  // Hash the entered password and compare
+  const enteredHash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(entered))
+    .then(buf => Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join(''));
+  if (enteredHash === ADMIN_PW_HASH) {
+    sessionStorage.setItem(SESSION_KEY, '1');
+    sessionStorage.setItem(SESSION_KEY + '_time', Date.now().toString());
+    document.getElementById('login-screen').classList.add('hidden');
+    loadAll();
+  } else {
+    errEl.textContent = 'Incorrect password. Try again.';
+    document.getElementById('login-pw').value = '';
+    document.getElementById('login-pw').focus();
+    setTimeout(() => { errEl.textContent = ''; }, 3000);
+  }
+}
+
+function doLogout() {
+  sessionStorage.removeItem(SESSION_KEY);
+  sessionStorage.removeItem(SESSION_KEY + '_time');
+  location.reload();
+}
+
+function checkAuth() {
+  const authTime = parseInt(sessionStorage.getItem(SESSION_KEY + '_time') || '0');
+  const fourHours = 4 * 60 * 60 * 1000;
+  if (sessionStorage.getItem(SESSION_KEY) === '1' && (Date.now() - authTime) < fourHours) {
+    document.getElementById('login-screen').classList.add('hidden');
+    loadAll();
+  }
+}
+
+// ── INIT ──
+checkAuth();
+
+// ════════════════════════════════════════════════════════════════════
+// CASH REGISTRATION
+// ════════════════════════════════════════════════════════════════════
+async function submitCashReg() {
+  const g = id => (document.getElementById(id) || {}).value || '';
+  const showMsg = (msg, ok) => {
+    const el = document.getElementById('cashRegMsg');
+    el.style.display = 'block';
+    el.style.background = ok ? 'rgba(0,200,100,0.1)' : 'rgba(249,115,22,0.1)';
+    el.style.border = ok ? '1px solid rgba(0,200,100,0.3)' : '1px solid rgba(249,115,22,0.3)';
+    el.style.color = ok ? '#0ed2a0' : '#F97316';
+    el.textContent = msg;
+  };
+
+  const adminKey = g('cr_adminKey');
+  const firstName = g('cr_firstName').trim();
+  const lastName  = g('cr_lastName').trim();
+  const email     = g('cr_email').trim();
+  const phone     = g('cr_phone').trim();
+
+  if (!adminKey)   { showMsg('Enter your Admin Cash Key.', false); return; }
+  if (!firstName)  { showMsg('First name is required.', false); return; }
+  if (!lastName)   { showMsg('Last name is required.', false); return; }
+  if (!email)      { showMsg('Email is required.', false); return; }
+  if (!phone)      { showMsg('Phone is required.', false); return; }
+
+  const btn = document.getElementById('cr_submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Registering…';
+
+  const payload = {
+    type:        'CASH_REGISTRATION',
+    _adminKey:   adminKey,
+    firstName:   firstName,
+    lastName:    lastName,
+    email:       email,
+    phone:       phone,
+    dob:         g('cr_dob'),
+    telegram:    g('cr_telegram'),
+    plan:        g('cr_plan'),
+    billing:     g('cr_billing'),
+    cashAmount:  g('cr_cashAmount'),
+    bloodType:   g('cr_bloodType'),
+    medicalAid:  g('cr_medicalAid'),
+    medAidNo:    g('cr_medAidNo'),
+    colours:     g('cr_colours'),
+    conditions:  g('cr_conditions'),
+    medications: g('cr_medications'),
+    notes:       g('cr_notes'),
+    extraNotes:  g('cr_extraNotes'),
+    c1Name:  g('cr_c1Name'), c1Rel: g('cr_c1Rel'), c1Phone: g('cr_c1Phone'), c1TG: g('cr_c1TG'), c1WA: 'No',
+    c2Name:  g('cr_c2Name'), c2Rel: g('cr_c2Rel'), c2Phone: g('cr_c2Phone'), c2TG: g('cr_c2TG'), c2WA: 'No',
+    c3Name:  g('cr_c3Name'), c3Rel: g('cr_c3Rel'), c3Phone: g('cr_c3Phone'), c3TG: g('cr_c3TG'), c3WA: 'No',
+  };
+
+  try {
+    const resp = await fetch('https://api.innovat3.co.za/cash-register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const json = await resp.json();
+    if (json.status === 'ok') {
+      showMsg('✅ Registered! Tag ID: ' + json.tagId, true);
+      // Clear the form
+      ['cr_firstName','cr_lastName','cr_email','cr_phone','cr_dob','cr_telegram',
+       'cr_cashAmount','cr_medicalAid','cr_medAidNo','cr_colours','cr_conditions',
+       'cr_medications','cr_notes','cr_extraNotes',
+       'cr_c1Name','cr_c1Rel','cr_c1Phone','cr_c1TG',
+       'cr_c2Name','cr_c2Rel','cr_c2Phone','cr_c2TG',
+       'cr_c3Name','cr_c3Rel','cr_c3Phone','cr_c3TG'
+      ].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    } else {
+      showMsg('Error: ' + (json.message || 'Unknown error'), false);
+    }
+  } catch(err) {
+    showMsg('Network error: ' + err.message, false);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '💵 Register as Cash Payment';
+  }
+}
+</script>
+</body>
+</html>

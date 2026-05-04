@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms & Conditions — innovat3.</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange:#F97316; --teal:#0ED2C8; --red:#EF4444; --blue:#3B82F6;
+    --bg:#0A0A0A; --surface:#111; --border:#222; --border2:#2a2a2a;
+    --text:#E5E5E5; --muted:#888; --muted2:#555;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Exo 2',sans-serif; font-size:14px; line-height:1.7; }
+
+  /* ── HEADER ── */
+  .site-header {
+    background:#0d0d0d; border-bottom:1px solid var(--border2);
+    padding:16px 24px; display:flex; align-items:center; gap:16px;
+    position:sticky; top:0; z-index:100;
+  }
+  .site-header img { width:40px; height:40px; border-radius:8px; }
+  .site-header .brand { font-family:'Orbitron',sans-serif; font-size:16px; font-weight:900; color:var(--orange); }
+  .site-header .brand span { color:var(--teal); }
+  .back-btn {
+    margin-left:auto; padding:8px 16px; border-radius:8px;
+    background:#1a1a1a; border:1px solid var(--border2); color:var(--muted);
+    font-family:'Exo 2',sans-serif; font-size:12px; font-weight:700;
+    text-decoration:none; transition:all 0.15s;
+  }
+  .back-btn:hover { border-color:var(--orange); color:var(--orange); }
+
+  /* ── HERO ── */
+  .hero {
+    background:linear-gradient(135deg,#1a0800 0%,#0d0d0d 60%,#001a10 100%);
+    padding:48px 24px 32px; text-align:center;
+    border-bottom:2px solid rgba(249,115,22,0.25);
+  }
+  .hero-badge {
+    display:inline-block; padding:5px 14px; border-radius:20px;
+    background:rgba(249,115,22,0.15); border:1px solid rgba(249,115,22,0.4);
+    font-family:'Orbitron',sans-serif; font-size:9px; font-weight:900;
+    letter-spacing:2px; color:var(--orange); text-transform:uppercase; margin-bottom:16px;
+  }
+  .hero h1 {
+    font-family:'Orbitron',sans-serif; font-size:clamp(22px,5vw,36px);
+    font-weight:900; color:#fff; margin-bottom:8px;
+  }
+  .hero h1 span { color:var(--orange); }
+  .hero-sub { color:var(--muted); font-size:13px; max-width:500px; margin:0 auto 16px; }
+  .hero-meta {
+    display:inline-flex; gap:24px; flex-wrap:wrap; justify-content:center;
+    font-size:11px; color:var(--muted);
+  }
+  .hero-meta span { display:flex; align-items:center; gap:6px; }
+
+  /* ── MAIN CONTENT ── */
+  .container { max-width:860px; margin:0 auto; padding:40px 24px 80px; }
+
+  .toc-card {
+    background:var(--surface); border:1px solid var(--border2);
+    border-radius:14px; padding:24px; margin-bottom:32px;
+    border-left:4px solid var(--orange);
+  }
+  .toc-card h3 {
+    font-family:'Orbitron',sans-serif; font-size:11px; font-weight:900;
+    color:var(--orange); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:14px;
+  }
+  .toc-list { list-style:none; display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:6px; }
+  .toc-list li a {
+    display:flex; align-items:center; gap:8px; padding:6px 10px; border-radius:8px;
+    color:var(--muted); text-decoration:none; font-size:12px; transition:all 0.15s;
+    background:#0d0d0d; border:1px solid transparent;
+  }
+  .toc-list li a:hover { color:var(--orange); border-color:rgba(249,115,22,0.3); background:#161616; }
+  .toc-list li a .num { font-family:'Orbitron',sans-serif; font-size:10px; font-weight:900; color:var(--orange); min-width:20px; }
+
+  .section-block {
+    background:var(--surface); border:1px solid var(--border2);
+    border-radius:14px; padding:28px; margin-bottom:20px;
+    scroll-margin-top:80px;
+  }
+  .section-block h2 {
+    font-family:'Orbitron',sans-serif; font-size:12px; font-weight:900;
+    color:var(--orange); letter-spacing:1px; text-transform:uppercase;
+    margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--border2);
+    display:flex; align-items:center; gap:10px;
+  }
+  .section-block h2 .s-num {
+    background:var(--orange); color:#000; width:24px; height:24px;
+    border-radius:6px; display:flex; align-items:center; justify-content:center;
+    font-size:10px; font-weight:900; flex-shrink:0;
+  }
+  .section-block p { color:var(--text); margin-bottom:12px; font-size:13.5px; }
+  .section-block p:last-child { margin-bottom:0; }
+  .section-block ul { padding-left:20px; margin-bottom:12px; }
+  .section-block ul li { color:var(--text); font-size:13.5px; margin-bottom:6px; }
+  .section-block strong { color:#fff; font-weight:700; }
+
+  .warning-box {
+    background:#1a0500; border:1px solid rgba(249,115,22,0.5); border-radius:10px;
+    padding:14px 16px; margin:14px 0; font-size:12.5px; color:#ffb347;
+    display:flex; gap:10px; align-items:flex-start;
+  }
+  .warning-box .wi { font-size:16px; flex-shrink:0; }
+
+  .info-box {
+    background:#001a10; border:1px solid rgba(14,210,200,0.35); border-radius:10px;
+    padding:14px 16px; margin:14px 0; font-size:12.5px; color:var(--teal);
+    display:flex; gap:10px; align-items:flex-start;
+  }
+  .info-box .wi { font-size:16px; flex-shrink:0; }
+
+  /* ── FOOTER ── */
+  .doc-footer {
+    text-align:center; padding:32px 24px;
+    border-top:1px solid var(--border2); margin-top:40px;
+  }
+  .doc-footer p { color:var(--muted); font-size:11px; margin-bottom:6px; }
+  .doc-footer a { color:var(--orange); text-decoration:none; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <img src="https://innovat3dinfusion-hash.github.io/innovat3-emergency/innovat3-logo.png" onerror="this.style.display='none'" alt="innovat3">
+  <div class="brand">innovat3<span>.</span></div>
+  <a href="https://innovat3dinfusion-hash.github.io/innovat3-emergency/register/" class="back-btn">← Register</a>
+</header>
+
+<div class="hero">
+  <div class="hero-badge">📋 Legal Document</div>
+  <h1>Terms &amp; <span>Conditions</span></h1>
+  <p class="hero-sub">Please read these terms carefully before registering for the innovat3. Smart NFC Emergency Tag Service.</p>
+  <div class="hero-meta">
+    <span>📅 Effective: 1 March 2026</span>
+    <span>🇿🇦 Governed by South African Law</span>
+    <span>📍 Johannesburg, Gauteng</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="toc-card">
+    <h3>📑 Table of Contents</h3>
+    <ul class="toc-list">
+      <li><a href="#s1"><span class="num">1</span>Definitions</a></li>
+      <li><a href="#s2"><span class="num">2</span>Acceptance of Terms</a></li>
+      <li><a href="#s3"><span class="num">3</span>Description of Service</a></li>
+      <li><a href="#s4"><span class="num">4</span>Service Limitations</a></li>
+      <li><a href="#s5"><span class="num">5</span>Subscriber Obligations</a></li>
+      <li><a href="#s6"><span class="num">6</span>Subscription & Payment</a></li>
+      <li><a href="#s7"><span class="num">7</span>Lapsed Subscriptions</a></li>
+      <li><a href="#s8"><span class="num">8</span>Third-Party Technology</a></li>
+      <li><a href="#s9"><span class="num">9</span>Limitation of Liability</a></li>
+      <li><a href="#s10"><span class="num">10</span>Force Majeure</a></li>
+      <li><a href="#s11"><span class="num">11</span>Privacy & POPIA</a></li>
+      <li><a href="#s12"><span class="num">12</span>Intellectual Property</a></li>
+      <li><a href="#s13"><span class="num">13</span>Termination</a></li>
+      <li><a href="#s14"><span class="num">14</span>Amendments</a></li>
+      <li><a href="#s15"><span class="num">15</span>General Provisions</a></li>
+    </ul>
+  </div>
+
+  <div class="section-block" id="s1">
+    <h2><span class="s-num">1</span>Definitions</h2>
+    <p>In these Terms and Conditions, unless the context indicates otherwise:</p>
+    <ul>
+      <li><strong>"innovat3." / "the Company" / "We" / "Us"</strong> means innovat3 Smart Emergency Solutions, a South African business providing the Service.</li>
+      <li><strong>"Service"</strong> means the innovat3. Smart NFC Emergency Tag subscription service, including the NFC Tag hardware, the cloud-hosted emergency profile web page, GPS notification system, and all associated digital platforms.</li>
+      <li><strong>"Subscriber" / "You"</strong> means any person who registers for the Service, purchases a Tag, or uses the platform in any capacity.</li>
+      <li><strong>"Tag"</strong> means the 3D-printed NFC hardware device programmed with a unique Tag ID linking to the Subscriber's emergency profile.</li>
+      <li><strong>"Emergency Profile"</strong> means the web page accessible upon scanning the Tag, displaying the Subscriber's personal, medical, and contact information.</li>
+      <li><strong>"Finder"</strong> means any third party who scans the Tag, including members of the public, paramedics, or emergency services.</li>
+      <li><strong>"Platform"</strong> means all websites, web applications, databases, and software infrastructure operated by innovat3. to deliver the Service.</li>
+      <li><strong>"POPIA"</strong> means the Protection of Personal Information Act 4 of 2013.</li>
+    </ul>
+  </div>
+
+  <div class="section-block" id="s2">
+    <h2><span class="s-num">2</span>Acceptance of Terms</h2>
+    <p>By registering for the Service, purchasing a Tag, ticking the consent checkboxes on the registration form, or using the Platform in any way, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions in full.</p>
+    <p>If you do not agree to these Terms, you must not register for the Service, use the Platform, or purchase a Tag.</p>
+    <p>These Terms constitute a legally binding agreement between you and innovat3. under the laws of the Republic of South Africa.</p>
+  </div>
+
+  <div class="section-block" id="s3">
+    <h2><span class="s-num">3</span>Description of Service</h2>
+    <p>innovat3. provides a subscription-based smart emergency identification service. The Service includes:</p>
+    <ul>
+      <li>A custom 3D-printed NFC Tag encoded with a unique identifier</li>
+      <li>A cloud-hosted emergency profile web page accessible by scanning the Tag</li>
+      <li>GPS location capture and notification to designated emergency contacts via Telegram and WhatsApp upon a Tag scan</li>
+      <li>Secure cloud storage of emergency profile data on Google infrastructure</li>
+    </ul>
+    <div class="warning-box"><span class="wi">⚠️</span><span>The Service is an <strong>information delivery tool only</strong>. innovat3. is not an emergency services provider, medical service, or security company. The Service does not replace calling 10111 (Police), 10177 (Ambulance), or any other official emergency service.</span></div>
+  </div>
+
+  <div class="section-block" id="s4">
+    <h2><span class="s-num">4</span>Service Limitations</h2>
+    <p>You acknowledge and accept the following inherent limitations of the Service:</p>
+    <ul>
+      <li>The Service requires the Finder to have a smartphone capable of reading NFC tags</li>
+      <li>The Service requires active internet connectivity for the emergency profile to load and for GPS alerts to be sent</li>
+      <li>GPS accuracy is dependent on device hardware, environmental conditions, and network availability and may not be precise in all circumstances</li>
+      <li>Telegram and WhatsApp notifications are delivered subject to the availability, policies, and uptime of those third-party platforms</li>
+      <li>innovat3. does not guarantee that the Finder will scan the Tag, act on the information displayed, or contact emergency services</li>
+      <li>innovat3. does not monitor Tags, scans, or emergencies in real time</li>
+    </ul>
+  </div>
+
+  <div class="section-block" id="s5">
+    <h2><span class="s-num">5</span>Subscriber Obligations</h2>
+    <p>As a Subscriber, you are solely responsible for:</p>
+    <ul>
+      <li>Ensuring that all information provided on your emergency profile is accurate, complete, and up to date at all times</li>
+      <li>Notifying us promptly of any changes to your personal, medical, or contact information</li>
+      <li>Keeping your Tag in good working condition and not tampering with the NFC inlay or URL programming</li>
+      <li>Ensuring your nominated emergency contacts have consented to receiving notifications from the Service</li>
+      <li>Maintaining an active subscription to ensure your profile remains accessible</li>
+    </ul>
+    <p><strong>innovat3. expressly disclaims all liability for harm, injury, or loss arising from inaccurate, incomplete, or outdated profile information provided by the Subscriber.</strong></p>
+  </div>
+
+  <div class="section-block" id="s6">
+    <h2><span class="s-num">6</span>Subscription &amp; Payment</h2>
+    <p>Subscription fees are payable monthly in advance as per the selected plan at the time of registration. Current plans include:</p>
+    <ul>
+      <li><strong>innovat3. Solo</strong> — R89/month (1 person)</li>
+      <li><strong>innovat3. Family</strong> — R149/month (up to 4 people)</li>
+      <li><strong>innovat3. Care</strong> — R199 once-off (65+ years only)</li>
+      <li><strong>Beta Tester</strong> — Free for 3 months, thereafter standard Solo rates apply</li>
+    </ul>
+    <p>A one-time Tag hardware fee of R199 per Tag is applicable to all plans. Subscription fees are subject to change upon 30 days' written notice.</p>
+    <p>All prices are quoted in South African Rand (ZAR) and include VAT where applicable.</p>
+  </div>
+
+  <div class="section-block" id="s7">
+    <h2><span class="s-num">7</span>Lapsed Subscriptions</h2>
+    <p>If your subscription lapses due to non-payment or cancellation:</p>
+    <ul>
+      <li>Your emergency profile will be <strong>deactivated within 7 calendar days</strong> of the lapse date</li>
+      <li>The Tag will redirect to a "Profile Not Active" page until the subscription is reinstated</li>
+      <li>Profile data will be retained for 90 days after lapse to allow reactivation, after which it may be permanently deleted</li>
+    </ul>
+    <div class="warning-box"><span class="wi">⚠️</span><span>innovat3. accepts <strong>no liability whatsoever</strong> for any harm, injury, loss, or death arising from a Tag being scanned while the associated profile is deactivated due to a lapsed subscription.</span></div>
+  </div>
+
+  <div class="section-block" id="s8">
+    <h2><span class="s-num">8</span>Third-Party Technology</h2>
+    <p>The Service relies on the following third-party platforms and infrastructure:</p>
+    <ul>
+      <li><strong>Google LLC</strong> — Cloud storage (Google Sheets), hosting infrastructure. Subject to Google's Terms of Service.</li>
+      <li><strong>GitHub Inc.</strong> — Web hosting via GitHub Pages. Subject to GitHub's Terms of Service.</li>
+      <li><strong>Telegram Messenger</strong> — Emergency alert notifications. Subject to Telegram's Terms of Service.</li>
+      <li><strong>WhatsApp LLC</strong> — Emergency contact facilitation. Subject to WhatsApp's Terms of Service.</li>
+      <li><strong>imgbb</strong> — Profile photo hosting. Subject to imgbb's Terms of Service.</li>
+    </ul>
+    <p>innovat3. is not liable for any interruption, failure, change in policy, or data handling by these third-party providers. It is your responsibility to ensure your emergency contacts are active users of the relevant platforms.</p>
+  </div>
+
+  <div class="section-block" id="s9">
+    <h2><span class="s-num">9</span>Limitation of Liability</h2>
+    <p>To the maximum extent permitted by applicable South African law:</p>
+    <ul>
+      <li>innovat3.'s total cumulative liability to any Subscriber shall not exceed the total amount paid by that Subscriber in the 12 months immediately preceding the claim</li>
+      <li>innovat3. shall not be liable for any indirect, consequential, incidental, special, or punitive damages, including but not limited to loss of life, bodily injury, loss of income, or emotional distress</li>
+      <li>innovat3. shall not be liable for service failure resulting from third-party platform outages, network unavailability, load shedding, or any force majeure event</li>
+    </ul>
+    <div class="info-box"><span class="wi">ℹ️</span><span>Nothing in these Terms limits innovat3.'s liability for death or personal injury caused by our own <strong>gross negligence or intentional misconduct</strong>, or for fraudulent misrepresentation, to the extent such limitation is prohibited by South African law.</span></div>
+  </div>
+
+  <div class="section-block" id="s10">
+    <h2><span class="s-num">10</span>Force Majeure</h2>
+    <p>innovat3. shall not be liable for any failure or delay in performing its obligations under these Terms caused by circumstances beyond its reasonable control, including but not limited to:</p>
+    <ul>
+      <li>Load shedding or electrical power failures (Eskom or municipal)</li>
+      <li>National or regional internet infrastructure failures</li>
+      <li>Downtime of third-party platforms (Google, GitHub, Telegram, WhatsApp)</li>
+      <li>Natural disasters, civil unrest, pandemic, government directives, or acts of war</li>
+      <li>Cyberattacks, DDoS attacks, or malicious interference with the Platform</li>
+    </ul>
+    <p>In such events, innovat3. will use reasonable efforts to restore the Service as quickly as practicable and will notify Subscribers of significant outages via email.</p>
+  </div>
+
+  <div class="section-block" id="s11">
+    <h2><span class="s-num">11</span>Privacy &amp; POPIA Compliance</h2>
+    <p>innovat3. processes personal information in accordance with the Protection of Personal Information Act 4 of 2013 (POPIA). The collection, use, storage, and disclosure of your personal information is governed by our <a href="https://innovat3dinfusion-hash.github.io/innovat3-emergency/privacy.html" style="color:var(--teal);text-decoration:underline;">Privacy Policy</a>, which forms an integral part of these Terms.</p>
+    <p>By registering, you explicitly consent to innovat3. processing your personal information and special personal information (health and medical data) for the purpose of delivering the Service.</p>
+    <p>You acknowledge that your emergency profile will be publicly accessible to any person who scans your Tag, and that this public disclosure is the core purpose of the Service for which you are subscribing.</p>
+  </div>
+
+  <div class="section-block" id="s12">
+    <h2><span class="s-num">12</span>Intellectual Property</h2>
+    <p>All intellectual property rights in the Service, including but not limited to the Platform software, Tag design, database structure, user interface, brand name, logo, and documentation, are owned by innovat3. or licensed to innovat3. and are protected by applicable intellectual property laws.</p>
+    <p>No part of the Service may be copied, reproduced, reverse-engineered, or used for commercial purposes without the prior written consent of innovat3.</p>
+    <p>Subscribers retain ownership of their personal data submitted to the platform but grant innovat3. a limited licence to process and display such data solely for the purpose of delivering the Service.</p>
+  </div>
+
+  <div class="section-block" id="s13">
+    <h2><span class="s-num">13</span>Termination</h2>
+    <p>innovat3. reserves the right to suspend or terminate your subscription, with or without notice, if:</p>
+    <ul>
+      <li>You breach any material provision of these Terms</li>
+      <li>Your subscription payment lapses and is not remedied within 14 days</li>
+      <li>You use the Service for any unlawful, fraudulent, or abusive purpose</li>
+      <li>You provide materially false information on your registration</li>
+    </ul>
+    <p>You may cancel your subscription at any time by contacting <a href="mailto:hello@innovat3.co.za" style="color:var(--orange);">hello@innovat3.co.za</a>. No refunds are due for partial months.</p>
+  </div>
+
+  <div class="section-block" id="s14">
+    <h2><span class="s-num">14</span>Amendments to Terms</h2>
+    <p>innovat3. reserves the right to amend these Terms at any time. Subscribers will be notified of material changes by email at least 14 days before the changes take effect.</p>
+    <p>Continued use of the Service after the effective date of any amendments constitutes acceptance of the updated Terms. If you do not accept the amended Terms, you may cancel your subscription prior to the effective date.</p>
+    <p>The current version of these Terms is always available at <a href="https://innovat3dinfusion-hash.github.io/innovat3-emergency/terms.html" style="color:var(--orange);">innovat3dinfusion-hash.github.io/innovat3-emergency/terms.html</a></p>
+  </div>
+
+  <div class="section-block" id="s15">
+    <h2><span class="s-num">15</span>General Provisions</h2>
+    <p><strong>Governing Law:</strong> These Terms are governed by the laws of the Republic of South Africa. Any dispute arising from these Terms shall be subject to the jurisdiction of the South African courts.</p>
+    <p><strong>Dispute Resolution:</strong> Parties shall first attempt to resolve disputes amicably within 30 days. Failing resolution, disputes shall be referred to mediation before litigation.</p>
+    <p><strong>Severability:</strong> If any provision of these Terms is found to be invalid or unenforceable, the remaining provisions shall continue in full force and effect.</p>
+    <p><strong>Entire Agreement:</strong> These Terms, together with the Privacy Policy and any Reseller Agreement where applicable, constitute the entire agreement between you and innovat3. regarding the Service.</p>
+    <p><strong>Contact Us:</strong> For any questions regarding these Terms, contact us at <a href="mailto:hello@innovat3.co.za" style="color:var(--orange);">hello@innovat3.co.za</a></p>
+  </div>
+
+</div>
+
+<div class="doc-footer">
+  <p>These Terms &amp; Conditions are effective as of 1 March 2026.</p>
+  <p>innovat3 Smart Emergency Solutions. All rights reserved.</p>
+</div>
+
+</body>
+</html>

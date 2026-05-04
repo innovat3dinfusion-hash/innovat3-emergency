@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "innovat3 Deploy Dashboard",
+  "version": "1.1",
+  "description": "One-click deploy tool for innovat3.co.za — GitHub, Cloudflare Worker and GAS",
+  "permissions": [
+    "storage",
+    "clipboardWrite",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://api.github.com/*",
+    "https://api.cloudflare.com/*",
+    "https://raw.githubusercontent.com/*",
+    "https://innovat3.co.za/*",
+    "https://api.innovat3.co.za/*",
+    "https://fonts.googleapis.com/*",
+    "https://fonts.gstatic.com/*"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://api.github.com https://api.cloudflare.com https://raw.githubusercontent.com https://innovat3.co.za https://api.innovat3.co.za"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16":  "icon16.png",
+      "48":  "icon48.png",
+      "128": "icon128.png"
+    }
+  },
+  "icons": {
+    "16":  "icon16.png",
+    "48":  "icon48.png",
+    "128": "icon128.png"
+  }
+}
