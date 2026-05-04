@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
-  <rect width="128" height="128" rx="24" fill="#0d0d0d"/>
-  <rect x="4" y="4" width="120" height="120" rx="20" fill="none" stroke="#F97316" stroke-width="3"/>
-  <text x="64" y="52" font-family="Arial Black" font-weight="900" font-size="28" fill="#F97316" text-anchor="middle">IN3</text>
-  <rect x="20" y="62" width="88" height="3" rx="1.5" fill="#F97316" opacity="0.4"/>
-  <text x="64" y="88" font-family="Arial" font-weight="700" font-size="13" fill="#0ED2C8" text-anchor="middle" letter-spacing="3">DEPLOY</text>
-</svg>

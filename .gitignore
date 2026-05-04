@@ -2,8 +2,10 @@
 .claude/settings.local.json
 **/settings.local.json
 
-# Local working master — kept local only, root has the deployed copies
-**/00.Github/
+# Private project folders — local only, never push to GitHub
+1.Innovat3 Safety Tags/
+ChoreQuest/
+Claude/
 
 # Internal business documents — never commit these
 *.docx
