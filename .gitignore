@@ -2,6 +2,9 @@
 .claude/settings.local.json
 **/settings.local.json
 
+# Local working master — kept local only, root has the deployed copies
+**/00.Github/
+
 # Internal business documents — never commit these
 *.docx
 *.pdf
