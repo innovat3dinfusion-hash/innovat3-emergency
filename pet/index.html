@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en"><!-- innovat3 pet-register v1.0 -->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Innovat3 — Pet Tag Registration</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --orange:#F97316; --teal:#0ED2C8; --black:#0A0A0A;
+  --card:#141414; --border:#222;
+  --text:#F0F0F0; --muted:#777; --muted2:#444;
+  --red:#EF4444; --green:#22C55E;
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:'Exo 2',sans-serif; background:#050505; color:var(--text); min-height:100vh; }
+button, a, input, select, textarea { touch-action:manipulation; }
+
+/* ── HEADER ── */
+.header {
+  background:linear-gradient(135deg,#0d0d0d 0%,#001a1a 100%);
+  border-bottom:3px solid var(--teal);
+  padding:13px 18px; display:flex; align-items:center; gap:14px;
+}
+.logo-box { width:46px; height:46px; border-radius:11px; border:2px solid var(--teal); overflow:hidden; box-shadow:0 0 18px rgba(14,210,200,0.45); flex-shrink:0; }
+.logo-box img { width:100%; height:100%; object-fit:cover; }
+.brand-name { font-family:'Orbitron',sans-serif; font-size:20px; font-weight:900; color:var(--teal); line-height:1; }
+.brand-name span { color:#fff; }
+.brand-sub { font-size:8px; color:var(--muted); letter-spacing:3px; text-transform:uppercase; margin-top:4px; }
+.pet-pill {
+  margin-left:auto; background:rgba(14,210,200,0.12); border:2px solid var(--teal);
+  color:var(--teal); font-family:'Orbitron',sans-serif; font-size:7px; font-weight:900;
+  letter-spacing:1px; padding:6px 10px; border-radius:8px; text-transform:uppercase;
+}
+
+/* ── WRAPPER ── */
+.wrap { max-width:480px; margin:0 auto; padding:16px 0 60px; }
+
+/* ── STEPS ── */
+.steps { display:flex; align-items:center; padding:0 14px; margin-bottom:4px; }
+.step-item { display:flex; flex-direction:column; align-items:center; gap:4px; flex:1; }
+.step-num {
+  width:28px; height:28px; border-radius:50%; background:#1a1a1a; border:2px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Orbitron',sans-serif; font-size:10px; font-weight:900; color:var(--muted);
+  transition:all 0.15s;
+}
+.step-item.active .step-num { border-color:var(--teal); color:var(--teal); background:rgba(14,210,200,0.1); }
+.step-item.done   .step-num { border-color:var(--green); color:var(--green); background:rgba(34,197,94,0.1); }
+.step-line { flex:1; height:2px; background:var(--border); margin:0 4px; margin-bottom:14px; transition:background 0.15s; }
+.step-line.done { background:var(--green); }
+.step-label { font-size:8px; color:var(--muted2); letter-spacing:1px; text-transform:uppercase; font-weight:700; transition:all 0.15s; }
+.step-item.active .step-label { color:var(--teal); }
+.step-item.done   .step-label { color:var(--green); }
+
+/* ── SECTION ── */
+.section { display:none; padding:0 10px; }
+.section.active { display:block; }
+.section-spacer { height:10px; }
+
+/* ── CARD BOX ── */
+.card-box { background:var(--card); border:1px solid var(--border); border-radius:16px; overflow:hidden; margin-bottom:12px; }
+.card-box-hdr { padding:12px 16px; border-bottom:1px solid var(--border); }
+.card-box-hdr h3 { font-family:'Orbitron',sans-serif; font-size:10px; font-weight:900; color:var(--teal); letter-spacing:1.5px; text-transform:uppercase; }
+.card-box-body { padding:16px; }
+
+/* ── FIELD ── */
+.field { margin-bottom:14px; }
+.field:last-child { margin-bottom:0; }
+.field label { display:block; font-size:9px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+.field label .req { color:var(--teal); margin-left:2px; }
+.field input, .field select, .field textarea {
+  width:100%; background:#0d0d0d; border:1px solid #2a2a2a; border-radius:10px;
+  color:var(--text); font-family:'Exo 2',sans-serif; font-size:14px;
+  padding:11px 14px; outline:none; transition:border-color 0.15s;
+}
+.field input:focus, .field select:focus, .field textarea:focus { border-color:var(--teal); }
+.field textarea { resize:vertical; min-height:70px; }
+.field select { appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23777' d='M1 1l5 5 5-5'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center; }
+.field-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.field-hint { font-size:10px; color:var(--muted); margin-top:5px; line-height:1.5; }
+
+/* ── PHOTO ── */
+.photo-wrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin-bottom:18px; }
+.photo-circle {
+  width:100px; height:100px; border-radius:50%; background:#111;
+  border:3px solid var(--teal); display:flex; flex-direction:column;
+  align-items:center; justify-content:center; cursor:pointer; overflow:hidden;
+  box-shadow:0 0 24px rgba(14,210,200,0.2); position:relative;
+}
+.photo-circle img { width:100%; height:100%; object-fit:cover; display:none; }
+.photo-icon { font-size:32px; }
+.photo-label { font-size:12px; color:var(--muted); }
+
+/* ── WA TOGGLE ── */
+.wa-toggle-row { display:flex; gap:10px; margin-top:10px; align-items:center; }
+.wa-toggle {
+  display:flex; align-items:center; gap:6px; cursor:pointer; padding:6px 12px;
+  border-radius:8px; border:1px solid #2a2a2a; background:#111;
+  font-size:11px; font-weight:700; color:var(--muted); transition:all 0.15s;
+  user-select:none;
+}
+.wa-toggle.active { border-color:var(--teal); color:var(--teal); background:rgba(14,210,200,0.08); }
+
+/* ── NAV ── */
+.nav { display:flex; gap:10px; padding:14px 10px 0; }
+.btn { flex:1; padding:14px; border-radius:12px; font-family:'Orbitron',sans-serif; font-size:11px; font-weight:900; letter-spacing:1px; text-transform:uppercase; border:none; cursor:pointer; transition:all 0.15s; }
+.btn-back { background:#1a1a1a; color:var(--muted); border:1px solid #2a2a2a; }
+.btn-next { background:linear-gradient(135deg,#009e96,#0ed2c8); color:#000; }
+.btn-submit { background:linear-gradient(135deg,#166534,#22c55e); color:#fff; }
+.btn:disabled { opacity:0.5; cursor:not-allowed; }
+
+/* ── CONSENT ── */
+.consent-section { background:rgba(14,210,200,0.04); border:1px solid rgba(14,210,200,0.2); border-radius:12px; padding:14px; margin-bottom:14px; }
+.consent-label { display:flex; align-items:flex-start; gap:12px; cursor:pointer; }
+.consent-text { font-size:12px; color:#aaa; line-height:1.6; }
+.custom-check {
+  width:18px; height:18px; border-radius:5px; border:2px solid #333;
+  background:#0d0d0d; flex-shrink:0; transition:all 0.15s;
+  display:flex; align-items:center; justify-content:center; min-width:18px;
+}
+
+/* ── SUCCESS ── */
+.success-screen { display:none; padding:40px 20px; text-align:center; }
+.success-icon { font-size:60px; margin-bottom:16px; }
+.success-title { font-family:'Orbitron',sans-serif; font-size:18px; font-weight:900; color:var(--green); margin-bottom:8px; }
+.success-sub { font-size:14px; color:var(--muted); line-height:1.6; margin-bottom:24px; }
+.tag-display { font-family:'Orbitron',sans-serif; font-size:22px; font-weight:900; color:var(--teal); background:rgba(14,210,200,0.08); border:2px solid var(--teal); border-radius:12px; padding:16px; margin-bottom:20px; letter-spacing:2px; }
+.card-link-btn {
+  display:block; background:linear-gradient(135deg,#009e96,#0ed2c8); color:#000;
+  text-decoration:none; font-family:'Orbitron',sans-serif; font-size:11px; font-weight:900;
+  letter-spacing:1px; text-transform:uppercase; padding:14px 20px; border-radius:12px;
+  margin-bottom:12px;
+}
+.nfc-note { font-size:11px; color:var(--muted); margin-bottom:16px; line-height:1.6; }
+.new-reg-btn {
+  display:block; background:#1a1a1a; color:var(--muted); border:1px solid #2a2a2a;
+  text-decoration:none; font-family:'Orbitron',sans-serif; font-size:10px; font-weight:900;
+  letter-spacing:1px; text-transform:uppercase; padding:12px 20px; border-radius:12px;
+  cursor:pointer; width:100%;
+}
+
+/* ── LOADING OVERLAY ── */
+.overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:999; flex-direction:column; align-items:center; justify-content:center; gap:16px; }
+.overlay.show { display:flex; }
+.spinner { width:52px; height:52px; border:3px solid #222; border-top-color:var(--teal); border-radius:50%; animation:spin 0.8s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.overlay-txt { font-family:'Orbitron',sans-serif; font-size:11px; letter-spacing:3px; color:var(--muted); text-transform:uppercase; }
+
+/* ── CROP MODAL ── */
+.crop-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.92); z-index:1000; flex-direction:column; align-items:center; justify-content:center; gap:14px; padding:20px; }
+.crop-modal.show { display:flex; }
+.crop-title { font-family:'Orbitron',sans-serif; font-size:12px; color:var(--teal); letter-spacing:2px; text-transform:uppercase; }
+.crop-canvas-wrap { position:relative; width:260px; height:260px; border-radius:50%; overflow:hidden; border:3px solid var(--teal); background:#111; touch-action:none; }
+#cropCanvas { display:block; }
+.crop-zoom { display:flex; align-items:center; gap:10px; }
+.crop-zoom label { font-size:11px; color:var(--muted); white-space:nowrap; }
+.crop-zoom input { flex:1; accent-color:var(--teal); }
+.crop-btns { display:flex; gap:10px; }
+.crop-cancel { background:#1a1a1a; border:1px solid #333; color:var(--muted); font-family:'Orbitron',sans-serif; font-size:10px; font-weight:900; letter-spacing:1px; padding:12px 20px; border-radius:10px; cursor:pointer; }
+.crop-ok { background:linear-gradient(135deg,#009e96,#0ed2c8); color:#000; font-family:'Orbitron',sans-serif; font-size:10px; font-weight:900; letter-spacing:1px; padding:12px 20px; border-radius:10px; cursor:pointer; border:none; }
+</style>
+</head>
+<body>
+
+<!-- Loading overlay -->
+<div class="overlay" id="overlay">
+  <div class="spinner"></div>
+  <div class="overlay-txt" id="overlayTxt">Registering pet...</div>
+</div>
+
+<!-- Photo crop modal -->
+<div class="crop-modal" id="cropModal">
+  <div class="crop-title">Position Photo</div>
+  <div class="crop-canvas-wrap" id="cropWrap">
+    <canvas id="cropCanvas" width="260" height="260"></canvas>
+  </div>
+  <div class="crop-zoom">
+    <label>Zoom</label>
+    <input type="range" id="cropZoom" min="0.1" max="4" step="0.01" value="1">
+  </div>
+  <div class="crop-btns">
+    <button class="crop-cancel" onclick="cancelCrop()">Cancel</button>
+    <button class="crop-ok" onclick="applyCrop()">Use Photo</button>
+  </div>
+</div>
+
+<!-- Header -->
+<div class="header">
+  <div class="logo-box">
+    <img src="https://innovat3.co.za/assets/logo.png" alt="Innovat3" onerror="this.style.display='none'">
+  </div>
+  <div>
+    <div class="brand-name">Innovat<span>3</span>. Pet Tag</div>
+    <div class="brand-sub">Smart NFC Pet Safety Tag</div>
+  </div>
+  <div class="pet-pill">Pet Tag</div>
+</div>
+
+<!-- ── MAIN WRAP ── -->
+<div class="wrap" id="mainWrap">
+
+  <!-- Steps -->
+  <div style="padding:14px 10px 4px">
+    <div class="steps">
+      <div class="step-item active" id="stepItem1"><div class="step-num">1</div><div class="step-label">Pet Info</div></div>
+      <div class="step-line" id="stepLine1"></div>
+      <div class="step-item" id="stepItem2"><div class="step-num">2</div><div class="step-label">Medical</div></div>
+      <div class="step-line" id="stepLine2"></div>
+      <div class="step-item" id="stepItem3"><div class="step-num">3</div><div class="step-label">Owner</div></div>
+      <div class="step-line" id="stepLine3"></div>
+      <div class="step-item" id="stepItem4"><div class="step-num">4</div><div class="step-label">Finish</div></div>
+    </div>
+  </div>
+
+  <!-- ─────────────── SECTION 1: PET INFO ─────────────── -->
+  <div class="section active" id="sec1">
+    <div class="section-spacer"></div>
+    <div class="card-box">
+      <div class="card-box-hdr"><h3>Pet Information</h3></div>
+      <div class="card-box-body">
+
+        <!-- Photo -->
+        <div class="photo-wrap">
+          <div class="photo-circle" id="photoCircle" onclick="document.getElementById('photoInput').click()">
+            <div class="photo-icon" id="photoIcon">🐾</div>
+            <img id="photoPreview" alt="Pet Photo">
+          </div>
+          <div class="photo-label" id="photoLbl">Tap to upload pet photo</div>
+          <input type="file" id="photoInput" accept="image/*" style="display:none" onchange="handlePhoto(this)">
+        </div>
+
+        <div class="field">
+          <label>Pet Name <span class="req">*</span></label>
+          <input type="text" id="petName" placeholder="e.g. Max" autocomplete="off">
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Species <span class="req">*</span></label>
+            <select id="species">
+              <option value="">Select species</option>
+              <option value="Dog">Dog</option>
+              <option value="Cat">Cat</option>
+              <option value="Rabbit">Rabbit</option>
+              <option value="Bird">Bird</option>
+              <option value="Reptile">Reptile</option>
+              <option value="Hamster">Hamster</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Gender</label>
+            <select id="gender">
+              <option value="">Select</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Unknown">Unknown</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Breed</label>
+          <input type="text" id="breed" placeholder="e.g. Golden Retriever">
+        </div>
+
+        <div class="field">
+          <label>Colour / Markings</label>
+          <input type="text" id="colour" placeholder="e.g. Golden with white chest">
+        </div>
+
+        <div class="field">
+          <label>Date of Birth</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+            <select id="dobDay"><option value="">Day</option></select>
+            <select id="dobMonth"><option value="">Month</option></select>
+            <select id="dobYear"><option value="">Year</option></select>
+          </div>
+          <input type="hidden" id="dob">
+          <div class="field-hint">Used to display age on the pet card</div>
+        </div>
+
+      </div>
+    </div>
+    <div class="nav">
+      <button class="btn btn-next" onclick="goToSec(2)">Next →</button>
+    </div>
+  </div>
+
+  <!-- ─────────────── SECTION 2: MEDICAL & VET ─────────────── -->
+  <div class="section" id="sec2">
+    <div class="section-spacer"></div>
+
+    <div class="card-box">
+      <div class="card-box-hdr"><h3>Microchip &amp; Vaccinations</h3></div>
+      <div class="card-box-body">
+        <div class="field">
+          <label>Microchip Number</label>
+          <input type="text" id="microchip" placeholder="15-digit chip number — optional" maxlength="20">
+        </div>
+        <div class="field">
+          <label>Vaccinations</label>
+          <textarea id="vaccinations" placeholder="e.g. Rabies ✓  Distemper ✓  Parvovirus ✓"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-box">
+      <div class="card-box-hdr"><h3>Medical Notes</h3></div>
+      <div class="card-box-body">
+        <div class="field">
+          <label>Medical Notes</label>
+          <textarea id="medNotes" placeholder="Allergies, chronic conditions, medications..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-box">
+      <div class="card-box-hdr"><h3>Veterinarian</h3></div>
+      <div class="card-box-body">
+        <div class="field">
+          <label>Vet Name</label>
+          <input type="text" id="vetName" placeholder="Dr. Patel — Greenpoint Vet">
+        </div>
+        <div class="field">
+          <label>Vet Phone</label>
+          <input type="tel" id="vetPhone" placeholder="021 123 4567">
+        </div>
+      </div>
+    </div>
+
+    <div class="nav">
+      <button class="btn btn-back" onclick="goToSec(1)">← Back</button>
+      <button class="btn btn-next" onclick="goToSec(3)">Next →</button>
+    </div>
+  </div>
+
+  <!-- ─────────────── SECTION 3: OWNER INFO ─────────────── -->
+  <div class="section" id="sec3">
+    <div class="section-spacer"></div>
+
+    <div class="card-box">
+      <div class="card-box-hdr"><h3>Owner Information</h3></div>
+      <div class="card-box-body">
+        <div class="field">
+          <label>Owner Name <span class="req">*</span></label>
+          <input type="text" id="ownerName" placeholder="Full name" autocomplete="name">
+        </div>
+
+        <div class="field">
+          <label>Owner Phone <span class="req">*</span></label>
+          <input type="tel" id="ownerPhone" placeholder="072 123 4567" autocomplete="tel">
+          <div class="wa-toggle-row">
+            <div class="wa-toggle" id="waToggle" onclick="toggleWa()">
+              📱 WhatsApp Alert
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Owner Telegram</label>
+          <input type="text" id="ownerTelegram" placeholder="@username">
+        </div>
+
+        <div class="field">
+          <label>Owner Email <span class="req">*</span></label>
+          <input type="email" id="ownerEmail" placeholder="you@example.com" autocomplete="email">
+        </div>
+
+        <div class="field">
+          <label>Home Address</label>
+          <input type="text" id="address" placeholder="Street, Suburb, City">
+        </div>
+
+        <div class="field">
+          <label>Notes for Finder</label>
+          <textarea id="notes" placeholder="e.g. Max is friendly. Responds to his name. Please call immediately."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav">
+      <button class="btn btn-back" onclick="goToSec(2)">← Back</button>
+      <button class="btn btn-next" onclick="goToSec(4)">Next →</button>
+    </div>
+  </div>
+
+  <!-- ─────────────── SECTION 4: CONSENT & SUBMIT ─────────────── -->
+  <div class="section" id="sec4">
+    <div class="section-spacer"></div>
+    <div class="card-box">
+      <div class="card-box-hdr"><h3>Consent &amp; Submit</h3></div>
+      <div class="card-box-body">
+        <div class="consent-section">
+          <label class="consent-label">
+            <div class="custom-check" id="consentCheck" onclick="toggleConsent()"></div>
+            <div class="consent-text">
+              I consent to GPS location being captured and sent to my registered contact when my pet's tag is scanned.
+            </div>
+          </label>
+        </div>
+        <div class="field-hint" style="margin-bottom:14px">
+          By submitting, your pet's NFC tag will be registered and a digital pet card created.
+        </div>
+        <button class="btn btn-submit" id="submitBtn" onclick="submitPet()">Register Pet Tag</button>
+      </div>
+    </div>
+    <div class="nav">
+      <button class="btn btn-back" onclick="goToSec(3)">← Back</button>
+    </div>
+  </div>
+
+</div><!-- /wrap -->
+
+<!-- ── SUCCESS SCREEN ── -->
+<div class="success-screen" id="successScreen">
+  <div class="success-icon">🐾</div>
+  <div class="success-title">Pet Tag Registered!</div>
+  <div class="success-sub" id="successSub">Your pet's NFC safety tag is live and ready.</div>
+  <div class="tag-display" id="successTagId"></div>
+  <a href="#" class="card-link-btn" id="cardLink">View Pet Card →</a>
+  <div class="nfc-note">Programme this Tag ID into an NFC tag using NFC Tools app. When scanned, it will open your pet's card and alert you.</div>
+  <button class="new-reg-btn" onclick="resetForm()">Register Another Pet</button>
+</div>
+
+<script>
+var WORKER_URL    = 'https://api.innovat3.co.za';
+var CARD_BASE_URL = 'https://innovat3.co.za/pet/card/';
+
+var consentGiven    = false;
+var ownerWaEnabled  = false;
+var croppedPhotoDataUrl = null;
+
+// ── DOB DROPDOWNS ──
+(function(){
+  var days   = document.getElementById('dobDay');
+  var months = document.getElementById('dobMonth');
+  var years  = document.getElementById('dobYear');
+  var monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  for(var d=1;d<=31;d++){ var o=document.createElement('option'); o.value=d; o.textContent=d; days.appendChild(o); }
+  monthNames.forEach(function(m,i){ var o=document.createElement('option'); o.value=i+1; o.textContent=m; months.appendChild(o); });
+  var cy = new Date().getFullYear();
+  for(var y=cy-30;y<=cy;y++){ var o=document.createElement('option'); o.value=y; o.textContent=y; years.appendChild(o); }
+  [days,months,years].forEach(function(el){ el.addEventListener('change', updateDob); });
+  function updateDob(){
+    var d=days.value, m=months.value, yr=years.value;
+    if(d&&m&&yr) document.getElementById('dob').value = yr+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+  }
+})();
+
+// ── STEPS ──
+var currentSec = 1;
+function goToSec(n) {
+  if(!validateSec(currentSec)) return;
+  document.getElementById('sec'+currentSec).classList.remove('active');
+  for(var i=1;i<=4;i++){
+    var si = document.getElementById('stepItem'+i);
+    si.classList.remove('active','done');
+    if(i<n)       si.classList.add('done');
+    else if(i===n) si.classList.add('active');
+    if(i<4){
+      var sl = document.getElementById('stepLine'+i);
+      sl.classList.toggle('done', i<n);
+    }
+  }
+  currentSec = n;
+  document.getElementById('sec'+n).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function validateSec(n) {
+  var errs = [];
+  if(n===1){
+    if(!v('petName').trim()) errs.push('Pet name is required');
+    if(!v('species'))        errs.push('Species is required');
+  }
+  if(n===3){
+    if(!v('ownerName').trim())  errs.push('Owner name is required');
+    if(!v('ownerPhone').trim()) errs.push('Owner phone is required');
+    if(!v('ownerEmail').trim()) errs.push('Owner email is required');
+  }
+  if(errs.length){ alert(errs.join('\n')); return false; }
+  return true;
+}
+
+// ── WHATSAPP TOGGLE ──
+function toggleWa() {
+  ownerWaEnabled = !ownerWaEnabled;
+  document.getElementById('waToggle').classList.toggle('active', ownerWaEnabled);
+}
+
+// ── CONSENT ──
+function toggleConsent() {
+  consentGiven = !consentGiven;
+  var el = document.getElementById('consentCheck');
+  if(consentGiven){
+    el.style.borderColor = 'var(--teal)';
+    el.style.background  = 'var(--teal)';
+    el.innerHTML = '<span style="font-size:11px;color:#000;font-weight:900;">✓</span>';
+  } else {
+    el.style.borderColor = '#333';
+    el.style.background  = '#0d0d0d';
+    el.innerHTML = '';
+  }
+}
+
+// ── PHOTO / CROP ──
+var cropImg=null, cropOffX=0, cropOffY=0, cropScale=1, cropLastX=0, cropLastY=0, cropDragging=false;
+
+function handlePhoto(input) {
+  if(!input.files||!input.files[0]) return;
+  var reader = new FileReader();
+  reader.onload = function(e){
+    cropImg = new Image();
+    cropImg.onload = function(){
+      cropOffX = 0; cropOffY = 0;
+      var coverScale = Math.max(260/cropImg.naturalWidth, 260/cropImg.naturalHeight);
+      cropScale = coverScale;
+      var zoomEl = document.getElementById('cropZoom');
+      zoomEl.min   = Math.max(0.1, (Math.min(260/cropImg.naturalWidth, 260/cropImg.naturalHeight)*0.5).toFixed(2));
+      zoomEl.value = coverScale;
+      document.getElementById('cropModal').classList.add('show');
+      drawCrop();
+    };
+    cropImg.src = e.target.result;
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function drawCrop(){
+  var c   = document.getElementById('cropCanvas');
+  var ctx = c.getContext('2d');
+  ctx.clearRect(0,0,260,260);
+  if(!cropImg) return;
+  var s=cropScale, iw=cropImg.width*s, ih=cropImg.height*s;
+  var x=(260-iw)/2+cropOffX, y=(260-ih)/2+cropOffY;
+  ctx.drawImage(cropImg,x,y,iw,ih);
+}
+
+document.getElementById('cropZoom').addEventListener('input',function(){
+  cropScale = parseFloat(this.value);
+  drawCrop();
+});
+
+(function(){
+  var wrap = document.getElementById('cropWrap');
+  wrap.addEventListener('mousedown',function(e){ cropDragging=true; cropLastX=e.clientX; cropLastY=e.clientY; });
+  window.addEventListener('mouseup',function(){ cropDragging=false; });
+  window.addEventListener('mousemove',function(e){
+    if(!cropDragging) return;
+    cropOffX+=e.clientX-cropLastX; cropOffY+=e.clientY-cropLastY;
+    cropLastX=e.clientX; cropLastY=e.clientY;
+    drawCrop();
+  });
+  wrap.addEventListener('touchstart',function(e){
+    e.preventDefault();
+    var t=e.touches[0]; cropDragging=true; cropLastX=t.clientX; cropLastY=t.clientY;
+  },{passive:false});
+  wrap.addEventListener('touchend',function(){ cropDragging=false; });
+  wrap.addEventListener('touchmove',function(e){
+    e.preventDefault();
+    if(!cropDragging) return;
+    var t=e.touches[0];
+    cropOffX+=t.clientX-cropLastX; cropOffY+=t.clientY-cropLastY;
+    cropLastX=t.clientX; cropLastY=t.clientY;
+    drawCrop();
+  },{passive:false});
+})();
+
+function cancelCrop(){
+  document.getElementById('cropModal').classList.remove('show');
+  document.getElementById('photoInput').value='';
+}
+
+function applyCrop(){
+  var offscreen = document.createElement('canvas');
+  offscreen.width=400; offscreen.height=400;
+  var ctx2 = offscreen.getContext('2d');
+  ctx2.beginPath(); ctx2.arc(200,200,200,0,Math.PI*2); ctx2.clip();
+  var scaleUp = 400/260;
+  var s=cropScale, iw=cropImg.width*s*scaleUp, ih=cropImg.height*s*scaleUp;
+  var x=(400-iw)/2+cropOffX*scaleUp, y=(400-ih)/2+cropOffY*scaleUp;
+  ctx2.drawImage(cropImg,x,y,iw,ih);
+  croppedPhotoDataUrl = offscreen.toDataURL('image/jpeg',0.85);
+  var prev = document.getElementById('photoPreview');
+  prev.src = croppedPhotoDataUrl;
+  prev.style.display = 'block';
+  document.getElementById('photoIcon').style.display = 'none';
+  document.getElementById('photoLbl').textContent = 'Photo added ✓';
+  document.getElementById('cropModal').classList.remove('show');
+}
+
+// ── UTILS ──
+function v(id){ return (document.getElementById(id)||{}).value||''; }
+function formatPhone(p){ return p.replace(/\s/g,'').replace(/^0/,'+27'); }
+function genTagId(){ return 'IN3-PET-'+String(Math.floor(1000+Math.random()*9000)); }
+function showOverlay(txt){ document.getElementById('overlayTxt').textContent=txt||'Processing...'; document.getElementById('overlay').classList.add('show'); }
+function hideOverlay(){ document.getElementById('overlay').classList.remove('show'); }
+
+// ── PHOTO UPLOAD ──
+async function uploadPhoto() {
+  if(!croppedPhotoDataUrl) return '';
+  try {
+    var base64 = croppedPhotoDataUrl.split(',')[1];
+    var fd = new FormData();
+    fd.append('image', base64);
+    var resp = await fetch('https://api.innovat3.co.za/upload-photo', { method:'POST', body:fd });
+    var json = await resp.json();
+    return (json.success && json.url) || '';
+  } catch(e){ return ''; }
+}
+
+// ── SUBMIT ──
+async function submitPet(){
+  if(!consentGiven){ alert('Please provide your consent before submitting.'); return; }
+  if(!v('ownerName').trim()||!v('ownerPhone').trim()||!v('ownerEmail').trim()){
+    alert('Owner name, phone, and email are required.'); return;
+  }
+
+  showOverlay('Uploading photo...');
+  var photoUrl = await uploadPhoto();
+
+  showOverlay('Registering pet tag...');
+  var tagId = genTagId();
+
+  var data = {
+    action:       'petRegister',
+    tagId:        tagId,
+    timestamp:    new Date().toISOString(),
+    petName:      v('petName'),
+    species:      v('species'),
+    breed:        v('breed'),
+    colour:       v('colour'),
+    gender:       v('gender'),
+    dob:          v('dob'),
+    microchip:    v('microchip'),
+    vaccinations: v('vaccinations'),
+    medicalNotes: v('medNotes'),
+    vetName:      v('vetName'),
+    vetPhone:     v('vetPhone'),
+    ownerName:    v('ownerName'),
+    ownerPhone:   formatPhone(v('ownerPhone')),
+    ownerWA:      ownerWaEnabled,
+    ownerTelegram:v('ownerTelegram'),
+    ownerEmail:   v('ownerEmail'),
+    address:      v('address'),
+    notes:        v('notes'),
+    photoUrl:     photoUrl,
+    consentDate:  new Date().toISOString(),
+    plan:         'Pet'
+  };
+
+  try {
+    var resp = await fetch(WORKER_URL+'/pet-register', {
+      method:  'POST',
+      headers: {'Content-Type':'application/json'},
+      body:    JSON.stringify(data)
+    });
+    var json = await resp.json();
+    if(!resp.ok || json.error) throw new Error(json.error||'Registration failed');
+
+    hideOverlay();
+    document.getElementById('mainWrap').style.display = 'none';
+    var ss = document.getElementById('successScreen');
+    ss.style.display = 'block';
+    document.getElementById('successTagId').textContent = '🏷️ ' + tagId;
+    document.getElementById('successSub').textContent   = v('petName') + '\'s NFC safety tag is live and ready.';
+    var cardUrl = CARD_BASE_URL + '?tag=' + encodeURIComponent(tagId);
+    document.getElementById('cardLink').href = cardUrl;
+    window.scrollTo(0,0);
+  } catch(e) {
+    hideOverlay();
+    alert('Registration failed: '+e.message+'\nPlease try again.');
+  }
+}
+
+function resetForm(){
+  location.reload();
+}
+</script>
+</body>
+</html>
