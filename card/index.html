@@ -38,7 +38,7 @@ body { font-family:'Exo 2',sans-serif; background:#050505; color:var(--text); mi
 .error-screen h2 { font-family:'Orbitron',sans-serif; color:var(--red); font-size:18px; }
 .error-screen p { color:var(--muted); font-size:14px; line-height:1.6; }
 
-.card-wrap { display:none; max-width:480px; margin:0 auto; padding-bottom:50px; }
+.card-wrap { display:none; max-width:480px; margin:0 auto; padding-bottom:90px; }
 
 /* ── BANNER ── */
 .in3-banner {
@@ -52,7 +52,7 @@ body { font-family:'Exo 2',sans-serif; background:#050505; color:var(--text); mi
 .in3-brand-name span { color:#fff; }
 .in3-brand-sub { font-size:8px; color:var(--muted); letter-spacing:3px; text-transform:uppercase; margin-top:4px; }
 .in3-badge {
-  margin-left:auto; background:#130000; border:2px solid var(--red); color:var(--red);
+  background:#130000; border:2px solid var(--red); color:var(--red);
   font-family:'Orbitron',sans-serif; font-size:7px; font-weight:900;
   letter-spacing:1px; padding:6px 10px; border-radius:8px; text-transform:uppercase;
   animation:pred 1.5s infinite; box-shadow:0 0 14px rgba(239,68,68,0.25);
@@ -216,6 +216,22 @@ body { font-family:'Exo 2',sans-serif; background:#050505; color:var(--text); mi
   box-shadow:0 0 16px rgba(14,210,200,0.45), 0 4px 12px rgba(0,0,0,0.4);
 }
 .finder-confirm { padding:14px; text-align:center; background:rgba(168,85,247,0.08); border:1px solid rgba(168,85,247,0.2); border-radius:10px; margin-top:12px; }
+.lang-toggle { margin-left:auto; display:flex; gap:4px; }
+.lang-btn { font-family:'Orbitron',sans-serif; font-size:7px; font-weight:900; letter-spacing:1px; padding:5px 8px; border-radius:6px; border:1px solid #333; background:#111; color:#777; cursor:pointer; text-transform:uppercase; transition:all 0.15s; }
+.lang-btn.active { border-color:var(--orange); color:var(--orange); background:rgba(249,115,22,0.1); }
+.id-dnr { border-top:1px solid rgba(239,68,68,0.25); background:linear-gradient(90deg,#130000,#0d0000); }
+.id-dnr-inner { display:flex; align-items:center; gap:8px; padding:10px 14px; font-size:12px; font-weight:700; color:var(--red); }
+.profile-bar-wrap { margin:10px 10px 0; background:#111; border:1px solid #1e1e1e; border-radius:12px; padding:12px 14px; }
+.profile-bar-hdr { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+.profile-bar-lbl { font-size:8px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:#777; }
+.profile-bar-pct { font-family:'Orbitron',sans-serif; font-size:12px; font-weight:900; }
+.profile-bar-track { height:6px; background:#1e1e1e; border-radius:3px; overflow:hidden; }
+.profile-bar-fill { height:100%; border-radius:3px; transition:width 0.6s ease; }
+.profile-bar-missing { font-size:10px; color:#777; margin-top:8px; line-height:1.6; }
+.sos-bar { display:none; position:fixed; bottom:0; left:0; right:0; z-index:900; background:#0d0000; border-top:3px solid var(--red); padding:10px 16px; box-shadow:0 -4px 24px rgba(239,68,68,0.35); }
+.sos-bar-inner { display:flex; gap:10px; align-items:center; max-width:480px; margin:0 auto; }
+.sos-btn { flex:1; display:flex; align-items:center; justify-content:center; gap:8px; background:linear-gradient(135deg,#7f0000,#ef4444); color:#fff; text-decoration:none; font-family:'Orbitron',sans-serif; font-size:13px; font-weight:900; letter-spacing:1px; padding:13px 12px; border-radius:12px; box-shadow:0 0 20px rgba(239,68,68,0.5); animation:sosPulse 1.8s infinite; }
+@keyframes sosPulse { 0%,100%{box-shadow:0 0 20px rgba(239,68,68,0.5)} 50%{box-shadow:0 0 36px rgba(239,68,68,0.85)} }
 </style>
 </head>
 <body>
@@ -384,7 +400,7 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
     <div style="flex:1;height:4px;background:#1a1a2e;border-radius:2px;overflow:hidden">
       <div id="sessionTimerFill" style="height:100%;background:#F97316;transition:width 1s linear;width:100%"></div>
     </div>
-    <span id="sessionTimerLabel" style="font-size:10px;color:#aaa;white-space:nowrap;font-family:'Orbitron',sans-serif;letter-spacing:1px">15:00</span>
+    <span id="sessionTimerLabel" style="font-size:10px;color:#aaa;white-space:nowrap;font-family:'Orbitron',sans-serif;letter-spacing:1px">5:00</span>
   </div>
 
   <!-- BANNER -->
@@ -395,6 +411,11 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
       <div class="in3-brand-sub">Smart NFC Emergency Tag</div>
     </div>
     <div class="in3-badge">🚨 Emergency</div>
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('af')">AF</button>
+      <button class="lang-btn" onclick="setLang('zu')">ZU</button>
+    </div>
   </div>
 
   <!-- ALERT STATUS -->
@@ -406,7 +427,7 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
   <!-- IDENTITY TAB -->
   <div class="identity-tab" id="identityTab">
     <div class="identity-tab-hdr">
-      <div class="identity-tab-hdr-left">👤 &nbsp;Subscriber Identity</div>
+      <div class="identity-tab-hdr-left">👤 &nbsp;<span data-i18n="patientIdentity">Subscriber Identity</span></div>
       <div class="identity-tab-hdr-right">
         <span class="pill-plan" id="scPlan">—</span>
         <span class="pill-active" id="scStatus">Active</span>
@@ -423,12 +444,21 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
       </div>
       <div class="id-bottom">
         <div class="id-blood">
-          <div class="lbl">Blood Type</div>
+          <div class="lbl" data-i18n="blood">Blood Type</div>
           <div class="val" id="scBlood">—</div>
         </div>
         <div class="id-aid">
-          <div class="lbl">Medical Aid &amp; Number</div>
+          <div class="lbl" data-i18n="medicalAid">Medical Aid &amp; Number</div>
           <div class="val" id="scAid">—</div>
+        </div>
+      </div>
+      <div class="id-dnr" id="idDnrRow" style="display:none">
+        <div class="id-dnr-inner">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+          <div style="display:flex;flex-direction:column;gap:3px">
+            <span id="idDonorLine" style="display:none"><span data-i18n="labelOrgDonor">Organ Donor</span>: <span id="idDonorVal"></span></span>
+            <span id="idDnrLine" style="display:none"><span data-i18n="labelDnr">DNR</span>: <span id="idDnrVal"></span></span>
+          </div>
         </div>
       </div>
     </div>
@@ -437,26 +467,26 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
   <!-- FINDER STATUS REPLY -->
   <div class="finder-status" id="finderStatus" style="display:none">
     <div class="finder-status-hdr">
-      <span class="finder-status-hdr-label">🤝 &nbsp;Are you the finder?</span>
+      <span class="finder-status-hdr-label">🤝 &nbsp;<span data-i18n="finderHdr">Are you the finder?</span></span>
     </div>
     <div class="finder-status-body">
-      <div class="finder-status-intro">Tap a button to instantly alert the family</div>
+      <div class="finder-status-intro" data-i18n="finderIntro">Tap a button to instantly alert the family</div>
       <div class="fs-grid" id="finderStatusBtns">
         <button class="fs-btn fs-btn-red"    onclick="sendFinderStatus('emergency')">
           <span class="fs-icon">🚨</span>
-          <span class="fs-label">Calling emergency services</span>
+          <span class="fs-label" data-i18n="fsEmergency">Calling emergency services</span>
         </button>
         <button class="fs-btn fs-btn-green"  onclick="sendFinderStatus('found')">
           <span class="fs-icon">🟢</span>
-          <span class="fs-label">Tag found — not an emergency</span>
+          <span class="fs-label" data-i18n="fsFound">Tag found — not an emergency</span>
         </button>
         <button class="fs-btn fs-btn-yellow" onclick="sendFinderStatus('conscious')">
           <span class="fs-icon">⚠️</span>
-          <span class="fs-label">Person is conscious &amp; stable</span>
+          <span class="fs-label" data-i18n="fsConscious">Person is conscious &amp; stable</span>
         </button>
         <button class="fs-btn fs-btn-teal"   onclick="sendFinderStatus('safe')">
           <span class="fs-icon">📍</span>
-          <span class="fs-label">I'm safe at this location</span>
+          <span class="fs-label" data-i18n="fsSafe">I'm safe at this location</span>
         </button>
       </div>
       <div class="finder-confirm" id="finderStatusConfirm" style="display:none"></div>
@@ -467,7 +497,7 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
   <div class="tabs">
 
     <div class="tab tab-alert">
-      <div class="tab-hdr">⚠&nbsp; Medical Alerts — Tell Paramedics</div>
+      <div class="tab-hdr"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;margin-right:6px"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg><span data-i18n="tabMedical">Medical Alerts</span> — Tell Paramedics</div>
       <div class="tab-body">
         <div class="tab-main" id="scMedical">—</div>
         <hr class="tab-rule">
@@ -477,32 +507,52 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
     </div>
 
     <div class="tab tab-addr">
-      <div class="tab-hdr">🏠&nbsp; Home Address</div>
+      <div class="tab-hdr"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;margin-right:6px"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><span data-i18n="tabAddress">Home Address</span></div>
       <div class="tab-body"><div class="tab-text" id="scAddress">—</div></div>
     </div>
 
     <div class="tab tab-notes">
-      <div class="tab-hdr">📋&nbsp; Notes for Finder</div>
+      <div class="tab-hdr"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;margin-right:6px"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg><span data-i18n="tabNotes">Notes for Finder</span></div>
       <div class="tab-body"><div class="tab-text" id="scNotes">—</div></div>
     </div>
 
     <div class="tab tab-contacts">
-      <div class="tab-hdr">📞&nbsp; Emergency Contacts — Call or Message Now</div>
+      <div class="tab-hdr"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;margin-right:6px"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg><span data-i18n="tabContacts">Emergency Contacts — Call or Message Now</span></div>
       <div class="tab-body" id="scContacts"></div>
     </div>
 
   </div>
 
+  <!-- PROFILE COMPLETENESS BAR -->
+  <div class="profile-bar-wrap" id="profileBar" style="display:none">
+    <div class="profile-bar-hdr">
+      <div class="profile-bar-lbl" data-i18n="profileLbl">Profile Completeness</div>
+      <div class="profile-bar-pct" id="profilePct">—</div>
+    </div>
+    <div class="profile-bar-track"><div class="profile-bar-fill" id="profileFill" style="width:0%"></div></div>
+    <div class="profile-bar-missing" id="profileMissing"></div>
+  </div>
+
   <!-- EMERGENCY NUMBERS -->
   <div class="e-nums">
-    <a href="tel:10111" class="e-num"><div class="lbl">SAPS Police</div><div class="num">10111</div></a>
-    <a href="tel:10177" class="e-num"><div class="lbl">Ambulance</div><div class="num">10177</div></a>
-    <a href="tel:112"   class="e-num"><div class="lbl">Emergency</div><div class="num">112</div></a>
+    <a href="tel:10111" class="e-num"><div class="lbl" data-i18n="police">SAPS Police</div><div class="num">10111</div></a>
+    <a href="tel:10177" class="e-num"><div class="lbl" data-i18n="ambulance">Ambulance</div><div class="num">10177</div></a>
+    <a href="tel:112"   class="e-num"><div class="lbl" data-i18n="emergency">Emergency</div><div class="num">112</div></a>
   </div>
 
   <div class="colour-strip" id="colourStrip"></div>
   <div class="sc-footer"><span>innovat3.</span> &nbsp;·&nbsp; Smart NFC Emergency Tags &nbsp;·&nbsp; innovat3.co.za</div>
 
+</div>
+
+<!-- SOS BAR -->
+<div class="sos-bar" id="sosBar" style="display:none">
+  <div class="sos-bar-inner">
+    <a href="tel:112" class="sos-btn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+      CALL 112 — EMERGENCY
+    </a>
+  </div>
 </div>
 
 <script>
@@ -677,6 +727,14 @@ var subData = {};
     ? (aidName + (aidNo ? ' · No: ' + aidNo : ''))
     : 'Not provided';
 
+  // Organ donor / DNR
+  var donor = subData['Organ Donor'] || '';
+  var dnr   = subData['DNR']         || '';
+  var hasDnr = false;
+  if (donor && donor !== 'No') { document.getElementById('idDonorLine').style.display=''; document.getElementById('idDonorVal').textContent=donor; hasDnr=true; }
+  if (dnr   && dnr   !== 'No') { document.getElementById('idDnrLine').style.display='';   document.getElementById('idDnrVal').textContent=dnr;   hasDnr=true; }
+  if (hasDnr) document.getElementById('idDnrRow').style.display='';
+
   // Tabs
   document.getElementById('scMedical').textContent = subData['Medical Alerts']||'—';
   document.getElementById('scMeds').textContent    = subData['Medications']||'—';
@@ -720,14 +778,39 @@ var subData = {};
   var strip = document.getElementById('colourStrip');
   STRIP_COLS.forEach(function(sc){ var d=document.createElement('div'); d.style.background=sc; strip.appendChild(d); });
 
+  // Profile completeness
+  var pcFields = [
+    {key:'Photo URL', label:'profile photo'},
+    {key:'Blood Type', label:'blood type'},
+    {key:'Medical Alerts', label:'medical alerts'},
+    {key:'Medications', label:'medications'},
+    {key:'Medical Aid', label:'medical aid'},
+    {key:'Home Address', label:'home address'},
+    {key:'Notes for Finder', label:'finder notes'},
+    {key:'Contact 2 Name', label:'2nd emergency contact'},
+    {key:'Contact 3 Name', label:'3rd emergency contact'}
+  ];
+  var pcFilled=0, pcMissing=[];
+  pcFields.forEach(function(f){ if(subData[f.key]&&subData[f.key].trim()) pcFilled++; else pcMissing.push(f.label); });
+  var pcPct = Math.round((pcFilled/pcFields.length)*100);
+  var pcColour = pcPct>=80?'var(--green)':pcPct>=50?'var(--orange)':'var(--red)';
+  var pcFillEl = document.getElementById('profileFill');
+  if (pcFillEl) { pcFillEl.style.width=pcPct+'%'; pcFillEl.style.background=pcColour; }
+  var pcPctEl = document.getElementById('profilePct');
+  if (pcPctEl) { pcPctEl.textContent=pcPct+'%'; pcPctEl.style.color=pcColour; }
+  if (pcMissing.length) { var pcMissEl=document.getElementById('profileMissing'); if(pcMissEl) pcMissEl.textContent='Missing: '+pcMissing.join(', ')+'. Update at innovat3.co.za'; }
+  document.getElementById('profileBar').style.display='block';
+
   // Show card
   document.getElementById('loadingScreen').style.display = 'none';
   document.getElementById('cardWrap').style.display      = 'block';
+  document.getElementById('sosBar').style.display        = 'block';
   document.getElementById('finderStatus').style.display  = 'block';
+  setLang(window._currentLang||'en');
 
   // ── Session timer ─────────────────────────────────────────────
   // Expires after 15 min total, or if tab is hidden for > 2 min.
-  var SESSION_MS      = 15 * 60 * 1000;  // 15 minutes total
+  var SESSION_MS      = 5 * 60 * 1000;  // 5 minutes total
   var HIDDEN_LIMIT_MS =  2 * 60 * 1000;  // 2 minutes hidden = expire
   var sessionStart    = Date.now();
   var hiddenSince     = null;
@@ -739,9 +822,7 @@ var subData = {};
 
   function expireSession() {
     clearInterval(sessionTick);
-    document.getElementById('cardWrap').style.display = 'none';
-    var exp = document.getElementById('sessionExpiredScreen');
-    exp.style.display = 'flex';
+    window.location.replace('https://innovat3.co.za');
   }
 
   var sessionTick = setInterval(function() {
@@ -980,6 +1061,26 @@ function showError(msg){
   document.getElementById('errorScreen').style.display='flex';
   document.getElementById('errorMsg').textContent=msg;
 }
+
+var LANGS = {
+  en: { patientIdentity:'Subscriber Identity', blood:'Blood Type', medicalAid:'Medical Aid & Number', tabMedical:'Medical Alerts', medications:'Medications', tabAddress:'Home Address', tabNotes:'Notes for Finder', tabContacts:'Emergency Contacts — Call or Message Now', ambulance:'Ambulance', police:'Police', emergency:'Emergency', finderHdr:'Are you the finder?', finderIntro:'Tap a button to instantly alert the family', fsEmergency:'Calling emergency services', fsFound:'Tag found — not an emergency', fsConscious:'Person is conscious & stable', fsSafe:"I'm safe at this location", labelOrgDonor:'Organ Donor', labelDnr:'DNR', profileLbl:'Profile Completeness' },
+  af: { patientIdentity:'Intekenaar Identiteit', blood:'Bloedtipe', medicalAid:'Mediese Fonds & Nommer', tabMedical:'Mediese Waarskuwings', medications:'Medikasie', tabAddress:'Tuisadres', tabNotes:'Notas vir die Vinder', tabContacts:'Noodkontakte — Bel of Stuur Boodskap', ambulance:'Ambulans', police:'Polisie', emergency:'Noodgeval', finderHdr:'Is jy die vinder?', finderIntro:"Tik 'n knoppie om die familie dadelik te waarsku", fsEmergency:'Nooddienste word gebel', fsFound:"Etiket gevind — nie 'n noodgeval nie", fsConscious:'Persoon is bewus en stabiel', fsSafe:'Ek is veilig op hierdie plek', labelOrgDonor:'Orgaanskenker', labelDnr:'DNR', profileLbl:'Profiel Volledigheid' },
+  zu: { patientIdentity:'Ubunikazi Bomuntu', blood:'Uhlobo Lwegazi', medicalAid:'Usizo Lwezempilo', tabMedical:'Izexwayiso Zezokwelapha', medications:'Imithi', tabAddress:'Ikheli Lasekhaya', tabNotes:'Amanothi Kumsholozi', tabContacts:'Oxhumana Nabo — Thepha Ukushayela', ambulance:'Ambulensi', police:'Amaphoyisa', emergency:'Isimo Esiphuthumayo', finderHdr:'Ingabe ungumsholozi?', finderIntro:'Thepha inkinobho ukwazisa umndeni ngokushesha', fsEmergency:'Ngibiza izinsizakusebenza zezimo eziphuthumayo', fsFound:'Imaka itholakele — akusilo isimo esiphuthumayo', fsConscious:'Umuntu uvukile futhi usezimweni ezijwayelekile', fsSafe:'Ngiphephile kulendawo', labelOrgDonor:'Umnikeli Wezitho', labelDnr:'DNR', profileLbl:'Ukuphelela Kwephrofayili' }
+};
+window._currentLang = 'en';
+function setLang(code) {
+  window._currentLang = code;
+  var t = LANGS[code] || LANGS.en;
+  document.querySelectorAll('[data-i18n]').forEach(function(el) {
+    var key = el.getAttribute('data-i18n');
+    if (t[key]) el.textContent = t[key];
+  });
+  document.querySelectorAll('.lang-btn').forEach(function(btn) {
+    btn.classList.toggle('active', btn.textContent.toLowerCase() === code);
+  });
+}
+
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('/card/sw.js').catch(function(){}); }
 </script>
 </body>
 </html>
