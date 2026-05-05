@@ -382,6 +382,32 @@ button, a, input, select, textarea { touch-action:manipulation; }
     </div>
 
     <div class="card-box">
+      <div class="card-box-hdr"><h3>Organ Donor &amp; DNR</h3></div>
+      <div class="card-box-body">
+        <div class="field-row">
+          <div class="field">
+            <label>Organ Donor</label>
+            <select id="organDonor">
+              <option value="">Not specified</option>
+              <option value="Yes — Full Donor">Yes — Full Donor</option>
+              <option value="Yes — Specific Organs">Yes — Specific Organs</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>DNR (Do Not Resuscitate)</label>
+            <select id="dnrStatus">
+              <option value="">Not specified</option>
+              <option value="Yes — DNR in place">Yes — DNR in place</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-hint">This information is shown prominently on your emergency card to inform paramedics.</div>
+      </div>
+    </div>
+
+    <div class="card-box">
       <div class="card-box-hdr"><h3>Additional Info</h3></div>
       <div class="card-box-body">
         <div class="field">
@@ -749,6 +775,8 @@ async function submitDemo(){
     medications:      v('meds'),
     medicalAid:       v('medicalAid'),
     medicalAidNumber: v('medicalAidNumber'),
+    organDonor:       v('organDonor'),
+    dnr:              v('dnrStatus'),
     address:          v('address'),
     notes:            v('notes'),
     photoUrl:         photoUrl,
