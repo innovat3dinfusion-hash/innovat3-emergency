@@ -216,9 +216,10 @@ body { font-family:'Exo 2',sans-serif; background:#050505; color:var(--text); mi
   box-shadow:0 0 16px rgba(14,210,200,0.45), 0 4px 12px rgba(0,0,0,0.4);
 }
 .finder-confirm { padding:14px; text-align:center; background:rgba(168,85,247,0.08); border:1px solid rgba(168,85,247,0.2); border-radius:10px; margin-top:12px; }
-.lang-toggle { margin-left:auto; display:flex; gap:4px; }
-.lang-btn { font-family:'Orbitron',sans-serif; font-size:7px; font-weight:900; letter-spacing:1px; padding:5px 8px; border-radius:6px; border:1px solid #333; background:#111; color:#777; cursor:pointer; text-transform:uppercase; transition:all 0.15s; }
+.lang-toggle { margin-left:auto; display:flex; gap:6px; }
+.lang-btn { font-family:'Orbitron',sans-serif; font-size:10px; font-weight:900; letter-spacing:1px; padding:8px 12px; border-radius:8px; border:1px solid #333; background:#111; color:#777; cursor:pointer; text-transform:uppercase; transition:all 0.15s; }
 .lang-btn.active { border-color:var(--orange); color:var(--orange); background:rgba(249,115,22,0.1); }
+.alert-badge { flex-shrink:0; margin-left:auto; background:#130000; border:1px solid var(--red); color:var(--red); font-family:'Orbitron',sans-serif; font-size:7px; font-weight:900; letter-spacing:1px; padding:5px 9px; border-radius:7px; text-transform:uppercase; animation:pred 1.5s infinite; white-space:nowrap; }
 .id-dnr { border-top:1px solid rgba(239,68,68,0.25); background:linear-gradient(90deg,#130000,#0d0000); }
 .id-dnr-inner { display:flex; align-items:center; gap:8px; padding:10px 14px; font-size:12px; font-weight:700; color:var(--red); }
 .profile-bar-wrap { margin:10px 10px 0; background:#111; border:1px solid #1e1e1e; border-radius:12px; padding:12px 14px; }
@@ -410,7 +411,6 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
       <div class="in3-brand-name">innovat3<span>.</span></div>
       <div class="in3-brand-sub">Smart NFC Emergency Tag</div>
     </div>
-    <div class="in3-badge">🚨 Emergency</div>
     <div class="lang-toggle">
       <button class="lang-btn active" onclick="setLang('en')">EN</button>
       <button class="lang-btn" onclick="setLang('af')">AF</button>
@@ -422,6 +422,9 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
   <div class="alert-banner yellow" id="alertBanner">
     <div class="alert-dot"></div>
     <div id="alertMsg">Alerting family...</div>
+    <div class="alert-badge">
+      <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px;margin-right:3px"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>Emergency
+    </div>
   </div>
 
   <!-- IDENTITY TAB -->
