@@ -837,6 +837,32 @@ var referredByCode = '';
       </div>
     </div>
 
+    <!-- Organ Donor & DNR -->
+    <div class="form-tab tab-medical">
+      <div class="form-tab-hdr">🫀 &nbsp;Organ Donor &amp; DNR</div>
+      <div class="form-tab-body">
+        <div class="field-row">
+          <div class="field">
+            <label>Organ Donor</label>
+            <select id="organDonor">
+              <option value="">Not specified</option>
+              <option value="Yes — Full Donor">Yes — Full Donor</option>
+              <option value="Yes — Specific Organs">Yes — Specific Organs</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>DNR (Do Not Resuscitate)</label>
+            <select id="dnrStatus">
+              <option value="">Not specified</option>
+              <option value="Yes — DNR in place">Yes — DNR in place</option>
+              <option value="No — Full resuscitation">No — Full resuscitation</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Home Address + Notes -->
     <div class="form-tab tab-address">
       <div class="form-tab-hdr">🏠 &nbsp;Home Address &amp; Notes for Finder</div>
@@ -2400,6 +2426,8 @@ async function submitForm() {
     notes:            v('notes'),
     medicalAid:       v('medicalAid'),
     medicalAidNumber: v('medicalAidNumber'),
+    organDonor:       v('organDonor'),
+    dnr:              v('dnrStatus'),
     colour:           colour,
     formFactor:       document.getElementById('formFactor').value,
     delivery:         v('delivery'),
@@ -2644,6 +2672,7 @@ async function proceedToPayment() {
     blood: blood, medical: buildMedical(), meds: v('meds'),
     address: v('address'), notes: v('notes'),
     medicalAid: v('medicalAid'), medicalAidNumber: v('medicalAidNumber'),
+    organDonor: v('organDonor'), dnr: v('dnrStatus'),
     colour: colour, colourNotes: v('colourNotes'),
     formFactor: document.getElementById('formFactor').value,
     delivery: v('delivery'), extraNotes: v('extraNotes'),
