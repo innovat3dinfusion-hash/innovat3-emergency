@@ -1046,42 +1046,148 @@
           <!-- Admin key -->
           <div style="margin-bottom:20px;padding:14px;background:rgba(249,115,22,0.06);border:1px solid rgba(249,115,22,0.2);border-radius:10px">
             <label style="font-size:11px;letter-spacing:1px;color:#F97316;font-family:'Orbitron',sans-serif">ADMIN CASH KEY</label>
-            <input type="password" id="cr_adminKey" placeholder="Enter your Admin Cash Key" style="
-              width:100%;margin-top:8px;padding:10px 14px;background:#111;border:1px solid #333;
-              border-radius:8px;color:#fff;font-size:13px;font-family:'Exo 2',sans-serif;box-sizing:border-box
-            ">
+            <input type="password" id="cr_adminKey" placeholder="Enter your Admin Cash Key" style="width:100%;margin-top:8px;padding:10px 14px;background:#111;border:1px solid #333;border-radius:8px;color:#fff;font-size:13px;font-family:'Exo 2',sans-serif;box-sizing:border-box">
           </div>
 
-          <!-- Personal details -->
-          <div style="font-size:11px;letter-spacing:1px;color:#F97316;font-family:'Orbitron',sans-serif;margin-bottom:10px">PERSONAL DETAILS</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-            <div>
-              <label class="form-label">First Name *</label>
-              <input type="text" id="cr_firstName" class="cash-input" placeholder="First name">
-            </div>
-            <div>
-              <label class="form-label">Last Name *</label>
-              <input type="text" id="cr_lastName" class="cash-input" placeholder="Last name">
-            </div>
-            <div>
-              <label class="form-label">Email *</label>
-              <input type="email" id="cr_email" class="cash-input" placeholder="email@example.com">
-            </div>
-            <div>
-              <label class="form-label">Phone *</label>
-              <input type="tel" id="cr_phone" class="cash-input" placeholder="0821234567">
-            </div>
-            <div>
-              <label class="form-label">Date of Birth</label>
-              <input type="date" id="cr_dob" class="cash-input">
-            </div>
-            <div>
-              <label class="form-label">Telegram Handle</label>
-              <input type="text" id="cr_telegram" class="cash-input" placeholder="@username">
-            </div>
+          <!-- Tag Type Toggle -->
+          <div style="font-size:11px;letter-spacing:1px;color:#F97316;font-family:'Orbitron',sans-serif;margin-bottom:10px">TAG TYPE</div>
+          <div style="display:flex;gap:10px;margin-bottom:24px">
+            <button id="cr_typeHuman" onclick="setCrType('human')" style="flex:1;padding:12px;background:#F97316;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Exo 2',sans-serif;transition:all 0.2s">👤 Human Tag</button>
+            <button id="cr_typePet" onclick="setCrType('pet')" style="flex:1;padding:12px;background:#1a1a1a;color:#777;border:1px solid #333;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Exo 2',sans-serif;transition:all 0.2s">🐾 Pet Tag</button>
           </div>
 
-          <!-- Plan -->
+          <!-- Photo Upload -->
+          <div style="font-size:11px;letter-spacing:1px;color:#F97316;font-family:'Orbitron',sans-serif;margin-bottom:10px">PROFILE PHOTO <span style="color:#555;font-weight:400;font-family:'Exo 2',sans-serif;text-transform:none;letter-spacing:0;font-size:11px">(optional)</span></div>
+          <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px">
+            <div id="cr_photoArea" onclick="document.getElementById('cr_photoInput').click()" style="cursor:pointer;width:90px;height:90px;border-radius:50%;background:#111;border:2px dashed #333;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;flex-shrink:0;transition:border-color 0.2s" onmouseover="this.style.borderColor='#F97316'" onmouseout="this.style.borderColor='#333'">
+              <img id="cr_photoPreview" style="display:none;width:100%;height:100%;object-fit:cover;position:absolute;inset:0">
+              <div id="cr_photoPlaceholder" style="text-align:center;font-size:11px;color:#555;line-height:1.5">📷<br>Upload</div>
+            </div>
+            <div style="font-size:12px;color:#666;line-height:1.6">Tap the circle to upload a photo.<br>Shown on the emergency card when the tag is scanned.</div>
+          </div>
+          <input type="file" id="cr_photoInput" accept="image/*" style="display:none" onchange="handleCrPhoto(this)">
+
+          <!-- ── HUMAN FIELDS ── -->
+          <div id="cr_humanFields">
+            <div style="font-size:11px;letter-spacing:1px;color:#F97316;font-family:'Orbitron',sans-serif;margin-bottom:10px">PERSONAL DETAILS</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+              <div><label class="form-label">First Name *</label><input type="text" id="cr_firstName" class="cash-input" placeholder="First name"></div>
+              <div><label class="form-label">Last Name *</label><input type="text" id="cr_lastName" class="cash-input" placeholder="Last name"></div>
+              <div><label class="form-label">Email *</label><input type="email" id="cr_email" class="cash-input" placeholder="email@example.com"></div>
+              <div><label class="form-label">Phone *</label><input type="tel" id="cr_phone" class="cash-input" placeholder="0821234567"></div>
+              <div><label class="form-label">Date of Birth</label><input type="date" id="cr_dob" class="cash-input"></div>
+              <div><label class="form-label">Telegram Handle</label><input type="text" id="cr_telegram" class="cash-input" placeholder="@username"></div>
+            </div>
+
+            <div style="font-size:11px;letter-spacing:1px;color:#F97316;font-family:'Orbitron',sans-serif;margin-bottom:10px">MEDICAL INFO</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+              <div>
+                <label class="form-label">Blood Type</label>
+                <select id="cr_bloodType" class="cash-input">
+                  <option value="">Unknown</option>
+                  <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+                  <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
+                </select>
+              </div>
+              <div><label class="form-label">Medical Aid</label><input type="text" id="cr_medicalAid" class="cash-input" placeholder="Discovery, Momentum…"></div>
+              <div><label class="form-label">Medical Aid Number</label><input type="text" id="cr_medAidNo" class="cash-input" placeholder="Member number"></div>
+              <div><label class="form-label">Tag Colour</label><input type="text" id="cr_colours" class="cash-input" placeholder="Black, White…"></div>
+            </div>
+            <div style="margin-bottom:16px">
+              <label class="form-label">Medical Conditions / Alerts</label>
+              <textarea id="cr_conditions" class="cash-input" rows="2" placeholder="Allergies, chronic conditions…" style="resize:vertical"></textarea>
+            </div>
+            <div style="margin-bottom:16px">
+              <label class="form-label">Medications</label>
+              <textarea id="cr_medications" class="cash-input" rows="2" placeholder="Current medications…" style="resize:vertical"></textarea>
+            </div>
+
+            <div style="font-size:11px;letter-spacing:1px;color:#F97316;font-family:'Orbitron',sans-serif;margin-bottom:10px">EMERGENCY CONTACTS</div>
+            <!-- Contact 1 -->
+            <div style="background:#111;border:1px solid #222;border-radius:10px;padding:14px;margin-bottom:10px">
+              <div style="font-size:12px;color:#aaa;margin-bottom:10px">Contact 1</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                <input type="text" id="cr_c1Name" class="cash-input" placeholder="Full name">
+                <input type="text" id="cr_c1Rel" class="cash-input" placeholder="Relationship">
+                <input type="tel" id="cr_c1Phone" class="cash-input" placeholder="Phone">
+                <input type="text" id="cr_c1TG" class="cash-input" placeholder="Telegram @handle">
+              </div>
+              <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12px;color:#888;cursor:pointer">
+                <input type="checkbox" id="cr_c1WA" style="accent-color:#25D366;width:15px;height:15px"> WhatsApp alerts to this number
+              </label>
+            </div>
+            <!-- Contact 2 -->
+            <div style="background:#111;border:1px solid #222;border-radius:10px;padding:14px;margin-bottom:10px">
+              <div style="font-size:12px;color:#aaa;margin-bottom:10px">Contact 2</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                <input type="text" id="cr_c2Name" class="cash-input" placeholder="Full name">
+                <input type="text" id="cr_c2Rel" class="cash-input" placeholder="Relationship">
+                <input type="tel" id="cr_c2Phone" class="cash-input" placeholder="Phone">
+                <input type="text" id="cr_c2TG" class="cash-input" placeholder="Telegram @handle">
+              </div>
+              <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12px;color:#888;cursor:pointer">
+                <input type="checkbox" id="cr_c2WA" style="accent-color:#25D366;width:15px;height:15px"> WhatsApp alerts to this number
+              </label>
+            </div>
+            <!-- Contact 3 -->
+            <div style="background:#111;border:1px solid #222;border-radius:10px;padding:14px;margin-bottom:10px">
+              <div style="font-size:12px;color:#aaa;margin-bottom:10px">Contact 3</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                <input type="text" id="cr_c3Name" class="cash-input" placeholder="Full name">
+                <input type="text" id="cr_c3Rel" class="cash-input" placeholder="Relationship">
+                <input type="tel" id="cr_c3Phone" class="cash-input" placeholder="Phone">
+                <input type="text" id="cr_c3TG" class="cash-input" placeholder="Telegram @handle">
+              </div>
+              <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12px;color:#888;cursor:pointer">
+                <input type="checkbox" id="cr_c3WA" style="accent-color:#25D366;width:15px;height:15px"> WhatsApp alerts to this number
+              </label>
+            </div>
+          </div><!-- /cr_humanFields -->
+
+          <!-- ── PET FIELDS ── -->
+          <div id="cr_petFields" style="display:none">
+            <div style="font-size:11px;letter-spacing:1px;color:#0ED2C8;font-family:'Orbitron',sans-serif;margin-bottom:10px">PET INFORMATION</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+              <div><label class="form-label">Pet Name *</label><input type="text" id="cr_petName" class="cash-input" placeholder="e.g. Max"></div>
+              <div>
+                <label class="form-label">Species *</label>
+                <select id="cr_species" class="cash-input">
+                  <option value="">Select species</option>
+                  <option>Dog</option><option>Cat</option><option>Rabbit</option>
+                  <option>Bird</option><option>Reptile</option><option>Other</option>
+                </select>
+              </div>
+              <div><label class="form-label">Breed</label><input type="text" id="cr_breed" class="cash-input" placeholder="e.g. Golden Retriever"></div>
+              <div><label class="form-label">Colour / Markings</label><input type="text" id="cr_petColour" class="cash-input" placeholder="e.g. Golden with white chest"></div>
+              <div><label class="form-label">Date of Birth</label><input type="date" id="cr_petDob" class="cash-input"></div>
+              <div><label class="form-label">Microchip Number</label><input type="text" id="cr_microchip" class="cash-input" placeholder="15-digit number (optional)"></div>
+            </div>
+
+            <div style="font-size:11px;letter-spacing:1px;color:#0ED2C8;font-family:'Orbitron',sans-serif;margin-bottom:10px">MEDICAL &amp; VET</div>
+            <div style="margin-bottom:12px">
+              <label class="form-label">Vaccinations</label>
+              <textarea id="cr_vaccinations" class="cash-input" rows="2" placeholder="e.g. Rabies ✓  Distemper ✓  Parvovirus ✓" style="resize:vertical"></textarea>
+            </div>
+            <div style="margin-bottom:12px">
+              <label class="form-label">Medical Notes</label>
+              <textarea id="cr_petMedNotes" class="cash-input" rows="2" placeholder="Allergies, chronic conditions, medications…" style="resize:vertical"></textarea>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+              <div><label class="form-label">Vet Name</label><input type="text" id="cr_vetName" class="cash-input" placeholder="Dr. Smith – Greenpoint Vet"></div>
+              <div><label class="form-label">Vet Phone</label><input type="tel" id="cr_vetPhone" class="cash-input" placeholder="021 123 4567"></div>
+            </div>
+
+            <div style="font-size:11px;letter-spacing:1px;color:#0ED2C8;font-family:'Orbitron',sans-serif;margin-bottom:10px">OWNER INFORMATION</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+              <div><label class="form-label">Owner Name *</label><input type="text" id="cr_ownerName" class="cash-input" placeholder="Full name"></div>
+              <div><label class="form-label">Owner Phone *</label><input type="tel" id="cr_ownerPhone" class="cash-input" placeholder="0821234567"></div>
+              <div><label class="form-label">Owner Email *</label><input type="email" id="cr_ownerEmail" class="cash-input" placeholder="owner@example.com"></div>
+              <div><label class="form-label">Owner Telegram</label><input type="text" id="cr_ownerTelegram" class="cash-input" placeholder="@username"></div>
+              <div style="grid-column:1/-1"><label class="form-label">Home Address</label><input type="text" id="cr_petAddress" class="cash-input" placeholder="Street, Suburb, City"></div>
+            </div>
+          </div><!-- /cr_petFields -->
+
+          <!-- Plan & Billing (always visible) -->
           <div style="font-size:11px;letter-spacing:1px;color:#F97316;font-family:'Orbitron',sans-serif;margin-bottom:10px">PLAN &amp; BILLING</div>
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px">
             <div>
@@ -1090,6 +1196,7 @@
                 <option value="Solo">Solo</option>
                 <option value="Family">Family</option>
                 <option value="Care">Care (Lifetime)</option>
+                <option value="Pet Tag">Pet Tag</option>
                 <option value="Beta">Beta (Free)</option>
               </select>
             </div>
@@ -1107,75 +1214,7 @@
             </div>
           </div>
 
-          <!-- Medical -->
-          <div style="font-size:11px;letter-spacing:1px;color:#F97316;font-family:'Orbitron',sans-serif;margin-bottom:10px">MEDICAL INFO</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-            <div>
-              <label class="form-label">Blood Type</label>
-              <select id="cr_bloodType" class="cash-input">
-                <option value="">Unknown</option>
-                <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
-                <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
-              </select>
-            </div>
-            <div>
-              <label class="form-label">Medical Aid</label>
-              <input type="text" id="cr_medicalAid" class="cash-input" placeholder="Discovery, Momentum…">
-            </div>
-            <div>
-              <label class="form-label">Medical Aid Number</label>
-              <input type="text" id="cr_medAidNo" class="cash-input" placeholder="Member number">
-            </div>
-            <div>
-              <label class="form-label">Tag Colour</label>
-              <input type="text" id="cr_colours" class="cash-input" placeholder="Black, White…">
-            </div>
-          </div>
-          <div style="margin-bottom:16px">
-            <label class="form-label">Medical Conditions / Alerts</label>
-            <textarea id="cr_conditions" class="cash-input" rows="2" placeholder="Allergies, chronic conditions…" style="resize:vertical"></textarea>
-          </div>
-          <div style="margin-bottom:16px">
-            <label class="form-label">Medications</label>
-            <textarea id="cr_medications" class="cash-input" rows="2" placeholder="Current medications…" style="resize:vertical"></textarea>
-          </div>
-
-          <!-- Contacts -->
-          <div style="font-size:11px;letter-spacing:1px;color:#F97316;font-family:'Orbitron',sans-serif;margin-bottom:10px">EMERGENCY CONTACTS</div>
-          <div id="cr_contacts">
-            <!-- Contact 1 -->
-            <div style="background:#111;border:1px solid #222;border-radius:10px;padding:14px;margin-bottom:10px">
-              <div style="font-size:12px;color:#aaa;margin-bottom:10px">Contact 1</div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-                <input type="text" id="cr_c1Name" class="cash-input" placeholder="Full name">
-                <input type="text" id="cr_c1Rel" class="cash-input" placeholder="Relationship">
-                <input type="tel" id="cr_c1Phone" class="cash-input" placeholder="Phone">
-                <input type="text" id="cr_c1TG" class="cash-input" placeholder="Telegram @handle">
-              </div>
-            </div>
-            <!-- Contact 2 -->
-            <div style="background:#111;border:1px solid #222;border-radius:10px;padding:14px;margin-bottom:10px">
-              <div style="font-size:12px;color:#aaa;margin-bottom:10px">Contact 2</div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-                <input type="text" id="cr_c2Name" class="cash-input" placeholder="Full name">
-                <input type="text" id="cr_c2Rel" class="cash-input" placeholder="Relationship">
-                <input type="tel" id="cr_c2Phone" class="cash-input" placeholder="Phone">
-                <input type="text" id="cr_c2TG" class="cash-input" placeholder="Telegram @handle">
-              </div>
-            </div>
-            <!-- Contact 3 -->
-            <div style="background:#111;border:1px solid #222;border-radius:10px;padding:14px;margin-bottom:10px">
-              <div style="font-size:12px;color:#aaa;margin-bottom:10px">Contact 3</div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-                <input type="text" id="cr_c3Name" class="cash-input" placeholder="Full name">
-                <input type="text" id="cr_c3Rel" class="cash-input" placeholder="Relationship">
-                <input type="tel" id="cr_c3Phone" class="cash-input" placeholder="Phone">
-                <input type="text" id="cr_c3TG" class="cash-input" placeholder="Telegram @handle">
-              </div>
-            </div>
-          </div>
-
-          <!-- Notes -->
+          <!-- Notes (always visible) -->
           <div style="margin-bottom:20px">
             <label class="form-label">Notes for Finder</label>
             <textarea id="cr_notes" class="cash-input" rows="2" placeholder="What a first responder should know…" style="resize:vertical"></textarea>
@@ -1185,12 +1224,7 @@
             <textarea id="cr_extraNotes" class="cash-input" rows="2" placeholder="Internal admin notes, not shown on card…" style="resize:vertical"></textarea>
           </div>
 
-          <button onclick="submitCashReg()" id="cr_submitBtn" style="
-            width:100%;padding:16px;background:#F97316;color:#fff;border:none;border-radius:12px;
-            font-size:14px;font-weight:700;letter-spacing:1px;cursor:pointer;
-            font-family:'Exo 2',sans-serif;box-shadow:0 4px 20px rgba(249,115,22,0.35);
-            transition:opacity 0.2s
-          ">💵 Register as Cash Payment</button>
+          <button onclick="submitCashReg()" id="cr_submitBtn" style="width:100%;padding:16px;background:#F97316;color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:700;letter-spacing:1px;cursor:pointer;font-family:'Exo 2',sans-serif;box-shadow:0 4px 20px rgba(249,115,22,0.35);transition:opacity 0.2s">💵 Register as Cash Payment</button>
 
         </div>
       </div>
@@ -1882,8 +1916,45 @@ async function sendReferralEmails() {
   btn.textContent = '🔗 Send Referral Links to All';
 }
 
+// ── Cash Registration state ──────────────────────────────────────────
+let crTagType = 'human';
+let crPhotoDataUrl = '';
+let crPhotoUploadedUrl = '';
+
+function setCrType(type) {
+  crTagType = type;
+  const isPet = type === 'pet';
+  document.getElementById('cr_humanFields').style.display = isPet ? 'none' : '';
+  document.getElementById('cr_petFields').style.display   = isPet ? ''     : 'none';
+  const hBtn = document.getElementById('cr_typeHuman');
+  const pBtn = document.getElementById('cr_typePet');
+  hBtn.style.background = isPet ? '#1a1a1a' : '#F97316';
+  hBtn.style.color       = isPet ? '#777'   : '#fff';
+  hBtn.style.border      = isPet ? '1px solid #333' : 'none';
+  pBtn.style.background  = isPet ? '#0ED2C8' : '#1a1a1a';
+  pBtn.style.color        = isPet ? '#000'   : '#777';
+  pBtn.style.border       = isPet ? 'none'   : '1px solid #333';
+  const plan = document.getElementById('cr_plan');
+  if (plan) plan.value = isPet ? 'Pet Tag' : (plan.value === 'Pet Tag' ? 'Solo' : plan.value);
+}
+
+function handleCrPhoto(input) {
+  if (!input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    crPhotoDataUrl = e.target.result;
+    crPhotoUploadedUrl = '';
+    const preview = document.getElementById('cr_photoPreview');
+    preview.src = crPhotoDataUrl;
+    preview.style.display = 'block';
+    document.getElementById('cr_photoPlaceholder').style.display = 'none';
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
 async function submitCashReg() {
-  const g = id => (document.getElementById(id) || {}).value || '';
+  const g  = id => (document.getElementById(id) || {}).value || '';
+  const cb = id => (document.getElementById(id) || {}).checked ? 'Yes' : 'No';
   const showMsg = (msg, ok) => {
     const el = document.getElementById('cashRegMsg');
     el.style.display = 'block';
@@ -1894,44 +1965,93 @@ async function submitCashReg() {
   };
 
   const adminKey = g('cr_adminKey');
-  const firstName = g('cr_firstName').trim();
-  const lastName  = g('cr_lastName').trim();
-  const email     = g('cr_email').trim();
-  const phone     = g('cr_phone').trim();
+  if (!adminKey) { showMsg('Enter your Admin Cash Key.', false); return; }
 
-  if (!adminKey)   { showMsg('Enter your Admin Cash Key.', false); return; }
-  if (!firstName)  { showMsg('First name is required.', false); return; }
-  if (!lastName)   { showMsg('Last name is required.', false); return; }
-  if (!email)      { showMsg('Email is required.', false); return; }
-  if (!phone)      { showMsg('Phone is required.', false); return; }
+  let firstName, lastName, email, phone, dob, telegram,
+      bloodType, medicalAid, medAidNo, colours, conditions, medications, address,
+      c1Name, c1Rel, c1Phone, c1TG, c1WA,
+      c2Name, c2Rel, c2Phone, c2TG, c2WA,
+      c3Name, c3Rel, c3Phone, c3TG, c3WA;
+
+  if (crTagType === 'human') {
+    firstName = g('cr_firstName').trim();
+    lastName  = g('cr_lastName').trim();
+    email     = g('cr_email').trim();
+    phone     = g('cr_phone').trim();
+    if (!firstName) { showMsg('First name is required.', false); return; }
+    if (!lastName)  { showMsg('Last name is required.', false); return; }
+    if (!email)     { showMsg('Email is required.', false); return; }
+    if (!phone)     { showMsg('Phone is required.', false); return; }
+    dob        = g('cr_dob');
+    telegram   = g('cr_telegram');
+    bloodType  = g('cr_bloodType');
+    medicalAid = g('cr_medicalAid');
+    medAidNo   = g('cr_medAidNo');
+    colours    = g('cr_colours');
+    conditions = g('cr_conditions');
+    medications= g('cr_medications');
+    address    = '';
+    c1Name = g('cr_c1Name'); c1Rel = g('cr_c1Rel'); c1Phone = g('cr_c1Phone'); c1TG = g('cr_c1TG'); c1WA = cb('cr_c1WA');
+    c2Name = g('cr_c2Name'); c2Rel = g('cr_c2Rel'); c2Phone = g('cr_c2Phone'); c2TG = g('cr_c2TG'); c2WA = cb('cr_c2WA');
+    c3Name = g('cr_c3Name'); c3Rel = g('cr_c3Rel'); c3Phone = g('cr_c3Phone'); c3TG = g('cr_c3TG'); c3WA = cb('cr_c3WA');
+  } else {
+    const petName    = g('cr_petName').trim();
+    const species    = g('cr_species').trim();
+    const ownerName  = g('cr_ownerName').trim();
+    const ownerPhone = g('cr_ownerPhone').trim();
+    const ownerEmail = g('cr_ownerEmail').trim();
+    if (!petName)    { showMsg('Pet name is required.', false); return; }
+    if (!species)    { showMsg('Species is required.', false); return; }
+    if (!ownerName)  { showMsg('Owner name is required.', false); return; }
+    if (!ownerPhone) { showMsg('Owner phone is required.', false); return; }
+    if (!ownerEmail) { showMsg('Owner email is required.', false); return; }
+    firstName  = petName;
+    lastName   = species + (g('cr_breed') ? ' — ' + g('cr_breed') : '');
+    email      = ownerEmail;
+    phone      = ownerPhone;
+    dob        = g('cr_petDob');
+    telegram   = g('cr_ownerTelegram');
+    bloodType  = '';
+    medicalAid = g('cr_vetName');
+    medAidNo   = g('cr_vetPhone') + (g('cr_microchip') ? ' | Chip: ' + g('cr_microchip') : '');
+    colours    = g('cr_petColour');
+    conditions = g('cr_vaccinations');
+    medications= g('cr_petMedNotes');
+    address    = g('cr_petAddress');
+    c1Name = ownerName; c1Rel = 'Owner'; c1Phone = ownerPhone; c1TG = g('cr_ownerTelegram'); c1WA = 'Yes';
+    c2Name = g('cr_vetName'); c2Rel = 'Vet'; c2Phone = g('cr_vetPhone'); c2TG = ''; c2WA = 'No';
+    c3Name = ''; c3Rel = ''; c3Phone = ''; c3TG = ''; c3WA = 'No';
+  }
 
   const btn = document.getElementById('cr_submitBtn');
   btn.disabled = true;
   btn.textContent = 'Registering…';
 
+  // Upload photo if selected
+  let photoUrl = crPhotoUploadedUrl;
+  if (crPhotoDataUrl && !crPhotoUploadedUrl) {
+    showMsg('Uploading photo…', true);
+    try {
+      const base64 = crPhotoDataUrl.split(',')[1];
+      const fd = new FormData();
+      fd.append('image', base64);
+      const upResp = await fetch('https://api.innovat3.co.za/upload-photo', { method: 'POST', body: fd });
+      const upJson = await upResp.json();
+      if (upJson.success) { crPhotoUploadedUrl = upJson.url; photoUrl = upJson.url; }
+    } catch(e) { console.error('[IN3] Photo upload failed:', e); }
+  }
+
   const payload = {
-    type:        'CASH_REGISTRATION',
-    _adminKey:   adminKey,
-    firstName:   firstName,
-    lastName:    lastName,
-    email:       email,
-    phone:       phone,
-    dob:         g('cr_dob'),
-    telegram:    g('cr_telegram'),
-    plan:        g('cr_plan'),
-    billing:     g('cr_billing'),
-    cashAmount:  g('cr_cashAmount'),
-    bloodType:   g('cr_bloodType'),
-    medicalAid:  g('cr_medicalAid'),
-    medAidNo:    g('cr_medAidNo'),
-    colours:     g('cr_colours'),
-    conditions:  g('cr_conditions'),
-    medications: g('cr_medications'),
-    notes:       g('cr_notes'),
-    extraNotes:  g('cr_extraNotes'),
-    c1Name:  g('cr_c1Name'), c1Rel: g('cr_c1Rel'), c1Phone: g('cr_c1Phone'), c1TG: g('cr_c1TG'), c1WA: 'No',
-    c2Name:  g('cr_c2Name'), c2Rel: g('cr_c2Rel'), c2Phone: g('cr_c2Phone'), c2TG: g('cr_c2TG'), c2WA: 'No',
-    c3Name:  g('cr_c3Name'), c3Rel: g('cr_c3Rel'), c3Phone: g('cr_c3Phone'), c3TG: g('cr_c3TG'), c3WA: 'No',
+    type: 'CASH_REGISTRATION', _adminKey: adminKey, tagType: crTagType,
+    firstName, lastName, email, phone, dob, telegram,
+    plan: g('cr_plan'), billing: g('cr_billing'), cashAmount: g('cr_cashAmount'),
+    bloodType, medicalAid, medAidNo, colours, conditions, medications, address,
+    notes: g('cr_notes'),
+    extraNotes: (crTagType === 'pet' ? '[PET TAG] ' : '') + g('cr_extraNotes'),
+    photoUrl,
+    c1Name, c1Rel, c1Phone, c1TG, c1WA,
+    c2Name, c2Rel, c2Phone, c2TG, c2WA,
+    c3Name, c3Rel, c3Phone, c3TG, c3WA,
   };
 
   try {
@@ -1943,14 +2063,21 @@ async function submitCashReg() {
     const json = await resp.json();
     if (json.status === 'ok') {
       showMsg('✅ Registered! Tag ID: ' + json.tagId, true);
-      // Clear the form
-      ['cr_firstName','cr_lastName','cr_email','cr_phone','cr_dob','cr_telegram',
-       'cr_cashAmount','cr_medicalAid','cr_medAidNo','cr_colours','cr_conditions',
-       'cr_medications','cr_notes','cr_extraNotes',
-       'cr_c1Name','cr_c1Rel','cr_c1Phone','cr_c1TG',
-       'cr_c2Name','cr_c2Rel','cr_c2Phone','cr_c2TG',
-       'cr_c3Name','cr_c3Rel','cr_c3Phone','cr_c3TG'
+      crPhotoDataUrl = ''; crPhotoUploadedUrl = '';
+      document.getElementById('cr_photoPreview').style.display = 'none';
+      document.getElementById('cr_photoPlaceholder').style.display = '';
+      [
+        'cr_firstName','cr_lastName','cr_email','cr_phone','cr_dob','cr_telegram',
+        'cr_cashAmount','cr_medicalAid','cr_medAidNo','cr_colours','cr_conditions',
+        'cr_medications','cr_notes','cr_extraNotes',
+        'cr_c1Name','cr_c1Rel','cr_c1Phone','cr_c1TG',
+        'cr_c2Name','cr_c2Rel','cr_c2Phone','cr_c2TG',
+        'cr_c3Name','cr_c3Rel','cr_c3Phone','cr_c3TG',
+        'cr_petName','cr_breed','cr_petColour','cr_petDob','cr_microchip',
+        'cr_vaccinations','cr_petMedNotes','cr_vetName','cr_vetPhone',
+        'cr_ownerName','cr_ownerPhone','cr_ownerEmail','cr_ownerTelegram','cr_petAddress'
       ].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+      ['cr_c1WA','cr_c2WA','cr_c3WA'].forEach(id => { const el = document.getElementById(id); if (el) el.checked = false; });
     } else {
       showMsg('Error: ' + (json.message || 'Unknown error'), false);
     }
