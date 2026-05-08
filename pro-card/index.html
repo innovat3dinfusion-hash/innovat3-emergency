@@ -8,7 +8,7 @@
   <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Innovat3 Pro Card</title>
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://innovat3.co.za/card/">
@@ -237,35 +237,41 @@ body { font-family:'Exo 2',sans-serif; background:#050505; color:var(--text); mi
 /* ── EMA PRO SECTION ── */
 .ema-wrap{margin:10px 10px 0;border-radius:14px;overflow:hidden;border:2px solid rgba(14,210,200,0.65);box-shadow:0 0 32px rgba(14,210,200,0.12),0 4px 20px rgba(0,0,0,0.5);}
 .ema-hdr{background:linear-gradient(90deg,#003d3b 0%,#0a9e97 55%,#0ED2C8 100%);padding:11px 16px;display:flex;align-items:center;gap:12px;}
-
-/* Status bar — shown when listening / thinking / speaking */
-.ema-status-bar{display:none;align-items:center;justify-content:center;gap:10px;padding:10px 16px;}
-.ema-status-bar.visible{display:flex;}
-.ema-status-bar.listening{background:#1a0000;border-bottom:1px solid rgba(239,68,68,0.3);}
-.ema-status-bar.thinking{background:#00081a;border-bottom:1px solid rgba(59,130,246,0.3);}
-.ema-status-bar.speaking{background:#0a001a;border-bottom:1px solid rgba(168,85,247,0.3);}
-.ema-status-text{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:900;letter-spacing:2px;text-transform:uppercase;}
-.ema-status-bar.listening .ema-status-text{color:var(--red);}
-.ema-status-bar.thinking  .ema-status-text{color:var(--blue);}
-.ema-status-bar.speaking  .ema-status-text{color:#A855F7;}
-/* Sound wave bars */
-.ema-wave{display:flex;align-items:center;gap:3px;height:20px;}
-.ema-wave span{display:block;width:3px;border-radius:3px;background:currentColor;}
-.ema-status-bar.listening .ema-wave span{animation:ema-wave 0.8s ease-in-out infinite;}
-.ema-status-bar.speaking  .ema-wave span{animation:ema-wave 0.6s ease-in-out infinite;}
-.ema-status-bar.thinking  .ema-wave span{animation:ema-pulse 0.5s ease-in-out infinite;}
-.ema-wave span:nth-child(1){height:8px; animation-delay:0s;}
-.ema-wave span:nth-child(2){height:16px;animation-delay:0.1s;}
-.ema-wave span:nth-child(3){height:20px;animation-delay:0.2s;}
-.ema-wave span:nth-child(4){height:14px;animation-delay:0.3s;}
-.ema-wave span:nth-child(5){height:6px; animation-delay:0.4s;}
-@keyframes ema-wave{0%,100%{transform:scaleY(0.4)}50%{transform:scaleY(1)}}
-@keyframes ema-pulse{0%,100%{opacity:0.3}50%{opacity:1}}
-/* Text input fallback */
-.ema-text-row{display:flex;gap:0;border-top:1px solid rgba(14,210,200,0.15);}
-.ema-text-in{flex:1;background:#001212;border:none;padding:14px 14px;font-family:'Exo 2',sans-serif;font-size:14px;color:var(--text);outline:none;}
-.ema-text-in::placeholder{color:#336666;}
-.ema-text-send{background:linear-gradient(135deg,#003d3b,#0ED2C8);border:none;padding:14px 18px;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:900;color:#000;cursor:pointer;letter-spacing:1px;white-space:nowrap;-webkit-tap-highlight-color:transparent;}
+/* Quick chips */
+.ema-chips{background:#001010;padding:12px 12px 8px;display:flex;flex-wrap:wrap;gap:7px;border-bottom:1px solid rgba(14,210,200,0.1);}
+.ema-chip{background:#002020;border:1px solid rgba(14,210,200,0.3);border-radius:20px;padding:8px 13px;font-size:12px;font-weight:700;color:#5eead4;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background 0.15s;white-space:nowrap;}
+.ema-chip:active{background:#004040;}
+/* Speaking indicator */
+.ema-speaking-bar{display:none;align-items:center;justify-content:center;gap:8px;padding:8px 16px;background:#0a001a;border-bottom:1px solid rgba(168,85,247,0.25);}
+.ema-speaking-bar.on{display:flex;}
+.ema-speaking-bar span{font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:2px;color:#A855F7;}
+.ema-bar-wave{display:flex;align-items:center;gap:2px;}
+.ema-bar-wave i{display:block;width:3px;border-radius:2px;background:#A855F7;}
+.ema-bar-wave i:nth-child(1){height:6px; animation:ewv 0.6s ease-in-out infinite 0s;}
+.ema-bar-wave i:nth-child(2){height:12px;animation:ewv 0.6s ease-in-out infinite 0.1s;}
+.ema-bar-wave i:nth-child(3){height:16px;animation:ewv 0.6s ease-in-out infinite 0.2s;}
+.ema-bar-wave i:nth-child(4){height:10px;animation:ewv 0.6s ease-in-out infinite 0.3s;}
+.ema-bar-wave i:nth-child(5){height:5px; animation:ewv 0.6s ease-in-out infinite 0.4s;}
+@keyframes ewv{0%,100%{transform:scaleY(0.4)}50%{transform:scaleY(1)}}
+/* Response */
+.ema-response{background:linear-gradient(135deg,#001a2a,#001020);padding:13px 15px;font-size:13px;color:#ddd;line-height:1.7;display:none;}
+.ema-response strong{color:#0ED2C8;}
+/* Facilities */
+.ema-facilities{display:flex;flex-direction:column;}
+.ema-fac{display:flex;align-items:center;gap:12px;background:#0a1a1a;border-bottom:1px solid rgba(14,210,200,0.1);padding:11px 16px;}
+.ema-fac-icon{font-size:18px;flex-shrink:0;}
+.ema-fac-info{flex:1;min-width:0;}
+.ema-fac-name{font-size:12px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ema-fac-meta{font-size:10px;color:#777;margin-top:1px;}
+.ema-fac-call{background:linear-gradient(135deg,#15803D,#166534);border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;color:#fff;text-decoration:none;flex-shrink:0;}
+.ema-fac-map{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;color:#fff;text-decoration:none;flex-shrink:0;}
+/* Text input — 16px prevents iOS zoom */
+.ema-text-row{display:flex;border-top:1px solid rgba(14,210,200,0.15);}
+.ema-text-in{flex:1;background:#001212;border:none;padding:14px;font-family:'Exo 2',sans-serif;font-size:16px;color:var(--text);outline:none;}
+.ema-text-in::placeholder{color:#2a5555;font-size:14px;}
+.ema-text-send{background:linear-gradient(135deg,#003d3b,#0ED2C8);border:none;padding:14px 18px;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:900;color:#000;cursor:pointer;letter-spacing:1px;-webkit-tap-highlight-color:transparent;}
+/* Find button */
+.ema-find-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(90deg,#082a16,#14532D);border:none;border-top:1px solid rgba(34,197,94,0.25);padding:13px;font-family:'Exo 2',sans-serif;font-size:12px;font-weight:700;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;}
 .ema-hdr-icon{font-size:22px;flex-shrink:0;}
 .ema-hdr-label{font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:#000;letter-spacing:2px;text-transform:uppercase;flex:1;}
 .ema-hdr-sub{font-size:9px;color:rgba(0,0,0,0.55);margin-top:2px;font-weight:600;}
@@ -589,7 +595,7 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
     </div>
   </div>
 
-  <!-- EMA — PRO ONLY, shown after plan verified in JS -->
+  <!-- EMA — PRO ONLY -->
   <div class="ema-wrap" id="emaSection" style="display:none;">
     <div class="ema-hdr">
       <span class="ema-hdr-icon">🤖</span>
@@ -600,44 +606,39 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
       <div class="ema-pro-tag">PRO</div>
     </div>
 
-    <!-- Wake screen — tap to introduce + auto-listen -->
-    <div class="ema-wake" id="emaWake" onclick="emaWake()">
-      <div class="ema-wake-ring">
-        <div class="ema-wake-btn">🤖</div>
-      </div>
-      <div class="ema-wake-label">Tap to meet EMA</div>
-      <div class="ema-wake-sub">Emma will introduce herself<br>and start listening</div>
+    <!-- One-tap emergency chips -->
+    <div class="ema-chips">
+      <button class="ema-chip" onclick="emaQuery('heart attack')">❤️ Heart Attack</button>
+      <button class="ema-chip" onclick="emaQuery('stroke')">🧠 Stroke</button>
+      <button class="ema-chip" onclick="emaQuery('CPR')">💪 CPR</button>
+      <button class="ema-chip" onclick="emaQuery('choking')">😮 Choking</button>
+      <button class="ema-chip" onclick="emaQuery('bleeding')">🩸 Bleeding</button>
+      <button class="ema-chip" onclick="emaQuery('seizure')">⚡ Seizure</button>
     </div>
 
-    <!-- Active UI — hidden until woken -->
-    <div id="emaActive" style="display:none;">
-      <!-- Status bar -->
-      <div class="ema-status-bar" id="emaStatusBar">
-        <div class="ema-wave"><span></span><span></span><span></span><span></span><span></span></div>
-        <div class="ema-status-text" id="emaStatusText">LISTENING</div>
-        <div class="ema-wave"><span></span><span></span><span></span><span></span><span></span></div>
-      </div>
-
-      <div class="ema-response" id="emaResponse"></div>
-      <div class="ema-facilities" id="emaFacilities"></div>
-
-      <div class="ema-mic-area">
-        <div class="ema-mic-ring" id="emaMicRing">
-          <button class="ema-mic-btn" id="emaMicBtn" onclick="emaTap()">🎙️</button>
-        </div>
-        <div class="ema-mic-hint" id="emaMicHint">TAP TO SPEAK</div>
-      </div>
-
-      <div class="ema-text-row">
-        <input class="ema-text-in" id="emaTextIn" type="text"
-          placeholder="Type or use 🎤 on keyboard…"
-          autocomplete="off" autocorrect="off" spellcheck="false"
-          onkeydown="if(event.key==='Enter')emaTextSend()">
-        <button class="ema-text-send" onclick="emaTextSend()">ASK</button>
-      </div>
-
-      <button class="ema-find-btn" onclick="emaFindFacilities()">📍 &nbsp;Find Nearest Hospital / Doctor</button>
+    <!-- Speaking indicator -->
+    <div class="ema-speaking-bar" id="emaSpeakingBar">
+      <div class="ema-bar-wave"><i></i><i></i><i></i><i></i><i></i></div>
+      <span>EMA IS SPEAKING</span>
+      <div class="ema-bar-wave"><i></i><i></i><i></i><i></i><i></i></div>
     </div>
+
+    <!-- Response text -->
+    <div class="ema-response" id="emaResponse"></div>
+
+    <!-- Facility results -->
+    <div class="ema-facilities" id="emaFacilities"></div>
+
+    <!-- Ask anything — 16px stops iOS zoom -->
+    <div class="ema-text-row">
+      <input class="ema-text-in" id="emaTextIn" type="text"
+        placeholder="Ask EMA anything…"
+        autocomplete="off" autocorrect="off" spellcheck="false"
+        onkeydown="if(event.key==='Enter')emaTextSend()">
+      <button class="ema-text-send" onclick="emaTextSend()">ASK</button>
+    </div>
+
+    <button class="ema-find-btn" onclick="emaFindFacilities()">📍 &nbsp;Find Nearest Hospital / Doctor</button>
   </div>
 
   <!-- TABS -->
@@ -1243,166 +1244,42 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('/pro-card/sw
 <script>
 // ── EMA — Emergency Medical Assistant ────────────────────────────
 var EMA_AUDIO = '/assist/audio/';
-var EMA_SR    = window.SpeechRecognition || window.webkitSpeechRecognition;
-var emaSynth  = window.speechSynthesis;
-var emaVoices = [];
-var emaListening = false, emaSpeaking = false;
-var emaRec = null, emaAudioEl = null;
-
-emaSynth.onvoiceschanged = function(){ emaVoices = emaSynth.getVoices(); };
-setTimeout(function(){ emaVoices = emaSynth.getVoices(); }, 600);
-
-function emaWake() {
-  // Swap wake screen for active UI
-  document.getElementById('emaWake').style.display   = 'none';
-  document.getElementById('emaActive').style.display = 'block';
-  // Play greeting (user tap = valid gesture for iOS audio)
-  // After greeting, auto-start listening
-  emaSpeak('greeting', "Hi, I'm Emma — your Emergency Medical Assistant. I've got you.", function() {
-    setTimeout(emaTap, 600);
-  });
-}
-
-var emaListenTimer = null;
-
-function emaTap() {
-  if (!EMA_SR) {
-    emaShowMsg('⚠️ Voice input is not supported in this browser. Try typing below instead.', 'warn');
-    return;
-  }
-  if (emaListening) { emaRec && emaRec.stop(); return; }
-  if (emaSpeaking) emaStop();
-
-  emaRec = new EMA_SR();
-  emaRec.lang = 'en-ZA';
-  emaRec.interimResults = false;
-  emaRec.maxAlternatives = 1;
-  emaRec.continuous = false;
-
-  emaRec.onstart = function() {
-    emaListening = true;
-    emaSetUI('listening');
-    // Auto-stop after 10s in case iOS hangs
-    emaListenTimer = setTimeout(function() {
-      if (emaListening) { emaRec && emaRec.stop(); }
-    }, 10000);
-  };
-
-  emaRec.onend = function() {
-    clearTimeout(emaListenTimer);
-    emaListening = false;
-    if (!emaSpeaking) emaSetUI('idle');
-  };
-
-  emaRec.onerror = function(e) {
-    clearTimeout(emaListenTimer);
-    emaListening = false;
-    emaSetUI('idle');
-    if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
-      emaShowMsg(
-        '🎙️ Mic blocked by Safari.<br>' +
-        'Tap the text box below → then tap the <strong>🎤 microphone</strong> on your iPhone keyboard to speak to Emma.',
-        'warn'
-      );
-      setTimeout(function(){ var el=document.getElementById('emaTextIn'); if(el) el.focus(); }, 300);
-    } else if (e.error === 'no-speech') {
-      emaShowMsg('Nothing heard — tap the mic again and speak clearly.', 'info');
-    } else {
-      emaShowMsg('Voice error (' + e.error + ') — try typing below ↓', 'warn');
-    }
-  };
-
-  emaRec.onresult = function(e) {
-    clearTimeout(emaListenTimer);
-    var t = e.results[0][0].transcript.trim();
-    if (t) emaQuery(t);
-  };
-
-  try {
-    emaRec.start();
-  } catch(err) {
-    emaListening = false;
-    emaSetUI('idle');
-    emaShowMsg('Could not start microphone — try typing below ↓', 'warn');
-  }
-}
+var emaSpeaking = false;
+var emaAudioEl  = null;
 
 function emaTextSend() {
   var el = document.getElementById('emaTextIn');
-  var q = (el.value || '').trim();
+  var q  = (el.value || '').trim();
   if (!q) return;
   el.value = '';
+  el.blur(); // dismiss keyboard so page stays still
   emaQuery(q);
 }
 
 function emaQuery(q) {
-  if (emaRec) emaRec.stop();
-  emaListening = false;
-  emaSetUI('thinking');
-  setTimeout(function() {
-    var r = emaGetResponse(q.toLowerCase());
-    var el = document.getElementById('emaResponse');
-    el.innerHTML = r.html;
-    el.style.display = 'block';
-    if (/nearest|hospital|clinic|doctor/.test(q.toLowerCase())) emaFindFacilities();
-    emaSpeak(r.key, r.plain);
-  }, 400);
+  var r  = emaGetResponse(q.toLowerCase());
+  var el = document.getElementById('emaResponse');
+  el.innerHTML = r.html;
+  el.style.display = 'block';
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  if (/nearest|hospital|clinic|doctor/.test(q.toLowerCase())) emaFindFacilities();
+  emaSpeak(r.key);
 }
 
-function emaSpeak(key, fallback, onDone) {
-  emaStop();
+function emaSpeak(key) {
+  if (emaAudioEl) { emaAudioEl.pause(); emaAudioEl = null; }
   emaSpeaking = true;
-  emaSetUI('speaking');
+  document.getElementById('emaSpeakingBar').className = 'ema-speaking-bar on';
   var audio = new Audio(EMA_AUDIO + key + '.mp3');
   emaAudioEl = audio;
-  audio.onended = function(){ emaSpeaking = false; emaSetUI('idle'); if (onDone) onDone(); };
-  audio.onerror = function(){
-    // MP3 failed — fall back to browser TTS
-    var u = new SpeechSynthesisUtterance(fallback);
-    u.lang = 'en-AU'; u.rate = 0.9;
-    var v = emaVoices.find(function(x){ return /Google|Microsoft/.test(x.name) && x.lang.startsWith('en'); }) || emaVoices[0];
-    if (v) u.voice = v;
-    u.onend = u.onerror = function(){ emaSpeaking = false; emaSetUI('idle'); if (onDone) onDone(); };
-    emaSynth.speak(u);
+  audio.onended = audio.onerror = function() {
+    emaSpeaking = false;
+    document.getElementById('emaSpeakingBar').className = 'ema-speaking-bar';
   };
-  audio.play().catch(function(){
-    audio.onerror(new Event('error'));
+  audio.play().catch(function() {
+    emaSpeaking = false;
+    document.getElementById('emaSpeakingBar').className = 'ema-speaking-bar';
   });
-}
-
-function emaStop() {
-  if (emaAudioEl) { emaAudioEl.pause(); emaAudioEl = null; }
-  emaSynth.cancel();
-  emaSpeaking = false;
-}
-
-function emaSetUI(state) {
-  var btn    = document.getElementById('emaMicBtn');
-  var ring   = document.getElementById('emaMicRing');
-  var hint   = document.getElementById('emaMicHint');
-  var sbar   = document.getElementById('emaStatusBar');
-  var stxt   = document.getElementById('emaStatusText');
-  if (!btn) return;
-
-  var map = {
-    idle:      { b:'', r:'', h:'TAP TO SPEAK', i:'🎙️', bar:false,       label:'' },
-    listening: { b:'listening', r:'listening', h:'TAP TO STOP', i:'🎙️', bar:'listening', label:'EMMA IS LISTENING' },
-    thinking:  { b:'', r:'', h:'PROCESSING…', i:'💭',           bar:'thinking',  label:'THINKING' },
-    speaking:  { b:'speaking', r:'speaking',   h:'SPEAKING…',   i:'🔊', bar:'speaking',  label:'EMMA IS SPEAKING' }
-  };
-  var s = map[state] || map.idle;
-
-  btn.className  = 'ema-mic-btn ' + s.b;
-  ring.className = 'ema-mic-ring ' + s.r;
-  hint.textContent = s.h;
-  btn.textContent  = s.i;
-
-  if (s.bar) {
-    sbar.className = 'ema-status-bar visible ' + s.bar;
-    stxt.textContent = s.label;
-  } else {
-    sbar.className = 'ema-status-bar';
-  }
 }
 
 function emaGetResponse(q) {
@@ -1464,44 +1341,31 @@ async function emaFindFacilities() {
           return '<div class="ema-fac"><span class="ema-fac-icon">'+icon+'</span><div class="ema-fac-info"><div class="ema-fac-name">'+f.name+'</div><div class="ema-fac-meta">'+type+' · '+d+'</div></div>'+action+'</div>';
         }).join('');
       } catch(e) {
-        box.innerHTML = emaMapsFallback();
+        box.innerHTML = '<div style="padding:12px 16px;">' + emaMapsLinks() + '</div>';
       }
     },
     function(err) {
-      if (err.code === 1) {
-        box.innerHTML =
-          '<div style="padding:12px 16px;font-size:12px;color:#EAB308;line-height:1.8;">' +
-          '📍 Location blocked.<br>' +
-          '<strong>Settings → Privacy & Security → Location Services → Safari → While Using the App</strong><br>' +
-          'Then reload this page.<br><br>' + emaMapsFallback(true) + '</div>';
-      } else {
-        box.innerHTML = emaMapsFallback();
-      }
+      var msg = err.code === 1
+        ? '<div style="padding:10px 16px 6px;font-size:11px;color:#EAB308;line-height:1.7;">📍 Location blocked.<br><strong>Settings → Privacy & Security → Location Services → Safari → While Using</strong></div>'
+        : '';
+      box.innerHTML = msg + '<div style="padding:4px 16px 12px;">' + emaMapsLinks() + '</div>';
     },
     {timeout:12000}
   );
 }
 
-function emaShowMsg(html, type) {
-  var el = document.getElementById('emaResponse');
-  var col = type === 'warn' ? '#EAB308' : '#5eead4';
-  el.innerHTML = '<span style="color:' + col + ';">' + html + '</span>';
-  el.style.display = 'block';
-}
-
-function emaMapsFallback(inlineOnly) {
+function emaMapsLinks() {
   var links = [
-    { label:'🏥 Hospital near me',  q:'hospital+near+me' },
-    { label:'👨‍⚕️ Doctor near me', q:'doctor+near+me' },
-    { label:'🏪 Clinic near me',    q:'clinic+near+me' }
+    { label:'🏥 Hospital near me',    q:'hospital+near+me' },
+    { label:'👨‍⚕️ Doctor near me',   q:'doctor+near+me' },
+    { label:'🏪 Clinic near me',      q:'clinic+near+me' }
   ];
-  var btns = links.map(function(l){
-    return '<a href="https://www.google.com/maps/search/' + l.q + '" target="_blank" rel="noopener" ' +
-      'style="display:block;background:linear-gradient(135deg,#082a16,#14532D);border:1px solid rgba(34,197,94,0.35);' +
-      'border-radius:10px;padding:11px 14px;font-size:12px;font-weight:700;color:#fff;text-decoration:none;margin-bottom:6px;">' +
-      l.label + ' →</a>';
-  }).join('');
-  return (inlineOnly ? '' : '<div style="padding:12px 16px 4px;font-size:11px;color:#777;">Open in Google Maps:</div>') + '<div style="padding:0 12px 12px;">' + btns + '</div>';
+  return '<div style="padding:4px 0 0;">' + links.map(function(l){
+    return '<a href="https://www.google.com/maps/search/'+l.q+'" target="_blank" rel="noopener" '+
+      'style="display:block;background:linear-gradient(135deg,#082a16,#14532D);border:1px solid rgba(34,197,94,0.3);'+
+      'border-radius:10px;padding:11px 14px;font-size:13px;font-weight:700;color:#fff;text-decoration:none;margin-bottom:7px;">'+
+      l.label+' →</a>';
+  }).join('') + '</div>';
 }
 
 function emaHaversine(a,b,c,d){
