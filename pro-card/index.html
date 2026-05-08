@@ -234,44 +234,198 @@ body { font-family:'Exo 2',sans-serif; background:#050505; color:var(--text); mi
 .profile-bar-missing { font-size:10px; color:#777; margin-top:8px; line-height:1.6; }
 .sos-bar { display:none; position:fixed; bottom:0; left:0; right:0; z-index:900; background:#0d0000; border-top:3px solid var(--red); padding:10px 16px; box-shadow:0 -4px 24px rgba(239,68,68,0.35); }
 
-/* ── EMA PRO SECTION ── */
-.ema-wrap{margin:10px 10px 0;border-radius:14px;overflow:hidden;border:2px solid rgba(14,210,200,0.65);box-shadow:0 0 32px rgba(14,210,200,0.12),0 4px 20px rgba(0,0,0,0.5);}
-.ema-hdr{background:linear-gradient(90deg,#003d3b 0%,#0a9e97 55%,#0ED2C8 100%);padding:11px 16px;display:flex;align-items:center;gap:12px;}
-/* Quick chips */
-.ema-chips{background:#001010;padding:12px 12px 8px;display:flex;flex-wrap:wrap;gap:7px;border-bottom:1px solid rgba(14,210,200,0.1);}
-.ema-chip{background:#002020;border:1px solid rgba(14,210,200,0.3);border-radius:20px;padding:8px 13px;font-size:12px;font-weight:700;color:#5eead4;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background 0.15s;white-space:nowrap;}
-.ema-chip:active{background:#004040;}
+/* ══════════════════════════════════════════
+   EMA PREMIUM SECTION
+══════════════════════════════════════════ */
+.ema-wrap{
+  margin:10px 10px 0;border-radius:16px;overflow:hidden;
+  border:1px solid rgba(14,210,200,0.4);
+  box-shadow:0 0 40px rgba(14,210,200,0.08),0 8px 32px rgba(0,0,0,0.6);
+  background:#030d0d;
+}
+
+/* Header */
+.ema-hdr{
+  background:linear-gradient(135deg,#001f1f 0%,#004d48 60%,#0ED2C8 100%);
+  padding:14px 18px;display:flex;align-items:center;gap:14px;
+  position:relative;overflow:hidden;
+}
+.ema-hdr::after{
+  content:'';position:absolute;right:-30px;top:-30px;
+  width:100px;height:100px;border-radius:50%;
+  background:rgba(14,210,200,0.15);
+  pointer-events:none;
+}
+.ema-hdr-icon{
+  width:42px;height:42px;border-radius:12px;flex-shrink:0;
+  background:rgba(0,0,0,0.3);border:1px solid rgba(14,210,200,0.5);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 16px rgba(14,210,200,0.3);
+}
+.ema-hdr-icon svg{width:22px;height:22px;}
+.ema-hdr-name{font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;color:#fff;letter-spacing:1px;}
+.ema-hdr-sub{font-size:9px;color:rgba(255,255,255,0.6);letter-spacing:2px;text-transform:uppercase;margin-top:2px;}
+.ema-pro-tag{
+  margin-left:auto;background:rgba(0,0,0,0.35);
+  border:1px solid rgba(14,210,200,0.5);border-radius:20px;
+  padding:4px 11px;font-family:'Orbitron',sans-serif;font-size:7px;
+  font-weight:900;color:#0ED2C8;letter-spacing:1.5px;flex-shrink:0;
+}
+
 /* Speaking indicator */
-.ema-speaking-bar{display:none;align-items:center;justify-content:center;gap:8px;padding:8px 16px;background:#0a001a;border-bottom:1px solid rgba(168,85,247,0.25);}
+.ema-speaking-bar{
+  display:none;align-items:center;justify-content:center;gap:10px;
+  padding:9px 16px;background:rgba(168,85,247,0.08);
+  border-bottom:1px solid rgba(168,85,247,0.2);
+}
 .ema-speaking-bar.on{display:flex;}
-.ema-speaking-bar span{font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:2px;color:#A855F7;}
-.ema-bar-wave{display:flex;align-items:center;gap:2px;}
-.ema-bar-wave i{display:block;width:3px;border-radius:2px;background:#A855F7;}
-.ema-bar-wave i:nth-child(1){height:6px; animation:ewv 0.6s ease-in-out infinite 0s;}
-.ema-bar-wave i:nth-child(2){height:12px;animation:ewv 0.6s ease-in-out infinite 0.1s;}
-.ema-bar-wave i:nth-child(3){height:16px;animation:ewv 0.6s ease-in-out infinite 0.2s;}
-.ema-bar-wave i:nth-child(4){height:10px;animation:ewv 0.6s ease-in-out infinite 0.3s;}
-.ema-bar-wave i:nth-child(5){height:5px; animation:ewv 0.6s ease-in-out infinite 0.4s;}
-@keyframes ewv{0%,100%{transform:scaleY(0.4)}50%{transform:scaleY(1)}}
-/* Response */
-.ema-response{background:linear-gradient(135deg,#001a2a,#001020);padding:13px 15px;font-size:13px;color:#ddd;line-height:1.7;display:none;}
-.ema-response strong{color:#0ED2C8;}
+.ema-speaking-bar span{
+  font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:2px;
+  color:#A855F7;text-transform:uppercase;
+}
+.ema-bar-wave{display:flex;align-items:center;gap:3px;height:18px;}
+.ema-bar-wave i{
+  display:block;width:3px;border-radius:3px;background:#A855F7;
+  animation:ewv 0.7s ease-in-out infinite;
+}
+.ema-bar-wave i:nth-child(1){height:5px; animation-delay:0s;}
+.ema-bar-wave i:nth-child(2){height:11px;animation-delay:0.1s;}
+.ema-bar-wave i:nth-child(3){height:16px;animation-delay:0.2s;}
+.ema-bar-wave i:nth-child(4){height:9px; animation-delay:0.3s;}
+.ema-bar-wave i:nth-child(5){height:4px; animation-delay:0.4s;}
+@keyframes ewv{0%,100%{transform:scaleY(0.4);opacity:0.6}50%{transform:scaleY(1);opacity:1}}
+
+/* Response panel — slides down */
+.ema-response{
+  display:none;padding:15px 16px;
+  font-size:13px;color:#ccc;line-height:1.75;
+  border-bottom:1px solid rgba(14,210,200,0.1);
+  animation:ema-slide-in 0.25s ease-out;
+}
+.ema-response strong{color:#0ED2C8;font-weight:700;}
+@keyframes ema-slide-in{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+
+/* Emergency grid — premium cards */
+.ema-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:8px;padding:12px;
+  border-bottom:1px solid rgba(255,255,255,0.04);
+}
+.ema-card{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:8px;padding:14px 10px;border-radius:12px;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;
+  transition:transform 0.12s, box-shadow 0.12s;
+  position:relative;overflow:hidden;border:1px solid;
+  text-align:center;
+}
+.ema-card:active{transform:scale(0.95);}
+.ema-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,0.04),transparent);
+  pointer-events:none;
+}
+.ema-card-icon{
+  width:40px;height:40px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.ema-card-icon svg{width:22px;height:22px;}
+.ema-card-label{font-size:11px;font-weight:700;color:#fff;line-height:1.3;}
+
+/* Card colour themes */
+.ema-c-red   {background:linear-gradient(135deg,#1a0000,#2d0000);border-color:rgba(239,68,68,0.4);}
+.ema-c-red   .ema-card-icon{background:rgba(239,68,68,0.15);}
+.ema-c-red   svg{stroke:#EF4444;}
+.ema-c-orange{background:linear-gradient(135deg,#1a0a00,#2d1500);border-color:rgba(249,115,22,0.4);}
+.ema-c-orange .ema-card-icon{background:rgba(249,115,22,0.15);}
+.ema-c-orange svg{stroke:#F97316;}
+.ema-c-blue  {background:linear-gradient(135deg,#00081a,#00112d);border-color:rgba(59,130,246,0.4);}
+.ema-c-blue  .ema-card-icon{background:rgba(59,130,246,0.15);}
+.ema-c-blue  svg{stroke:#3B82F6;}
+.ema-c-teal  {background:linear-gradient(135deg,#001a1a,#002d2d);border-color:rgba(14,210,200,0.35);}
+.ema-c-teal  .ema-card-icon{background:rgba(14,210,200,0.12);}
+.ema-c-teal  svg{stroke:#0ED2C8;}
+.ema-c-purple{background:linear-gradient(135deg,#0d0020,#1a0040);border-color:rgba(168,85,247,0.4);}
+.ema-c-purple .ema-card-icon{background:rgba(168,85,247,0.15);}
+.ema-c-purple svg{stroke:#A855F7;}
+.ema-c-green {background:linear-gradient(135deg,#001a0a,#002d12);border-color:rgba(34,197,94,0.35);}
+.ema-c-green .ema-card-icon{background:rgba(34,197,94,0.12);}
+.ema-c-green svg{stroke:#22C55E;}
+.ema-c-yellow{background:linear-gradient(135deg,#1a1400,#2d2000);border-color:rgba(234,179,8,0.4);}
+.ema-c-yellow .ema-card-icon{background:rgba(234,179,8,0.12);}
+.ema-c-yellow svg{stroke:#EAB308;}
+
+/* More scenarios — collapsible */
+.ema-more-toggle{
+  width:100%;background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,0.05);
+  padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:6px;
+  font-family:'Orbitron',sans-serif;font-size:8px;font-weight:900;letter-spacing:2px;
+  color:rgba(14,210,200,0.6);cursor:pointer;-webkit-tap-highlight-color:transparent;
+  text-transform:uppercase;
+}
+.ema-more-toggle svg{width:14px;height:14px;stroke:rgba(14,210,200,0.6);transition:transform 0.25s;}
+.ema-more-toggle.open svg{transform:rotate(180deg);}
+.ema-more-grid{
+  display:none;grid-template-columns:1fr 1fr;
+  gap:8px;padding:0 12px 12px;
+}
+.ema-more-grid.open{display:grid;animation:ema-slide-in 0.2s ease-out;}
+
 /* Facilities */
 .ema-facilities{display:flex;flex-direction:column;}
-.ema-fac{display:flex;align-items:center;gap:12px;background:#0a1a1a;border-bottom:1px solid rgba(14,210,200,0.1);padding:11px 16px;}
-.ema-fac-icon{font-size:18px;flex-shrink:0;}
+.ema-fac{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.04);
+  animation:ema-slide-in 0.2s ease-out;
+}
+.ema-fac-dot{
+  width:36px;height:36px;border-radius:10px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(14,210,200,0.1);border:1px solid rgba(14,210,200,0.25);
+}
+.ema-fac-dot svg{width:18px;height:18px;stroke:#0ED2C8;}
 .ema-fac-info{flex:1;min-width:0;}
 .ema-fac-name{font-size:12px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.ema-fac-meta{font-size:10px;color:#777;margin-top:1px;}
-.ema-fac-call{background:linear-gradient(135deg,#15803D,#166534);border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;color:#fff;text-decoration:none;flex-shrink:0;}
-.ema-fac-map{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;color:#fff;text-decoration:none;flex-shrink:0;}
-/* Text input — 16px prevents iOS zoom */
-.ema-text-row{display:flex;border-top:1px solid rgba(14,210,200,0.15);}
-.ema-text-in{flex:1;background:#001212;border:none;padding:14px;font-family:'Exo 2',sans-serif;font-size:16px;color:var(--text);outline:none;}
-.ema-text-in::placeholder{color:#2a5555;font-size:14px;}
-.ema-text-send{background:linear-gradient(135deg,#003d3b,#0ED2C8);border:none;padding:14px 18px;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:900;color:#000;cursor:pointer;letter-spacing:1px;-webkit-tap-highlight-color:transparent;}
+.ema-fac-meta{font-size:10px;color:#555;margin-top:2px;}
+.ema-fac-call{
+  background:linear-gradient(135deg,#14532D,#166534);
+  border:none;border-radius:8px;padding:8px 13px;
+  font-size:11px;font-weight:700;color:#fff;text-decoration:none;
+  flex-shrink:0;letter-spacing:0.3px;
+}
+.ema-fac-map{
+  background:linear-gradient(135deg,#1e3a8a,#1d4ed8);
+  border:none;border-radius:8px;padding:8px 13px;
+  font-size:11px;font-weight:700;color:#fff;text-decoration:none;flex-shrink:0;
+}
+
+/* Text input */
+.ema-text-row{display:flex;border-top:1px solid rgba(255,255,255,0.06);}
+.ema-text-in{
+  flex:1;background:rgba(0,20,20,0.8);border:none;
+  padding:14px 16px;font-family:'Exo 2',sans-serif;
+  font-size:16px;color:#e0e0e0;outline:none;
+}
+.ema-text-in::placeholder{color:#2a5555;}
+.ema-text-send{
+  background:linear-gradient(135deg,#003d3b,#0ED2C8);
+  border:none;padding:14px 20px;
+  font-family:'Orbitron',sans-serif;font-size:9px;font-weight:900;
+  color:#000;cursor:pointer;letter-spacing:1px;
+  -webkit-tap-highlight-color:transparent;flex-shrink:0;
+}
+
 /* Find button */
-.ema-find-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(90deg,#082a16,#14532D);border:none;border-top:1px solid rgba(34,197,94,0.25);padding:13px;font-family:'Exo 2',sans-serif;font-size:12px;font-weight:700;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.ema-find-btn{
+  width:100%;display:flex;align-items:center;justify-content:center;gap:10px;
+  background:linear-gradient(135deg,#061a0e,#0a2d18);
+  border:none;border-top:1px solid rgba(34,197,94,0.2);
+  padding:14px;font-family:'Exo 2',sans-serif;font-size:12px;font-weight:700;
+  color:rgba(34,197,94,0.9);cursor:pointer;letter-spacing:0.3px;
+  -webkit-tap-highlight-color:transparent;
+}
+.ema-find-btn svg{width:16px;height:16px;stroke:#22C55E;flex-shrink:0;}
 .ema-hdr-icon{font-size:22px;flex-shrink:0;}
 .ema-hdr-label{font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:#000;letter-spacing:2px;text-transform:uppercase;flex:1;}
 .ema-hdr-sub{font-size:9px;color:rgba(0,0,0,0.55);margin-top:2px;font-weight:600;}
@@ -597,39 +751,159 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
 
   <!-- EMA — PRO ONLY -->
   <div class="ema-wrap" id="emaSection" style="display:none;">
+
+    <!-- Header -->
     <div class="ema-hdr">
-      <span class="ema-hdr-icon">🤖</span>
-      <div style="flex:1;">
-        <div class="ema-hdr-label">EMA</div>
+      <div class="ema-hdr-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#0ED2C8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/>
+          <path d="M12 8v4l3 3"/>
+          <circle cx="12" cy="12" r="1" fill="#0ED2C8"/>
+        </svg>
+      </div>
+      <div>
+        <div class="ema-hdr-name">EMA</div>
         <div class="ema-hdr-sub">Emergency Medical Assistant</div>
       </div>
       <div class="ema-pro-tag">PRO</div>
     </div>
 
-    <!-- One-tap emergency chips -->
-    <div class="ema-chips">
-      <button class="ema-chip" onclick="emaQuery('heart attack')">❤️ Heart Attack</button>
-      <button class="ema-chip" onclick="emaQuery('stroke')">🧠 Stroke</button>
-      <button class="ema-chip" onclick="emaQuery('CPR')">💪 CPR</button>
-      <button class="ema-chip" onclick="emaQuery('choking')">😮 Choking</button>
-      <button class="ema-chip" onclick="emaQuery('bleeding')">🩸 Bleeding</button>
-      <button class="ema-chip" onclick="emaQuery('seizure')">⚡ Seizure</button>
-    </div>
-
-    <!-- Speaking indicator -->
+    <!-- Speaking bar -->
     <div class="ema-speaking-bar" id="emaSpeakingBar">
       <div class="ema-bar-wave"><i></i><i></i><i></i><i></i><i></i></div>
-      <span>EMA IS SPEAKING</span>
+      <span>EMA is speaking</span>
       <div class="ema-bar-wave"><i></i><i></i><i></i><i></i><i></i></div>
     </div>
 
-    <!-- Response text -->
+    <!-- Response -->
     <div class="ema-response" id="emaResponse"></div>
+
+    <!-- Primary emergency grid -->
+    <div class="ema-grid">
+      <button class="ema-card ema-c-red" onclick="emaQuery('heart attack')">
+        <div class="ema-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <div class="ema-card-label">Heart Attack</div>
+      </button>
+      <button class="ema-card ema-c-red" onclick="emaQuery('stroke')">
+        <div class="ema-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><line x1="12" y1="22" x2="12" y2="8"/></svg>
+        </div>
+        <div class="ema-card-label">Stroke</div>
+      </button>
+      <button class="ema-card ema-c-orange" onclick="emaQuery('CPR')">
+        <div class="ema-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l-5-5 5-5"/><path d="M2 12h13a5 5 0 0 1 0 10h-1"/><path d="M22 7l-5-5-5 5"/><path d="M17 2v13"/></svg>
+        </div>
+        <div class="ema-card-label">CPR</div>
+      </button>
+      <button class="ema-card ema-c-orange" onclick="emaQuery('choking')">
+        <div class="ema-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <div class="ema-card-label">Choking</div>
+      </button>
+      <button class="ema-card ema-c-red" onclick="emaQuery('bleeding')">
+        <div class="ema-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6M12 22s-8-4-8-12a8 8 0 0 1 16 0c0 8-8 12-8 12z"/></svg>
+        </div>
+        <div class="ema-card-label">Bleeding</div>
+      </button>
+      <button class="ema-card ema-c-yellow" onclick="emaQuery('seizure')">
+        <div class="ema-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <div class="ema-card-label">Seizure</div>
+      </button>
+    </div>
+
+    <!-- More scenarios toggle -->
+    <button class="ema-more-toggle" id="emaMoreBtn" onclick="emaToggleMore()">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      More Scenarios
+    </button>
+
+    <!-- Secondary grid -->
+    <div class="ema-more-grid" id="emaMoreGrid">
+      <button class="ema-card ema-c-blue" onclick="emaQuery('drowning')">
+        <div class="ema-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h20M2 17c2-2 4 0 6 0s4-2 6 0 4 0 6 0M2 7c2-2 4 0 6 0s4-2 6 0 4 0 6 0"/><circle cx="12" cy="5" r="2"/></svg>
+        </div>
+        <div class="ema-card-label">Drowning</div>
+      </button>
+      <button class="ema-card ema-c-orange" onclick="emaQuery('burns')">
+        <div class="ema-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+        </div>
+        <div class="ema-card-label">Burns</div>
+      </button>
+      <button class="ema-card ema-c-teal" onclick="emaQuery('asthma')">
+        <div class="ema-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21c0-3 2-4 2-8a7 7 0 1 0-14 0c0 4 2 5 2 8"/><line x1="9" y1="21" x2="15" y2="21"/><line x1="11" y1="17" x2="13" y2="17"/></svg>
+        </div>
+        <div class="ema-card-label">Asthma</div>
+      </button>
+      <button class="ema-card ema-c-yellow" onclick="emaQuery('broken bone')">
+        <div class="ema-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"/></svg>
+        </div>
+        <div class="ema-card-label">Broken Bone</div>
+      </button>
+      <button class="ema-card ema-c-orange" onclick="emaQuery('heat stroke')">
+        <div class="ema-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </div>
+        <div class="ema-card-label">Heat Stroke</div>
+      </button>
+      <button class="ema-card ema-c-teal" onclick="emaQuery('snake bite')">
+        <div class="ema-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7c4-4 8 0 12-4M21 7c-1 3-4 4-4 8 0 3-1 5-4 6s-6-1-6-4 3-5 5-3"/></svg>
+        </div>
+        <div class="ema-card-label">Snake Bite</div>
+      </button>
+      <button class="ema-card ema-c-purple" onclick="emaQuery('hijacking')">
+        <div class="ema-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        </div>
+        <div class="ema-card-label">Hijacking</div>
+      </button>
+      <button class="ema-card ema-c-purple" onclick="emaQuery('burglary')">
+        <div class="ema-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <div class="ema-card-label">Burglary</div>
+      </button>
+      <button class="ema-card ema-c-blue" onclick="emaQuery('panic attack')">
+        <div class="ema-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+        </div>
+        <div class="ema-card-label">Panic Attack</div>
+      </button>
+      <button class="ema-card ema-c-yellow" onclick="emaQuery('electrocution')">
+        <div class="ema-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <div class="ema-card-label">Electrocution</div>
+      </button>
+      <button class="ema-card ema-c-green" onclick="emaQuery('diabetic')">
+        <div class="ema-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+        </div>
+        <div class="ema-card-label">Diabetic</div>
+      </button>
+      <button class="ema-card ema-c-red" onclick="emaQuery('gunshot')">
+        <div class="ema-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="ema-card-label">Gunshot</div>
+      </button>
+    </div>
 
     <!-- Facility results -->
     <div class="ema-facilities" id="emaFacilities"></div>
 
-    <!-- Ask anything — 16px stops iOS zoom -->
+    <!-- Text input -->
     <div class="ema-text-row">
       <input class="ema-text-in" id="emaTextIn" type="text"
         placeholder="Ask EMA anything…"
@@ -638,7 +912,12 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
       <button class="ema-text-send" onclick="emaTextSend()">ASK</button>
     </div>
 
-    <button class="ema-find-btn" onclick="emaFindFacilities()">📍 &nbsp;Find Nearest Hospital / Doctor</button>
+    <!-- Find button -->
+    <button class="ema-find-btn" onclick="emaFindFacilities()">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.4 7.4 11.5 7.7 11.8a.5.5 0 0 0 .6 0C12.6 21.5 20 15.4 20 10a8 8 0 0 0-8-8z"/></svg>
+      Find Nearest Hospital / Doctor
+    </button>
+
   </div>
 
   <!-- TABS -->
@@ -1252,8 +1531,15 @@ function emaTextSend() {
   var q  = (el.value || '').trim();
   if (!q) return;
   el.value = '';
-  el.blur(); // dismiss keyboard so page stays still
+  el.blur();
   emaQuery(q);
+}
+
+function emaToggleMore() {
+  var grid = document.getElementById('emaMoreGrid');
+  var btn  = document.getElementById('emaMoreBtn');
+  var open = grid.classList.toggle('open');
+  btn.classList.toggle('open', open);
 }
 
 function emaQuery(q) {
@@ -1307,7 +1593,27 @@ function emaGetResponse(q) {
     return {key:'fever', html:'<strong>Fever.</strong> Paracetamol and fluids. Doctor if above 39.5°C, any fever in babies under 3 months, or lasting more than 3 days.', plain:'Give paracetamol and fluids.'};
   if (/diabet|low blood sugar|hypoglyc/.test(q))
     return {key:'diabetic', html:'<strong>Low blood sugar.</strong> Conscious → 3 glucose tablets or 150ml juice, then snack. Unconscious → recovery position + call <strong>10177</strong>.', plain:'Give glucose if conscious.'};
-  return {key:'default', html:'Ask me about heart attack, stroke, CPR, choking, bleeding, seizure, burns, or say <strong>find nearest hospital</strong>.', plain:"I'm Emma. Ask me about any emergency."};
+  if (/hijack|carjack/.test(q))
+    return {key:'hijacking', html:'<strong>Hijacking — do not resist.</strong> Comply with all demands. Hands visible, no sudden moves. If they want the car — step out slowly and step away. Once safe, call <strong>10111</strong>. Note vehicle, direction, descriptions.', plain:'Do not resist. Comply and call 10111 once safe.'};
+  if (/drown|drowning|near.drown/.test(q))
+    return {key:'drowning', html:'<strong>Drowning — call 10177 now.</strong> Do not jump in unless trained. Throw something to grab — rope, ring, any floating object. Once out: check breathing. Not breathing → CPR immediately. Even if they seem fine — hospital is required. Delayed lung complications can be fatal.', plain:'Call 10177. Throw something to grab. CPR if not breathing.'};
+  if (/burglar|burglary|home invasion|break.in/.test(q))
+    return {key:'burglary', html:'<strong>Burglary — do not confront them.</strong> If burglar may be inside — leave immediately, call <strong>10111</strong>. If trapped: lock yourself in a room, call <strong>10111</strong> silently. Do not touch anything after — preserve the scene. If injured, call <strong>10177</strong>.', plain:'Do not confront. Leave and call 10111.'};
+  if (/electro|electric shock|power line/.test(q))
+    return {key:'electrocution', html:'<strong>Electric shock — do not touch them.</strong> Switch off power at the mains first. If impossible, push source away with dry wood or plastic — never metal. Once free, call <strong>10177</strong>. Check breathing — CPR if needed. Cool burns with running water. They must go to hospital even if they seem fine.', plain:'Do not touch. Switch off power. Call 10177.'};
+  if (/snake|bite.*snake|snake.*bite/.test(q))
+    return {key:'snake_bite', html:'<strong>Snake bite — keep still.</strong> Call <strong>10177</strong> or Poison Helpline <strong>0800 333 444</strong>. Keep the bitten limb below heart level. Remove rings and tight clothing. Do not cut, suck, tourniquet, or apply ice. Photo the snake from a safe distance. Get to hospital immediately.', plain:'Keep still. Call 10177 or 0800 333 444.'};
+  if (/asthma|asthmatic|inhaler|wheez/.test(q))
+    return {key:'asthma', html:'<strong>Asthma attack.</strong> Sit them upright — leaning slightly forward. Use reliever inhaler (blue) — 1 puff every 30–60 seconds, up to 10 puffs. Loosen clothing. Encourage slow steady breathing. Call <strong>10177</strong> if: no improvement after 10 minutes, cannot speak in full sentences, lips turn blue.', plain:'Sit upright. Blue inhaler. Call 10177 if no improvement.'};
+  if (/broken.*bone|fracture|break.*arm|break.*leg/.test(q))
+    return {key:'broken_bone', html:'<strong>Broken bone — do not move it.</strong> Immobilise in the position found using rolled clothing or padding. If bone through skin: cover loosely — do not push it back. Apply wrapped ice to reduce swelling. Suspected spine, hip or pelvis — do not move them at all. Call <strong>10177</strong>.', plain:'Do not move the limb. Immobilise and call 10177.'};
+  if (/heat stroke|heat.stroke|overheating|hypertherm/.test(q))
+    return {key:'heat_stroke', html:'<strong>Heat stroke — call 10177 immediately.</strong> Move to cool shade. Remove excess clothing. Cool fast: wet cloths to neck, armpits, groin. Fan vigorously. Small sips of cool water if conscious. Do not give fluids if confused. Recovery position if unconscious. Keep cooling until ambulance arrives.', plain:'Call 10177. Move to shade and cool them down fast.'};
+  if (/panic attack|panic|anxiety attack/.test(q))
+    return {key:'panic_attack', html:'<strong>Panic attack.</strong> Stay with them. Speak slowly and calmly — remind them it will pass. Breathe with them: in for 4, hold for 2, out for 6. Ground them — feel feet on the floor, hold something solid. Do not say "calm down." If first time or severe chest pain — go to emergency.', plain:'Stay calm with them. Breathe slowly together. It will pass.'};
+  if (/gunshot|shot|bullet/.test(q))
+    return {key:'gunshot', html:'<strong>Gunshot — call 10177 immediately.</strong> Ensure scene is safe before approaching. Apply firm pressure with cleanest cloth available — press hard, do not lift. Chest wound making sucking sound: cover 3 sides with plastic. Do not remove embedded objects. Keep pressure until paramedics arrive.', plain:'Call 10177. Apply firm pressure. Keep pressing.'};
+  return {key:'default', html:'Ask me about any emergency — tap a card above or type your question below.', plain:"Ask me about any emergency."};
 }
 
 async function emaFindFacilities() {
