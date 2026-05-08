@@ -620,6 +620,7 @@ var subData = {};
     // ── Redirect Pro immediately — before any DOM work ────────────
     var earlyPlan = ((json.profile && json.profile['Plan']) || json.plan || '').toLowerCase();
     if (earlyPlan === 'pro') {
+      try { sessionStorage.setItem('ema_cache', JSON.stringify({ts:Date.now(),data:json})); } catch(e){}
       window.location.replace('https://innovat3.co.za/pro-card/?tag=' + encodeURIComponent(tagId));
       return;
     }

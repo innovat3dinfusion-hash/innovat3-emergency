@@ -1122,16 +1122,30 @@ var subData = {};
 
   dbg('Loading emergency card...');
 
-  // ── Load profile from GAS backend ───────────────────────────
+  // ── Load profile from GAS backend (or sessionStorage cache) ────
   try {
     dbg('Loading emergency card...');
 
-    var GAS_PROFILE_URL = 'https://api.innovat3.co.za/gas?action=getProfile&tagId=' + encodeURIComponent(tagId);
-    var resp = await fetch(GAS_PROFILE_URL);
-    if (!resp.ok) { showErr('Connection failed (HTTP ' + resp.status + '). Check internet.'); return; }
     var json;
-    try { json = await resp.json(); }
-    catch(pe) { showErr('Data parse error. Please try again.'); return; }
+    var cached = null;
+    try {
+      var _raw = sessionStorage.getItem('ema_cache');
+      if (_raw) {
+        var _c = JSON.parse(_raw);
+        if (_c && _c.data && (Date.now() - _c.ts) < 30000) { cached = _c.data; }
+        sessionStorage.removeItem('ema_cache');
+      }
+    } catch(e){}
+
+    if (cached) {
+      json = cached;
+    } else {
+      var GAS_PROFILE_URL = 'https://api.innovat3.co.za/gas?action=getProfile&tagId=' + encodeURIComponent(tagId);
+      var resp = await fetch(GAS_PROFILE_URL);
+      if (!resp.ok) { showErr('Connection failed (HTTP ' + resp.status + '). Check internet.'); return; }
+      try { json = await resp.json(); }
+      catch(pe) { showErr('Data parse error. Please try again.'); return; }
+    }
 
     if (json.status === 'inactive') {
       document.getElementById('loadingScreen').style.display = 'none';
@@ -1657,6 +1671,7 @@ var emaSpeaking = false;
 var emaAudioEl  = null;
 var emaProfile  = window.emaProfile || {};
 var EMA_SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+var EMA_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
 // Tap face: play greeting if idle, stop if speaking
 function emaFaceTap() {
@@ -1677,23 +1692,17 @@ function emaMicTap() {
   // Already listening — stop
   if (micBtn && micBtn._rec) {
     micBtn._rec.stop();
+    micBtn._rec = null;
     return;
   }
 
-  if (!EMA_SR) {
-    // No speech recognition on this browser — show text input
-    if (label) label.textContent = 'Type below ↓';
-    if (micBtn) micBtn.classList.add('listening');
-    var textEl = document.getElementById('emaTextIn');
-    if (textEl) { textEl.scrollIntoView({behavior:'smooth', block:'center'}); textEl.focus(); }
-    setTimeout(function() {
-      if (label) label.textContent = 'Ask by voice';
-      if (micBtn) micBtn.classList.remove('listening');
-    }, 2500);
+  // iOS: webkitSpeechRecognition is unreliable — use keyboard dictation instead
+  if (EMA_IOS || !EMA_SR) {
+    emaShowDictation();
     return;
   }
 
-  // Immediate feedback before browser prompts for mic permission
+  // Immediate visual feedback before browser prompts for mic
   if (label) label.textContent = 'Starting…';
   if (micBtn) micBtn.classList.add('listening');
 
@@ -1723,7 +1732,7 @@ function emaMicTap() {
   };
   rec.onresult = function(e) {
     var t = e.results[0][0].transcript.trim();
-    if (t) emaQuery(t);
+    if (t) { rec.stop(); emaQuery(t); }
   };
 
   try {
@@ -1732,9 +1741,58 @@ function emaMicTap() {
     micBtn._rec = null;
     if (label) label.textContent = 'Ask by voice';
     if (micBtn) micBtn.classList.remove('listening');
-    var textEl = document.getElementById('emaTextIn');
-    if (textEl) { textEl.scrollIntoView({behavior:'smooth', block:'center'}); textEl.focus(); }
+    emaShowDictation();
   }
+}
+
+function emaShowDictation() {
+  var micBtn  = document.getElementById('emaMicTapBtn');
+  var label   = document.getElementById('emaMicLabel');
+  var textEl  = document.getElementById('emaTextIn');
+  var textRow = document.querySelector('.ema-text-row');
+  if (!textEl) return;
+
+  // Highlight button and prompt
+  if (label) label.textContent = 'Tap 🎙 on keyboard';
+  if (micBtn) micBtn.classList.add('listening');
+
+  // Glow the text input
+  textEl.style.boxShadow = '0 0 0 2px #0ED2C8';
+  textEl.placeholder = 'Speak or type your question…';
+
+  // Auto-submit after 1.5 s pause in dictation
+  var _timer = null;
+  function _onInput() {
+    clearTimeout(_timer);
+    if (!textEl.value.trim()) return;
+    _timer = setTimeout(function() {
+      var q = textEl.value.trim();
+      if (!q) return;
+      textEl.value = '';
+      textEl.blur();
+      _cleanup();
+      emaQuery(q);
+    }, 1500);
+  }
+
+  function _cleanup() {
+    textEl.removeEventListener('input', _onInput);
+    textEl.style.boxShadow = '';
+    textEl.placeholder = 'Or type your question…';
+    if (label) label.textContent = 'Ask by voice';
+    if (micBtn) micBtn.classList.remove('listening');
+  }
+
+  textEl.addEventListener('input', _onInput);
+
+  // Also reset when input loses focus without content
+  textEl.addEventListener('blur', function _onBlur() {
+    if (!textEl.value.trim()) { _cleanup(); }
+    textEl.removeEventListener('blur', _onBlur);
+  });
+
+  if (textRow) textRow.scrollIntoView({behavior:'smooth', block:'center'});
+  textEl.focus();
 }
 
 function emaTextSend() {
