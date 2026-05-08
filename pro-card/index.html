@@ -294,6 +294,32 @@ body { font-family:'Exo 2',sans-serif; background:#050505; color:var(--text); mi
 .ema-find-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(90deg,#082a16,#14532D);border:none;border-top:1px solid rgba(34,197,94,0.25);padding:13px;font-family:'Exo 2',sans-serif;font-size:12px;font-weight:700;color:#fff;cursor:pointer;transition:opacity 0.15s;-webkit-tap-highlight-color:transparent;}
 .ema-find-btn:active{opacity:0.75;}
 .pro-pill-banner{background:linear-gradient(90deg,#78350f,#F59E0B,#FCD34D);color:#000;font-family:'Orbitron',sans-serif;font-size:7px;font-weight:900;letter-spacing:1.5px;padding:4px 10px;border-radius:20px;text-transform:uppercase;box-shadow:0 0 10px rgba(245,158,11,0.35);white-space:nowrap;}
+
+/* ── EMA WAKE OVERLAY ── */
+.ema-wake{
+  background:linear-gradient(160deg,#001a1a,#000f0f);
+  padding:22px 16px;display:flex;flex-direction:column;align-items:center;gap:14px;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;
+}
+.ema-wake-ring{
+  position:relative;width:86px;height:86px;display:flex;align-items:center;justify-content:center;
+}
+.ema-wake-ring::before,.ema-wake-ring::after{
+  content:'';position:absolute;border-radius:50%;border:2px solid rgba(14,210,200,0.35);
+  animation:ema-wake-pulse 2s ease-out infinite;
+}
+.ema-wake-ring::before{inset:-10px;animation-delay:0s;}
+.ema-wake-ring::after {inset:-20px;animation-delay:0.7s;}
+@keyframes ema-wake-pulse{0%{transform:scale(0.9);opacity:0.7}70%{transform:scale(1.05);opacity:0.2}100%{transform:scale(1.1);opacity:0}}
+.ema-wake-btn{
+  width:74px;height:74px;border-radius:50%;
+  background:linear-gradient(145deg,#002020,#004545);
+  border:2px solid var(--teal);
+  box-shadow:0 0 28px rgba(14,210,200,0.4),0 4px 16px rgba(0,0,0,0.6);
+  display:flex;align-items:center;justify-content:center;font-size:28px;
+}
+.ema-wake-label{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:900;letter-spacing:2px;color:var(--teal);text-transform:uppercase;}
+.ema-wake-sub{font-size:10px;color:var(--muted);text-align:center;line-height:1.5;}
 .sos-bar-inner { display:flex; gap:10px; align-items:center; max-width:480px; margin:0 auto; }
 .sos-btn { flex:1; display:flex; align-items:center; justify-content:center; gap:8px; background:linear-gradient(135deg,#7f0000,#ef4444); color:#fff; text-decoration:none; font-family:'Orbitron',sans-serif; font-size:13px; font-weight:900; letter-spacing:1px; padding:13px 12px; border-radius:12px; box-shadow:0 0 20px rgba(239,68,68,0.5); animation:sosPulse 1.8s infinite; }
 @keyframes sosPulse { 0%,100%{box-shadow:0 0 20px rgba(239,68,68,0.5)} 50%{box-shadow:0 0 36px rgba(239,68,68,0.85)} }
@@ -573,37 +599,45 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
       </div>
       <div class="ema-pro-tag">PRO</div>
     </div>
-    <!-- Listening / thinking / speaking indicator -->
-    <div class="ema-status-bar" id="emaStatusBar">
-      <div class="ema-wave">
-        <span></span><span></span><span></span><span></span><span></span>
+
+    <!-- Wake screen — tap to introduce + auto-listen -->
+    <div class="ema-wake" id="emaWake" onclick="emaWake()">
+      <div class="ema-wake-ring">
+        <div class="ema-wake-btn">🤖</div>
       </div>
-      <div class="ema-status-text" id="emaStatusText">LISTENING</div>
-      <div class="ema-wave">
-        <span></span><span></span><span></span><span></span><span></span>
-      </div>
+      <div class="ema-wake-label">Tap to meet EMA</div>
+      <div class="ema-wake-sub">Emma will introduce herself<br>and start listening</div>
     </div>
 
-    <div class="ema-response" id="emaResponse"></div>
-    <div class="ema-facilities" id="emaFacilities"></div>
-
-    <div class="ema-mic-area">
-      <div class="ema-mic-ring" id="emaMicRing">
-        <button class="ema-mic-btn" id="emaMicBtn" onclick="emaTap()">🎙️</button>
+    <!-- Active UI — hidden until woken -->
+    <div id="emaActive" style="display:none;">
+      <!-- Status bar -->
+      <div class="ema-status-bar" id="emaStatusBar">
+        <div class="ema-wave"><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="ema-status-text" id="emaStatusText">LISTENING</div>
+        <div class="ema-wave"><span></span><span></span><span></span><span></span><span></span></div>
       </div>
-      <div class="ema-mic-hint" id="emaMicHint">TAP TO SPEAK</div>
-    </div>
 
-    <!-- Text input — tap the mic icon on iOS keyboard to dictate -->
-    <div class="ema-text-row">
-      <input class="ema-text-in" id="emaTextIn" type="text"
-        placeholder="Type or use 🎤 on keyboard to speak…"
-        autocomplete="off" autocorrect="off" spellcheck="false"
-        onkeydown="if(event.key==='Enter')emaTextSend()">
-      <button class="ema-text-send" onclick="emaTextSend()">ASK</button>
-    </div>
+      <div class="ema-response" id="emaResponse"></div>
+      <div class="ema-facilities" id="emaFacilities"></div>
 
-    <button class="ema-find-btn" onclick="emaFindFacilities()">📍 &nbsp;Find Nearest Hospital / Doctor</button>
+      <div class="ema-mic-area">
+        <div class="ema-mic-ring" id="emaMicRing">
+          <button class="ema-mic-btn" id="emaMicBtn" onclick="emaTap()">🎙️</button>
+        </div>
+        <div class="ema-mic-hint" id="emaMicHint">TAP TO SPEAK</div>
+      </div>
+
+      <div class="ema-text-row">
+        <input class="ema-text-in" id="emaTextIn" type="text"
+          placeholder="Type or use 🎤 on keyboard…"
+          autocomplete="off" autocorrect="off" spellcheck="false"
+          onkeydown="if(event.key==='Enter')emaTextSend()">
+        <button class="ema-text-send" onclick="emaTextSend()">ASK</button>
+      </div>
+
+      <button class="ema-find-btn" onclick="emaFindFacilities()">📍 &nbsp;Find Nearest Hospital / Doctor</button>
+    </div>
   </div>
 
   <!-- TABS -->
@@ -1218,14 +1252,16 @@ var emaRec = null, emaAudioEl = null;
 emaSynth.onvoiceschanged = function(){ emaVoices = emaSynth.getVoices(); };
 setTimeout(function(){ emaVoices = emaSynth.getVoices(); }, 600);
 
-var emaGreeted = false;
-document.addEventListener('click', function(){
-  if (!emaGreeted && document.getElementById('emaSection') &&
-      document.getElementById('emaSection').style.display !== 'none') {
-    emaGreeted = true;
-    emaSpeak('greeting', "Hi, I'm Emma — your Emergency Medical Assistant. I've got you.");
-  }
-}, { once: true });
+function emaWake() {
+  // Swap wake screen for active UI
+  document.getElementById('emaWake').style.display   = 'none';
+  document.getElementById('emaActive').style.display = 'block';
+  // Play greeting (user tap = valid gesture for iOS audio)
+  // After greeting, auto-start listening
+  emaSpeak('greeting', "Hi, I'm Emma — your Emergency Medical Assistant. I've got you.", function() {
+    setTimeout(emaTap, 600);
+  });
+}
 
 var emaListenTimer = null;
 
@@ -1313,20 +1349,24 @@ function emaQuery(q) {
   }, 400);
 }
 
-function emaSpeak(key, fallback) {
+function emaSpeak(key, fallback, onDone) {
   emaStop();
   emaSpeaking = true;
   emaSetUI('speaking');
   var audio = new Audio(EMA_AUDIO + key + '.mp3');
   emaAudioEl = audio;
-  audio.onended = audio.onerror = function(){ emaSpeaking = false; emaSetUI('idle'); };
-  audio.play().catch(function(){
+  audio.onended = function(){ emaSpeaking = false; emaSetUI('idle'); if (onDone) onDone(); };
+  audio.onerror = function(){
+    // MP3 failed — fall back to browser TTS
     var u = new SpeechSynthesisUtterance(fallback);
     u.lang = 'en-AU'; u.rate = 0.9;
     var v = emaVoices.find(function(x){ return /Google|Microsoft/.test(x.name) && x.lang.startsWith('en'); }) || emaVoices[0];
     if (v) u.voice = v;
-    u.onend = u.onerror = function(){ emaSpeaking = false; emaSetUI('idle'); };
+    u.onend = u.onerror = function(){ emaSpeaking = false; emaSetUI('idle'); if (onDone) onDone(); };
     emaSynth.speak(u);
+  };
+  audio.play().catch(function(){
+    audio.onerror(new Event('error'));
   });
 }
 
