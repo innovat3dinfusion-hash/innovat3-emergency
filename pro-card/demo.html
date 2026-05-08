@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Innovat3 Pro Card — Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --orange:#F97316; --teal:#0ED2C8; --black:#0A0A0A;
+  --card:#141414; --border:#222;
+  --text:#F0F0F0; --muted:#777; --muted2:#444;
+  --red:#EF4444; --green:#22C55E; --blue:#3B82F6;
+  --gold:#F59E0B; --gold2:#FCD34D;
+  --tag-col:#F97316;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Exo 2',sans-serif;background:#050505;color:var(--text);min-height:100vh;}
+
+/* ── BANNER ── */
+.in3-banner{
+  background:linear-gradient(135deg,#0d0d0d 0%,#1a0a00 50%,#0d1a00 100%);
+  border-bottom:3px solid var(--tag-col);
+  padding:13px 18px;display:flex;align-items:center;gap:14px;
+  position:relative;overflow:hidden;
+}
+.in3-banner::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent 60%,rgba(245,158,11,0.06) 100%);
+  pointer-events:none;
+}
+.in3-logo{width:46px;height:46px;border-radius:11px;border:2px solid var(--tag-col);flex-shrink:0;overflow:hidden;box-shadow:0 0 18px rgba(249,115,22,0.45);}
+.in3-logo img{width:100%;height:100%;object-fit:cover;}
+.in3-brand-name{font-family:'Orbitron',sans-serif;font-size:20px;font-weight:900;color:var(--orange);line-height:1;}
+.in3-brand-name span{color:#fff;}
+.in3-brand-sub{font-size:8px;color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-top:4px;}
+.pro-badge-wrap{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0;}
+.in3-badge{
+  background:#130000;border:2px solid var(--red);color:var(--red);
+  font-family:'Orbitron',sans-serif;font-size:7px;font-weight:900;
+  letter-spacing:1px;padding:5px 9px;border-radius:7px;text-transform:uppercase;
+  animation:pred 1.5s infinite;
+}
+.pro-pill{
+  background:linear-gradient(90deg,#78350f,#F59E0B,#FCD34D);
+  color:#000;font-family:'Orbitron',sans-serif;font-size:7px;font-weight:900;
+  letter-spacing:1.5px;padding:4px 10px;border-radius:20px;text-transform:uppercase;
+  box-shadow:0 0 12px rgba(245,158,11,0.4);
+}
+@keyframes pred{0%,100%{opacity:1}50%{opacity:0.55}}
+
+/* ── ALERT BAR ── */
+.alert-banner{
+  display:flex;align-items:center;gap:10px;
+  background:#1a1400;border-bottom:2px solid #EAB308;color:#EAB308;
+  padding:9px 18px;font-size:12px;font-weight:700;
+}
+.alert-dot{width:8px;height:8px;border-radius:50%;background:currentColor;flex-shrink:0;animation:pd 1s infinite;}
+@keyframes pd{0%,100%{opacity:1}50%{opacity:0.25}}
+
+.card-wrap{max-width:480px;margin:0 auto;padding-bottom:90px;}
+
+/* ── IDENTITY ── */
+.identity-tab{
+  margin:10px 10px 0;border-radius:14px;overflow:hidden;
+  border:2px solid rgba(249,115,22,0.7);
+  box-shadow:0 0 28px rgba(249,115,22,0.18),0 4px 20px rgba(0,0,0,0.5);
+}
+.identity-tab-hdr{
+  background:linear-gradient(90deg,#c45000 0%,#f97316 60%,#ffb347 100%);
+  padding:10px 16px;display:flex;align-items:center;justify-content:space-between;
+}
+.identity-tab-hdr-left{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:900;color:#000;letter-spacing:1.5px;text-transform:uppercase;}
+.identity-tab-hdr-right{display:flex;gap:6px;align-items:center;}
+.pill-plan{background:linear-gradient(90deg,#78350f,#F59E0B);color:#000;font-size:7px;font-weight:800;letter-spacing:1px;padding:4px 11px;border-radius:20px;text-transform:uppercase;}
+.pill-active{background:#061209;color:var(--green);border:1px solid var(--green);font-size:7px;font-weight:800;letter-spacing:1px;padding:4px 11px;border-radius:20px;text-transform:uppercase;}
+.identity-tab-body{background:linear-gradient(160deg,#161616 0%,#0e0e0e 100%);}
+.id-top{display:flex;align-items:center;gap:16px;padding:16px 16px 14px;border-bottom:1px solid rgba(249,115,22,0.2);}
+.id-avatar{
+  width:84px;height:84px;border-radius:50%;
+  background:linear-gradient(135deg,#2a2a2a,#111);
+  display:flex;align-items:center;justify-content:center;
+  font-size:32px;flex-shrink:0;overflow:hidden;
+  border:3px solid var(--tag-col);
+  box-shadow:0 0 0 3px rgba(249,115,22,0.15),0 6px 24px rgba(0,0,0,0.7);
+}
+.id-name{font-family:'Orbitron',sans-serif;font-size:17px;font-weight:900;color:#fff;line-height:1.2;margin-bottom:5px;}
+.id-dob{font-size:11px;color:var(--muted);margin-bottom:4px;}
+.id-tag{font-family:monospace;font-size:10px;color:var(--muted2);letter-spacing:1px;}
+.id-bottom{display:flex;}
+.id-blood{
+  background:linear-gradient(135deg,#1f0606,#0d0000);border-right:1px solid rgba(239,68,68,0.3);
+  padding:14px 12px;text-align:center;width:95px;flex-shrink:0;border-top:2px solid var(--red);
+}
+.id-blood .lbl{font-size:7px;font-weight:700;letter-spacing:1.5px;color:var(--red);margin-bottom:5px;text-transform:uppercase;}
+.id-blood .val{font-family:'Orbitron',sans-serif;font-size:40px;font-weight:900;color:#fff;line-height:1;text-shadow:0 0 24px rgba(239,68,68,0.55);}
+.id-aid{background:linear-gradient(135deg,#160b00,#0a0500);padding:14px;flex:1;border-top:2px solid var(--orange);}
+.id-aid .lbl{font-size:7px;font-weight:700;letter-spacing:1.5px;color:var(--orange);margin-bottom:8px;text-transform:uppercase;}
+.id-aid .val{font-size:13px;color:var(--text);line-height:1.65;font-weight:600;}
+
+/* ── ORGAN DONOR BANNER ── */
+.organ-banner{
+  background:linear-gradient(90deg,#c45000 0%,#f97316 60%,#ffb347 100%);
+  border-top:1px solid rgba(249,115,22,0.4);
+  padding:8px 14px;display:flex;align-items:center;gap:8px;
+  font-size:11px;font-weight:700;color:#000;
+}
+
+/* ── FINDER STATUS ── */
+.finder-status{margin:10px 10px 0;border-radius:14px;overflow:hidden;border:2px solid rgba(168,85,247,0.7);box-shadow:0 0 28px rgba(168,85,247,0.18),0 4px 20px rgba(0,0,0,0.5);}
+.finder-status-hdr{background:linear-gradient(90deg,#6b21a8 0%,#a855f7 60%,#d8b4fe 100%);padding:10px 16px;display:flex;align-items:center;gap:8px;}
+.finder-status-hdr-label{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:900;color:#000;letter-spacing:1.5px;text-transform:uppercase;}
+.finder-status-body{background:linear-gradient(160deg,#160d20 0%,#0e0a14 100%);padding:14px;}
+.finder-status-intro{font-size:12px;color:#c084fc;font-weight:600;text-align:center;margin-bottom:12px;letter-spacing:0.3px;}
+.fs-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.fs-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border:none;border-radius:12px;padding:18px 10px;min-height:90px;font-family:'Exo 2',sans-serif;font-weight:800;color:#fff;cursor:pointer;transition:transform 0.12s,box-shadow 0.12s;}
+.fs-btn:active{transform:scale(0.96);}
+.fs-icon{font-size:28px;margin-bottom:7px;display:block;}
+.fs-label{font-size:12px;line-height:1.3;}
+.fs-btn-red{background:linear-gradient(135deg,#7f1d1d,#ef4444);border:2px solid #ef4444;box-shadow:0 0 16px rgba(239,68,68,0.45),0 4px 12px rgba(0,0,0,0.4);}
+.fs-btn-yellow{background:linear-gradient(135deg,#713f12,#eab308);border:2px solid #eab308;box-shadow:0 0 16px rgba(234,179,8,0.45),0 4px 12px rgba(0,0,0,0.4);}
+.fs-btn-green{background:linear-gradient(135deg,#14532d,#22c55e);border:2px solid #22c55e;box-shadow:0 0 16px rgba(34,197,94,0.45),0 4px 12px rgba(0,0,0,0.4);}
+.fs-btn-teal{background:linear-gradient(135deg,#134e4a,#0ed2c8);border:2px solid #0ed2c8;box-shadow:0 0 16px rgba(14,210,200,0.45),0 4px 12px rgba(0,0,0,0.4);}
+
+/* ── TABS ── */
+.tabs{padding:10px 10px 0;display:flex;flex-direction:column;gap:10px;}
+.tab{border-radius:14px;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,0.4);}
+.tab-hdr{padding:10px 14px;font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;display:flex;align-items:center;gap:6px;}
+.tab-body{padding:14px;background:#111;}
+.tab-main{font-size:13px;font-weight:700;color:#fff;line-height:1.7;}
+.tab-text{font-size:12px;color:#ccc;line-height:1.7;}
+.tab-rule{border:none;border-top:1px solid #1e1e1e;margin:10px 0 8px;}
+.tab-sub-lbl{font-size:7.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;}
+.tab-sub-txt{font-size:12px;color:var(--muted);line-height:1.7;}
+.tab-alert{border:1px solid rgba(249,115,22,0.35);}
+.tab-alert .tab-hdr{background:linear-gradient(90deg,#b85200,#f97316);color:#000;}
+.tab-addr{border:1px solid rgba(20,83,45,0.5);}
+.tab-addr .tab-hdr{background:linear-gradient(90deg,#0c2e1a,#14532D);color:#fff;}
+.tab-notes{border:1px solid rgba(30,58,138,0.5);}
+.tab-notes .tab-hdr{background:linear-gradient(90deg,#0c1a4a,#1E3A8A);color:#fff;}
+.tab-contacts{border:2px solid rgba(21,128,61,0.6);box-shadow:0 0 22px rgba(21,128,61,0.15);}
+.tab-contacts .tab-hdr{background:linear-gradient(90deg,#082a16,#15803D,#22c55e);color:#fff;font-size:9px;}
+
+/* ── CONTACTS ── */
+.contact-row{display:flex;align-items:center;background:#0d0d0d;border-radius:12px;overflow:hidden;border:1px solid #1e1e1e;margin-bottom:10px;}
+.contact-row:last-child{margin-bottom:0;}
+.ct-bar{width:4px;align-self:stretch;flex-shrink:0;}
+.ct-badge{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin:0 10px;}
+.ct-info{flex:1;padding:10px 0;min-width:0;}
+.ct-name{font-size:13px;font-weight:700;color:#fff;}
+.ct-rel{font-size:10px;margin:2px 0;opacity:0.8;}
+.ct-phone{font-size:10px;color:var(--muted);font-family:monospace;}
+.ct-btns{display:flex;flex-direction:column;gap:5px;padding:8px 10px;flex-shrink:0;}
+.btn-p{display:inline-flex;align-items:center;gap:6px;border-radius:8px;padding:7px 11px;font-size:11px;font-weight:700;text-decoration:none;color:#fff;white-space:nowrap;min-width:116px;}
+.btn-call-p{background:linear-gradient(135deg,#15803D,#166534);}
+.btn-wa-p{background:linear-gradient(135deg,#075E54,#128C7E);}
+
+/* ── EMERGENCY NUMBERS ── */
+.e-nums{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px;}
+.e-num{background:linear-gradient(135deg,#160404,#0d0000);border:1px solid rgba(239,68,68,0.35);border-bottom:3px solid var(--red);border-radius:14px;text-align:center;padding:14px 6px;text-decoration:none;display:block;transition:opacity 0.15s;}
+.e-num:active{opacity:0.7;}
+.e-num .lbl{font-size:8px;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:1px;}
+.e-num .num{font-family:'Orbitron',sans-serif;font-size:20px;font-weight:900;color:#fff;}
+
+/* ══════════════════════════════════════════
+   PRO DIVIDER
+══════════════════════════════════════════ */
+.pro-divider{
+  margin:10px 10px 0;display:flex;align-items:center;gap:10px;
+}
+.pro-divider-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(245,158,11,0.4),transparent);}
+.pro-divider-label{
+  font-family:'Orbitron',sans-serif;font-size:7px;font-weight:900;
+  color:var(--gold);letter-spacing:2px;text-transform:uppercase;
+  background:linear-gradient(90deg,#78350f,#F59E0B);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  flex-shrink:0;
+}
+
+/* ══════════════════════════════════════════
+   EMA — EMBEDDED PRO SECTION
+══════════════════════════════════════════ */
+.assist-wrap{
+  margin:8px 10px 0;border-radius:14px;overflow:hidden;
+  border:2px solid rgba(14,210,200,0.65);
+  box-shadow:0 0 32px rgba(14,210,200,0.12),0 4px 20px rgba(0,0,0,0.5);
+}
+.assist-hdr{
+  background:linear-gradient(90deg,#003d3b 0%,#0a9e97 55%,#0ED2C8 100%);
+  padding:11px 16px;display:flex;align-items:center;gap:12px;
+}
+.assist-hdr-icon{font-size:22px;flex-shrink:0;}
+.assist-hdr-text{flex:1;}
+.assist-hdr-label{font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:#000;letter-spacing:2px;text-transform:uppercase;}
+.assist-hdr-sub{font-size:9px;color:rgba(0,0,0,0.55);margin-top:2px;font-weight:600;}
+.pro-tag{background:rgba(0,0,0,0.25);border-radius:20px;padding:3px 9px;font-family:'Orbitron',sans-serif;font-size:6px;font-weight:900;color:#000;letter-spacing:1px;flex-shrink:0;}
+
+/* Response bubble */
+.ema-response{
+  background:linear-gradient(135deg,#001a2a,#001020);
+  border-bottom:1px solid rgba(14,210,200,0.15);
+  padding:14px 16px;font-size:13px;color:#ddd;line-height:1.7;
+}
+.ema-response strong{color:var(--teal);}
+
+/* Facility results */
+.ema-facilities{display:flex;flex-direction:column;gap:0;}
+.ema-fac{
+  display:flex;align-items:center;gap:12px;
+  background:#0a1a1a;border-bottom:1px solid rgba(14,210,200,0.1);
+  padding:11px 16px;
+}
+.ema-fac-icon{font-size:18px;flex-shrink:0;}
+.ema-fac-info{flex:1;min-width:0;}
+.ema-fac-name{font-size:12px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ema-fac-meta{font-size:10px;color:var(--muted);margin-top:1px;}
+.ema-fac-call{background:linear-gradient(135deg,#15803D,#166534);border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;color:#fff;text-decoration:none;flex-shrink:0;white-space:nowrap;}
+.ema-fac-map{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;color:#fff;text-decoration:none;flex-shrink:0;}
+
+/* Mic area */
+.ema-mic-area{
+  background:linear-gradient(160deg,#001a1a,#000f0f);
+  padding:20px 16px 16px;
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+}
+.ema-mic-ring{position:relative;width:76px;height:76px;display:flex;align-items:center;justify-content:center;}
+.ema-mic-ring::before{content:'';position:absolute;inset:-5px;border-radius:50%;border:1px solid rgba(14,210,200,0.2);pointer-events:none;}
+.ema-mic-ring.listening::before{border-color:rgba(239,68,68,0.5);animation:ema-ring 1s infinite;}
+.ema-mic-ring.speaking::before{border-color:rgba(168,85,247,0.5);animation:ema-ring 0.7s infinite;}
+@keyframes ema-ring{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.1);opacity:0.4}}
+
+.ema-mic-btn{
+  width:68px;height:68px;border-radius:50%;
+  background:linear-gradient(145deg,#001a1a,#003030);
+  border:2px solid var(--teal);
+  box-shadow:0 0 24px rgba(14,210,200,0.25),0 4px 16px rgba(0,0,0,0.6);
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;cursor:pointer;outline:none;
+  -webkit-tap-highlight-color:transparent;
+  transition:transform 0.15s,border-color 0.3s,box-shadow 0.3s;
+}
+.ema-mic-btn:active{transform:scale(0.93);}
+.ema-mic-btn.listening{border-color:var(--red);box-shadow:0 0 36px rgba(239,68,68,0.5);}
+.ema-mic-btn.speaking{border-color:#A855F7;box-shadow:0 0 36px rgba(168,85,247,0.4);}
+.ema-mic-hint{font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
+
+/* Find button */
+.ema-find-btn{
+  width:100%;display:flex;align-items:center;justify-content:center;gap:8px;
+  background:linear-gradient(90deg,#082a16,#14532D);
+  border:none;border-top:1px solid rgba(34,197,94,0.25);
+  padding:13px;font-family:'Exo 2',sans-serif;font-size:12px;font-weight:700;
+  color:#fff;cursor:pointer;transition:opacity 0.15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.ema-find-btn:active{opacity:0.75;}
+
+/* ── COLOUR STRIP & FOOTER ── */
+.colour-strip{display:flex;height:5px;margin-top:10px;}
+.colour-strip div{flex:1;}
+.sc-footer{text-align:center;padding:12px;background:#030303;font-family:'Orbitron',sans-serif;font-size:7px;color:#2a2a2a;letter-spacing:3px;border-top:1px solid #0f0f0f;}
+.sc-footer span{color:var(--orange);}
+.sc-footer .pro-txt{color:var(--gold);}
+
+/* ── SOS BAR ── */
+.sos-bar{position:fixed;bottom:0;left:0;right:0;z-index:100;background:linear-gradient(0deg,#0d0000,#1a0000);border-top:2px solid rgba(239,68,68,0.4);padding:10px 16px;}
+.sos-bar-inner{max-width:480px;margin:0 auto;}
+.sos-btn{display:flex;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg,#7f1d1d,#dc2626,#ef4444);border:none;border-radius:12px;padding:14px;width:100%;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:#fff;letter-spacing:2px;text-decoration:none;text-transform:uppercase;box-shadow:0 0 24px rgba(239,68,68,0.35);animation:sosblink 2s infinite;}
+@keyframes sosblink{0%,100%{box-shadow:0 0 24px rgba(239,68,68,0.35)}50%{box-shadow:0 0 40px rgba(239,68,68,0.6)}}
+</style>
+</head>
+<body>
+
+<!-- BANNER -->
+<div class="in3-banner">
+  <div class="in3-logo">
+    <img src="https://innovat3.co.za/assets/logo.png" onerror="this.style.display='none';this.parentNode.innerHTML='<span style=\'font-family:Orbitron,sans-serif;font-size:11px;font-weight:900;color:#F97316\'>IN3</span>'" alt="IN3">
+  </div>
+  <div>
+    <div class="in3-brand-name">innovat<span>3</span></div>
+    <div class="in3-brand-sub">Emergency Card</div>
+  </div>
+  <div class="pro-badge-wrap">
+    <div class="in3-badge">Emergency</div>
+    <div class="pro-pill">★ Pro Member</div>
+  </div>
+</div>
+
+<!-- ALERT BAR -->
+<div class="alert-banner">
+  <div class="alert-dot"></div>
+  ⚠️ Penicillin Allergy — Do Not Administer
+</div>
+
+<div class="card-wrap">
+
+  <!-- IDENTITY -->
+  <div class="identity-tab">
+    <div class="identity-tab-hdr">
+      <div class="identity-tab-hdr-left">Identity — Human Tag</div>
+      <div class="identity-tab-hdr-right">
+        <span class="pill-plan">★ PRO</span>
+        <span class="pill-active">Active</span>
+      </div>
+    </div>
+    <div class="identity-tab-body">
+      <div class="id-top">
+        <div class="id-avatar">👨</div>
+        <div class="id-info">
+          <div class="id-name">James Olivier</div>
+          <div class="id-dob">DOB: 12 Aug 1987 · Male · 37 yrs</div>
+          <div class="id-tag">#IN3-PRO-00427</div>
+        </div>
+      </div>
+      <div class="id-bottom">
+        <div class="id-blood">
+          <div class="lbl">Blood</div>
+          <div class="val">O+</div>
+        </div>
+        <div class="id-aid">
+          <div class="lbl">Medical Aid</div>
+          <div class="val">Discovery Health<br>Principal Member<br>Plan: Comprehensive</div>
+        </div>
+      </div>
+      <div class="organ-banner">
+        <span>💜</span> Registered Organ Donor &nbsp;·&nbsp; DNR: No advanced directive on file
+      </div>
+    </div>
+  </div>
+
+  <!-- FINDER STATUS -->
+  <div class="finder-status">
+    <div class="finder-status-hdr">
+      <span class="finder-status-hdr-label">🤝 &nbsp;Are you the finder?</span>
+    </div>
+    <div class="finder-status-body">
+      <div class="finder-status-intro">Tap a button to instantly alert the family</div>
+      <div class="fs-grid">
+        <button class="fs-btn fs-btn-red">
+          <span class="fs-icon">🚨</span>
+          <span class="fs-label">Calling emergency services</span>
+        </button>
+        <button class="fs-btn fs-btn-green">
+          <span class="fs-icon">🟢</span>
+          <span class="fs-label">Tag found — not an emergency</span>
+        </button>
+        <button class="fs-btn fs-btn-yellow">
+          <span class="fs-icon">⚠️</span>
+          <span class="fs-label">Person is conscious &amp; stable</span>
+        </button>
+        <button class="fs-btn fs-btn-teal">
+          <span class="fs-icon">📍</span>
+          <span class="fs-label">I'm safe at this location</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EMA — EMBEDDED, PRO ONLY -->
+  <div class="assist-wrap" id="emaWrap">
+    <div class="assist-hdr">
+      <span class="assist-hdr-icon">🤖</span>
+      <div class="assist-hdr-text">
+        <div class="assist-hdr-label">EMA</div>
+        <div class="assist-hdr-sub">Emergency Medical Assistant</div>
+      </div>
+      <div class="pro-tag">PRO</div>
+    </div>
+
+    <!-- Response display -->
+    <div class="ema-response" id="emaResponse" style="display:none"></div>
+
+    <!-- Facility results -->
+    <div class="ema-facilities" id="emaFacilities"></div>
+
+    <!-- Mic -->
+    <div class="ema-mic-area">
+      <div class="ema-mic-ring" id="emaMicRing">
+        <button class="ema-mic-btn" id="emaMicBtn" onclick="emaTap()">🎙️</button>
+      </div>
+      <div class="ema-mic-hint" id="emaMicHint">TAP TO SPEAK</div>
+    </div>
+
+    <!-- Find button -->
+    <button class="ema-find-btn" onclick="emaFindFacilities()">
+      <span>📍</span> Find Nearest Hospital / Pharmacy
+    </button>
+
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+
+    <div class="tab tab-alert">
+      <div class="tab-hdr">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        Medical Alerts — Tell Paramedics
+      </div>
+      <div class="tab-body">
+        <div class="tab-main">Penicillin Allergy (Anaphylaxis) · Type 1 Diabetic</div>
+        <hr class="tab-rule">
+        <div class="tab-sub-lbl" style="color:#0ED2C8">Current Medications</div>
+        <div class="tab-sub-txt">Humalog Insulin (fast-acting) · Lantus (long-acting) · EpiPen ×2 (in bag)</div>
+      </div>
+    </div>
+
+    <div class="tab tab-addr">
+      <div class="tab-hdr">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+        Home Address
+      </div>
+      <div class="tab-body">
+        <div class="tab-text">14 Baobab Crescent, Sunninghill<br>Sandton, Gauteng, 2157</div>
+      </div>
+    </div>
+
+    <div class="tab tab-notes">
+      <div class="tab-hdr">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+        Notes for Finder
+      </div>
+      <div class="tab-body">
+        <div class="tab-text">EpiPen is in the side pocket of my black backpack. Glucose tablets in shirt pocket. If unresponsive, call Michelle first — she is a registered nurse.</div>
+      </div>
+    </div>
+
+    <div class="tab tab-contacts">
+      <div class="tab-hdr">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+        Emergency Contacts — Call or Message Now
+      </div>
+      <div class="tab-body">
+        <div class="contact-row">
+          <div class="ct-bar" style="background:#EF4444;"></div>
+          <div class="ct-badge">👩</div>
+          <div class="ct-info">
+            <div class="ct-name">Michelle Olivier</div>
+            <div class="ct-rel" style="color:#EF4444;">Wife · Registered Nurse</div>
+            <div class="ct-phone">+27 82 341 7890</div>
+          </div>
+          <div class="ct-btns">
+            <a class="btn-p btn-call-p" href="tel:+27823417890">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+              Call Now
+            </a>
+            <a class="btn-p btn-wa-p" href="https://wa.me/27823417890">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              WhatsApp
+            </a>
+          </div>
+        </div>
+        <div class="contact-row">
+          <div class="ct-bar" style="background:#3B82F6;"></div>
+          <div class="ct-badge">👨</div>
+          <div class="ct-info">
+            <div class="ct-name">André Olivier</div>
+            <div class="ct-rel" style="color:#3B82F6;">Father</div>
+            <div class="ct-phone">+27 71 209 4455</div>
+          </div>
+          <div class="ct-btns">
+            <a class="btn-p btn-call-p" href="tel:+27712094455">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+              Call Now
+            </a>
+            <a class="btn-p btn-wa-p" href="https://wa.me/27712094455">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tabs -->
+
+  <!-- EMERGENCY NUMBERS -->
+  <div class="e-nums">
+    <a href="tel:10111" class="e-num"><div class="lbl">SAPS Police</div><div class="num">10111</div></a>
+    <a href="tel:10177" class="e-num"><div class="lbl">Ambulance</div><div class="num">10177</div></a>
+    <a href="tel:112"   class="e-num"><div class="lbl">Emergency</div><div class="num">112</div></a>
+  </div>
+
+  <div class="colour-strip">
+    <div style="background:#F97316;"></div>
+    <div style="background:#F59E0B;"></div>
+    <div style="background:#0ED2C8;"></div>
+    <div style="background:#EF4444;"></div>
+    <div style="background:#22C55E;"></div>
+    <div style="background:#3B82F6;"></div>
+  </div>
+  <div class="sc-footer"><span>innovat3.</span> &nbsp;·&nbsp; Smart NFC Emergency Tags &nbsp;·&nbsp; <span class="pro-txt">★ Pro</span> &nbsp;·&nbsp; innovat3.co.za</div>
+
+</div>
+
+<script>
+// ── EMA embedded voice assistant ──────────────────────────────────
+const EMA_AUDIO = '../assist/audio/';
+const SR  = window.SpeechRecognition || window.webkitSpeechRecognition;
+const synth = window.speechSynthesis;
+let voices = [];
+let emaListening = false, emaSpeaking = false;
+let emaRec = null, emaAudio = null;
+
+synth.onvoiceschanged = () => { voices = synth.getVoices(); };
+setTimeout(() => { voices = synth.getVoices(); }, 600);
+
+// greet on first tap anywhere
+let emaGreeted = false;
+document.addEventListener('click', () => {
+  if (!emaGreeted) { emaGreeted = true; emaSpeak('greeting', "Hi, I'm Emma — your Emergency Medical Assistant. I've got you."); }
+}, { once: true });
+
+function emaTap() {
+  if (!SR) return;
+  if (emaListening) { emaRec && emaRec.stop(); return; }
+  if (emaSpeaking) emaStop();
+  emaRec = new SR();
+  emaRec.lang = navigator.language || 'en-ZA';
+  emaRec.interimResults = false;
+  emaRec.onstart  = () => { emaListening = true;  emaSetUI('listening'); };
+  emaRec.onend    = () => { emaListening = false; if (!emaSpeaking) emaSetUI('idle'); };
+  emaRec.onerror  = () => { emaListening = false; emaSetUI('idle'); };
+  emaRec.onresult = e => { const t = e.results[0][0].transcript.trim(); if (t) emaQuery(t); };
+  emaRec.start();
+}
+
+function emaQuery(q) {
+  if (emaRec) emaRec.stop();
+  emaListening = false;
+  emaSetUI('thinking');
+  setTimeout(() => {
+    const { html, key, plain } = emaGetResponse(q.toLowerCase());
+    document.getElementById('emaResponse').innerHTML = html;
+    document.getElementById('emaResponse').style.display = 'block';
+    if (/nearest|hospital|pharmacy|clinic|doctor/.test(q.toLowerCase())) emaFindFacilities();
+    emaSpeak(key, plain);
+  }, 400);
+}
+
+function emaSpeak(key, fallback) {
+  emaStop();
+  emaSpeaking = true;
+  emaSetUI('speaking');
+  const audio = new Audio(EMA_AUDIO + key + '.mp3');
+  emaAudio = audio;
+  audio.onended = audio.onerror = () => { emaSpeaking = false; emaSetUI('idle'); };
+  audio.play().catch(() => {
+    const u = new SpeechSynthesisUtterance(fallback);
+    u.lang = 'en-AU'; u.rate = 0.9;
+    const v = voices.find(x => /Google|Microsoft/.test(x.name) && x.lang.startsWith('en')) || voices[0];
+    if (v) u.voice = v;
+    u.onend = u.onerror = () => { emaSpeaking = false; emaSetUI('idle'); };
+    synth.speak(u);
+  });
+}
+
+function emaStop() {
+  if (emaAudio) { emaAudio.pause(); emaAudio = null; }
+  synth.cancel();
+  emaSpeaking = false;
+}
+
+function emaSetUI(state) {
+  const btn  = document.getElementById('emaMicBtn');
+  const ring = document.getElementById('emaMicRing');
+  const hint = document.getElementById('emaMicHint');
+  const states = {
+    idle:      { btnCls: '',          ringCls: '',          hint: 'TAP TO SPEAK',  icon: '🎙️' },
+    listening: { btnCls: 'listening', ringCls: 'listening', hint: 'LISTENING…',    icon: '🔴' },
+    thinking:  { btnCls: '',          ringCls: '',          hint: 'THINKING…',     icon: '💭' },
+    speaking:  { btnCls: 'speaking',  ringCls: 'speaking',  hint: 'SPEAKING…',     icon: '🔊' },
+  };
+  const s = states[state] || states.idle;
+  btn.className  = 'ema-mic-btn ' + s.btnCls;
+  ring.className = 'ema-mic-ring ' + s.ringCls;
+  hint.textContent = s.hint;
+  btn.textContent  = s.icon;
+}
+
+// Responses — same engine as demo.html
+function emaGetResponse(q) {
+  if (/nearest|nearby|find|hospital|pharmacy|clinic|gp\b/.test(q))
+    return { key:'location_search', html:'Finding nearby facilities…', plain:'Finding nearby facilities now.' };
+  if (/heart attack|chest pain|chest tight/.test(q))
+    return { key:'heart_attack', html:'<strong>Possible heart attack.</strong> Call <strong>10177</strong> now. Sit them down, loosen clothing, give aspirin 300mg to chew if not allergic. Stay with them.', plain:'Possible heart attack.' };
+  if (/stroke|face droop|slurred|fast test/.test(q))
+    return { key:'stroke', html:'<strong>Possible stroke.</strong> FAST — Face drooping · Arms unequal · Speech slurred · Time: call <strong>10177</strong> now. Do not give food or water.', plain:'Possible stroke. Call 10177.' };
+  if (/chok|heimlich|can.?t breathe/.test(q))
+    return { key:'choking', html:'<strong>Choking.</strong> 5 back blows between shoulder blades, then 5 abdominal thrusts. Alternate until clear. If unconscious — CPR + call <strong>10177</strong>.', plain:'Choking emergency.' };
+  if (/cpr|not breathing|no pulse|unconscious/.test(q))
+    return { key:'cpr', html:'<strong>CPR.</strong> Call <strong>10177</strong> first. Push hard on centre of chest — 100–120 per minute, 5–6cm deep. 30 compressions, 2 breaths. Repeat.', plain:'Start CPR.' };
+  if (/bleed|bleeding|severe cut/.test(q))
+    return { key:'bleeding', html:'<strong>Severe bleeding.</strong> Press firmly with a clean cloth. Do not lift. Elevate the limb. Tourniquet 5cm above wound if life-threatening — note the time.', plain:'Apply direct pressure.' };
+  if (/seizure|epilep|fitting|convuls/.test(q))
+    return { key:'seizure', html:'<strong>Seizure.</strong> Do not restrain. Clear the area, soft padding under head, roll onto their side. Time it. Call <strong>10177</strong> if over 5 minutes.', plain:'Do not restrain.' };
+  if (/burn|scald/.test(q))
+    return { key:'burns', html:'<strong>Burns.</strong> Cool under running water — 20 minutes. No ice, no butter. Cover loosely. Go to emergency if larger than your hand.', plain:'Cool with running water for 20 minutes.' };
+  if (/allerg|anaphylax|epipen|sting/.test(q))
+    return { key:'allergic', html:'<strong>Severe allergic reaction.</strong> Call <strong>10177</strong>. Use EpiPen now — outer thigh. Lay flat, raise legs unless breathing is difficult.', plain:'Use the EpiPen and call 10177.' };
+  if (/overdose|poison/.test(q))
+    return { key:'overdose', html:'<strong>Poisoning.</strong> Call <strong>0800 333 444</strong> or <strong>10177</strong>. Note what was taken. Do not induce vomiting. Recovery position if unconscious.', plain:'Call the Poison Helpline on 0800 333 444.' };
+  if (/fever|temperature/.test(q))
+    return { key:'fever', html:'<strong>Fever.</strong> Give paracetamol, encourage fluids. See a doctor if above 39.5°C, any fever in babies under 3 months, or lasts more than 3 days.', plain:'Give paracetamol and fluids.' };
+  if (/diabet|low blood sugar|hypoglyc/.test(q))
+    return { key:'diabetic', html:'<strong>Low blood sugar.</strong> If conscious — 3 glucose tablets or 150ml juice. Wait 15 min, then a snack. If unconscious — recovery position, call <strong>10177</strong>.', plain:'Give glucose if conscious.' };
+  return { key:'default', html:'Ask me about any emergency — heart attack, stroke, CPR, choking, bleeding, seizure, burns, or say <strong>find nearest hospital</strong>.', plain:"I'm Emma. Ask me about any emergency." };
+}
+
+// Facility finder
+async function emaFindFacilities() {
+  const box = document.getElementById('emaFacilities');
+  box.innerHTML = '<div style="padding:10px 16px;font-size:11px;color:#5eead4;">Locating nearby facilities…</div>';
+  if (!navigator.geolocation) { box.innerHTML = ''; return; }
+  navigator.geolocation.getCurrentPosition(async pos => {
+    const { latitude: lat, longitude: lon } = pos.coords;
+    try {
+      const q = `[out:json][timeout:12];(node["amenity"~"^(hospital|pharmacy|clinic|doctors)$"](around:5000,${lat},${lon});way["amenity"~"^(hospital|pharmacy|clinic|doctors)$"](around:5000,${lat},${lon}););out center 6;`;
+      const res = await fetch('https://overpass-api.de/api/interpreter',{method:'POST',body:'data='+encodeURIComponent(q)});
+      const data = await res.json();
+      const ICONS = {hospital:'🏥',pharmacy:'💊',clinic:'🏪',doctors:'👨‍⚕️'};
+      const items = data.elements.filter(e=>e.tags&&e.tags.name).map(e=>({
+        name:e.tags.name, type:e.tags.amenity,
+        phone:e.tags.phone||e.tags['contact:phone']||'',
+        lat:e.lat||e.center?.lat, lon:e.lon||e.center?.lon,
+        dist:haversine(lat,lon,e.lat||e.center?.lat,e.lon||e.center?.lon)
+      })).sort((a,b)=>a.dist-b.dist).slice(0,5);
+      if (!items.length) { box.innerHTML='<div style="padding:10px 16px;font-size:11px;color:#777;">No facilities found within 5km.</div>'; return; }
+      box.innerHTML = items.map(f=>{
+        const d = f.dist<1?Math.round(f.dist*1000)+'m':f.dist.toFixed(1)+'km';
+        const icon = ICONS[f.type]||'🏥';
+        const type = f.type.charAt(0).toUpperCase()+f.type.slice(1);
+        const action = f.phone
+          ? `<a class="ema-fac-call" href="tel:${f.phone.replace(/[\s\-()+]/g,'')}">${f.phone}</a>`
+          : `<a class="ema-fac-map" href="https://www.google.com/maps/search/${encodeURIComponent(f.name)}/@${f.lat},${f.lon},16z" target="_blank" rel="noopener">Map</a>`;
+        return `<div class="ema-fac"><span class="ema-fac-icon">${icon}</span><div class="ema-fac-info"><div class="ema-fac-name">${f.name}</div><div class="ema-fac-meta">${type} · ${d}</div></div>${action}</div>`;
+      }).join('');
+      emaSpeak('location_search','Found nearby facilities.');
+    } catch { box.innerHTML='<div style="padding:10px 16px;font-size:11px;color:#777;">Could not load facilities — check connection.</div>'; }
+  }, ()=>{ box.innerHTML='<div style="padding:10px 16px;font-size:11px;color:#777;">Location access denied.</div>'; }, {timeout:10000});
+}
+
+function haversine(a,b,c,d){
+  if(c==null||d==null)return 9999;
+  const R=6371,r=Math.PI/180,dLat=(c-a)*r,dLon=(d-b)*r;
+  return R*2*Math.atan2(Math.sqrt(Math.sin(dLat/2)**2+Math.cos(a*r)*Math.cos(c*r)*Math.sin(dLon/2)**2),Math.sqrt(1-Math.sin(dLat/2)**2-Math.cos(a*r)*Math.cos(c*r)*Math.sin(dLon/2)**2));
+}
+</script>
+
+<!-- SOS BAR -->
+<div class="sos-bar">
+  <div class="sos-bar-inner">
+    <a href="tel:112" class="sos-btn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+      CALL 112 — EMERGENCY
+    </a>
+  </div>
+</div>
+
+</body>
+</html>

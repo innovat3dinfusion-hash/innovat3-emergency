@@ -9,7 +9,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Innovat3 Emergency Card</title>
+<title>Innovat3 Pro Card</title>
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://innovat3.co.za/card/">
 <meta property="og:title" content="Innovat3 Emergency Card">
@@ -220,7 +220,10 @@ body { font-family:'Exo 2',sans-serif; background:#050505; color:var(--text); mi
 .lang-btn { font-family:'Orbitron',sans-serif; font-size:10px; font-weight:900; letter-spacing:1px; padding:8px 12px; border-radius:8px; border:1px solid #333; background:#111; color:#777; cursor:pointer; text-transform:uppercase; transition:all 0.15s; }
 .lang-btn.active { border-color:var(--orange); color:var(--orange); background:rgba(249,115,22,0.1); }
 .alert-badge { flex-shrink:0; margin-left:auto; background:#130000; border:1px solid var(--red); color:var(--red); font-family:'Orbitron',sans-serif; font-size:7px; font-weight:900; letter-spacing:1px; padding:5px 9px; border-radius:7px; text-transform:uppercase; animation:pred 1.5s infinite; white-space:nowrap; }
-.id-dnr { border-top:1px solid rgba(239,68,68,0.25); background:linear-gradient(90deg,#130000,#0d0000); }
+/* Organ donor row — orange on pro card */
+.id-dnr { border-top:1px solid rgba(249,115,22,0.3); background:linear-gradient(90deg,#c45000,#f97316,#ffb347); }
+.id-dnr-inner { color:#000 !important; }
+.id-dnr-inner svg { fill:#000 !important; }
 .id-dnr-inner { display:flex; align-items:center; gap:8px; padding:10px 14px; font-size:12px; font-weight:700; color:var(--red); }
 .profile-bar-wrap { margin:10px 10px 0; background:#111; border:1px solid #1e1e1e; border-radius:12px; padding:12px 14px; }
 .profile-bar-hdr { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
@@ -230,6 +233,38 @@ body { font-family:'Exo 2',sans-serif; background:#050505; color:var(--text); mi
 .profile-bar-fill { height:100%; border-radius:3px; transition:width 0.6s ease; }
 .profile-bar-missing { font-size:10px; color:#777; margin-top:8px; line-height:1.6; }
 .sos-bar { display:none; position:fixed; bottom:0; left:0; right:0; z-index:900; background:#0d0000; border-top:3px solid var(--red); padding:10px 16px; box-shadow:0 -4px 24px rgba(239,68,68,0.35); }
+
+/* ── EMA PRO SECTION ── */
+.ema-wrap{margin:10px 10px 0;border-radius:14px;overflow:hidden;border:2px solid rgba(14,210,200,0.65);box-shadow:0 0 32px rgba(14,210,200,0.12),0 4px 20px rgba(0,0,0,0.5);}
+.ema-hdr{background:linear-gradient(90deg,#003d3b 0%,#0a9e97 55%,#0ED2C8 100%);padding:11px 16px;display:flex;align-items:center;gap:12px;}
+.ema-hdr-icon{font-size:22px;flex-shrink:0;}
+.ema-hdr-label{font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:#000;letter-spacing:2px;text-transform:uppercase;flex:1;}
+.ema-hdr-sub{font-size:9px;color:rgba(0,0,0,0.55);margin-top:2px;font-weight:600;}
+.ema-pro-tag{background:rgba(0,0,0,0.25);border-radius:20px;padding:3px 9px;font-family:'Orbitron',sans-serif;font-size:6px;font-weight:900;color:#000;letter-spacing:1px;flex-shrink:0;}
+.ema-response{background:linear-gradient(135deg,#001a2a,#001020);border-bottom:1px solid rgba(14,210,200,0.15);padding:14px 16px;font-size:13px;color:#ddd;line-height:1.7;display:none;}
+.ema-response strong{color:#0ED2C8;}
+.ema-facilities{display:flex;flex-direction:column;}
+.ema-fac{display:flex;align-items:center;gap:12px;background:#0a1a1a;border-bottom:1px solid rgba(14,210,200,0.1);padding:11px 16px;}
+.ema-fac-icon{font-size:18px;flex-shrink:0;}
+.ema-fac-info{flex:1;min-width:0;}
+.ema-fac-name{font-size:12px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ema-fac-meta{font-size:10px;color:#777;margin-top:1px;}
+.ema-fac-call{background:linear-gradient(135deg,#15803D,#166534);border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;color:#fff;text-decoration:none;flex-shrink:0;}
+.ema-fac-map{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;color:#fff;text-decoration:none;flex-shrink:0;}
+.ema-mic-area{background:linear-gradient(160deg,#001a1a,#000f0f);padding:20px 16px 16px;display:flex;flex-direction:column;align-items:center;gap:10px;}
+.ema-mic-ring{position:relative;width:76px;height:76px;display:flex;align-items:center;justify-content:center;}
+.ema-mic-ring::before{content:'';position:absolute;inset:-5px;border-radius:50%;border:1px solid rgba(14,210,200,0.2);pointer-events:none;transition:all 0.3s;}
+.ema-mic-ring.listening::before{border-color:rgba(239,68,68,0.5);animation:ema-ring 1s infinite;}
+.ema-mic-ring.speaking::before{border-color:rgba(168,85,247,0.5);animation:ema-ring 0.7s infinite;}
+@keyframes ema-ring{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.1);opacity:0.4}}
+.ema-mic-btn{width:68px;height:68px;border-radius:50%;background:linear-gradient(145deg,#001a1a,#003030);border:2px solid var(--teal);box-shadow:0 0 24px rgba(14,210,200,0.25),0 4px 16px rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;font-size:26px;cursor:pointer;outline:none;-webkit-tap-highlight-color:transparent;transition:transform 0.15s,border-color 0.3s,box-shadow 0.3s;}
+.ema-mic-btn:active{transform:scale(0.93);}
+.ema-mic-btn.listening{border-color:var(--red);box-shadow:0 0 36px rgba(239,68,68,0.5);}
+.ema-mic-btn.speaking{border-color:#A855F7;box-shadow:0 0 36px rgba(168,85,247,0.4);}
+.ema-mic-hint{font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
+.ema-find-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(90deg,#082a16,#14532D);border:none;border-top:1px solid rgba(34,197,94,0.25);padding:13px;font-family:'Exo 2',sans-serif;font-size:12px;font-weight:700;color:#fff;cursor:pointer;transition:opacity 0.15s;-webkit-tap-highlight-color:transparent;}
+.ema-find-btn:active{opacity:0.75;}
+.pro-pill-banner{background:linear-gradient(90deg,#78350f,#F59E0B,#FCD34D);color:#000;font-family:'Orbitron',sans-serif;font-size:7px;font-weight:900;letter-spacing:1.5px;padding:4px 10px;border-radius:20px;text-transform:uppercase;box-shadow:0 0 10px rgba(245,158,11,0.35);white-space:nowrap;}
 .sos-bar-inner { display:flex; gap:10px; align-items:center; max-width:480px; margin:0 auto; }
 .sos-btn { flex:1; display:flex; align-items:center; justify-content:center; gap:8px; background:linear-gradient(135deg,#7f0000,#ef4444); color:#fff; text-decoration:none; font-family:'Orbitron',sans-serif; font-size:13px; font-weight:900; letter-spacing:1px; padding:13px 12px; border-radius:12px; box-shadow:0 0 20px rgba(239,68,68,0.5); animation:sosPulse 1.8s infinite; }
 @keyframes sosPulse { 0%,100%{box-shadow:0 0 20px rgba(239,68,68,0.5)} 50%{box-shadow:0 0 36px rgba(239,68,68,0.85)} }
@@ -411,10 +446,13 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
       <div class="in3-brand-name">innovat3<span>.</span></div>
       <div class="in3-brand-sub">Smart NFC Emergency Tag</div>
     </div>
-    <div class="lang-toggle">
-      <button class="lang-btn active" onclick="setLang('en')">EN</button>
-      <button class="lang-btn" onclick="setLang('af')">AF</button>
-      <button class="lang-btn" onclick="setLang('zu')">ZU</button>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;margin-left:auto;">
+      <div class="pro-pill-banner">★ Pro</div>
+      <div class="lang-toggle" style="margin-left:0;">
+        <button class="lang-btn active" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('af')">AF</button>
+        <button class="lang-btn" onclick="setLang('zu')">ZU</button>
+      </div>
     </div>
   </div>
 
@@ -494,6 +532,27 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
       </div>
       <div class="finder-confirm" id="finderStatusConfirm" style="display:none"></div>
     </div>
+  </div>
+
+  <!-- EMA — PRO ONLY, shown after plan verified in JS -->
+  <div class="ema-wrap" id="emaSection" style="display:none;">
+    <div class="ema-hdr">
+      <span class="ema-hdr-icon">🤖</span>
+      <div style="flex:1;">
+        <div class="ema-hdr-label">EMA</div>
+        <div class="ema-hdr-sub">Emergency Medical Assistant</div>
+      </div>
+      <div class="ema-pro-tag">PRO</div>
+    </div>
+    <div class="ema-response" id="emaResponse"></div>
+    <div class="ema-facilities" id="emaFacilities"></div>
+    <div class="ema-mic-area">
+      <div class="ema-mic-ring" id="emaMicRing">
+        <button class="ema-mic-btn" id="emaMicBtn" onclick="emaTap()">🎙️</button>
+      </div>
+      <div class="ema-mic-hint" id="emaMicHint">TAP TO SPEAK</div>
+    </div>
+    <button class="ema-find-btn" onclick="emaFindFacilities()">📍 &nbsp;Find Nearest Hospital / Pharmacy</button>
   </div>
 
   <!-- TABS -->
@@ -624,13 +683,6 @@ var subData = {};
 
     if (!subData['First Name'] && !subData['Last Name']) {
       showErr('Tag ' + tagId + ' not found. Please check the tag or contact innovat3.co.za');
-      return;
-    }
-
-    // Redirect Pro plan subscribers to pro card
-    var planVal = (subData['Plan'] || json.plan || '').toLowerCase();
-    if (planVal === 'pro') {
-      window.location.replace('https://innovat3.co.za/pro-card/?tag=' + encodeURIComponent(tagId));
       return;
     }
 
@@ -810,6 +862,16 @@ var subData = {};
   if (pcPctEl) { pcPctEl.textContent=pcPct+'%'; pcPctEl.style.color=pcColour; }
   if (pcMissing.length) { var pcMissEl=document.getElementById('profileMissing'); if(pcMissEl) pcMissEl.textContent='Missing: '+pcMissing.join(', ')+'. Update at innovat3.co.za'; }
   document.getElementById('profileBar').style.display='block';
+
+  // ── Pro plan guard ────────────────────────────────────────────
+  var rawPlan = (subData['Plan'] || json.plan || '').toLowerCase();
+  if (rawPlan !== 'pro') {
+    // Not a pro tag — redirect to regular card
+    window.location.replace('https://innovat3.co.za/card/?tag=' + encodeURIComponent(tagId));
+    return;
+  }
+  // Show EMA section for verified pro users
+  document.getElementById('emaSection').style.display = 'block';
 
   // Show card
   document.getElementById('loadingScreen').style.display = 'none';
@@ -1090,7 +1152,170 @@ function setLang(code) {
   });
 }
 
-if('serviceWorker' in navigator){ navigator.serviceWorker.register('/card/sw.js').catch(function(){}); }
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('/pro-card/sw.js').catch(function(){}); }
+</script>
+
+<script>
+// ── EMA — Emergency Medical Assistant ────────────────────────────
+var EMA_AUDIO = '/assist/audio/';
+var EMA_SR    = window.SpeechRecognition || window.webkitSpeechRecognition;
+var emaSynth  = window.speechSynthesis;
+var emaVoices = [];
+var emaListening = false, emaSpeaking = false;
+var emaRec = null, emaAudioEl = null;
+
+emaSynth.onvoiceschanged = function(){ emaVoices = emaSynth.getVoices(); };
+setTimeout(function(){ emaVoices = emaSynth.getVoices(); }, 600);
+
+var emaGreeted = false;
+document.addEventListener('click', function(){
+  if (!emaGreeted && document.getElementById('emaSection') &&
+      document.getElementById('emaSection').style.display !== 'none') {
+    emaGreeted = true;
+    emaSpeak('greeting', "Hi, I'm Emma — your Emergency Medical Assistant. I've got you.");
+  }
+}, { once: true });
+
+function emaTap() {
+  if (!EMA_SR) return;
+  if (emaListening) { emaRec && emaRec.stop(); return; }
+  if (emaSpeaking) emaStop();
+  emaRec = new EMA_SR();
+  emaRec.lang = navigator.language || 'en-ZA';
+  emaRec.interimResults = false;
+  emaRec.onstart  = function(){ emaListening = true; emaSetUI('listening'); };
+  emaRec.onend    = function(){ emaListening = false; if (!emaSpeaking) emaSetUI('idle'); };
+  emaRec.onerror  = function(){ emaListening = false; emaSetUI('idle'); };
+  emaRec.onresult = function(e){
+    var t = e.results[0][0].transcript.trim();
+    if (t) emaQuery(t);
+  };
+  emaRec.start();
+}
+
+function emaQuery(q) {
+  if (emaRec) emaRec.stop();
+  emaListening = false;
+  emaSetUI('thinking');
+  setTimeout(function() {
+    var r = emaGetResponse(q.toLowerCase());
+    var el = document.getElementById('emaResponse');
+    el.innerHTML = r.html;
+    el.style.display = 'block';
+    if (/nearest|hospital|pharmacy|clinic|doctor/.test(q.toLowerCase())) emaFindFacilities();
+    emaSpeak(r.key, r.plain);
+  }, 400);
+}
+
+function emaSpeak(key, fallback) {
+  emaStop();
+  emaSpeaking = true;
+  emaSetUI('speaking');
+  var audio = new Audio(EMA_AUDIO + key + '.mp3');
+  emaAudioEl = audio;
+  audio.onended = audio.onerror = function(){ emaSpeaking = false; emaSetUI('idle'); };
+  audio.play().catch(function(){
+    var u = new SpeechSynthesisUtterance(fallback);
+    u.lang = 'en-AU'; u.rate = 0.9;
+    var v = emaVoices.find(function(x){ return /Google|Microsoft/.test(x.name) && x.lang.startsWith('en'); }) || emaVoices[0];
+    if (v) u.voice = v;
+    u.onend = u.onerror = function(){ emaSpeaking = false; emaSetUI('idle'); };
+    emaSynth.speak(u);
+  });
+}
+
+function emaStop() {
+  if (emaAudioEl) { emaAudioEl.pause(); emaAudioEl = null; }
+  emaSynth.cancel();
+  emaSpeaking = false;
+}
+
+function emaSetUI(state) {
+  var btn  = document.getElementById('emaMicBtn');
+  var ring = document.getElementById('emaMicRing');
+  var hint = document.getElementById('emaMicHint');
+  if (!btn) return;
+  var map = {
+    idle:      { b:'', r:'', h:'TAP TO SPEAK', i:'🎙️' },
+    listening: { b:'listening', r:'listening', h:'LISTENING…', i:'🔴' },
+    thinking:  { b:'', r:'', h:'THINKING…', i:'💭' },
+    speaking:  { b:'speaking', r:'speaking', h:'SPEAKING…', i:'🔊' }
+  };
+  var s = map[state] || map.idle;
+  btn.className  = 'ema-mic-btn ' + s.b;
+  ring.className = 'ema-mic-ring ' + s.r;
+  hint.textContent = s.h;
+  btn.textContent  = s.i;
+}
+
+function emaGetResponse(q) {
+  if (/nearest|nearby|find|hospital|pharmacy|clinic|gp\b/.test(q))
+    return {key:'location_search', html:'Finding nearby facilities…', plain:'Finding nearby facilities now.'};
+  if (/heart attack|chest pain|chest tight/.test(q))
+    return {key:'heart_attack', html:'<strong>Possible heart attack.</strong> Call <strong>10177</strong> now. Sit them down, loosen clothing, give aspirin 300mg to chew if not allergic.', plain:'Possible heart attack.'};
+  if (/stroke|face droop|slurred|fast test/.test(q))
+    return {key:'stroke', html:'<strong>Possible stroke — FAST:</strong> Face drooping · Arms unequal · Speech slurred · Time: call <strong>10177</strong> now.', plain:'Possible stroke. Call 10177.'};
+  if (/chok|heimlich|can.?t breathe/.test(q))
+    return {key:'choking', html:'<strong>Choking.</strong> 5 back blows between shoulder blades, then 5 abdominal thrusts. Alternate until clear. Unconscious → CPR + call <strong>10177</strong>.', plain:'Choking emergency.'};
+  if (/cpr|not breathing|no pulse|unconscious|resuscitat/.test(q))
+    return {key:'cpr', html:'<strong>CPR.</strong> Call <strong>10177</strong> first. Push hard on centre of chest — 100–120/min, 5–6cm deep. 30 compressions then 2 breaths.', plain:'Start CPR.'};
+  if (/bleed|bleeding|severe cut/.test(q))
+    return {key:'bleeding', html:'<strong>Severe bleeding.</strong> Press firmly, do not lift. Elevate the limb. Tourniquet 5cm above wound if life-threatening — note the time.', plain:'Apply direct pressure.'};
+  if (/seizure|epilep|fitting|convuls/.test(q))
+    return {key:'seizure', html:'<strong>Seizure.</strong> Do not restrain. Clear area, soft padding under head, roll onto their side. Time it. Call <strong>10177</strong> if over 5 minutes.', plain:'Do not restrain.'};
+  if (/burn|scald/.test(q))
+    return {key:'burns', html:'<strong>Burns.</strong> Cool under running water — 20 minutes. No ice or butter. Cover loosely. Emergency if larger than your hand.', plain:'Cool with running water for 20 minutes.'};
+  if (/allerg|anaphylax|epipen|sting/.test(q))
+    return {key:'allergic', html:'<strong>Anaphylaxis.</strong> Call <strong>10177</strong>. EpiPen now — outer thigh. Lay flat, raise legs unless breathing is difficult.', plain:'Use the EpiPen and call 10177.'};
+  if (/overdose|poison/.test(q))
+    return {key:'overdose', html:'<strong>Poisoning.</strong> Call <strong>0800 333 444</strong> or <strong>10177</strong>. Do not induce vomiting. Recovery position if unconscious.', plain:'Call the Poison Helpline on 0800 333 444.'};
+  if (/fever|temperature/.test(q))
+    return {key:'fever', html:'<strong>Fever.</strong> Paracetamol and fluids. Doctor if above 39.5°C, any fever in babies under 3 months, or lasting more than 3 days.', plain:'Give paracetamol and fluids.'};
+  if (/diabet|low blood sugar|hypoglyc/.test(q))
+    return {key:'diabetic', html:'<strong>Low blood sugar.</strong> Conscious → 3 glucose tablets or 150ml juice, then snack. Unconscious → recovery position + call <strong>10177</strong>.', plain:'Give glucose if conscious.'};
+  return {key:'default', html:'Ask me about heart attack, stroke, CPR, choking, bleeding, seizure, burns, or say <strong>find nearest hospital</strong>.', plain:"I'm Emma. Ask me about any emergency."};
+}
+
+async function emaFindFacilities() {
+  var box = document.getElementById('emaFacilities');
+  box.innerHTML = '<div style="padding:10px 16px;font-size:11px;color:#5eead4;">Locating nearby facilities…</div>';
+  if (!navigator.geolocation) { box.innerHTML = ''; return; }
+  navigator.geolocation.getCurrentPosition(
+    async function(pos) {
+      var lat = pos.coords.latitude, lon = pos.coords.longitude;
+      try {
+        var q = '[out:json][timeout:12];(node["amenity"~"^(hospital|pharmacy|clinic|doctors)$"](around:5000,'+lat+','+lon+');way["amenity"~"^(hospital|pharmacy|clinic|doctors)$"](around:5000,'+lat+','+lon+'););out center 6;';
+        var res  = await fetch('https://overpass-api.de/api/interpreter',{method:'POST',body:'data='+encodeURIComponent(q)});
+        var data = await res.json();
+        var ICONS = {hospital:'🏥',pharmacy:'💊',clinic:'🏪',doctors:'👨‍⚕️'};
+        var items = data.elements.filter(function(e){ return e.tags && e.tags.name; }).map(function(e){
+          var elat = e.lat || (e.center && e.center.lat);
+          var elon = e.lon || (e.center && e.center.lon);
+          return {name:e.tags.name, type:e.tags.amenity, phone:e.tags.phone||e.tags['contact:phone']||'', lat:elat, lon:elon, dist:emaHaversine(lat,lon,elat,elon)};
+        }).sort(function(a,b){return a.dist-b.dist;}).slice(0,5);
+        if (!items.length) { box.innerHTML='<div style="padding:10px 16px;font-size:11px;color:#777;">No facilities found within 5km.</div>'; return; }
+        box.innerHTML = items.map(function(f){
+          var d = f.dist<1 ? Math.round(f.dist*1000)+'m' : f.dist.toFixed(1)+'km';
+          var icon = ICONS[f.type]||'🏥';
+          var type = (f.type||'').charAt(0).toUpperCase()+(f.type||'').slice(1);
+          var action = f.phone
+            ? '<a class="ema-fac-call" href="tel:'+f.phone.replace(/[\s\-()+]/g,'')+'">' + f.phone + '</a>'
+            : '<a class="ema-fac-map" href="https://www.google.com/maps/search/'+encodeURIComponent(f.name)+'/@'+f.lat+','+f.lon+',16z" target="_blank" rel="noopener">Map</a>';
+          return '<div class="ema-fac"><span class="ema-fac-icon">'+icon+'</span><div class="ema-fac-info"><div class="ema-fac-name">'+f.name+'</div><div class="ema-fac-meta">'+type+' · '+d+'</div></div>'+action+'</div>';
+        }).join('');
+      } catch(e) { box.innerHTML='<div style="padding:10px 16px;font-size:11px;color:#777;">Could not load facilities.</div>'; }
+    },
+    function(){ box.innerHTML='<div style="padding:10px 16px;font-size:11px;color:#777;">Location access denied.</div>'; },
+    {timeout:10000}
+  );
+}
+
+function emaHaversine(a,b,c,d){
+  if(c==null||d==null) return 9999;
+  var R=6371, r=Math.PI/180, dLat=(c-a)*r, dLon=(d-b)*r;
+  var x=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(a*r)*Math.cos(c*r)*Math.sin(dLon/2)*Math.sin(dLon/2);
+  return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
+}
 </script>
 </body>
 </html>

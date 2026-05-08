@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EMA — Emergency Medical Assistant</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --orange:#F97316; --teal:#0ED2C8; --black:#0A0A0A;
+  --card:#141414; --border:#222;
+  --text:#F0F0F0; --muted:#777; --muted2:#444;
+  --red:#EF4444; --green:#22C55E; --blue:#3B82F6;
+  --purple:#A855F7; --yellow:#EAB308;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Exo 2',sans-serif;background:#050505;color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+
+/* ── BANNER ── */
+.banner{background:linear-gradient(135deg,#0d0d0d,#1a0a00);border-bottom:3px solid var(--orange);padding:13px 18px;display:flex;align-items:center;gap:14px;}
+.logo{width:46px;height:46px;border-radius:11px;border:2px solid var(--orange);overflow:hidden;box-shadow:0 0 18px rgba(249,115,22,0.45);flex-shrink:0;background:#111;display:flex;align-items:center;justify-content:center;}
+.logo img{width:100%;height:100%;object-fit:cover;}
+.brand-name{font-family:'Orbitron',sans-serif;font-size:20px;font-weight:900;color:var(--orange);line-height:1;}
+.brand-name span{color:#fff;}
+.brand-sub{font-size:8px;color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-top:4px;}
+.demo-pill{margin-left:auto;background:#1a1400;border:2px solid var(--yellow);color:var(--yellow);font-family:'Orbitron',sans-serif;font-size:7px;font-weight:900;letter-spacing:1px;padding:6px 10px;border-radius:8px;text-transform:uppercase;flex-shrink:0;}
+
+/* ── EMERGENCY STRIP ── */
+.e-strip{background:#0d0000;border-bottom:2px solid rgba(239,68,68,0.3);padding:8px 10px;display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.e-strip::-webkit-scrollbar{height:0;}
+.e-btn{display:flex;flex-direction:column;align-items:center;background:linear-gradient(135deg,#160404,#0d0000);border:1px solid rgba(239,68,68,0.4);border-bottom:3px solid var(--red);border-radius:10px;padding:8px 12px;text-decoration:none;flex-shrink:0;min-width:68px;transition:opacity 0.15s;}
+.e-btn:active{opacity:0.7;}
+.e-btn .lbl{font-size:7px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;}
+.e-btn .num{font-family:'Orbitron',sans-serif;font-size:15px;font-weight:900;color:#fff;}
+
+/* ── LAYOUT ── */
+.main{flex:1;display:flex;flex-direction:column;max-width:480px;width:100%;margin:0 auto;padding:12px 10px 24px;gap:12px;}
+
+/* ── STATUS ── */
+.status-bar{background:#111;border:1px solid #1e1e1e;border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted);}
+.s-dot{width:9px;height:9px;border-radius:50%;background:var(--green);flex-shrink:0;transition:background 0.3s;}
+.s-dot.listening{background:var(--red);animation:blink 0.8s infinite;}
+.s-dot.thinking{background:var(--blue);animation:blink 0.4s infinite;}
+.s-dot.speaking{background:var(--purple);animation:blink 0.7s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+
+/* ── CHAT ── */
+.chat{background:#0d0d0d;border:1px solid #1e1e1e;border-radius:14px;min-height:220px;max-height:320px;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth;}
+.chat::-webkit-scrollbar{width:4px;}
+.chat::-webkit-scrollbar-thumb{background:#222;border-radius:2px;}
+
+.empty{
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+  flex:1;text-align:center;min-height:220px;position:relative;overflow:hidden;border-radius:8px;
+  background:url('../assets/a_low_angle_shot_backgrou...s_2_feet_holding_a_iphone.jpeg') center 20%/cover no-repeat;
+}
+.empty::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to bottom, rgba(5,5,5,0.15) 0%, rgba(5,5,5,0.55) 55%, rgba(5,5,5,0.92) 100%);
+}
+.empty-txt{position:relative;font-size:12.5px;color:rgba(240,240,240,0.85);line-height:1.8;padding:0 16px 16px;}
+.empty-txt strong{color:var(--orange);}
+
+.msg{display:flex;flex-direction:column;gap:4px;}
+.msg-user{align-items:flex-end;}
+.msg-ai{align-items:flex-start;}
+.msg-label{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-weight:700;}
+.bubble{max-width:90%;padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.65;}
+.msg-user .bubble{background:linear-gradient(135deg,#1a0a00,#2a1000);border:1px solid rgba(249,115,22,0.3);color:#fff;border-bottom-right-radius:4px;}
+.msg-ai .bubble{background:linear-gradient(135deg,#0d1a2a,#0a1420);border:1px solid rgba(59,130,246,0.25);color:#ddd;border-bottom-left-radius:4px;}
+.msg-ai .bubble strong{color:var(--orange);}
+
+/* ── NO SPEECH WARNING ── */
+.warn{display:none;background:#1a1400;border:1px solid rgba(234,179,8,0.4);border-radius:10px;padding:10px 14px;font-size:11px;color:var(--yellow);line-height:1.6;}
+
+/* ── MIC SECTION ── */
+.mic-section{display:flex;flex-direction:column;align-items:center;gap:10px;}
+
+.mic-ring{position:relative;width:88px;height:88px;display:flex;align-items:center;justify-content:center;}
+.mic-ring::before{content:'';position:absolute;inset:-6px;border-radius:50%;border:2px solid rgba(249,115,22,0.2);pointer-events:none;}
+.mic-ring.listening::before{border-color:rgba(239,68,68,0.5);animation:ring-pulse 1s infinite;}
+.mic-ring.speaking::before{border-color:rgba(168,85,247,0.5);animation:ring-pulse 0.7s infinite;}
+@keyframes ring-pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.08);opacity:0.5}}
+
+.mic-btn{width:80px;height:80px;border-radius:50%;background:linear-gradient(145deg,#1a0a00,#2d1200);border:3px solid var(--orange);box-shadow:0 0 28px rgba(249,115,22,0.3),0 6px 20px rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;cursor:pointer;outline:none;-webkit-tap-highlight-color:transparent;transition:transform 0.15s,box-shadow 0.3s,border-color 0.3s;}
+.mic-btn:active{transform:scale(0.93);}
+.mic-btn.listening{border-color:var(--red);box-shadow:0 0 40px rgba(239,68,68,0.5),0 6px 20px rgba(0,0,0,0.6);}
+.mic-btn.speaking{border-color:var(--purple);box-shadow:0 0 40px rgba(168,85,247,0.5),0 6px 20px rgba(0,0,0,0.6);}
+.mic-btn.disabled{border-color:#333;box-shadow:none;cursor:not-allowed;opacity:0.4;}
+.mic-icon{font-size:30px;user-select:none;}
+.mic-hint{font-size:10px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;}
+
+/* ── TEXT INPUT ── */
+.input-row{display:flex;gap:8px;}
+.txt-in{flex:1;background:#111;border:1px solid #2a2a2a;border-radius:10px;padding:11px 14px;font-family:'Exo 2',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color 0.2s;}
+.txt-in:focus{border-color:rgba(249,115,22,0.5);}
+.txt-in::placeholder{color:var(--muted2);}
+.send-btn{background:linear-gradient(135deg,#b85200,#f97316);border:none;border-radius:10px;padding:11px 18px;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:900;color:#000;cursor:pointer;letter-spacing:1px;flex-shrink:0;transition:opacity 0.15s;}
+.send-btn:active{opacity:0.75;}
+
+/* ── STOP SPEAKING ── */
+.stop-btn{display:none;width:100%;background:linear-gradient(135deg,#1a0040,#2d006b);border:1px solid rgba(168,85,247,0.5);border-radius:10px;padding:10px;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:900;color:var(--purple);letter-spacing:1px;cursor:pointer;text-align:center;}
+.stop-btn.visible{display:block;}
+
+/* ── FIND BUTTON ── */
+.find-btn{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#0b2818,#14532D);border:1px solid rgba(34,197,94,0.35);border-bottom:3px solid var(--green);border-radius:12px;padding:13px 16px;cursor:pointer;width:100%;text-align:left;-webkit-tap-highlight-color:transparent;transition:opacity 0.15s;}
+.find-btn:active{opacity:0.8;}
+.find-icon{font-size:22px;flex-shrink:0;}
+.find-label{font-size:13px;font-weight:700;color:#fff;}
+.find-sub{font-size:10px;color:rgba(255,255,255,0.4);margin-top:2px;}
+
+/* ── FACILITY RESULTS ── */
+.facilities{display:flex;flex-direction:column;gap:8px;}
+.fac-card{background:#0d0d0d;border:1px solid #1e1e1e;border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:12px;}
+.fac-icon{font-size:22px;flex-shrink:0;}
+.fac-info{flex:1;min-width:0;}
+.fac-name{font-size:13px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fac-meta{font-size:10px;color:var(--muted);margin-top:2px;}
+.fac-action{background:linear-gradient(135deg,#15803D,#166534);border:none;border-radius:8px;padding:8px 12px;font-size:11px;font-weight:700;color:#fff;text-decoration:none;flex-shrink:0;white-space:nowrap;cursor:pointer;}
+.fac-action.map{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);}
+
+.fac-loading{padding:12px;font-size:12px;color:var(--muted);}
+.fac-error{padding:12px;font-size:12px;color:var(--red);}
+
+/* ── SUGGESTIONS ── */
+.suggestions{display:flex;gap:6px;flex-wrap:wrap;}
+.sug{background:#111;border:1px solid #2a2a2a;border-radius:20px;padding:6px 12px;font-size:11px;color:#aaa;cursor:pointer;transition:all 0.15s;-webkit-tap-highlight-color:transparent;}
+.sug:active,.sug:hover{background:#1a0a00;border-color:rgba(249,115,22,0.4);color:var(--orange);}
+
+/* ── FOOTER ── */
+.sc-footer{text-align:center;padding:10px;background:#030303;font-family:'Orbitron',sans-serif;font-size:7px;color:#2a2a2a;letter-spacing:3px;border-top:1px solid #0f0f0f;margin-top:auto;}
+.sc-footer span{color:var(--orange);}
+</style>
+</head>
+<body>
+
+<!-- Banner -->
+<div class="banner">
+  <div class="logo">
+    <img src="https://innovat3.co.za/assets/logo.png" onerror="this.style.display='none'" alt="IN3">
+  </div>
+  <div>
+    <div class="brand-name">innovat<span>3</span></div>
+    <div class="brand-sub">EMA — Emergency Medical Assistant</div>
+  </div>
+  <div class="demo-pill">Demo</div>
+</div>
+
+<!-- Emergency quick-dial strip -->
+<div class="e-strip">
+  <a class="e-btn" href="tel:10177"><span class="lbl">Ambulance</span><span class="num">10177</span></a>
+  <a class="e-btn" href="tel:10111"><span class="lbl">Police</span><span class="num">10111</span></a>
+  <a class="e-btn" href="tel:112"><span class="lbl">Emergency</span><span class="num">112</span></a>
+  <a class="e-btn" href="tel:0800333444"><span class="lbl">Poison</span><span class="num">0800 333</span></a>
+  <a class="e-btn" href="tel:0861322322"><span class="lbl">Netcare 911</span><span class="num">082 911</span></a>
+</div>
+
+<!-- Main content -->
+<div class="main">
+
+  <!-- Status bar -->
+  <div class="status-bar">
+    <div class="s-dot" id="sDot"></div>
+    <span id="sText">Ready — tap the mic or type a medical question</span>
+  </div>
+
+  <!-- Chat window -->
+  <div class="chat" id="chat">
+    <div class="empty" id="empty">
+      <div class="empty-txt">
+        Ask me anything medical — first aid, symptoms, medications,<br>
+        or say <strong>"find nearest hospital"</strong> to locate help nearby.
+      </div>
+    </div>
+  </div>
+
+  <!-- No speech API notice -->
+  <div class="warn" id="warn">
+    Voice input is not supported in this browser. Use the text box below instead.<br>
+    Voice output (AI speaking) still works. Best experience: Chrome or Edge.
+  </div>
+
+  <!-- Quick suggestions -->
+  <div class="suggestions">
+    <span class="sug" onclick="ask('Signs of a heart attack')">Heart attack</span>
+    <span class="sug" onclick="ask('How to do CPR')">CPR guide</span>
+    <span class="sug" onclick="ask('Stroke symptoms')">Stroke signs</span>
+    <span class="sug" onclick="ask('find nearest hospital')">Find hospital</span>
+    <span class="sug" onclick="ask('Someone is choking')">Choking</span>
+    <span class="sug" onclick="ask('Treating a burn')">Burns</span>
+  </div>
+
+  <!-- Mic button -->
+  <div class="mic-section">
+    <div class="mic-ring" id="micRing">
+      <button class="mic-btn" id="micBtn" onclick="toggleMic()">
+        <span class="mic-icon" id="micIcon">🎙️</span>
+      </button>
+    </div>
+    <span class="mic-hint" id="micHint">TAP TO SPEAK</span>
+  </div>
+
+  <!-- Stop speaking button -->
+  <button class="stop-btn" id="stopBtn" onclick="stopSpeaking()">⏹ STOP SPEAKING</button>
+
+  <!-- Text input fallback -->
+  <div class="input-row">
+    <input class="txt-in" id="txtIn" type="text" placeholder="Or type your question here…" autocomplete="off"
+      onkeydown="if(event.key==='Enter')sendText()">
+    <button class="send-btn" onclick="sendText()">SEND</button>
+  </div>
+
+  <!-- Find facility button -->
+  <button class="find-btn" onclick="findFacilities()">
+    <span class="find-icon">📍</span>
+    <div>
+      <div class="find-label">Find Nearest Medical Facility</div>
+      <div class="find-sub">Hospital · Pharmacy · Clinic · GP</div>
+    </div>
+  </button>
+
+  <!-- Facility results -->
+  <div class="facilities" id="facilities"></div>
+
+</div>
+
+<div class="sc-footer">innovat<span>3</span> · MEDICAL ASSISTANT DEMO · NOT FOR EMERGENCY USE</div>
+
+<script>
+// ─────────────────────────────────────────────
+//  STATE
+// ─────────────────────────────────────────────
+let isListening  = false;
+let isSpeaking   = false;
+let recognition  = null;
+let currentAudio = null;
+const synth      = window.speechSynthesis;
+let voices       = [];
+
+const AUDIO_BASE = '../assist/audio/';
+
+// Load voices (async — fallback only)
+function loadVoices() { voices = synth.getVoices(); }
+synth.onvoiceschanged = loadVoices;
+loadVoices();
+setTimeout(loadVoices, 800);
+
+// Greet on first tap/click (browsers block audio autoplay before user gesture)
+let greeted = false;
+document.addEventListener('click', () => {
+  if (!greeted) { greeted = true; speak('greeting', "Hi, I'm EMA — your Emergency Medical Assistant. I've got you."); }
+}, { once: true });
+
+// ─────────────────────────────────────────────
+//  SPEECH RECOGNITION SETUP
+// ─────────────────────────────────────────────
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+if (!SR) {
+  document.getElementById('warn').style.display = 'block';
+  const btn = document.getElementById('micBtn');
+  btn.classList.add('disabled');
+  btn.onclick = null;
+}
+
+function toggleMic() {
+  if (!SR) return;
+  if (isListening) {
+    recognition && recognition.stop();
+  } else {
+    startListening();
+  }
+}
+
+function startListening() {
+  if (isSpeaking) stopSpeaking();
+  recognition = new SR();
+  recognition.lang = navigator.language || 'en-ZA';
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+  recognition.continuous = false;
+
+  recognition.onstart  = () => { isListening = true;  setStatus('listening'); };
+  recognition.onend    = () => { isListening = false; if (!isSpeaking) setStatus('ready'); };
+  recognition.onerror  = ()  => { isListening = false; setStatus('ready'); };
+  recognition.onresult = (e) => {
+    const t = e.results[0][0].transcript.trim();
+    if (t) handleQuery(t);
+  };
+
+  try { recognition.start(); } catch(e) { setStatus('ready'); }
+}
+
+// ─────────────────────────────────────────────
+//  STATUS
+// ─────────────────────────────────────────────
+const STATUS = {
+  ready:     { label: 'Ready — tap the mic or type a question',  dot: 'var(--green)',  cls: '',          hint: 'TAP TO SPEAK',  micCls: '' },
+  listening: { label: 'Listening…',                              dot: 'var(--red)',    cls: 'listening', hint: 'TAP TO STOP',   micCls: 'listening' },
+  thinking:  { label: 'Thinking…',                               dot: 'var(--blue)',   cls: 'thinking',  hint: 'PROCESSING…',   micCls: '' },
+  speaking:  { label: 'Speaking — tap mic to interrupt',         dot: 'var(--purple)', cls: 'speaking',  hint: 'SPEAKING…',     micCls: 'speaking' },
+};
+
+function setStatus(id) {
+  const s = STATUS[id];
+  const dot  = document.getElementById('sDot');
+  const txt  = document.getElementById('sText');
+  const btn  = document.getElementById('micBtn');
+  const ring = document.getElementById('micRing');
+  const hint = document.getElementById('micHint');
+  const stop = document.getElementById('stopBtn');
+
+  dot.style.background = s.dot;
+  dot.className = 's-dot ' + s.cls;
+  txt.textContent = s.label;
+  btn.className = 'mic-btn ' + s.micCls;
+  ring.className = 'mic-ring ' + s.micCls;
+  hint.textContent = s.hint;
+  stop.className = 'stop-btn' + (id === 'speaking' ? ' visible' : '');
+}
+
+// ─────────────────────────────────────────────
+//  CHAT DISPLAY
+// ─────────────────────────────────────────────
+function addMsg(role, html) {
+  const chat  = document.getElementById('chat');
+  const empty = document.getElementById('empty');
+  if (empty) empty.remove();
+
+  const div = document.createElement('div');
+  div.className = 'msg msg-' + role;
+  div.innerHTML = `
+    <div class="msg-label">${role === 'user' ? 'You' : 'EMA'}</div>
+    <div class="bubble">${html}</div>
+  `;
+  chat.appendChild(div);
+  setTimeout(() => chat.scrollTop = chat.scrollHeight, 50);
+}
+
+// ─────────────────────────────────────────────
+//  INPUT HANDLERS
+// ─────────────────────────────────────────────
+function sendText() {
+  const el = document.getElementById('txtIn');
+  const q  = el.value.trim();
+  if (!q) return;
+  el.value = '';
+  handleQuery(q);
+}
+
+function ask(q) { handleQuery(q); }
+
+function handleQuery(query) {
+  if (recognition) recognition.stop();
+  isListening = false;
+  addMsg('user', escHtml(query));
+  setStatus('thinking');
+
+  setTimeout(() => {
+    const { html, key, plain } = getResponse(query.toLowerCase());
+    addMsg('ai', html);
+    speak(key, plain);
+  }, 500);
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ─────────────────────────────────────────────
+//  SPEECH SYNTHESIS (FREE VOICE OUTPUT)
+// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────
+//  AUDIO PLAYBACK  (pre-recorded Leah neural voice)
+//  Falls back to Web Speech API for dynamic text
+// ─────────────────────────────────────────────
+function speak(key, fallbackText) {
+  stopSpeaking();
+  isSpeaking = true;
+  setStatus('speaking');
+
+  const mp3 = AUDIO_BASE + key + '.mp3';
+  const audio = new Audio(mp3);
+  currentAudio = audio;
+
+  audio.onended = () => { isSpeaking = false; setStatus('ready'); };
+  audio.onerror = () => {
+    // MP3 failed — fall back to browser TTS
+    if (fallbackText) speakFallback(fallbackText);
+    else { isSpeaking = false; setStatus('ready'); }
+  };
+
+  audio.play().catch(() => {
+    if (fallbackText) speakFallback(fallbackText);
+    else { isSpeaking = false; setStatus('ready'); }
+  });
+}
+
+function speakFallback(text) {
+  synth.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'en-ZA';
+  utter.rate = 0.88;
+  utter.pitch = 1.05;
+  const v = voices.find(x => /Google|Microsoft/.test(x.name) && x.lang.startsWith('en')) || voices[0];
+  if (v) utter.voice = v;
+  utter.onend = utter.onerror = () => { isSpeaking = false; setStatus('ready'); };
+  synth.speak(utter);
+}
+
+// For dynamic text only (facility results, etc.)
+function speakDynamic(text) {
+  stopSpeaking();
+  isSpeaking = true;
+  setStatus('speaking');
+  speakFallback(text);
+}
+
+function stopSpeaking() {
+  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+  synth.cancel();
+  isSpeaking = false;
+  setStatus('ready');
+}
+
+// ─────────────────────────────────────────────
+//  AI RESPONSE ENGINE  (keyword matching)
+//  Returns { html, key, plain }
+//  key  → plays assist/audio/<key>.mp3 (Leah neural voice)
+//  plain → Web Speech fallback if MP3 unavailable
+// ─────────────────────────────────────────────
+function getResponse(q) {
+
+  if (/nearest|nearby|closest|find|where.*(hospital|pharmacy|doctor|clinic)|hospital|pharmacy|clinic|gp\b/.test(q)) {
+    setTimeout(findFacilities, 400);
+    return { key: 'location_search',
+      html: 'Finding the nearest medical facilities for you now — please allow location access if prompted.<br><br>In an emergency, call <strong>10177</strong> for an ambulance immediately.',
+      plain: 'Finding the nearest medical facilities now. In an emergency call 10177 immediately.' };
+  }
+
+  if (/heart attack|chest pain|chest tight|crushing.*chest|arm.*pain.*chest|jaw.*pain/.test(q)) {
+    return { key: 'heart_attack',
+      html: '<strong>POSSIBLE HEART ATTACK — Call 10177 immediately.</strong><br><br>1. Sit or lay the person down comfortably<br>2. Loosen any tight clothing<br>3. Give aspirin 300mg to chew — if not allergic<br>4. Do NOT let them eat or drink anything else<br>5. Stay with them until the ambulance arrives<br>6. If unconscious — begin CPR<br><br>Do NOT drive them yourself.',
+      plain: 'Possible heart attack. Call 10177 immediately.' };
+  }
+
+  if (/stroke|face droop|slurred|can.?t speak|sudden weakness|arm weak|fast test|facial droop/.test(q)) {
+    return { key: 'stroke',
+      html: '<strong>POSSIBLE STROKE — Call 10177 immediately.</strong><br><br>Use the <strong>FAST test:</strong><br>• <strong>F</strong>ace — Is one side drooping?<br>• <strong>A</strong>rms — Can they raise both equally?<br>• <strong>S</strong>peech — Is it slurred or strange?<br>• <strong>T</strong>ime — Call 10177 NOW<br><br>Do not give food or water. Note the exact time symptoms started.',
+      plain: 'Possible stroke. Use the FAST test and call 10177 immediately.' };
+  }
+
+  if (/chok|heimlich|obstruct|can.?t breathe|blocked airway|foreign object in throat/.test(q)) {
+    return { key: 'choking',
+      html: '<strong>CHOKING — Act immediately.</strong><br><br><u>If they CAN cough:</u> encourage hard coughing.<br><br><u>If they CANNOT breathe:</u><br>1. Lean them forward — give <strong>5 firm back blows</strong> between shoulder blades<br>2. Then <strong>5 abdominal thrusts</strong> — inward and upward<br>3. Alternate until clear<br>4. If unconscious — call 10177 and start CPR',
+      plain: 'Choking emergency. Act immediately.' };
+  }
+
+  if (/cpr|cardiopulmonary|not breathing|no pulse|unconscious|resuscitat/.test(q)) {
+    return { key: 'cpr',
+      html: '<strong>CPR — Call 10177 first, then begin.</strong><br><br>1. Lay flat on a firm surface, tilt head back<br>2. Check for breathing — 10 seconds<br>3. Heel of hand on centre of chest<br>4. Push <strong>hard and fast</strong> — 5–6 cm deep, 100–120/min<br>5. Every 30 compressions: 2 rescue breaths if trained<br>6. Continue until ambulance arrives<br><br>Hands-only CPR is still effective if untrained.',
+      plain: 'Start CPR. Call 10177 first.' };
+  }
+
+  if (/bleed|bleeding|hemorrhage|haemorrhage|severe cut|deep cut|blood won.?t stop/.test(q)) {
+    return { key: 'bleeding',
+      html: '<strong>Controlling Severe Bleeding:</strong><br><br>1. Firm <strong>direct pressure</strong> with a clean cloth<br>2. Do NOT lift — add more cloth on top if soaked<br>3. Elevate limb above heart level<br>4. Tourniquet 5cm above wound — note the time<br><br>Call 10177 if severe, spurting, or not stopping.',
+      plain: 'Apply direct pressure to control the bleeding and call 10177.' };
+  }
+
+  if (/seizure|epilep|fitting|convuls/.test(q)) {
+    return { key: 'seizure',
+      html: '<strong>During a Seizure:</strong><br><br>1. Do <strong>NOT</strong> restrain them<br>2. Clear hard objects from around them<br>3. Soft padding under head<br>4. Roll onto their <strong>side (recovery position)</strong><br>5. Time the seizure<br>6. Nothing in the mouth<br><br>Call 10177 if: &gt;5 min · no consciousness · first ever seizure',
+      plain: 'Do not restrain them. Roll onto their side and time the seizure.' };
+  }
+
+  if (/burn|scald|fire.*skin|hot.*water|chemical burn/.test(q)) {
+    return { key: 'burns',
+      html: '<strong>Treating Burns:</strong><br><br>1. Remove from heat source<br>2. Cool under <strong>running water — 20 minutes</strong> (not ice)<br>3. Remove jewellery if not stuck<br>4. Cover loosely with cling wrap or clean cloth<br>5. No butter, toothpaste, or ice<br><br>Go to emergency if: larger than your hand · face/hands/feet · chemical/electrical · white or charred skin',
+      plain: 'Cool the burn under running water for 20 minutes. Do not use ice.' };
+  }
+
+  if (/allerg|anaphylax|epipen|swelling.*throat|throat.*swell|hives|bee sting|sting.*swell/.test(q)) {
+    return { key: 'allergic',
+      html: '<strong>SEVERE ALLERGIC REACTION — Call 10177 immediately.</strong><br><br>Signs: swollen throat, difficulty breathing, faintness, pale skin.<br><br>1. Call 10177<br>2. Lay flat, raise legs — or sit upright if breathing is difficult<br>3. <strong>EpiPen — use it now</strong> (outer thigh)<br>4. Second EpiPen after 5 min if no improvement<br>5. Antihistamine for mild reactions only',
+      plain: 'Severe allergic reaction. Use the EpiPen and call 10177 immediately.' };
+  }
+
+  if (/overdose|poison|toxic|swallow.*chemical|ingested|too much.*drug|drug.*overdose/.test(q)) {
+    return { key: 'overdose',
+      html: '<strong>Poisoning / Overdose</strong><br>Call <strong>0800 333 444</strong> (Poison Helpline) or <strong>10177</strong>.<br><br>1. Note what was taken and when<br>2. Keep the packaging<br>3. Do NOT induce vomiting unless told to<br>4. Unconscious but breathing → recovery position<br>5. Not breathing → CPR + call 10177<br>6. Chemical on skin/eyes → flush 15–20 min with water',
+      plain: 'Call the Poison Helpline on 0800 333 444 or call 10177.' };
+  }
+
+  if (/fever|temperature|too hot|high temp|febrile|pyrex/.test(q)) {
+    return { key: 'fever',
+      html: '<strong>Managing Fever:</strong><br><br>• Fever = 38°C or higher<br>• Paracetamol (Panado) or ibuprofen as directed<br>• Encourage fluids<br>• Tepid sponging<br>• Cool, ventilated room<br><br>See a doctor if: above 39.5°C · baby under 3 months · stiff neck, rash, confusion · lasting more than 3 days',
+      plain: 'Give paracetamol and encourage fluids. See a doctor if the fever is severe or prolonged.' };
+  }
+
+  if (/diabet|low blood sugar|hypoglyc|sugar.*low|shaking.*sweat|dizzy.*sweat/.test(q)) {
+    return { key: 'diabetic',
+      html: '<strong>Diabetic Low Blood Sugar:</strong><br><br>Signs: shaking, sweating, confusion, pale, rapid heartbeat.<br><br><u>CONSCIOUS:</u> 15g fast sugar — 3 glucose tablets, 150ml juice, or 3 tsp sugar in water. Wait 15 min. Then a snack.<br><br><u>UNCONSCIOUS:</u> Do NOT give by mouth → recovery position → call 10177.',
+      plain: 'Give fast sugar if conscious. If unconscious, call 10177 immediately.' };
+  }
+
+  if (/what can you|help me|first aid|emergency|what do i do/.test(q)) {
+    return { key: 'help',
+      html: 'I can assist with:<br><br>• Heart attack &amp; chest pain<br>• Stroke (FAST test)<br>• Choking &amp; Heimlich<br>• CPR<br>• Severe bleeding<br>• Seizures<br>• Burns<br>• Allergic reactions<br>• Overdose &amp; poisoning<br>• Fever<br>• Diabetic emergencies<br><br>Just ask, or tap <em>Find hospital</em> to locate help nearby.',
+      plain: 'Just ask me about any medical emergency and I will guide you.' };
+  }
+
+  return { key: 'default',
+    html: 'I\'m <strong>EMA</strong> — Emergency Medical Assistant. Try:<br><br>• "Signs of a stroke"<br>• "How to do CPR"<br>• "Someone is choking"<br>• "Find nearest hospital"<br><br>For life-threatening emergencies, call <strong>10177</strong> immediately.',
+    plain: 'How can I help you today? Ask me about any medical emergency.' };
+}
+
+// ─────────────────────────────────────────────
+//  FACILITY FINDER  (OpenStreetMap Overpass — free)
+// ─────────────────────────────────────────────
+async function findFacilities() {
+  const box = document.getElementById('facilities');
+  box.innerHTML = '<div class="fac-loading">Requesting location access…</div>';
+
+  if (!navigator.geolocation) {
+    box.innerHTML = '<div class="fac-error">Geolocation not available on this device.</div>';
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    async (pos) => {
+      const { latitude: lat, longitude: lon } = pos.coords;
+      box.innerHTML = '<div class="fac-loading">Searching within 5 km…</div>';
+
+      try {
+        const query = `[out:json][timeout:15];
+(
+  node["amenity"~"^(hospital|pharmacy|clinic|doctors)$"](around:5000,${lat},${lon});
+  way["amenity"~"^(hospital|pharmacy|clinic|doctors)$"](around:5000,${lat},${lon});
+);
+out center 10;`;
+
+        const res  = await fetch('https://overpass-api.de/api/interpreter', {
+          method: 'POST',
+          body: 'data=' + encodeURIComponent(query)
+        });
+        const data = await res.json();
+
+        const ICONS = { hospital:'🏥', pharmacy:'💊', clinic:'🏪', doctors:'👨‍⚕️' };
+
+        const items = data.elements
+          .filter(e => e.tags && e.tags.name)
+          .map(e => ({
+            name:  e.tags.name,
+            type:  e.tags.amenity,
+            phone: e.tags.phone || e.tags['contact:phone'] || '',
+            lat:   e.lat  || e.center?.lat,
+            lon:   e.lon  || e.center?.lon,
+            dist:  haversine(lat, lon, e.lat || e.center?.lat, e.lon || e.center?.lon)
+          }))
+          .sort((a, b) => a.dist - b.dist)
+          .slice(0, 8);
+
+        if (!items.length) {
+          box.innerHTML = '<div class="fac-error">No facilities found within 5 km. Try calling 10177 for emergency assistance.</div>';
+          return;
+        }
+
+        box.innerHTML = items.map(f => {
+          const distStr = f.dist < 1 ? Math.round(f.dist * 1000) + ' m' : f.dist.toFixed(1) + ' km';
+          const typeStr = (f.type || '').charAt(0).toUpperCase() + (f.type || '').slice(1);
+          const icon    = ICONS[f.type] || '🏥';
+          const action  = f.phone
+            ? `<a class="fac-action" href="tel:${f.phone.replace(/[\s\-()]/g,'')}">${f.phone}</a>`
+            : `<a class="fac-action map" href="https://www.google.com/maps/search/${encodeURIComponent(f.name)}/@${f.lat},${f.lon},16z" target="_blank" rel="noopener">Map</a>`;
+          return `
+            <div class="fac-card">
+              <span class="fac-icon">${icon}</span>
+              <div class="fac-info">
+                <div class="fac-name">${escHtml(f.name)}</div>
+                <div class="fac-meta">${typeStr} · ${distStr} away</div>
+              </div>
+              ${action}
+            </div>`;
+        }).join('');
+
+        // Announce results via dynamic TTS (names vary, can't pre-record)
+        speakDynamic('I found ' + items.length + ' facilities nearby. The closest is ' + items[0].name + ', ' + (items[0].dist < 1 ? Math.round(items[0].dist * 1000) + ' metres' : items[0].dist.toFixed(1) + ' kilometres') + ' away.');
+
+      } catch (err) {
+        box.innerHTML = '<div class="fac-error">Could not load facilities — check your internet connection.</div>';
+      }
+    },
+    () => {
+      box.innerHTML = '<div class="fac-error">Location access denied. Enable location in your browser settings to find nearby facilities.</div>';
+    },
+    { timeout: 12000, enableHighAccuracy: false }
+  );
+}
+
+function haversine(lat1, lon1, lat2, lon2) {
+  if (lat2 == null || lon2 == null) return 9999;
+  const R = 6371, r = Math.PI / 180;
+  const dLat = (lat2 - lat1) * r, dLon = (lon2 - lon1) * r;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*r)*Math.cos(lat2*r)*Math.sin(dLon/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+</script>
+</body>
+</html>
