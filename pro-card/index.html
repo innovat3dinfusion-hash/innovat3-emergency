@@ -256,39 +256,53 @@ body { font-family:'Exo 2',sans-serif; background:#050505; color:var(--text); mi
   background:radial-gradient(ellipse at 80% 50%,rgba(14,210,200,0.06),transparent 60%);
   pointer-events:none;
 }
+
 /* Emma avatar */
 .ema-avatar-wrap{
-  flex-shrink:0;position:relative;
-  width:72px;height:72px;
+  flex-shrink:0;position:relative;width:84px;height:84px;
 }
+/* Spinning teal ring */
 .ema-avatar-wrap::before{
   content:'';position:absolute;inset:-3px;border-radius:50%;
-  background:conic-gradient(#0ED2C8,#006655,#0ED2C8);
-  animation:ema-spin 4s linear infinite;
+  background:conic-gradient(from 0deg,#0ED2C8 0%,#003a35 50%,#0ED2C8 100%);
+  animation:ema-spin 5s linear infinite;
+  transition:animation-duration 0.5s;
 }
+.ema-avatar-wrap.speaking::before{animation-duration:0.8s;}
+/* gap between ring and image */
 .ema-avatar-wrap::after{
-  content:'';position:absolute;inset:-1px;border-radius:50%;
-  background:#000d0d;
+  content:'';position:absolute;inset:-1px;border-radius:50%;background:#000d0d;
 }
 @keyframes ema-spin{to{transform:rotate(360deg)}}
+
+/* Face circle */
 .ema-avatar{
-  position:relative;z-index:1;width:100%;height:100%;border-radius:50%;overflow:hidden;
-  background:#060f0f;display:flex;align-items:center;justify-content:center;
+  position:relative;z-index:1;
+  width:100%;height:100%;border-radius:50%;overflow:hidden;
+  background:#0a0a0a;
 }
-/* Face SVG — Emma */
-.ema-face-svg{width:100%;height:100%;}
+.ema-avatar img{
+  width:100%;height:100%;object-fit:cover;object-position:center top;
+  display:block;
+}
 
-/* Mouth talk animation */
-.ema-mouth{transition:d 0.1s;}
-.ema-wrap.speaking .ema-mouth-shape{animation:ema-jaw 0.18s ease-in-out infinite alternate;}
-@keyframes ema-jaw{from{transform:scaleY(0.25) translateY(0)}to{transform:scaleY(1) translateY(1px)}}
-.ema-wrap.speaking .ema-avatar-wrap::before{animation:ema-spin 1s linear infinite;}
+/* Mouth overlay — driven by Web Audio amplitude */
+.ema-mouth-mask{
+  position:absolute;z-index:2;
+  left:50%;bottom:22%;
+  transform:translateX(-50%) scaleY(0);
+  transform-origin:center bottom;
+  width:34%;
+  height:12%;
+  border-radius:0 0 50% 50% / 0 0 100% 100%;
+  background:rgba(20,4,2,0.85);
+  transition:transform 0.05s ease-out;
+  pointer-events:none;
+}
 
-/* Eye blink */
-.ema-eye-lid{animation:ema-blink 5s ease-in-out infinite;}
-@keyframes ema-blink{
-  0%,44%,52%,100%{transform:scaleY(1)}
-  46%,50%{transform:scaleY(0.08)}
+/* Subtle glow when speaking */
+.ema-avatar-wrap.speaking .ema-avatar{
+  box-shadow:0 0 0 2px rgba(14,210,200,0.6),0 0 20px rgba(14,210,200,0.25);
 }
 
 /* Header text */
@@ -810,49 +824,13 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
 
     <!-- Emma header with face -->
     <div class="ema-hdr">
-      <!-- Animated avatar -->
-      <div class="ema-avatar-wrap">
+      <!-- Emma photo avatar with amplitude-driven mouth -->
+      <div class="ema-avatar-wrap" id="emaAvatarWrap">
         <div class="ema-avatar">
-          <svg class="ema-face-svg" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
-            <!-- Face base -->
-            <circle cx="40" cy="40" r="40" fill="#060f0f"/>
-            <!-- Hair -->
-            <path d="M14 44 Q16 12 40 10 Q64 12 66 44 Q58 24 40 23 Q22 24 14 44Z" fill="#1a0830"/>
-            <path d="M14 44 Q11 58 15 68 Q12 56 14 44Z" fill="#1a0830"/>
-            <path d="M66 44 Q69 58 65 68 Q68 56 66 44Z" fill="#1a0830"/>
-            <!-- Skin -->
-            <ellipse cx="40" cy="52" rx="24" ry="28" fill="#d4956a"/>
-            <!-- Ears -->
-            <ellipse cx="16" cy="48" rx="4" ry="6" fill="#c2845a"/>
-            <ellipse cx="64" cy="48" rx="4" ry="6" fill="#c2845a"/>
-            <!-- Left eye -->
-            <g class="ema-eye-lid" style="transform-origin:32px 44px">
-              <ellipse cx="32" cy="44" rx="7" ry="8" fill="#0d1622"/>
-              <circle cx="33" cy="45" r="4.5" fill="#1e5fa8"/>
-              <circle cx="33" cy="45" r="2.8" fill="#050d18"/>
-              <circle cx="34.5" cy="43.5" r="1.2" fill="rgba(255,255,255,0.8)"/>
-            </g>
-            <!-- Right eye -->
-            <g class="ema-eye-lid" style="transform-origin:48px 44px">
-              <ellipse cx="48" cy="44" rx="7" ry="8" fill="#0d1622"/>
-              <circle cx="49" cy="45" r="4.5" fill="#1e5fa8"/>
-              <circle cx="49" cy="45" r="2.8" fill="#050d18"/>
-              <circle cx="50.5" cy="43.5" r="1.2" fill="rgba(255,255,255,0.8)"/>
-            </g>
-            <!-- Eyebrows -->
-            <path d="M24 35 Q32 31 38 34" stroke="#3a1a08" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-            <path d="M42 34 Q48 31 56 35" stroke="#3a1a08" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-            <!-- Nose -->
-            <path d="M40 52 L38 58 Q40 60 42 58Z" fill="#b8745a" opacity="0.4"/>
-            <!-- Mouth -->
-            <g id="emaMouthG" style="transform-origin:40px 66px">
-              <ellipse class="ema-mouth-shape" cx="40" cy="66" rx="9" ry="3" fill="#8b3525"/>
-              <path d="M31 66 Q40 70 49 66" stroke="#6b2515" stroke-width="1" fill="none" opacity="0.5"/>
-            </g>
-            <!-- Subtle cheek blush -->
-            <ellipse cx="22" cy="55" rx="6" ry="4" fill="#e07050" opacity="0.15"/>
-            <ellipse cx="58" cy="55" rx="6" ry="4" fill="#e07050" opacity="0.15"/>
-          </svg>
+          <img src="/assets/ema-face.jpg.jpeg" alt="EMA" id="emaFaceImg"
+               onerror="this.style.display='none'">
+          <!-- Mouth overlay — scaleY driven by Web Audio amplitude -->
+          <div class="ema-mouth-mask" id="emaMouthMask"></div>
         </div>
       </div>
 
@@ -1703,19 +1681,91 @@ function emaQuery(q) {
   emaSpeak(r.key);
 }
 
+// ── Web Audio amplitude sync ──────────────────────────────────────
+var emaAudioCtx  = null;
+var emaAnalyser  = null;
+var emaAnimFrame = null;
+var emaSourceNode = null;
+
+function emaStartMouthSync(audioEl) {
+  try {
+    if (!window.AudioContext && !window.webkitAudioContext) return;
+    // Reuse context if possible
+    if (!emaAudioCtx || emaAudioCtx.state === 'closed') {
+      emaAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (emaAudioCtx.state === 'suspended') emaAudioCtx.resume();
+
+    emaAnalyser = emaAudioCtx.createAnalyser();
+    emaAnalyser.fftSize = 256;
+    emaAnalyser.smoothingTimeConstant = 0.7;
+
+    // Each audio element needs its own source node
+    emaSourceNode = emaAudioCtx.createMediaElementSource(audioEl);
+    emaSourceNode.connect(emaAnalyser);
+    emaAnalyser.connect(emaAudioCtx.destination);
+
+    var buf = new Uint8Array(emaAnalyser.frequencyBinCount);
+    var mouth   = document.getElementById('emaMouthMask');
+    var avatar  = document.getElementById('emaAvatarWrap');
+
+    function tick() {
+      emaAnimFrame = requestAnimationFrame(tick);
+      emaAnalyser.getByteFrequencyData(buf);
+      // Speech sits in ~300–3000 Hz — roughly bins 3–25 of a 256-bin FFT at 44100 Hz
+      var sum = 0;
+      for (var i = 3; i < 22; i++) sum += buf[i];
+      var amp   = sum / 19;                      // 0–255
+      var open  = Math.min(amp / 70, 1);         // 0–1
+      open      = open * open;                   // square for snappier response
+
+      if (mouth) {
+        mouth.style.transform = 'translateX(-50%) scaleY(' + (open * 0.95) + ')';
+        mouth.style.opacity   = open > 0.04 ? String(0.7 + open * 0.3) : '0';
+      }
+      if (avatar) {
+        avatar.style.animationDuration = open > 0.3 ? '0.6s' : '5s';
+      }
+    }
+    tick();
+  } catch(e) {
+    // AudioContext unavailable — face just won't animate, audio still plays
+  }
+}
+
+function emaStopMouthSync() {
+  if (emaAnimFrame) { cancelAnimationFrame(emaAnimFrame); emaAnimFrame = null; }
+  var mouth  = document.getElementById('emaMouthMask');
+  var avatar = document.getElementById('emaAvatarWrap');
+  if (mouth)  { mouth.style.transform = 'translateX(-50%) scaleY(0)'; mouth.style.opacity = '0'; }
+  if (avatar) { avatar.classList.remove('speaking'); }
+}
+
 function emaSpeak(key) {
-  if (emaAudioEl) { emaAudioEl.pause(); emaAudioEl = null; }
+  if (emaAudioEl) { emaAudioEl.pause(); emaStopMouthSync(); emaAudioEl = null; }
   emaSpeaking = true;
   document.getElementById('emaSpeakingBar').className = 'ema-speaking-bar on';
-  document.getElementById('emaSection').classList.add('speaking'); // triggers face animation
+  document.getElementById('emaSection').classList.add('speaking');
+  document.getElementById('emaAvatarWrap').classList.add('speaking');
+
   var audio = new Audio(EMA_AUDIO + key + '.mp3');
+  audio.crossOrigin = 'anonymous';   // required for AudioContext on same-origin
   emaAudioEl = audio;
+
   function doneSpeaking() {
     emaSpeaking = false;
+    emaStopMouthSync();
     document.getElementById('emaSpeakingBar').className = 'ema-speaking-bar';
     document.getElementById('emaSection').classList.remove('speaking');
+    document.getElementById('emaAvatarWrap').classList.remove('speaking');
   }
-  audio.onended = audio.onerror = doneSpeaking;
+
+  audio.onended  = doneSpeaking;
+  audio.onerror  = doneSpeaking;
+  audio.oncanplay = function() {
+    emaStartMouthSync(audio);
+  };
+
   audio.play().catch(doneSpeaking);
 }
 
