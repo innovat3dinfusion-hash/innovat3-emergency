@@ -114,20 +114,41 @@ body { font-family:'Exo 2',sans-serif; background:#050505; color:var(--text); mi
 .id-aid .val { font-size:13px; color:var(--text); line-height:1.65; font-weight:600; }
 
 /* ── TABS ── */
-.tabs { padding:10px 10px 0; display:flex; flex-direction:column; gap:10px; }
+.tabs { padding:10px 10px 0; display:flex; flex-direction:column; gap:8px; }
 .tab { border-radius:14px; overflow:hidden; box-shadow:0 2px 16px rgba(0,0,0,0.4); }
-.tab-hdr { padding:10px 14px; font-size:8px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; }
-.tab-body { padding:14px; background:#111; }
+.tab-hdr {
+  padding:12px 16px; font-size:8px; font-weight:700; letter-spacing:1.5px;
+  text-transform:uppercase; display:flex; align-items:center; gap:6px;
+  cursor:pointer; user-select:none; -webkit-tap-highlight-color:transparent;
+}
+.tab-hdr .tab-chevron{
+  margin-left:auto; width:16px; height:16px; flex-shrink:0; opacity:0.7;
+  transition:transform 0.25s;
+}
+.tab.open .tab-hdr .tab-chevron { transform:rotate(90deg); }
+.tab-body {
+  padding:14px; background:#0e0e0e;
+  max-height:0; overflow:hidden;
+  transition:max-height 0.3s ease, padding 0.3s ease;
+  padding-top:0; padding-bottom:0;
+}
+.tab.open .tab-body {
+  max-height:600px;
+  padding-top:14px; padding-bottom:14px;
+}
 .tab-main { font-size:13px; font-weight:700; color:#fff; line-height:1.7; }
 .tab-text { font-size:12px; color:#ccc; line-height:1.7; }
 .tab-rule { border:none; border-top:1px solid #1e1e1e; margin:10px 0 8px; }
 .tab-sub-lbl { font-size:7.5px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:6px; }
 .tab-sub-txt { font-size:12px; color:var(--muted); line-height:1.7; }
-.tab-alert   { border:1px solid rgba(249,115,22,0.35); }  .tab-alert   .tab-hdr { background:linear-gradient(90deg,#b85200,#f97316); color:#000; }
-.tab-addr    { border:1px solid rgba(20,83,45,0.5); }     .tab-addr    .tab-hdr { background:linear-gradient(90deg,#0c2e1a,#14532D); color:#fff; }
-.tab-notes   { border:1px solid rgba(30,58,138,0.5); }    .tab-notes   .tab-hdr { background:linear-gradient(90deg,#0c1a4a,#1E3A8A); color:#fff; }
-.tab-contacts { border:2px solid rgba(21,128,61,0.6); box-shadow:0 0 22px rgba(21,128,61,0.15); }
-.tab-contacts .tab-hdr { background:linear-gradient(90deg,#082a16,#15803D,#22c55e); color:#fff; font-size:9px; }
+.tab-alert   { border:1px solid rgba(249,115,22,0.3); }
+.tab-alert   .tab-hdr { background:linear-gradient(90deg,#1a0800,#2d1000); color:var(--orange); }
+.tab-addr    { border:1px solid rgba(20,83,45,0.4); }
+.tab-addr    .tab-hdr { background:linear-gradient(90deg,#061209,#0c2e1a); color:var(--green); }
+.tab-notes   { border:1px solid rgba(30,58,138,0.4); }
+.tab-notes   .tab-hdr { background:linear-gradient(90deg,#06091a,#0c1a4a); color:var(--blue); }
+.tab-contacts { border:1px solid rgba(21,128,61,0.5); }
+.tab-contacts .tab-hdr { background:linear-gradient(90deg,#061209,#082a16); color:var(--green); font-size:9px; }
 
 /* ── CONTACT ROWS ── */
 .contact-row { display:flex; align-items:center; background:#0d0d0d; border-radius:12px; overflow:hidden; border:1px solid #1e1e1e; margin-bottom:10px; }
@@ -845,19 +866,6 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
       <div class="ema-pro-tag">PRO</div>
     </div>
 
-    <!-- Mic row -->
-    <div class="ema-mic-row">
-      <button class="ema-mic-tap" onclick="emaMicTap()" id="emaMicTapBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-          <line x1="12" y1="19" x2="12" y2="23"/>
-          <line x1="8" y1="23" x2="16" y2="23"/>
-        </svg>
-        <span id="emaMicLabel">Ask EMA by voice</span>
-      </button>
-    </div>
-
     <!-- Speaking bar -->
     <div class="ema-speaking-bar" id="emaSpeakingBar">
       <div class="ema-bar-wave"><i></i><i></i><i></i><i></i><i></i></div>
@@ -990,31 +998,48 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
       </button>
     </div>
 
-    <!-- Facility results -->
-    <div class="ema-facilities" id="emaFacilities"></div>
-
-    <!-- Text input -->
-    <div class="ema-text-row">
-      <input class="ema-text-in" id="emaTextIn" type="text"
-        placeholder="Ask EMA anything…"
-        autocomplete="off" autocorrect="off" spellcheck="false"
-        onkeydown="if(event.key==='Enter')emaTextSend()">
-      <button class="ema-text-send" onclick="emaTextSend()">ASK</button>
-    </div>
-
-    <!-- Find button -->
+    <!-- Find Nearest — prominent, above mic -->
     <button class="ema-find-btn" onclick="emaFindFacilities()">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.4 7.4 11.5 7.7 11.8a.5.5 0 0 0 .6 0C12.6 21.5 20 15.4 20 10a8 8 0 0 0-8-8z"/></svg>
       Find Nearest Hospital / Doctor
     </button>
 
+    <!-- Facility results -->
+    <div class="ema-facilities" id="emaFacilities"></div>
+
+    <!-- Ask by voice — directly uses phone mic -->
+    <div class="ema-mic-row">
+      <button class="ema-mic-tap" onclick="emaMicTap()" id="emaMicTapBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+          <line x1="12" y1="19" x2="12" y2="23"/>
+          <line x1="8" y1="23" x2="16" y2="23"/>
+        </svg>
+        <span id="emaMicLabel">Ask EMA by voice</span>
+      </button>
+    </div>
+
+    <!-- Text input -->
+    <div class="ema-text-row">
+      <input class="ema-text-in" id="emaTextIn" type="text"
+        placeholder="Or type your question…"
+        autocomplete="off" autocorrect="off" spellcheck="false"
+        onkeydown="if(event.key==='Enter')emaTextSend()">
+      <button class="ema-text-send" onclick="emaTextSend()">ASK</button>
+    </div>
+
   </div>
 
-  <!-- TABS -->
+  <!-- TABS — tap header to expand/collapse -->
   <div class="tabs">
 
-    <div class="tab tab-alert">
-      <div class="tab-hdr"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;margin-right:6px"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg><span data-i18n="tabMedical">Medical Alerts</span> — Tell Paramedics</div>
+    <div class="tab tab-alert open" id="tabAlert">
+      <div class="tab-hdr" onclick="proTabToggle('tabAlert')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        <span data-i18n="tabMedical">Medical Alerts</span>
+        <svg class="tab-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
       <div class="tab-body">
         <div class="tab-main" id="scMedical">—</div>
         <hr class="tab-rule">
@@ -1023,32 +1048,36 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
       </div>
     </div>
 
-    <div class="tab tab-addr">
-      <div class="tab-hdr"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;margin-right:6px"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><span data-i18n="tabAddress">Home Address</span></div>
+    <div class="tab tab-addr" id="tabAddr">
+      <div class="tab-hdr" onclick="proTabToggle('tabAddr')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+        <span data-i18n="tabAddress">Home Address</span>
+        <svg class="tab-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
       <div class="tab-body"><div class="tab-text" id="scAddress">—</div></div>
     </div>
 
-    <div class="tab tab-notes">
-      <div class="tab-hdr"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;margin-right:6px"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg><span data-i18n="tabNotes">Notes for Finder</span></div>
+    <div class="tab tab-notes" id="tabNotes">
+      <div class="tab-hdr" onclick="proTabToggle('tabNotes')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+        <span data-i18n="tabNotes">Notes for Finder</span>
+        <svg class="tab-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
       <div class="tab-body"><div class="tab-text" id="scNotes">—</div></div>
     </div>
 
-    <div class="tab tab-contacts">
-      <div class="tab-hdr"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;margin-right:6px"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg><span data-i18n="tabContacts">Emergency Contacts — Call or Message Now</span></div>
+    <div class="tab tab-contacts open" id="tabContacts">
+      <div class="tab-hdr" onclick="proTabToggle('tabContacts')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+        <span data-i18n="tabContacts">Emergency Contacts</span>
+        <svg class="tab-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
       <div class="tab-body" id="scContacts"></div>
     </div>
 
   </div>
 
-  <!-- PROFILE COMPLETENESS BAR -->
-  <div class="profile-bar-wrap" id="profileBar" style="display:none">
-    <div class="profile-bar-hdr">
-      <div class="profile-bar-lbl" data-i18n="profileLbl">Profile Completeness</div>
-      <div class="profile-bar-pct" id="profilePct">—</div>
-    </div>
-    <div class="profile-bar-track"><div class="profile-bar-fill" id="profileFill" style="width:0%"></div></div>
-    <div class="profile-bar-missing" id="profileMissing"></div>
-  </div>
+  <!-- Profile completeness bar removed for Pro card -->
 
   <!-- EMERGENCY NUMBERS -->
   <div class="e-nums">
@@ -1311,12 +1340,7 @@ var subData = {};
   pcFields.forEach(function(f){ if(subData[f.key]&&subData[f.key].trim()) pcFilled++; else pcMissing.push(f.label); });
   var pcPct = Math.round((pcFilled/pcFields.length)*100);
   var pcColour = pcPct>=80?'var(--green)':pcPct>=50?'var(--orange)':'var(--red)';
-  var pcFillEl = document.getElementById('profileFill');
-  if (pcFillEl) { pcFillEl.style.width=pcPct+'%'; pcFillEl.style.background=pcColour; }
-  var pcPctEl = document.getElementById('profilePct');
-  if (pcPctEl) { pcPctEl.textContent=pcPct+'%'; pcPctEl.style.color=pcColour; }
-  if (pcMissing.length) { var pcMissEl=document.getElementById('profileMissing'); if(pcMissEl) pcMissEl.textContent='Missing: '+pcMissing.join(', ')+'. Update at innovat3.co.za'; }
-  document.getElementById('profileBar').style.display='block';
+  // Profile bar removed for Pro card
 
   // ── Pro plan guard ────────────────────────────────────────────
   var rawPlan = (subData['Plan'] || json.plan || '').toLowerCase();
@@ -1619,6 +1643,11 @@ function setLang(code) {
 }
 
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('/pro-card/sw.js').catch(function(){}); }
+
+function proTabToggle(id) {
+  var tab = document.getElementById(id);
+  if (tab) tab.classList.toggle('open');
+}
 </script>
 
 <script>
@@ -1627,34 +1656,55 @@ var EMA_AUDIO  = '/assist/audio/';
 var emaSpeaking = false;
 var emaAudioEl  = null;
 var emaProfile  = window.emaProfile || {};
-var EMA_IS_IOS  = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-// ── Mic: iOS uses keyboard dictation, others use webkitSpeechRecognition ──
 var EMA_SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 
 function emaMicTap() {
-  if (EMA_IS_IOS || !EMA_SR) {
-    // iOS: focus text input — user taps 🎤 on keyboard to dictate
-    var inp = document.getElementById('emaTextIn');
-    if (inp) {
-      inp.focus();
-      inp.placeholder = 'Tap 🎤 on your keyboard to speak…';
-    }
+  var btn = document.getElementById('emaMicLabel');
+  var wrap = document.getElementById('emaMicTapBtn');
+
+  if (!EMA_SR) {
+    // Browser doesn't support speech at all — fall back to text input
+    document.getElementById('emaTextIn').focus();
     return;
   }
-  // Desktop / Android: use SpeechRecognition
+
+  // If already listening, stop
+  if (wrap && wrap._rec) {
+    wrap._rec.stop();
+    return;
+  }
+
   var rec = new EMA_SR();
-  rec.lang = navigator.language || 'en-ZA';
+  wrap._rec = rec;
+  rec.lang = 'en-ZA';
   rec.interimResults = false;
-  var btn = document.getElementById('emaMicLabel');
-  rec.onstart  = function(){ if(btn) btn.textContent = 'Listening…'; };
-  rec.onend    = function(){ if(btn) btn.textContent = 'Ask EMA by voice'; };
-  rec.onerror  = function(){ if(btn) btn.textContent = 'Ask EMA by voice'; };
-  rec.onresult = function(e){
+  rec.maxAlternatives = 1;
+
+  rec.onstart = function() {
+    if (btn) btn.textContent = 'Listening…';
+    if (wrap) wrap.style.borderColor = 'rgba(239,68,68,0.7)';
+  };
+  rec.onend = function() {
+    wrap._rec = null;
+    if (btn) btn.textContent = 'Ask EMA by voice';
+    if (wrap) wrap.style.borderColor = '';
+  };
+  rec.onerror = function(e) {
+    wrap._rec = null;
+    if (btn) btn.textContent = e.error === 'not-allowed'
+      ? 'Mic blocked — check Settings'
+      : 'Ask EMA by voice';
+    if (wrap) wrap.style.borderColor = '';
+  };
+  rec.onresult = function(e) {
     var t = e.results[0][0].transcript.trim();
     if (t) emaQuery(t);
   };
-  try { rec.start(); } catch(e) {}
+
+  try { rec.start(); } catch(e) {
+    wrap._rec = null;
+    document.getElementById('emaTextIn').focus();
+  }
 }
 
 function emaTextSend() {
