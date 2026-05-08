@@ -1177,7 +1177,10 @@ document.addEventListener('click', function(){
 }, { once: true });
 
 function emaTap() {
-  if (!EMA_SR) return;
+  if (!EMA_SR) {
+    emaShowMsg('⚠️ Voice input is not supported in this browser. Use Safari on iPhone.', 'warn');
+    return;
+  }
   if (emaListening) { emaRec && emaRec.stop(); return; }
   if (emaSpeaking) emaStop();
   emaRec = new EMA_SR();
@@ -1185,7 +1188,20 @@ function emaTap() {
   emaRec.interimResults = false;
   emaRec.onstart  = function(){ emaListening = true; emaSetUI('listening'); };
   emaRec.onend    = function(){ emaListening = false; if (!emaSpeaking) emaSetUI('idle'); };
-  emaRec.onerror  = function(){ emaListening = false; emaSetUI('idle'); };
+  emaRec.onerror  = function(e){
+    emaListening = false;
+    emaSetUI('idle');
+    if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+      emaShowMsg(
+        '🎙️ Microphone blocked. To fix on iPhone:<br>' +
+        '<strong>Settings → Safari → Microphone → Allow</strong><br>' +
+        'Then reload this page.',
+        'warn'
+      );
+    } else if (e.error === 'no-speech') {
+      emaShowMsg('No speech detected — tap the mic and try again.', 'info');
+    }
+  };
   emaRec.onresult = function(e){
     var t = e.results[0][0].transcript.trim();
     if (t) emaQuery(t);
@@ -1278,8 +1294,11 @@ function emaGetResponse(q) {
 
 async function emaFindFacilities() {
   var box = document.getElementById('emaFacilities');
-  box.innerHTML = '<div style="padding:10px 16px;font-size:11px;color:#5eead4;">Locating nearby facilities…</div>';
-  if (!navigator.geolocation) { box.innerHTML = ''; return; }
+  box.innerHTML = '<div style="padding:10px 16px;font-size:11px;color:#5eead4;">📍 Locating nearby facilities…</div>';
+  if (!navigator.geolocation) {
+    box.innerHTML = '<div style="padding:12px 16px;font-size:12px;color:#EF4444;">Location not supported on this browser.</div>';
+    return;
+  }
   navigator.geolocation.getCurrentPosition(
     async function(pos) {
       var lat = pos.coords.latitude, lon = pos.coords.longitude;
@@ -1303,11 +1322,25 @@ async function emaFindFacilities() {
             : '<a class="ema-fac-map" href="https://www.google.com/maps/search/'+encodeURIComponent(f.name)+'/@'+f.lat+','+f.lon+',16z" target="_blank" rel="noopener">Map</a>';
           return '<div class="ema-fac"><span class="ema-fac-icon">'+icon+'</span><div class="ema-fac-info"><div class="ema-fac-name">'+f.name+'</div><div class="ema-fac-meta">'+type+' · '+d+'</div></div>'+action+'</div>';
         }).join('');
-      } catch(e) { box.innerHTML='<div style="padding:10px 16px;font-size:11px;color:#777;">Could not load facilities.</div>'; }
+      } catch(e) {
+        box.innerHTML='<div style="padding:12px 16px;font-size:12px;color:#EF4444;">Could not load facilities — check your connection and try again.</div>';
+      }
     },
-    function(){ box.innerHTML='<div style="padding:10px 16px;font-size:11px;color:#777;">Location access denied.</div>'; },
+    function(err) {
+      var msg = err.code === 1
+        ? '📍 Location blocked. To fix on iPhone:<br><strong>Settings → Privacy & Security → Location Services → Safari → While Using the App</strong><br>Then reload this page.'
+        : '📍 Could not get your location. Please try again.';
+      box.innerHTML = '<div style="padding:12px 16px;font-size:12px;color:#EAB308;line-height:1.7;">' + msg + '</div>';
+    },
     {timeout:10000}
   );
+}
+
+function emaShowMsg(html, type) {
+  var el = document.getElementById('emaResponse');
+  var col = type === 'warn' ? '#EAB308' : '#5eead4';
+  el.innerHTML = '<span style="color:' + col + ';">' + html + '</span>';
+  el.style.display = 'block';
 }
 
 function emaHaversine(a,b,c,d){

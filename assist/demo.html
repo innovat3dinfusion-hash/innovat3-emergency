@@ -282,7 +282,14 @@ function startListening() {
 
   recognition.onstart  = () => { isListening = true;  setStatus('listening'); };
   recognition.onend    = () => { isListening = false; if (!isSpeaking) setStatus('ready'); };
-  recognition.onerror  = ()  => { isListening = false; setStatus('ready'); };
+  recognition.onerror  = (e) => {
+    isListening = false; setStatus('ready');
+    if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+      addMsg('ai', '🎙️ Microphone blocked.<br>On iPhone: <strong>Settings → Safari → Microphone → Allow</strong>, then reload.');
+    } else if (e.error === 'no-speech') {
+      addMsg('ai', 'No speech detected — tap the mic and try again.');
+    }
+  };
   recognition.onresult = (e) => {
     const t = e.results[0][0].transcript.trim();
     if (t) handleQuery(t);
@@ -592,7 +599,10 @@ out center 10;`;
       }
     },
     () => {
-      box.innerHTML = '<div class="fac-error">Location access denied. Enable location in your browser settings to find nearby facilities.</div>';
+      const locMsg = err.code === 1
+        ? '📍 Location blocked.<br>On iPhone: <strong>Settings → Privacy & Security → Location Services → Safari → While Using the App</strong><br>Then reload.'
+        : '📍 Could not get location — please try again.';
+      box.innerHTML = '<div class="fac-error" style="line-height:1.7;">' + locMsg + '</div>';
     },
     { timeout: 12000, enableHighAccuracy: false }
   );
