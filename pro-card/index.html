@@ -520,7 +520,6 @@ body { font-family:'Exo 2',sans-serif; background:#050505; color:var(--text); mi
 .ema-hdr-icon{font-size:22px;flex-shrink:0;}
 .ema-hdr-label{font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:#000;letter-spacing:2px;text-transform:uppercase;flex:1;}
 .ema-hdr-sub{font-size:9px;color:rgba(0,0,0,0.55);margin-top:2px;font-weight:600;}
-.ema-pro-tag{background:rgba(0,0,0,0.25);border-radius:20px;padding:3px 9px;font-family:'Orbitron',sans-serif;font-size:6px;font-weight:900;color:#000;letter-spacing:1px;flex-shrink:0;}
 .ema-response{background:linear-gradient(135deg,#001a2a,#001020);border-bottom:1px solid rgba(14,210,200,0.15);padding:14px 16px;font-size:13px;color:#ddd;line-height:1.7;display:none;}
 .ema-response strong{color:#0ED2C8;}
 .ema-facilities{display:flex;flex-direction:column;}
@@ -1675,16 +1674,28 @@ function emaMicTap() {
   var label = document.getElementById('emaMicLabel');
   var micBtn = document.getElementById('emaMicTapBtn');
 
-  if (!EMA_SR) {
-    document.getElementById('emaTextIn').focus();
-    return;
-  }
-
   // Already listening — stop
   if (micBtn && micBtn._rec) {
     micBtn._rec.stop();
     return;
   }
+
+  if (!EMA_SR) {
+    // No speech recognition on this browser — show text input
+    if (label) label.textContent = 'Type below ↓';
+    if (micBtn) micBtn.classList.add('listening');
+    var textEl = document.getElementById('emaTextIn');
+    if (textEl) { textEl.scrollIntoView({behavior:'smooth', block:'center'}); textEl.focus(); }
+    setTimeout(function() {
+      if (label) label.textContent = 'Ask by voice';
+      if (micBtn) micBtn.classList.remove('listening');
+    }, 2500);
+    return;
+  }
+
+  // Immediate feedback before browser prompts for mic permission
+  if (label) label.textContent = 'Starting…';
+  if (micBtn) micBtn.classList.add('listening');
 
   var rec = new EMA_SR();
   micBtn._rec = rec;
@@ -1694,7 +1705,6 @@ function emaMicTap() {
 
   rec.onstart = function() {
     if (label) label.textContent = 'Listening…';
-    if (micBtn) micBtn.classList.add('listening');
   };
   rec.onend = function() {
     micBtn._rec = null;
@@ -1703,7 +1713,12 @@ function emaMicTap() {
   };
   rec.onerror = function(e) {
     micBtn._rec = null;
-    if (label) label.textContent = e.error === 'not-allowed' ? 'Mic blocked' : 'Ask by voice';
+    if (e.error === 'not-allowed') {
+      if (label) label.textContent = 'Mic blocked';
+      setTimeout(function() { if (label) label.textContent = 'Ask by voice'; }, 3000);
+    } else {
+      if (label) label.textContent = 'Ask by voice';
+    }
     if (micBtn) micBtn.classList.remove('listening');
   };
   rec.onresult = function(e) {
@@ -1711,9 +1726,14 @@ function emaMicTap() {
     if (t) emaQuery(t);
   };
 
-  try { rec.start(); } catch(e) {
+  try {
+    rec.start();
+  } catch(e) {
     micBtn._rec = null;
-    document.getElementById('emaTextIn').focus();
+    if (label) label.textContent = 'Ask by voice';
+    if (micBtn) micBtn.classList.remove('listening');
+    var textEl = document.getElementById('emaTextIn');
+    if (textEl) { textEl.scrollIntoView({behavior:'smooth', block:'center'}); textEl.focus(); }
   }
 }
 
