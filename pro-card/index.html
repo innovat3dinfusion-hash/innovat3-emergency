@@ -281,38 +281,29 @@ body { font-family:'Exo 2',sans-serif; background:#050505; color:var(--text); mi
   width:100%;height:100%;border-radius:50%;overflow:hidden;
   background:#0a0a0a;
 }
-.ema-avatar img,
-.ema-avatar video{
+.ema-avatar img{
   width:100%;height:100%;object-fit:cover;object-position:center top;
-  display:block;position:absolute;inset:0;
-}
-.ema-avatar video{display:none;}
-
-/* Mouth overlay — fallback when no video available */
-.ema-mouth-mask{
-  position:absolute;z-index:3;
-  left:50%;bottom:22%;
-  transform:translateX(-50%) scaleY(0);
-  transform-origin:center bottom;
-  width:34%;height:12%;
-  border-radius:0 0 50% 50% / 0 0 100% 100%;
-  background:rgba(20,4,2,0.88);
-  transition:transform 0.05s ease-out;
-  pointer-events:none;
-  opacity:0;
+  display:block;
 }
 
-/* Idle shimmer — subtle life when not speaking */
-.ema-avatar img{animation:ema-idle-breathe 5s ease-in-out infinite;}
-@keyframes ema-idle-breathe{
-  0%,100%{transform:scale(1) translateY(0)}
-  50%{transform:scale(1.008) translateY(-1px)}
+/* Pulse rings when speaking */
+.ema-pulse-ring{
+  position:absolute;inset:-4px;border-radius:50%;
+  border:2px solid rgba(14,210,200,0);
+  pointer-events:none;z-index:2;
 }
-.ema-avatar-wrap.speaking .ema-avatar img{animation:none;}
-
-/* Glow when speaking */
-.ema-avatar-wrap.speaking .ema-avatar{
-  box-shadow:0 0 0 2px rgba(14,210,200,0.7),0 0 22px rgba(14,210,200,0.3);
+.ema-avatar-wrap.speaking .ema-pulse-ring:nth-child(1){
+  animation:ema-pulse 1.4s ease-out infinite;
+}
+.ema-avatar-wrap.speaking .ema-pulse-ring:nth-child(2){
+  animation:ema-pulse 1.4s ease-out infinite 0.5s;
+}
+.ema-avatar-wrap.speaking .ema-pulse-ring:nth-child(3){
+  animation:ema-pulse 1.4s ease-out infinite 1s;
+}
+@keyframes ema-pulse{
+  0%  {transform:scale(1);   border-color:rgba(14,210,200,0.8); opacity:1;}
+  100%{transform:scale(1.55);border-color:rgba(14,210,200,0);   opacity:0;}
 }
 
 /* Header text */
@@ -836,14 +827,12 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
     <div class="ema-hdr">
       <!-- Emma photo avatar with amplitude-driven mouth -->
       <div class="ema-avatar-wrap" id="emaAvatarWrap">
-        <div class="ema-avatar" id="emaAvatarInner">
-          <!-- Static photo — shown when idle or no video available -->
-          <img src="/assets/ema-face.jpg.jpeg" alt="EMA" id="emaFaceImg">
-          <!-- Talking video — shown when Hedra video is available -->
-          <video id="emaFaceVideo" playsinline webkit-playsinline muted="false"
-                 preload="none" style="display:none;"></video>
-          <!-- Mouth overlay — fallback lip-sync when no video -->
-          <div class="ema-mouth-mask" id="emaMouthMask"></div>
+        <!-- Pulse rings — animate when speaking -->
+        <div class="ema-pulse-ring"></div>
+        <div class="ema-pulse-ring"></div>
+        <div class="ema-pulse-ring"></div>
+        <div class="ema-avatar">
+          <img src="/assets/ema-face.jpg.jpeg" alt="EMA">
         </div>
       </div>
 
@@ -1694,130 +1683,25 @@ function emaQuery(q) {
   emaSpeak(r.key);
 }
 
-var EMA_VIDEO   = '/assist/video/';
-
-// ── Web Audio amplitude (mouth overlay fallback) ──────────────────
-var emaAudioCtx  = null;
-var emaAnalyser  = null;
-var emaAnimFrame = null;
-
-function emaStartMouthSync(mediaEl) {
-  try {
-    if (!window.AudioContext && !window.webkitAudioContext) return;
-    if (!emaAudioCtx || emaAudioCtx.state === 'closed')
-      emaAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (emaAudioCtx.state === 'suspended') emaAudioCtx.resume();
-    emaAnalyser = emaAudioCtx.createAnalyser();
-    emaAnalyser.fftSize = 256;
-    emaAnalyser.smoothingTimeConstant = 0.65;
-    var src = emaAudioCtx.createMediaElementSource(mediaEl);
-    src.connect(emaAnalyser);
-    emaAnalyser.connect(emaAudioCtx.destination);
-    var buf   = new Uint8Array(emaAnalyser.frequencyBinCount);
-    var mouth = document.getElementById('emaMouthMask');
-    function tick() {
-      emaAnimFrame = requestAnimationFrame(tick);
-      emaAnalyser.getByteFrequencyData(buf);
-      var sum = 0;
-      for (var i = 3; i < 22; i++) sum += buf[i];
-      var open = Math.min((sum / 19) / 70, 1);
-      open = open * open;
-      if (mouth) {
-        mouth.style.transform = 'translateX(-50%) scaleY(' + (open * 0.92) + ')';
-        mouth.style.opacity   = open > 0.04 ? String(0.7 + open * 0.3) : '0';
-      }
-    }
-    tick();
-  } catch(e) {}
-}
-
-function emaStopMouthSync() {
-  if (emaAnimFrame) { cancelAnimationFrame(emaAnimFrame); emaAnimFrame = null; }
-  var mouth = document.getElementById('emaMouthMask');
-  if (mouth) { mouth.style.transform = 'translateX(-50%) scaleY(0)'; mouth.style.opacity = '0'; }
-}
-
-// ── Show / hide video vs photo ────────────────────────────────────
-function emaShowVideo(show) {
-  var img   = document.getElementById('emaFaceImg');
-  var video = document.getElementById('emaFaceVideo');
-  if (!img || !video) return;
-  img.style.display   = show ? 'none'  : 'block';
-  video.style.display = show ? 'block' : 'none';
-}
-
-// ── Main speak function — video first, audio fallback ─────────────
 function emaSpeak(key) {
-  // Stop whatever is playing
   if (emaAudioEl) { emaAudioEl.pause(); emaAudioEl = null; }
-  var oldVid = document.getElementById('emaFaceVideo');
-  if (oldVid) { oldVid.pause(); oldVid.src = ''; }
-  emaStopMouthSync();
-  emaShowVideo(false);
 
   emaSpeaking = true;
   document.getElementById('emaSpeakingBar').className = 'ema-speaking-bar on';
   document.getElementById('emaAvatarWrap').classList.add('speaking');
 
-  function doneSpeaking() {
+  var audio = new Audio(EMA_AUDIO + key + '.mp3');
+  emaAudioEl = audio;
+
+  function done() {
     emaSpeaking = false;
-    emaStopMouthSync();
-    emaShowVideo(false);
     document.getElementById('emaSpeakingBar').className = 'ema-speaking-bar';
     document.getElementById('emaAvatarWrap').classList.remove('speaking');
   }
 
-  // ── Try Hedra video first ─────────────────────────────────────
-  var videoEl = document.getElementById('emaFaceVideo');
-  videoEl.src        = EMA_VIDEO + key + '.mp4';
-  videoEl.crossOrigin = 'anonymous';
-  videoEl.preload    = 'auto';
-
-  videoEl.oncanplay = function() {
-    // Video loaded — switch face to video
-    emaShowVideo(true);
-    videoEl.play().catch(function() {
-      // Autoplay blocked — fall back to audio
-      emaShowVideo(false);
-      emaPlayAudio(key, doneSpeaking);
-    });
-  };
-
-  videoEl.onended = doneSpeaking;
-
-  videoEl.onerror = function() {
-    // No video file yet — use audio + mouth overlay fallback
-    emaShowVideo(false);
-    emaPlayAudio(key, doneSpeaking);
-  };
-
-  // Timeout: if video hasn't loaded in 1.5s, play audio instead
-  var videoTimeout = setTimeout(function() {
-    if (!videoEl.readyState) {
-      videoEl.src = '';
-      emaShowVideo(false);
-      emaPlayAudio(key, doneSpeaking);
-    }
-  }, 1500);
-
-  videoEl.oncanplay = function() {
-    clearTimeout(videoTimeout);
-    emaShowVideo(true);
-    videoEl.play().catch(function() {
-      emaShowVideo(false);
-      emaPlayAudio(key, doneSpeaking);
-    });
-  };
-}
-
-function emaPlayAudio(key, onDone) {
-  var audio = new Audio(EMA_AUDIO + key + '.mp3');
-  audio.crossOrigin = 'anonymous';
-  emaAudioEl = audio;
-  audio.oncanplay = function() { emaStartMouthSync(audio); };
-  audio.onended   = onDone;
-  audio.onerror   = onDone;
-  audio.play().catch(onDone);
+  audio.onended = done;
+  audio.onerror = done;
+  audio.play().catch(done);
 }
 
 function emaGetResponse(q) {
