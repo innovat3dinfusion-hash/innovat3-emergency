@@ -263,9 +263,9 @@ body { font-family:'Exo 2',sans-serif; background:#050505; color:var(--text); mi
 @keyframes ema-pulse{0%,100%{opacity:0.3}50%{opacity:1}}
 /* Text input fallback */
 .ema-text-row{display:flex;gap:0;border-top:1px solid rgba(14,210,200,0.15);}
-.ema-text-in{flex:1;background:#001010;border:none;padding:12px 14px;font-family:'Exo 2',sans-serif;font-size:13px;color:var(--text);outline:none;}
-.ema-text-in::placeholder{color:#2a5555;}
-.ema-text-send{background:linear-gradient(135deg,#003d3b,#0a9e97);border:none;padding:12px 16px;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:900;color:#000;cursor:pointer;letter-spacing:1px;white-space:nowrap;}
+.ema-text-in{flex:1;background:#001212;border:none;padding:14px 14px;font-family:'Exo 2',sans-serif;font-size:14px;color:var(--text);outline:none;}
+.ema-text-in::placeholder{color:#336666;}
+.ema-text-send{background:linear-gradient(135deg,#003d3b,#0ED2C8);border:none;padding:14px 18px;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:900;color:#000;cursor:pointer;letter-spacing:1px;white-space:nowrap;-webkit-tap-highlight-color:transparent;}
 .ema-hdr-icon{font-size:22px;flex-shrink:0;}
 .ema-hdr-label{font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:#000;letter-spacing:2px;text-transform:uppercase;flex:1;}
 .ema-hdr-sub{font-size:9px;color:rgba(0,0,0,0.55);margin-top:2px;font-weight:600;}
@@ -594,11 +594,13 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
       <div class="ema-mic-hint" id="emaMicHint">TAP TO SPEAK</div>
     </div>
 
-    <!-- Text fallback for when voice is blocked -->
+    <!-- Text input — tap the mic icon on iOS keyboard to dictate -->
     <div class="ema-text-row">
-      <input class="ema-text-in" id="emaTextIn" type="text" placeholder="Or type your question here…" autocomplete="off"
+      <input class="ema-text-in" id="emaTextIn" type="text"
+        placeholder="Type or use 🎤 on keyboard to speak…"
+        autocomplete="off" autocorrect="off" spellcheck="false"
         onkeydown="if(event.key==='Enter')emaTextSend()">
-      <button class="ema-text-send" onclick="emaTextSend()">SEND</button>
+      <button class="ema-text-send" onclick="emaTextSend()">ASK</button>
     </div>
 
     <button class="ema-find-btn" onclick="emaFindFacilities()">📍 &nbsp;Find Nearest Hospital / Doctor</button>
@@ -1262,12 +1264,11 @@ function emaTap() {
     emaSetUI('idle');
     if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
       emaShowMsg(
-        '🎙️ Microphone still blocked.<br>' +
-        'On iPhone: fully <strong>close Safari</strong> (swipe up in app switcher), then go to:<br>' +
-        '<strong>Settings → Safari → Microphone → Allow</strong><br>' +
-        'Then reopen this page. Or type below ↓',
+        '🎙️ Mic blocked by Safari.<br>' +
+        'Tap the text box below → then tap the <strong>🎤 microphone</strong> on your iPhone keyboard to speak to Emma.',
         'warn'
       );
+      setTimeout(function(){ var el=document.getElementById('emaTextIn'); if(el) el.focus(); }, 300);
     } else if (e.error === 'no-speech') {
       emaShowMsg('Nothing heard — tap the mic again and speak clearly.', 'info');
     } else {
@@ -1307,7 +1308,7 @@ function emaQuery(q) {
     var el = document.getElementById('emaResponse');
     el.innerHTML = r.html;
     el.style.display = 'block';
-    if (/nearest|hospital|pharmacy|clinic|doctor/.test(q.toLowerCase())) emaFindFacilities();
+    if (/nearest|hospital|clinic|doctor/.test(q.toLowerCase())) emaFindFacilities();
     emaSpeak(r.key, r.plain);
   }, 400);
 }
@@ -1365,7 +1366,7 @@ function emaSetUI(state) {
 }
 
 function emaGetResponse(q) {
-  if (/nearest|nearby|find|hospital|pharmacy|clinic|gp\b/.test(q))
+  if (/nearest|nearby|find|hospital|clinic|doctor|gp\b/.test(q))
     return {key:'location_search', html:'Finding nearby facilities…', plain:'Finding nearby facilities now.'};
   if (/heart attack|chest pain|chest tight/.test(q))
     return {key:'heart_attack', html:'<strong>Possible heart attack.</strong> Call <strong>10177</strong> now. Sit them down, loosen clothing, give aspirin 300mg to chew if not allergic.', plain:'Possible heart attack.'};
@@ -1403,10 +1404,10 @@ async function emaFindFacilities() {
     async function(pos) {
       var lat = pos.coords.latitude, lon = pos.coords.longitude;
       try {
-        var q = '[out:json][timeout:12];(node["amenity"~"^(hospital|pharmacy|clinic|doctors)$"](around:5000,'+lat+','+lon+');way["amenity"~"^(hospital|pharmacy|clinic|doctors)$"](around:5000,'+lat+','+lon+'););out center 6;';
+        var q = '[out:json][timeout:12];(node["amenity"~"^(hospital|clinic|doctors)$"](around:5000,'+lat+','+lon+');way["amenity"~"^(hospital|clinic|doctors)$"](around:5000,'+lat+','+lon+'););out center 6;';
         var res  = await fetch('https://overpass-api.de/api/interpreter',{method:'POST',body:'data='+encodeURIComponent(q)});
         var data = await res.json();
-        var ICONS = {hospital:'🏥',pharmacy:'💊',clinic:'🏪',doctors:'👨‍⚕️'};
+        var ICONS = {hospital:'🏥',clinic:'🏪',doctors:'👨‍⚕️'};
         var items = data.elements.filter(function(e){ return e.tags && e.tags.name; }).map(function(e){
           var elat = e.lat || (e.center && e.center.lat);
           var elon = e.lon || (e.center && e.center.lon);
