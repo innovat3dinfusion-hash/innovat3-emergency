@@ -346,23 +346,22 @@ body { font-family:'Exo 2',sans-serif; background:#050505; color:var(--text); mi
   font-weight:900;color:#0ED2C8;letter-spacing:1.5px;
 }
 
-/* Mic button */
-.ema-mic-row{
-  display:flex;align-items:center;gap:8px;
-  padding:10px 12px;border-top:1px solid rgba(14,210,200,0.08);
-  background:rgba(0,20,20,0.5);
+/* Inline mic button — sits below name in header */
+.ema-inline-mic{
+  display:inline-flex;align-items:center;gap:6px;margin-top:8px;
+  background:rgba(14,210,200,0.1);
+  border:1px solid rgba(14,210,200,0.35);border-radius:20px;
+  padding:6px 12px;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  transition:background 0.15s, border-color 0.15s;
 }
-.ema-mic-tap{
-  display:flex;align-items:center;gap:8px;
-  background:linear-gradient(135deg,#002828,#004040);
-  border:1px solid rgba(14,210,200,0.4);border-radius:24px;
-  padding:9px 16px;cursor:pointer;-webkit-tap-highlight-color:transparent;
-  transition:transform 0.12s;flex:1;justify-content:center;
+.ema-inline-mic:active{background:rgba(14,210,200,0.2);}
+.ema-inline-mic.listening{
+  border-color:rgba(239,68,68,0.7);background:rgba(239,68,68,0.1);
 }
-.ema-mic-tap:active{transform:scale(0.96);}
-.ema-mic-tap svg{width:16px;height:16px;stroke:#0ED2C8;flex-shrink:0;}
-.ema-mic-tap span{font-size:12px;font-weight:700;color:#0ED2C8;letter-spacing:0.5px;}
-.ema-mic-note{font-size:10px;color:#2a6655;text-align:center;flex:1;}
+.ema-inline-mic svg{width:14px;height:14px;flex-shrink:0;stroke:#0ED2C8;}
+.ema-inline-mic.listening svg{stroke:#EF4444;}
+.ema-inline-mic span{font-size:11px;font-weight:700;color:#0ED2C8;letter-spacing:0.3px;}
+.ema-inline-mic.listening span{color:#EF4444;}
 
 /* Speaking indicator */
 .ema-speaking-bar{
@@ -846,9 +845,8 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
 
     <!-- Emma header with face -->
     <div class="ema-hdr">
-      <!-- Emma photo avatar with amplitude-driven mouth -->
-      <div class="ema-avatar-wrap" id="emaAvatarWrap">
-        <!-- Pulse rings — animate when speaking -->
+      <!-- Face — tap to play greeting or stop speaking -->
+      <div class="ema-avatar-wrap" id="emaAvatarWrap" onclick="emaFaceTap()" style="cursor:pointer;flex-shrink:0;">
         <div class="ema-pulse-ring"></div>
         <div class="ema-pulse-ring"></div>
         <div class="ema-pulse-ring"></div>
@@ -860,8 +858,18 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
       <div class="ema-hdr-text">
         <div class="ema-hdr-name">EMA</div>
         <div class="ema-hdr-greeting" id="emaGreeting">
-          Emergency Medical Assistant — <strong>tap any card</strong> for instant guidance.
+          Emergency Medical Assistant
         </div>
+        <!-- Mic button inline with header -->
+        <button class="ema-inline-mic" id="emaMicTapBtn" onclick="emaMicTap()">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" stroke="currentColor">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+            <line x1="12" y1="19" x2="12" y2="23"/>
+            <line x1="8" y1="23" x2="16" y2="23"/>
+          </svg>
+          <span id="emaMicLabel">Ask by voice</span>
+        </button>
       </div>
       <div class="ema-pro-tag">PRO</div>
     </div>
@@ -1006,19 +1014,6 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
 
     <!-- Facility results -->
     <div class="ema-facilities" id="emaFacilities"></div>
-
-    <!-- Ask by voice — directly uses phone mic -->
-    <div class="ema-mic-row">
-      <button class="ema-mic-tap" onclick="emaMicTap()" id="emaMicTapBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-          <line x1="12" y1="19" x2="12" y2="23"/>
-          <line x1="8" y1="23" x2="16" y2="23"/>
-        </svg>
-        <span id="emaMicLabel">Ask EMA by voice</span>
-      </button>
-    </div>
 
     <!-- Text input -->
     <div class="ema-text-row">
@@ -1352,6 +1347,12 @@ var subData = {};
   // Show EMA section for verified pro users
   document.getElementById('emaSection').style.display = 'block';
 
+  // Preload the 6 primary chip audio files so first tap is instant
+  ['heart_attack','stroke','cpr','choking','bleeding','seizure'].forEach(function(k){
+    var a = new Audio(EMA_AUDIO + k + '.mp3');
+    a.preload = 'auto';
+  });
+
   // Personalise Emma's greeting with the member's first name
   var firstName = (subData['First Name'] || '').trim();
   if (firstName) {
@@ -1658,43 +1659,52 @@ var emaAudioEl  = null;
 var emaProfile  = window.emaProfile || {};
 var EMA_SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 
+// Tap face: play greeting if idle, stop if speaking
+function emaFaceTap() {
+  if (emaSpeaking) {
+    if (emaAudioEl) { emaAudioEl.pause(); emaAudioEl = null; }
+    emaSpeaking = false;
+    document.getElementById('emaSpeakingBar').className = 'ema-speaking-bar';
+    document.getElementById('emaAvatarWrap').classList.remove('speaking');
+  } else {
+    emaSpeak('greeting');
+  }
+}
+
 function emaMicTap() {
-  var btn = document.getElementById('emaMicLabel');
-  var wrap = document.getElementById('emaMicTapBtn');
+  var label = document.getElementById('emaMicLabel');
+  var micBtn = document.getElementById('emaMicTapBtn');
 
   if (!EMA_SR) {
-    // Browser doesn't support speech at all — fall back to text input
     document.getElementById('emaTextIn').focus();
     return;
   }
 
-  // If already listening, stop
-  if (wrap && wrap._rec) {
-    wrap._rec.stop();
+  // Already listening — stop
+  if (micBtn && micBtn._rec) {
+    micBtn._rec.stop();
     return;
   }
 
   var rec = new EMA_SR();
-  wrap._rec = rec;
+  micBtn._rec = rec;
   rec.lang = 'en-ZA';
   rec.interimResults = false;
   rec.maxAlternatives = 1;
 
   rec.onstart = function() {
-    if (btn) btn.textContent = 'Listening…';
-    if (wrap) wrap.style.borderColor = 'rgba(239,68,68,0.7)';
+    if (label) label.textContent = 'Listening…';
+    if (micBtn) micBtn.classList.add('listening');
   };
   rec.onend = function() {
-    wrap._rec = null;
-    if (btn) btn.textContent = 'Ask EMA by voice';
-    if (wrap) wrap.style.borderColor = '';
+    micBtn._rec = null;
+    if (label) label.textContent = 'Ask by voice';
+    if (micBtn) micBtn.classList.remove('listening');
   };
   rec.onerror = function(e) {
-    wrap._rec = null;
-    if (btn) btn.textContent = e.error === 'not-allowed'
-      ? 'Mic blocked — check Settings'
-      : 'Ask EMA by voice';
-    if (wrap) wrap.style.borderColor = '';
+    micBtn._rec = null;
+    if (label) label.textContent = e.error === 'not-allowed' ? 'Mic blocked' : 'Ask by voice';
+    if (micBtn) micBtn.classList.remove('listening');
   };
   rec.onresult = function(e) {
     var t = e.results[0][0].transcript.trim();
@@ -1702,7 +1712,7 @@ function emaMicTap() {
   };
 
   try { rec.start(); } catch(e) {
-    wrap._rec = null;
+    micBtn._rec = null;
     document.getElementById('emaTextIn').focus();
   }
 }

@@ -617,6 +617,13 @@ var subData = {};
       return;
     }
 
+    // ── Redirect Pro immediately — before any DOM work ────────────
+    var earlyPlan = ((json.profile && json.profile['Plan']) || json.plan || '').toLowerCase();
+    if (earlyPlan === 'pro') {
+      window.location.replace('https://innovat3.co.za/pro-card/?tag=' + encodeURIComponent(tagId));
+      return;
+    }
+
     // Merge profile + photoUrl into subData
     var profile = json.profile || {};
     Object.keys(profile).forEach(function(k){ subData[k] = String(profile[k] == null ? '' : profile[k]); });
@@ -624,13 +631,6 @@ var subData = {};
 
     if (!subData['First Name'] && !subData['Last Name']) {
       showErr('Tag ' + tagId + ' not found. Please check the tag or contact innovat3.co.za');
-      return;
-    }
-
-    // Redirect Pro plan subscribers to pro card
-    var planVal = (subData['Plan'] || json.plan || '').toLowerCase();
-    if (planVal === 'pro') {
-      window.location.replace('https://innovat3.co.za/pro-card/?tag=' + encodeURIComponent(tagId));
       return;
     }
 
