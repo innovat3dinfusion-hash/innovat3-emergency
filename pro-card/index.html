@@ -67,6 +67,7 @@ body { font-family:'Exo 2',sans-serif; background:#050505; color:var(--text); mi
 .alert-banner.yellow { display:flex; background:#1a1400; border-bottom:2px solid #EAB308; color:#EAB308; }
 .alert-banner.green  { display:flex; background:#061209; border-bottom:2px solid var(--green); color:var(--green); }
 .alert-banner.red    { display:flex; background:#130000; border-bottom:2px solid var(--red); color:var(--red); }
+.alert-banner.orange { display:flex; background:#150a00; border-bottom:2px solid #F97316; color:#F97316; }
 .alert-dot { width:8px; height:8px; border-radius:50%; background:currentColor; flex-shrink:0; animation:pd 1s infinite; }
 @keyframes pd { 0%,100%{opacity:1} 50%{opacity:0.25} }
 
@@ -721,10 +722,15 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
     font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;
     color:#F97316;letter-spacing:3px;margin-bottom:12px;text-transform:uppercase
   ">Session Expired</div>
-  <p style="color:#aaa;font-size:14px;max-width:300px;line-height:1.6;margin-bottom:24px">
+  <p style="color:#aaa;font-size:14px;max-width:300px;line-height:1.6;margin-bottom:20px">
     This emergency card session has ended for security.<br>
     Scan the tag again to view emergency information.
   </p>
+  <a href="javascript:location.reload()" style="
+    background:#F97316;color:#fff;padding:13px 28px;border-radius:10px;
+    text-decoration:none;font-weight:700;font-size:14px;
+    box-shadow:0 4px 16px rgba(249,115,22,0.35);margin-bottom:20px;display:inline-block;
+  ">🔄 Reload Card</a>
   <p style="color:#555;font-size:11px">innovat3.co.za &middot; Smart NFC Emergency Tag</p>
 </div>
 
@@ -741,7 +747,7 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
     <div style="flex:1;height:4px;background:#1a1a2e;border-radius:2px;overflow:hidden">
       <div id="sessionTimerFill" style="height:100%;background:#F97316;transition:width 1s linear;width:100%"></div>
     </div>
-    <span id="sessionTimerLabel" style="font-size:10px;color:#aaa;white-space:nowrap;font-family:'Orbitron',sans-serif;letter-spacing:1px">5:00</span>
+    <span id="sessionTimerLabel" style="font-size:10px;color:#aaa;white-space:nowrap;font-family:'Orbitron',sans-serif;letter-spacing:1px">30:00</span>
   </div>
 
   <!-- BANNER -->
@@ -1120,8 +1126,6 @@ var subData = {};
   if (!tagId) { showErr('No tag ID in URL. Please scan a valid innovat3 tag.'); return; }
   window._finderTagId = tagId;
 
-  dbg('Loading emergency card...');
-
   // ── Load profile from GAS backend (or sessionStorage cache) ────
   try {
     dbg('Loading emergency card...');
@@ -1386,8 +1390,8 @@ var subData = {};
 
   // ── Session timer ─────────────────────────────────────────────
   // Expires after 15 min total, or if tab is hidden for > 2 min.
-  var SESSION_MS      = 5 * 60 * 1000;  // 5 minutes total
-  var HIDDEN_LIMIT_MS =  2 * 60 * 1000;  // 2 minutes hidden = expire
+  var SESSION_MS      = 30 * 60 * 1000;  // 30 minutes total
+  var HIDDEN_LIMIT_MS =  5 * 60 * 1000;  // 5 minutes hidden = expire
   var sessionStart    = Date.now();
   var hiddenSince     = null;
 
@@ -1398,7 +1402,11 @@ var subData = {};
 
   function expireSession() {
     clearInterval(sessionTick);
-    window.location.replace('https://innovat3.co.za');
+    document.getElementById('cardWrap').style.display = 'none';
+    var sos = document.getElementById('sosBar');      if (sos) sos.style.display = 'none';
+    var fs  = document.getElementById('finderStatus'); if (fs)  fs.style.display  = 'none';
+    var exp = document.getElementById('sessionExpiredScreen');
+    if (exp) exp.style.display = 'flex';
   }
 
   var sessionTick = setInterval(function() {
@@ -1655,8 +1663,6 @@ function setLang(code) {
     btn.classList.toggle('active', btn.textContent.toLowerCase() === code);
   });
 }
-
-if('serviceWorker' in navigator){ navigator.serviceWorker.register('/pro-card/sw.js').catch(function(){}); }
 
 function proTabToggle(id) {
   var tab = document.getElementById(id);
