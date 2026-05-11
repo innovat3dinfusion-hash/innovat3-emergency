@@ -579,7 +579,8 @@ body { font-family:'Exo 2',sans-serif; background:#050505; color:var(--text); mi
 <body>
 
 <script>
-var GAS_URL = 'https://api.innovat3.co.za';
+var GAS_URL   = 'https://api.innovat3.co.za';
+var EMA_AUDIO = '/assist/audio/';
 
 // ── Redirect expired tag to reactivate page ──────────────────────
 function goReactivate() {
@@ -1679,7 +1680,6 @@ function proTabToggle(id) {
 
 <script>
 // ── EMA — Emergency Medical Assistant ────────────────────────────
-var EMA_AUDIO  = '/assist/audio/';
 var emaSpeaking = false;
 var emaAudioEl  = null;
 var emaProfile  = window.emaProfile || {};
