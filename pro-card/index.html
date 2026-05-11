@@ -723,14 +723,9 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
     color:#F97316;letter-spacing:3px;margin-bottom:12px;text-transform:uppercase
   ">Session Expired</div>
   <p style="color:#aaa;font-size:14px;max-width:300px;line-height:1.6;margin-bottom:20px">
-    This emergency card session has ended for security.<br>
-    Scan the tag again to view emergency information.
+    This session has ended for security.<br>
+    <strong style="color:#F97316;">Scan the NFC tag again</strong> to open a fresh emergency card.
   </p>
-  <a href="javascript:location.reload()" style="
-    background:#F97316;color:#fff;padding:13px 28px;border-radius:10px;
-    text-decoration:none;font-weight:700;font-size:14px;
-    box-shadow:0 4px 16px rgba(249,115,22,0.35);margin-bottom:20px;display:inline-block;
-  ">🔄 Reload Card</a>
   <p style="color:#555;font-size:11px">innovat3.co.za &middot; Smart NFC Emergency Tag</p>
 </div>
 
@@ -747,7 +742,7 @@ var STRIP_COLS     = ['#EF4444','#F97316','#EAB308','#22C55E','#0ED2C8','#3B82F6
     <div style="flex:1;height:4px;background:#1a1a2e;border-radius:2px;overflow:hidden">
       <div id="sessionTimerFill" style="height:100%;background:#F97316;transition:width 1s linear;width:100%"></div>
     </div>
-    <span id="sessionTimerLabel" style="font-size:10px;color:#aaa;white-space:nowrap;font-family:'Orbitron',sans-serif;letter-spacing:1px">30:00</span>
+    <span id="sessionTimerLabel" style="font-size:10px;color:#aaa;white-space:nowrap;font-family:'Orbitron',sans-serif;letter-spacing:1px">15:00</span>
   </div>
 
   <!-- BANNER -->
@@ -1390,8 +1385,8 @@ var subData = {};
 
   // ── Session timer ─────────────────────────────────────────────
   // Expires after 15 min total, or if tab is hidden for > 2 min.
-  var SESSION_MS      = 30 * 60 * 1000;  // 30 minutes total
-  var HIDDEN_LIMIT_MS =  5 * 60 * 1000;  // 5 minutes hidden = expire
+  var SESSION_MS      = 15 * 60 * 1000;  // 15 minutes total
+  var HIDDEN_LIMIT_MS =  3 * 60 * 1000;  // 3 minutes hidden = expire
   var sessionStart    = Date.now();
   var hiddenSince     = null;
 
@@ -1526,27 +1521,39 @@ var subData = {};
     el.target='_blank';
   });
 
-  // Alert via GAS proxy — token stays server-side, card never exposes it
-  // Use fetch with no-cors to GAS doGet (GET requests are not blocked like POST)
-  try{
-    var alertParams = '?action=alert' +
-      '&tagId='     + encodeURIComponent(tagId) +
-      '&name='      + encodeURIComponent(fullName||name||'') +
-      '&lat='       + encodeURIComponent(lat||'') +
-      '&lng='       + encodeURIComponent(lng||'') +
-      '&addr='      + encodeURIComponent(gpsAddress||'') +
-      '&acc='       + encodeURIComponent(finalAccuracy||'') +
-      '&blood='     + encodeURIComponent(subData['Blood Type']||'') +
-      '&medAid='    + encodeURIComponent(subData['Medical Aid']||'') +
-      '&medical='   + encodeURIComponent(subData['Medical Alerts']||'') +
-      '&c1tg='      + encodeURIComponent(subData['Contact 1 Telegram']||'') +
-      '&c2tg='      + encodeURIComponent(subData['Contact 2 Telegram']||'') +
-      '&c3tg='      + encodeURIComponent(subData['Contact 3 Telegram']||'');
-    fetch('https://api.innovat3.co.za/scan' + alertParams).catch(function(){});
-  }catch(e){}
+  // ── Alert deduplication — prevent false re-alerts from stale browser sessions ──
+  // Only send alerts if this tag hasn't been alerted in the last 2 hours on this device.
+  var _alertKey  = 'ema_alerted_' + tagId;
+  var _lastAlert = 0;
+  try { _lastAlert = parseInt(localStorage.getItem(_alertKey) || '0'); } catch(e){}
+  var _alertCooldown = 2 * 60 * 60 * 1000; // 2 hours
+  var _shouldAlert   = (Date.now() - _lastAlert) > _alertCooldown;
 
+  if (_shouldAlert) {
+    try { localStorage.setItem(_alertKey, Date.now()); } catch(e){}
+
+    try{
+      var alertParams = '?action=alert' +
+        '&tagId='     + encodeURIComponent(tagId) +
+        '&name='      + encodeURIComponent(fullName||name||'') +
+        '&lat='       + encodeURIComponent(lat||'') +
+        '&lng='       + encodeURIComponent(lng||'') +
+        '&addr='      + encodeURIComponent(gpsAddress||'') +
+        '&acc='       + encodeURIComponent(finalAccuracy||'') +
+        '&blood='     + encodeURIComponent(subData['Blood Type']||'') +
+        '&medAid='    + encodeURIComponent(subData['Medical Aid']||'') +
+        '&medical='   + encodeURIComponent(subData['Medical Alerts']||'') +
+        '&c1tg='      + encodeURIComponent(subData['Contact 1 Telegram']||'') +
+        '&c2tg='      + encodeURIComponent(subData['Contact 2 Telegram']||'') +
+        '&c3tg='      + encodeURIComponent(subData['Contact 3 Telegram']||'');
+      fetch('https://api.innovat3.co.za/scan' + alertParams).catch(function(){});
+    }catch(e){}
 
     setAlert('green', name + ' — family alerted ✓');
+  } else {
+    // Stale reload — do not re-alert, just show card silently
+    setAlert('yellow', name + ' — card loaded');
+  }
 })();
 
 // ── Build manual alert buttons for weak GPS scenario ─────────────
