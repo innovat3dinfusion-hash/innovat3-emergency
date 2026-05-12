@@ -732,9 +732,9 @@ var subData = {};
   if (avatarEl) {
     var photoUrl = subData['Photo URL'] || '';
     if (photoUrl && photoUrl.startsWith('http')) {
+      avatarEl.textContent = '';
       var _img = document.createElement('img');
       _img.setAttribute('src', photoUrl);
-      _img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%';
       avatarEl.appendChild(_img);
     } else {
       var initials = ((fn[0]||'') + (ln[0]||'')).toUpperCase() || '?';

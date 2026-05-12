@@ -579,8 +579,9 @@ body { font-family:'Exo 2',sans-serif; background:#050505; color:var(--text); mi
 <body>
 
 <script>
-var GAS_URL   = 'https://api.innovat3.co.za';
-var EMA_AUDIO = '/assist/audio/';
+var GAS_URL        = 'https://api.innovat3.co.za';
+var EMA_AUDIO      = '/assist/audio/';
+var EMA_AUDIO_BUST = '?v=2'; // bump when audio files are regenerated
 
 // ── Redirect expired tag to reactivate page ──────────────────────
 function goReactivate() {
@@ -1270,9 +1271,9 @@ var subData = {};
   if (avatarEl) {
     var photoUrl = subData['Photo URL'] || '';
     if (photoUrl && photoUrl.startsWith('http')) {
+      avatarEl.textContent = '';
       var _img = document.createElement('img');
       _img.setAttribute('src', photoUrl);
-      _img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%';
       avatarEl.appendChild(_img);
     } else {
       var initials = ((fn[0]||'') + (ln[0]||'')).toUpperCase() || '?';
@@ -1372,7 +1373,7 @@ var subData = {};
 
   // Preload the 6 primary chip audio files so first tap is instant
   ['heart_attack','stroke','cpr','choking','bleeding','seizure'].forEach(function(k){
-    var a = new Audio(EMA_AUDIO + k + '.mp3');
+    var a = new Audio(EMA_AUDIO + k + '.mp3' + EMA_AUDIO_BUST);
     a.preload = 'auto';
   });
 
@@ -1887,7 +1888,7 @@ function emaSpeak(key) {
   document.getElementById('emaSpeakingBar').className = 'ema-speaking-bar on';
   document.getElementById('emaAvatarWrap').classList.add('speaking');
 
-  var audio = new Audio(EMA_AUDIO + key + '.mp3');
+  var audio = new Audio(EMA_AUDIO + key + '.mp3' + EMA_AUDIO_BUST);
   emaAudioEl = audio;
 
   function done() {
