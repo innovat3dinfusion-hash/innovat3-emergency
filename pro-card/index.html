@@ -1736,20 +1736,41 @@ var EMA_SR  = window.SpeechRecognition || window.webkitSpeechRecognition;
 var EMA_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
               (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
-// iOS blocks audio.play() from async callbacks (e.g. SpeechRecognition onresult).
-// Unlock by playing a silent buffer during the direct user gesture (mic tap).
-var _emaAudioCtx = null;
+// iOS blocks audio.play() from async callbacks. Must unlock ALL three audio APIs
+// during the direct user gesture (mic tap), not just one of them.
+var _emaAudioUnlocked = false;
+var _emaAudioCtx      = null;
 function _emaUnlockAudio() {
-  if (_emaAudioCtx) return;
+  if (_emaAudioUnlocked) return;
+  _emaAudioUnlocked = true;
+
+  // 1. HTML Audio element — the same API used by emaSpeak() for MP3 files
+  try {
+    var _sil = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=');
+    _sil.volume = 0.001;
+    _sil.play().then(function(){ _sil.pause(); }).catch(function(){});
+  } catch(e){}
+
+  // 2. Web Audio API
   try {
     _emaAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    var buf = _emaAudioCtx.createBuffer(1, 1, 22050);
-    var src = _emaAudioCtx.createBufferSource();
-    src.buffer = buf;
-    src.connect(_emaAudioCtx.destination);
-    src.start(0);
-  } catch(e) { _emaAudioCtx = null; }
+    _emaAudioCtx.resume();
+    var _buf = _emaAudioCtx.createBuffer(1,1,22050);
+    var _src = _emaAudioCtx.createBufferSource();
+    _src.buffer = _buf; _src.connect(_emaAudioCtx.destination); _src.start(0);
+  } catch(e){ _emaAudioCtx = null; }
+
+  // 3. speechSynthesis — used for custom/memory responses
+  try {
+    if (window.speechSynthesis) {
+      var _u = new SpeechSynthesisUtterance('');
+      _u.volume = 0;
+      window.speechSynthesis.speak(_u);
+    }
+  } catch(e){}
 }
+// Pre-load available voices so they're ready when needed
+if (window.speechSynthesis) window.speechSynthesis.getVoices();
 
 // Tap face: play greeting if idle, stop if speaking
 function emaFaceTap() {
@@ -1993,7 +2014,22 @@ function emaSpeak(key, plainText) {
   emaAudioEl = audio;
   audio.onended = done;
   audio.onerror = done;
-  audio.play().catch(done);
+  audio.play().catch(function() {
+    // iOS blocked audio.play() — fall back to speechSynthesis
+    emaAudioEl = null;
+    if (window.speechSynthesis && plainText) {
+      window.speechSynthesis.cancel();
+      var _utt = new SpeechSynthesisUtterance(plainText);
+      _utt.lang = navigator.language || 'en';
+      _utt.rate = 0.92;
+      _utt.onend = done; _utt.onerror = done;
+      var _vv = window.speechSynthesis.getVoices();
+      var _vp = _vv.find(function(v){ return /en.IE/i.test(v.lang); }) ||
+                _vv.find(function(v){ return v.lang.startsWith('en'); });
+      if (_vp) _utt.voice = _vp;
+      window.speechSynthesis.speak(_utt);
+    } else { done(); }
+  });
 }
 
 function emaGetResponse(q) {
