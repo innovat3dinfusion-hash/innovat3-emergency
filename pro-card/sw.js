@@ -1,6 +1,6 @@
 // Innovat3 Pro Card — Service Worker
 // Caches the page and audio files so the card works without mobile data.
-var CACHE = 'innovat3-pro-v1';
+var CACHE = 'innovat3-pro-v2';
 
 var SHELL = [
   '/pro-card/',

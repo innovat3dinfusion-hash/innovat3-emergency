@@ -1488,35 +1488,33 @@ var subData = {};
     finalAccuracy = null;
   }
 
-  // ── GPS ACCURACY GUARD — 50m threshold ───────────────────────
-  // If signal is too weak, warn the scanner and show manual alert
-  // buttons. Do NOT log to GAS or send Telegram notifications.
-  if (finalAccuracy === null || finalAccuracy > GPS_WARN_THRESHOLD) {
-    gpsLowAccuracy = true;
-    var accMsg = finalAccuracy ? finalAccuracy + 'm' : 'unavailable';
-
-    // Show warning in the alert banner (same as "family alerted" bar)
-    setAlert('orange',
-      '⚠️ Weak GPS signal (' + accMsg + ') — alerts NOT sent. ' +
-      'Move to open area and scan again, OR use manual alerts below.'
-    );
-
-    // Inject manual alert buttons directly below the alert banner
+  // ── GPS GUARD ────────────────────────────────────────────────
+  function injectManualButtons() {
     var manualDiv = document.getElementById('manualAlerts');
     if (!manualDiv) {
       manualDiv = document.createElement('div');
       manualDiv.id = 'manualAlerts';
       manualDiv.style.cssText = 'padding:10px 14px;background:rgba(249,115,22,0.08);border-top:1px solid rgba(249,115,22,0.2);display:flex;gap:8px;flex-wrap:wrap;align-items:center;';
-      manualDiv.innerHTML =
-        '<span style="font-size:11px;color:#F97316;letter-spacing:1px;font-weight:700">MANUAL ALERTS:</span>' +
-        buildManualButtons(name, subData);
+      manualDiv.innerHTML = '<span style="font-size:11px;color:#F97316;letter-spacing:1px;font-weight:700">MANUAL ALERTS:</span>' + buildManualButtons(name, subData);
       var banner = document.getElementById('alertBanner');
-      if (banner && banner.parentNode) {
-        banner.parentNode.insertBefore(manualDiv, banner.nextSibling);
-      }
+      if (banner && banner.parentNode) banner.parentNode.insertBefore(manualDiv, banner.nextSibling);
     }
-    // Stop here — do not log, do not send Telegram
+  }
+
+  if (finalAccuracy === null) {
+    // No location at all — cannot include any coordinates in alert
+    setAlert('orange', '⚠️ Location unavailable — use manual alerts below to notify family directly.');
+    injectManualButtons();
     return;
+  }
+
+  if (finalAccuracy > GPS_WARN_THRESHOLD) {
+    // Poor signal but we still have a reading — alert WITH the approximate location
+    // and show manual buttons as backup. Do NOT block the automatic alert.
+    gpsLowAccuracy = true;
+    setAlert('orange', '⚠️ Weak GPS (' + finalAccuracy + 'm) — alerting family with approximate location.');
+    injectManualButtons();
+    // fall through to send alert below
   }
   // ─────────────────────────────────────────────────────────────
 
@@ -1541,7 +1539,7 @@ var subData = {};
   var _alertKey  = 'ema_alerted_' + tagId;
   var _lastAlert = 0;
   try { _lastAlert = parseInt(localStorage.getItem(_alertKey) || '0'); } catch(e){}
-  var _alertCooldown = 2 * 60 * 60 * 1000; // 2 hours
+  var _alertCooldown = 20 * 60 * 1000; // 20 minutes
   var _shouldAlert   = (Date.now() - _lastAlert) > _alertCooldown;
 
   if (_shouldAlert) {
@@ -1989,9 +1987,9 @@ async function emaFindFacilities() {
           var icon = ICONS[f.type]||'🏥';
           var typeLabel = LABELS[f.type] || (f.type ? f.type.charAt(0).toUpperCase()+f.type.slice(1).replace(/_/g,' ') : 'Medical');
           var cleanPhone = f.phone.replace(/[\s\-()+]/g,'').replace(/[^0-9+]/g,'');
-          var action = cleanPhone
-            ? '<a class="ema-fac-call" href="tel:'+cleanPhone+'">'+esc(f.phone)+'</a>'
-            : '<a class="ema-fac-map" href="https://www.google.com/maps/search/'+encodeURIComponent(f.name)+'/@'+f.lat+','+f.lon+',16z" target="_blank" rel="noopener">Map</a>';
+          var callBtn = cleanPhone ? '<a class="ema-fac-call" href="tel:'+cleanPhone+'">📞 '+esc(f.phone)+'</a>' : '';
+          var mapBtn  = '<a class="ema-fac-map" href="https://www.google.com/maps/search/'+encodeURIComponent(f.name)+'/@'+f.lat+','+f.lon+',16z" target="_blank" rel="noopener">📍 Map</a>';
+          var action  = '<div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;">'+callBtn+mapBtn+'</div>';
           return '<div class="ema-fac"><span class="ema-fac-icon">'+icon+'</span><div class="ema-fac-info"><div class="ema-fac-name">'+esc(f.name)+'</div><div class="ema-fac-meta">'+esc(typeLabel)+' · '+esc(d)+'</div></div>'+action+'</div>';
         }).join('');
       } catch(e) {
