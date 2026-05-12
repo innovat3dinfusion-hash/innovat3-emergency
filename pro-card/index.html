@@ -1360,10 +1360,13 @@ var subData = {};
   // ── Pro plan guard ────────────────────────────────────────────
   var rawPlan = (subData['Plan'] || json.plan || '').toLowerCase();
   if (rawPlan !== 'pro') {
-    // Not a pro tag — redirect to regular card
+    // Clear the fast-redirect flag so /card/ doesn't loop back here
+    try { localStorage.removeItem('ema_plan_' + tagId); } catch(e){}
     window.location.replace('https://innovat3.co.za/card/?tag=' + encodeURIComponent(tagId));
     return;
   }
+  // Confirm/set fast-redirect flag for next scan
+  try { localStorage.setItem('ema_plan_' + tagId, 'pro'); } catch(e){}
   // Show EMA section for verified pro users
   document.getElementById('emaSection').style.display = 'block';
 
@@ -1959,25 +1962,37 @@ async function emaFindFacilities() {
     async function(pos) {
       var lat = pos.coords.latitude, lon = pos.coords.longitude;
       try {
-        var q = '[out:json][timeout:12];(node["amenity"~"^(hospital|clinic|doctors)$"](around:5000,'+lat+','+lon+');way["amenity"~"^(hospital|clinic|doctors)$"](around:5000,'+lat+','+lon+'););out center 6;';
+        // Search both amenity= and healthcare= tags — many SA practices use healthcare=*
+        var q = '[out:json][timeout:20];(' +
+          'node["amenity"~"^(hospital|clinic|doctors)$"](around:10000,'+lat+','+lon+');' +
+          'way["amenity"~"^(hospital|clinic|doctors)$"](around:10000,'+lat+','+lon+');' +
+          'node["healthcare"~"^(hospital|clinic|doctor|general_practitioner|health_centre|health_center)$"](around:10000,'+lat+','+lon+');' +
+          'way["healthcare"~"^(hospital|clinic|doctor|general_practitioner|health_centre|health_center)$"](around:10000,'+lat+','+lon+');' +
+          ');out center 10;';
         var res  = await fetch('https://overpass-api.de/api/interpreter',{method:'POST',body:'data='+encodeURIComponent(q)});
         var data = await res.json();
-        var ICONS = {hospital:'🏥',clinic:'🏪',doctors:'👨‍⚕️'};
+        var ICONS = {hospital:'🏥',clinic:'🏪',doctors:'👨‍⚕️',doctor:'👨‍⚕️',general_practitioner:'👨‍⚕️',health_centre:'🏥',health_center:'🏥'};
+        var LABELS = {hospital:'Hospital',clinic:'Clinic',doctors:'Doctor',doctor:'Doctor',general_practitioner:'GP',health_centre:'Health Centre',health_center:'Health Centre'};
         var items = data.elements.filter(function(e){ return e.tags && e.tags.name; }).map(function(e){
           var elat = e.lat || (e.center && e.center.lat);
           var elon = e.lon || (e.center && e.center.lon);
-          return {name:e.tags.name, type:e.tags.amenity, phone:e.tags.phone||e.tags['contact:phone']||'', lat:elat, lon:elon, dist:emaHaversine(lat,lon,elat,elon)};
-        }).sort(function(a,b){return a.dist-b.dist;}).slice(0,5);
-        if (!items.length) { box.innerHTML='<div style="padding:10px 16px;font-size:11px;color:#777;">No facilities found within 5km.</div>'; return; }
+          var type = e.tags.amenity || e.tags.healthcare || '';
+          return {name:e.tags.name, type:type, phone:e.tags.phone||e.tags['contact:phone']||'', lat:elat, lon:elon, dist:emaHaversine(lat,lon,elat,elon)};
+        }).sort(function(a,b){return a.dist-b.dist;}).slice(0,8);
+        if (!items.length) {
+          box.innerHTML = '<div style="padding:10px 16px 4px;font-size:11px;color:#777;">Nothing in OpenStreetMap within 10km — use Maps:</div>' +
+            '<div style="padding:0 12px 12px;">' + emaMapsLinks() + '</div>';
+          return;
+        }
         box.innerHTML = items.map(function(f){
           var d = f.dist<1 ? Math.round(f.dist*1000)+'m' : f.dist.toFixed(1)+'km';
           var icon = ICONS[f.type]||'🏥';
-          var type = (f.type||'').charAt(0).toUpperCase()+(f.type||'').slice(1);
+          var typeLabel = LABELS[f.type] || (f.type ? f.type.charAt(0).toUpperCase()+f.type.slice(1).replace(/_/g,' ') : 'Medical');
           var cleanPhone = f.phone.replace(/[\s\-()+]/g,'').replace(/[^0-9+]/g,'');
           var action = cleanPhone
             ? '<a class="ema-fac-call" href="tel:'+cleanPhone+'">'+esc(f.phone)+'</a>'
             : '<a class="ema-fac-map" href="https://www.google.com/maps/search/'+encodeURIComponent(f.name)+'/@'+f.lat+','+f.lon+',16z" target="_blank" rel="noopener">Map</a>';
-          return '<div class="ema-fac"><span class="ema-fac-icon">'+icon+'</span><div class="ema-fac-info"><div class="ema-fac-name">'+esc(f.name)+'</div><div class="ema-fac-meta">'+esc(type)+' · '+esc(d)+'</div></div>'+action+'</div>';
+          return '<div class="ema-fac"><span class="ema-fac-icon">'+icon+'</span><div class="ema-fac-info"><div class="ema-fac-name">'+esc(f.name)+'</div><div class="ema-fac-meta">'+esc(typeLabel)+' · '+esc(d)+'</div></div>'+action+'</div>';
         }).join('');
       } catch(e) {
         box.innerHTML = '<div style="padding:12px 16px;">' + emaMapsLinks() + '</div>';

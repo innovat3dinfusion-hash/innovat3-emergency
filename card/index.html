@@ -583,6 +583,14 @@ var subData = {};
   if (!tagId) { showErr('No tag ID in URL. Please scan a valid innovat3 tag.'); return; }
   window._finderTagId = tagId;
 
+  // ── Fast redirect for known Pro tags — skip the API call entirely ──
+  try {
+    if (localStorage.getItem('ema_plan_' + tagId) === 'pro') {
+      window.location.replace('https://innovat3.co.za/pro-card/?tag=' + encodeURIComponent(tagId));
+      return;
+    }
+  } catch(e){}
+
   dbg('Loading emergency card...');
 
   // ── Load profile from GAS backend ───────────────────────────
@@ -620,6 +628,7 @@ var subData = {};
     // ── Redirect Pro immediately — before any DOM work ────────────
     var earlyPlan = ((json.profile && json.profile['Plan']) || json.plan || '').toLowerCase();
     if (earlyPlan === 'pro') {
+      try { localStorage.setItem('ema_plan_' + tagId, 'pro'); } catch(e){}
       try { sessionStorage.setItem('ema_cache', JSON.stringify({ts:Date.now(),data:json})); } catch(e){}
       window.location.replace('https://innovat3.co.za/pro-card/?tag=' + encodeURIComponent(tagId));
       return;
