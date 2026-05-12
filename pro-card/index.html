@@ -1731,7 +1731,6 @@ var emaSpeaking = false;
 var emaAudioEl  = null;
 var emaProfile  = window.emaProfile || {};
 var EMA_SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-var EMA_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
 // Tap face: play greeting if idle, stop if speaking
 function emaFaceTap() {
@@ -1756,8 +1755,7 @@ function emaMicTap() {
     return;
   }
 
-  // iOS: webkitSpeechRecognition is unreliable — use keyboard dictation instead
-  if (EMA_IOS || !EMA_SR) {
+  if (!EMA_SR) {
     emaShowDictation();
     return;
   }
