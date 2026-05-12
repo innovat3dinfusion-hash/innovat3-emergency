@@ -1745,64 +1745,87 @@ function emaFaceTap() {
 }
 
 var _emaMicActive = false;
+var _emaMicFails  = 0;
+var _EMA_FAIL_MAX = 4; // silent sessions before falling back to keyboard
+
+function _emaMicStop(label, micBtn) {
+  _emaMicActive = false;
+  _emaMicFails  = 0;
+  if (micBtn && micBtn._rec) { try { micBtn._rec.stop(); } catch(e){} micBtn._rec = null; }
+  if (label)  label.textContent = 'Ask by voice';
+  if (micBtn) micBtn.classList.remove('listening');
+}
 
 function emaMicTap() {
   var label  = document.getElementById('emaMicLabel');
   var micBtn = document.getElementById('emaMicTapBtn');
 
-  // Tap again to cancel listening
-  if (_emaMicActive) {
-    _emaMicActive = false;
-    if (micBtn && micBtn._rec) { try { micBtn._rec.stop(); } catch(e){} micBtn._rec = null; }
-    if (label)  label.textContent = 'Ask by voice';
-    if (micBtn) micBtn.classList.remove('listening');
-    return;
-  }
-
-  if (!EMA_SR) { emaShowDictation(); return; }
+  if (_emaMicActive) { _emaMicStop(label, micBtn); return; }
+  if (!EMA_SR)       { emaShowDictation(); return; }
 
   _emaMicActive = true;
+  _emaMicFails  = 0;
   if (label)  label.textContent = 'Listening…';
   if (micBtn) micBtn.classList.add('listening');
+
+  // Use the device's own language — forcing en-ZA silently fails on some iOS devices
+  // because iOS routes web speech through Siri which must be set to that locale.
+  var _lang = navigator.language || 'en';
 
   function _startSession() {
     if (!_emaMicActive) return;
 
-    var rec = new EMA_SR();                // fresh instance every time — required on iOS
+    var _gotSpeech = false;
+    var rec = new EMA_SR();          // fresh instance every restart — required on iOS
     if (micBtn) micBtn._rec = rec;
-    rec.lang            = 'en-ZA';
+    rec.lang            = _lang;
     rec.interimResults  = false;
     rec.maxAlternatives = 1;
 
     rec.onresult = function(e) {
+      _gotSpeech   = true;
+      _emaMicFails = 0;
       var t = (e.results[0][0].transcript || '').trim();
-      if (!t) return;
-      _emaMicActive = false;
-      if (micBtn) { micBtn._rec = null; micBtn.classList.remove('listening'); }
-      if (label)  label.textContent = 'Ask by voice';
-      emaQuery(t);
+      if (t) { _emaMicStop(label, micBtn); emaQuery(t); }
     };
 
-    // iOS often fires onend immediately without speech — restart the session
     rec.onend = function() {
       if (micBtn) micBtn._rec = null;
-      if (_emaMicActive) setTimeout(_startSession, 150);
+      if (!_gotSpeech) _emaMicFails++;
+
+      if (!_emaMicActive) return;
+
+      if (_emaMicFails >= _EMA_FAIL_MAX) {
+        // Speech recognition is not working on this device — use keyboard dictation
+        _emaMicStop(label, micBtn);
+        emaShowDictation();
+      } else {
+        // iOS silently drops sessions — restart after a short pause
+        setTimeout(_startSession, 350);
+      }
     };
 
     rec.onerror = function(e) {
       if (micBtn) micBtn._rec = null;
       if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
-        _emaMicActive = false;
-        if (label)  label.textContent = 'Mic blocked — check Settings';
-        if (micBtn) micBtn.classList.remove('listening');
+        _emaMicStop(label, micBtn);
+        if (label) { label.textContent = 'Mic blocked — check Settings'; }
         setTimeout(function(){ if (label) label.textContent = 'Ask by voice'; }, 4000);
-      } else if (_emaMicActive) {
-        setTimeout(_startSession, 300);   // transient error — retry
+      } else {
+        _emaMicFails++;
+        if (_emaMicActive && _emaMicFails < _EMA_FAIL_MAX) {
+          setTimeout(_startSession, 350);
+        } else {
+          _emaMicStop(label, micBtn);
+          emaShowDictation();
+        }
       }
     };
 
     try { rec.start(); } catch(e) {
-      if (_emaMicActive) setTimeout(_startSession, 300);
+      _emaMicFails++;
+      if (_emaMicActive && _emaMicFails < _EMA_FAIL_MAX) setTimeout(_startSession, 350);
+      else { _emaMicStop(label, micBtn); emaShowDictation(); }
     }
   }
 
