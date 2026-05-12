@@ -1145,23 +1145,9 @@ var subData = {};
         var resp = await fetch(GAS_PROFILE_URL);
         if (!resp.ok) throw new Error('HTTP ' + resp.status);
         json = await resp.json();
-        // Save to localStorage so card works offline on next scan
-        try { localStorage.setItem('ema_offline_' + tagId, JSON.stringify({ts:Date.now(), data:json})); } catch(e){}
       } catch(fetchErr) {
-        // Network failed — try localStorage offline cache (up to 48 hours old)
-        var _offline = null;
-        try {
-          var _ls = localStorage.getItem('ema_offline_' + tagId);
-          if (_ls) { var _lp = JSON.parse(_ls); if (_lp && _lp.data && (Date.now()-_lp.ts) < 172800000) _offline = _lp; }
-        } catch(e){}
-        if (_offline) {
-          json = _offline.data;
-          window._emaOffline = true;
-          dbg('Offline — using cached profile');
-        } else {
-          showErr('No network and no cached profile. Connect to data and scan again to cache this card for offline use.');
-          return;
-        }
+        showNoNetwork();
+        return;
       }
     }
 
@@ -1401,9 +1387,6 @@ var subData = {};
   document.getElementById('sosBar').style.display        = 'block';
   document.getElementById('finderStatus').style.display  = 'block';
   setLang(window._currentLang||'en');
-  if (window._emaOffline) {
-    setAlert('orange', '⚠️ No network — showing last saved profile. Emergency numbers still work.');
-  }
 
   // ── Session timer ─────────────────────────────────────────────
   // Expires after 15 min total, or if tab is hidden for > 2 min.
@@ -1673,6 +1656,38 @@ function showError(msg){
   document.getElementById('loadingScreen').style.display='none';
   document.getElementById('errorScreen').style.display='flex';
   document.getElementById('errorMsg').textContent=msg;
+}
+
+function showNoNetwork(){
+  // Try to decode any minimal data encoded in the tag URL (?d=base64)
+  var extra = '';
+  try {
+    var _d = new URLSearchParams(location.search).get('d');
+    if (_d) {
+      var _obj = JSON.parse(atob(_d));
+      var _rows = [];
+      if (_obj.n) _rows.push('<div style="font-size:18px;font-weight:700;color:#fff;margin-bottom:6px">'+_obj.n+'</div>');
+      if (_obj.b) _rows.push('<div style="color:#F97316;font-weight:700">Blood type: '+_obj.b+'</div>');
+      if (_obj.m) _rows.push('<div style="color:#EAB308;margin-top:4px">⚠️ '+_obj.m+'</div>');
+      if (_obj.c) _rows.push('<a href="tel:'+_obj.c.replace(/\D/g,'')+'" style="display:inline-block;margin-top:10px;background:#22C55E;color:#fff;padding:10px 22px;border-radius:8px;text-decoration:none;font-weight:700">📞 '+_obj.c+'</a>');
+      if (_rows.length) extra = '<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px 16px;margin-bottom:18px;text-align:left">'+_rows.join('')+'</div>';
+    }
+  } catch(e){}
+
+  document.getElementById('loadingScreen').style.display = 'none';
+  document.getElementById('errorScreen').style.display   = 'flex';
+  document.getElementById('errorMsg').innerHTML =
+    '<div style="text-align:center;max-width:340px">' +
+    '<div style="font-size:42px;margin-bottom:10px">📡</div>' +
+    '<div style="font-family:Orbitron,sans-serif;font-size:15px;color:#F97316;font-weight:900;letter-spacing:2px;margin-bottom:8px">NO NETWORK</div>' +
+    '<p style="color:#aaa;font-size:13px;margin-bottom:16px">Cannot load emergency profile.<br>Move to an area with signal and scan again.</p>' +
+    extra +
+    '<div style="font-size:11px;color:#555;margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Emergency Numbers</div>' +
+    '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">' +
+    '<a href="tel:10177" style="background:#EF4444;color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px">🚑 10177</a>' +
+    '<a href="tel:10111" style="background:#3B82F6;color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px">🚔 10111</a>' +
+    '<a href="tel:112"   style="background:#F97316;color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px">📞 112</a>' +
+    '</div></div>';
 }
 
 var LANGS = {
