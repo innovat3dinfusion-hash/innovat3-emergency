@@ -1763,8 +1763,7 @@ function emaMicTap() {
   var micBtn = document.getElementById('emaMicTapBtn');
 
   if (_emaMicActive) { _emaMicStop(label, micBtn); return; }
-  // iOS browser speech API is blocked by Apple — use keyboard dictation instead
-  if (EMA_IOS || !EMA_SR) { emaShowDictation(); return; }
+  if (!EMA_SR) { emaShowDictation(); return; }
 
   _emaMicActive = true;
   _emaMicFails  = 0;
@@ -1813,30 +1812,21 @@ function emaMicTap() {
       _emaMicStop(label, micBtn);
 
       var resp = document.getElementById('emaResponse');
-      if (e.error === 'not-allowed') {
+      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+        var _isService = (e.error === 'service-not-allowed');
         if (resp) {
           resp.innerHTML =
-            '<strong style="color:#EF4444">Microphone permission denied.</strong><br><br>' +
-            'On iPhone, fix this at:<br>' +
-            '<strong>Settings → Safari → Microphone → Allow</strong><br>' +
-            '<em style="color:#777;font-size:11px">Then close Safari fully and re-scan the tag.</em><br><br>' +
-            '<span style="color:#0ED2C8">Using keyboard below — tap the 🎤 mic on the keyboard to speak.</span>';
+            '<div style="line-height:1.8;font-size:13px">' +
+            '<strong style="color:#EF4444">' + (_isService ? 'Speech Recognition blocked.' : 'Microphone blocked.') + '</strong><br><br>' +
+            (_isService
+              ? '🔧 On iPhone go to:<br><strong>Settings → Privacy & Security<br>→ Speech Recognition<br>→ Safari → Allow</strong>'
+              : '🔧 On iPhone go to:<br><strong>Settings → Privacy & Security<br>→ Microphone<br>→ Safari → Allow</strong>') +
+            '<br><br><em style="color:#666;font-size:11px">Close Safari fully after changing, then re-scan.</em>' +
+            '</div>';
           resp.style.display = 'block';
           resp.scrollIntoView({behavior:'smooth', block:'nearest'});
         }
-        setTimeout(emaShowDictation, 600);
-      } else if (e.error === 'service-not-allowed') {
-        if (resp) {
-          resp.innerHTML =
-            '<strong style="color:#EF4444">Speech recognition not available.</strong><br><br>' +
-            'On iPhone, enable it at:<br>' +
-            '<strong>Settings → Siri & Search → Siri & Dictation → ON</strong><br>' +
-            '<em style="color:#777;font-size:11px">Siri must be enabled for web speech to work.</em><br><br>' +
-            '<span style="color:#0ED2C8">Using keyboard below — tap the 🎤 mic on the keyboard to speak.</span>';
-          resp.style.display = 'block';
-          resp.scrollIntoView({behavior:'smooth', block:'nearest'});
-        }
-        setTimeout(emaShowDictation, 600);
+        _emaMicStop(label, micBtn);
       } else {
         _emaMicFails++;
         if (_emaMicFails < _EMA_FAIL_MAX) {
