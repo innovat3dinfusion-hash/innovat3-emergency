@@ -1734,6 +1734,21 @@ var EMA_SR  = window.SpeechRecognition || window.webkitSpeechRecognition;
 var EMA_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
               (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
+// iOS blocks audio.play() from async callbacks (e.g. SpeechRecognition onresult).
+// Unlock by playing a silent buffer during the direct user gesture (mic tap).
+var _emaAudioCtx = null;
+function _emaUnlockAudio() {
+  if (_emaAudioCtx) return;
+  try {
+    _emaAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    var buf = _emaAudioCtx.createBuffer(1, 1, 22050);
+    var src = _emaAudioCtx.createBufferSource();
+    src.buffer = buf;
+    src.connect(_emaAudioCtx.destination);
+    src.start(0);
+  } catch(e) { _emaAudioCtx = null; }
+}
+
 // Tap face: play greeting if idle, stop if speaking
 function emaFaceTap() {
   if (emaSpeaking) {
@@ -1759,6 +1774,8 @@ function _emaMicStop(label, micBtn) {
 }
 
 function emaMicTap() {
+  _emaUnlockAudio(); // unlock iOS audio during the tap so async play() works later
+
   var label  = document.getElementById('emaMicLabel');
   var micBtn = document.getElementById('emaMicTapBtn');
 
