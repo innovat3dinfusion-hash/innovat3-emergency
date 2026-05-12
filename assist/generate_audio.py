@@ -17,15 +17,15 @@ os.makedirs(OUT, exist_ok=True)
 
 LINES = {
     "greeting": (
-        "Hi, I'm EMA — your Emergency Medical Assistant. "
-        "Tap any card for instant guidance, or ask me anything. I've got you."
+        "Hi, I'm Emma — and I'm here to help. "
+        "Just tap a card or tell me what's happening, and I'll walk you through it."
     ),
     "default": (
-        "I'm EMA. Ask me about any emergency — or tap Find Nearest to locate the closest hospital or doctor."
+        "I'm Emma. Tell me what's happening and I'll help — or tap Find Nearest to locate the closest hospital or doctor."
     ),
     "location_search": (
-        "Sure — let me find the nearest medical facilities for you right now. "
-        "Allow location access if your browser asks. "
+        "Of course — let me find the nearest hospitals and doctors for you right now. "
+        "Go ahead and allow location access if your phone asks. "
         "And remember — for any emergency, call one zero one seven seven straight away."
     ),
     "heart_attack": (
