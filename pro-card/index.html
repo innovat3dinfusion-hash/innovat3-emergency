@@ -1744,63 +1744,69 @@ function emaFaceTap() {
   }
 }
 
+var _emaMicActive = false;
+
 function emaMicTap() {
-  var label = document.getElementById('emaMicLabel');
+  var label  = document.getElementById('emaMicLabel');
   var micBtn = document.getElementById('emaMicTapBtn');
 
-  // Already listening — stop
-  if (micBtn && micBtn._rec) {
-    micBtn._rec.stop();
-    micBtn._rec = null;
+  // Tap again to cancel listening
+  if (_emaMicActive) {
+    _emaMicActive = false;
+    if (micBtn && micBtn._rec) { try { micBtn._rec.stop(); } catch(e){} micBtn._rec = null; }
+    if (label)  label.textContent = 'Ask by voice';
+    if (micBtn) micBtn.classList.remove('listening');
     return;
   }
 
-  if (!EMA_SR) {
-    emaShowDictation();
-    return;
-  }
+  if (!EMA_SR) { emaShowDictation(); return; }
 
-  // Immediate visual feedback before browser prompts for mic
-  if (label) label.textContent = 'Starting…';
+  _emaMicActive = true;
+  if (label)  label.textContent = 'Listening…';
   if (micBtn) micBtn.classList.add('listening');
 
-  var rec = new EMA_SR();
-  micBtn._rec = rec;
-  rec.lang = 'en-ZA';
-  rec.interimResults = false;
-  rec.maxAlternatives = 1;
+  function _startSession() {
+    if (!_emaMicActive) return;
 
-  rec.onstart = function() {
-    if (label) label.textContent = 'Listening…';
-  };
-  rec.onend = function() {
-    micBtn._rec = null;
-    if (label) label.textContent = 'Ask by voice';
-    if (micBtn) micBtn.classList.remove('listening');
-  };
-  rec.onerror = function(e) {
-    micBtn._rec = null;
-    if (e.error === 'not-allowed') {
-      if (label) label.textContent = 'Mic blocked';
-      setTimeout(function() { if (label) label.textContent = 'Ask by voice'; }, 3000);
-    } else {
-      if (label) label.textContent = 'Ask by voice';
+    var rec = new EMA_SR();                // fresh instance every time — required on iOS
+    if (micBtn) micBtn._rec = rec;
+    rec.lang            = 'en-ZA';
+    rec.interimResults  = false;
+    rec.maxAlternatives = 1;
+
+    rec.onresult = function(e) {
+      var t = (e.results[0][0].transcript || '').trim();
+      if (!t) return;
+      _emaMicActive = false;
+      if (micBtn) { micBtn._rec = null; micBtn.classList.remove('listening'); }
+      if (label)  label.textContent = 'Ask by voice';
+      emaQuery(t);
+    };
+
+    // iOS often fires onend immediately without speech — restart the session
+    rec.onend = function() {
+      if (micBtn) micBtn._rec = null;
+      if (_emaMicActive) setTimeout(_startSession, 150);
+    };
+
+    rec.onerror = function(e) {
+      if (micBtn) micBtn._rec = null;
+      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+        _emaMicActive = false;
+        if (label)  label.textContent = 'Mic blocked — check Settings';
+        if (micBtn) micBtn.classList.remove('listening');
+        setTimeout(function(){ if (label) label.textContent = 'Ask by voice'; }, 4000);
+      } else if (_emaMicActive) {
+        setTimeout(_startSession, 300);   // transient error — retry
+      }
+    };
+
+    try { rec.start(); } catch(e) {
+      if (_emaMicActive) setTimeout(_startSession, 300);
     }
-    if (micBtn) micBtn.classList.remove('listening');
-  };
-  rec.onresult = function(e) {
-    var t = e.results[0][0].transcript.trim();
-    if (t) { rec.stop(); emaQuery(t); }
-  };
-
-  try {
-    rec.start();
-  } catch(e) {
-    micBtn._rec = null;
-    if (label) label.textContent = 'Ask by voice';
-    if (micBtn) micBtn.classList.remove('listening');
-    emaShowDictation();
   }
+
+  _startSession();
 }
 
 function emaShowDictation() {
