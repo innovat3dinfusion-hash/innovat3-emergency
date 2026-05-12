@@ -1730,7 +1730,9 @@ function proTabToggle(id) {
 var emaSpeaking = false;
 var emaAudioEl  = null;
 var emaProfile  = window.emaProfile || {};
-var EMA_SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+var EMA_SR  = window.SpeechRecognition || window.webkitSpeechRecognition;
+var EMA_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+              (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
 // Tap face: play greeting if idle, stop if speaking
 function emaFaceTap() {
@@ -1761,7 +1763,8 @@ function emaMicTap() {
   var micBtn = document.getElementById('emaMicTapBtn');
 
   if (_emaMicActive) { _emaMicStop(label, micBtn); return; }
-  if (!EMA_SR)       { emaShowDictation(); return; }
+  // iOS browser speech API is blocked by Apple — use keyboard dictation instead
+  if (EMA_IOS || !EMA_SR) { emaShowDictation(); return; }
 
   _emaMicActive = true;
   _emaMicFails  = 0;
@@ -1858,22 +1861,36 @@ function emaShowDictation() {
   var micBtn  = document.getElementById('emaMicTapBtn');
   var label   = document.getElementById('emaMicLabel');
   var textEl  = document.getElementById('emaTextIn');
-  var textRow = document.querySelector('.ema-text-row');
+  var respEl  = document.getElementById('emaResponse');
   if (!textEl) return;
 
-  // Highlight button and prompt
-  if (label) label.textContent = 'Tap 🎙 on keyboard';
+  // Show the guide in the response panel so it's clearly visible
+  if (respEl) {
+    respEl.innerHTML =
+      '<div style="text-align:center;padding:6px 0 10px">' +
+      '<div style="font-size:36px;margin-bottom:10px">🎤</div>' +
+      '<div style="color:#0ED2C8;font-weight:700;font-size:15px;margin-bottom:8px">Tap the mic key on your keyboard</div>' +
+      '<div style="color:#aaa;font-size:12px;line-height:1.8">' +
+      'Speak your question — Emma answers automatically.<br>' +
+      '<span style="color:#555;font-size:11px">Or just type it below.</span>' +
+      '</div></div>';
+    respEl.style.display = 'block';
+  }
+
+  if (label) label.textContent = 'Listening…';
   if (micBtn) micBtn.classList.add('listening');
 
-  // Glow the text input
-  textEl.style.boxShadow = '0 0 0 2px #0ED2C8';
-  textEl.placeholder = 'Speak or type your question…';
+  textEl.style.boxShadow  = '0 0 0 2px #0ED2C8';
+  textEl.style.background = 'rgba(14,210,200,0.06)';
+  textEl.placeholder      = 'Tap 🎤 on keyboard or type here…';
 
-  // Auto-submit after 1.5 s pause in dictation
   var _timer = null;
+
   function _onInput() {
     clearTimeout(_timer);
     if (!textEl.value.trim()) return;
+    // Show live typing feedback
+    if (label) label.textContent = 'Got it — hold on…';
     _timer = setTimeout(function() {
       var q = textEl.value.trim();
       if (!q) return;
@@ -1881,27 +1898,27 @@ function emaShowDictation() {
       textEl.blur();
       _cleanup();
       emaQuery(q);
-    }, 1500);
+    }, 1200);
   }
 
   function _cleanup() {
     textEl.removeEventListener('input', _onInput);
-    textEl.style.boxShadow = '';
-    textEl.placeholder = 'Or type your question…';
+    textEl.style.boxShadow  = '';
+    textEl.style.background = '';
+    textEl.placeholder      = 'Or type your question…';
     if (label) label.textContent = 'Ask by voice';
     if (micBtn) micBtn.classList.remove('listening');
   }
 
   textEl.addEventListener('input', _onInput);
-
-  // Also reset when input loses focus without content
   textEl.addEventListener('blur', function _onBlur() {
-    if (!textEl.value.trim()) { _cleanup(); }
+    if (!textEl.value.trim()) _cleanup();
     textEl.removeEventListener('blur', _onBlur);
   });
 
-  if (textRow) textRow.scrollIntoView({behavior:'smooth', block:'center'});
-  textEl.focus();
+  // Scroll guide into view then focus input (opens keyboard)
+  if (respEl) respEl.scrollIntoView({behavior:'smooth', block:'nearest'});
+  setTimeout(function(){ textEl.focus(); }, 300);
 }
 
 function emaTextSend() {
