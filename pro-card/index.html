@@ -1981,30 +1981,38 @@ async function emaAskAI(question) {
     (p['Blood Type']     ? ' Blood type: ' + p['Blood Type'] + '.' : '') +
     (p['Medical Alerts'] ? ' Medical alerts: ' + p['Medical Alerts'] + '.' : '') +
     (p['Medications']    ? ' Medications: ' + p['Medications'] + '.' : '');
-  try {
-    var ctrl = new AbortController();
-    var _t = setTimeout(function(){ ctrl.abort(); }, 10000);
-    var resp = await fetch(
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=' + _EMA_GK,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        signal: ctrl.signal,
-        body: JSON.stringify({
-          systemInstruction: { parts: [{ text: sys }] },
-          contents: [{ role: 'user', parts: [{ text: question }] }],
-          generationConfig: { temperature: 0.2, maxOutputTokens: 200 }
-        })
-      }
-    );
-    clearTimeout(_t);
-    var data = await resp.json();
-    if (!resp.ok) { console.warn('[EMA AI] error', resp.status, data); return null; }
-    return (data.candidates && data.candidates[0] &&
-            data.candidates[0].content && data.candidates[0].content.parts &&
-            data.candidates[0].content.parts[0].text) ?
-           data.candidates[0].content.parts[0].text.trim() : null;
-  } catch(e) { console.warn('[EMA AI] fetch failed:', e.message); return null; }
+  var body = JSON.stringify({
+    systemInstruction: { parts: [{ text: sys }] },
+    contents: [{ role: 'user', parts: [{ text: question }] }],
+    generationConfig: { temperature: 0.2, maxOutputTokens: 200 }
+  });
+  // Try models in order; retry once on 429 (rate limit) then move to next model
+  var MODELS = ['gemini-2.0-flash-lite', 'gemini-1.5-flash-8b', 'gemini-1.5-flash'];
+  for (var mi = 0; mi < MODELS.length; mi++) {
+    for (var attempt = 0; attempt < 2; attempt++) {
+      try {
+        var ctrl = new AbortController();
+        var _t = setTimeout(function(){ ctrl.abort(); }, 10000);
+        var resp = await fetch(
+          'https://generativelanguage.googleapis.com/v1beta/models/' + MODELS[mi] + ':generateContent?key=' + _EMA_GK,
+          { method:'POST', headers:{'Content-Type':'application/json'}, signal:ctrl.signal, body:body }
+        );
+        clearTimeout(_t);
+        if (resp.status === 429) {
+          console.warn('[EMA AI] 429 rate limit on', MODELS[mi], 'attempt', attempt);
+          if (attempt === 0) { await new Promise(function(r){ setTimeout(r, 2000); }); continue; }
+          break; // try next model
+        }
+        var data = await resp.json();
+        if (!resp.ok) { console.warn('[EMA AI] error', resp.status, MODELS[mi], data); break; }
+        return (data.candidates && data.candidates[0] &&
+                data.candidates[0].content && data.candidates[0].content.parts &&
+                data.candidates[0].content.parts[0].text) ?
+               data.candidates[0].content.parts[0].text.trim() : null;
+      } catch(e) { console.warn('[EMA AI] fetch failed:', MODELS[mi], e.message); break; }
+    }
+  }
+  return null;
 }
 
 function emaQuery(q) {
@@ -2022,10 +2030,10 @@ function emaQuery(q) {
         el.textContent = answer;
         emaSpeak('custom', answer);
       } else {
-        el.innerHTML = '<span style="color:#aaa;font-size:13px">I\'m not connected right now — ask about one of the emergency cards above.</span>';
+        el.innerHTML = '<span style="color:#aaa;font-size:13px">Emma is busy right now — please try again in a moment, or tap one of the emergency cards above.</span>';
       }
     }).catch(function() {
-      el.innerHTML = '<span style="color:#aaa;font-size:13px">No connection — try again when online.</span>';
+      el.innerHTML = '<span style="color:#aaa;font-size:13px">No connection — try again when online, or tap one of the emergency cards above.</span>';
     });
   } else {
     el.innerHTML = r.html;
