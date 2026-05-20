@@ -1982,11 +1982,14 @@ async function emaAskAI(question) {
     (p['Medical Alerts'] ? ' Medical alerts: ' + p['Medical Alerts'] + '.' : '') +
     (p['Medications']    ? ' Medications: ' + p['Medications'] + '.' : '');
   try {
+    var ctrl = new AbortController();
+    var _t = setTimeout(function(){ ctrl.abort(); }, 10000);
     var resp = await fetch(
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + _EMA_GK,
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=' + _EMA_GK,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        signal: ctrl.signal,
         body: JSON.stringify({
           systemInstruction: { parts: [{ text: sys }] },
           contents: [{ role: 'user', parts: [{ text: question }] }],
@@ -1994,12 +1997,14 @@ async function emaAskAI(question) {
         })
       }
     );
+    clearTimeout(_t);
     var data = await resp.json();
+    if (!resp.ok) { console.warn('[EMA AI] error', resp.status, data); return null; }
     return (data.candidates && data.candidates[0] &&
             data.candidates[0].content && data.candidates[0].content.parts &&
             data.candidates[0].content.parts[0].text) ?
            data.candidates[0].content.parts[0].text.trim() : null;
-  } catch(e) { return null; }
+  } catch(e) { console.warn('[EMA AI] fetch failed:', e.message); return null; }
 }
 
 function emaQuery(q) {
@@ -2240,15 +2245,26 @@ function emaLoadMemory(notes, tagId) {
 }
 
 function emaMemorySearch(query) {
-  var words = query.toLowerCase().replace(/[^a-z0-9\s]/g,'').split(/\s+/).filter(function(w){ return w.length > 2; });
-  if (!words.length || !Object.keys(emaMemory).length) return null;
+  var q = query.toLowerCase().replace(/[^a-z0-9\s]/g,'');
+  if (!Object.keys(emaMemory).length) return null;
   var best = null, bestScore = 0;
   Object.keys(emaMemory).forEach(function(k) {
-    var hay = (k + ' ' + emaMemory[k]).toLowerCase();
-    var score = words.reduce(function(n, w){ return n + (hay.indexOf(w) !== -1 ? 1 : 0); }, 0);
-    if (score > bestScore) { bestScore = score; best = {key:k, value:emaMemory[k]}; }
+    var kn = k.toLowerCase().replace(/[^a-z0-9\s]/g,'');
+    // Phrase match: the full key appears in the query
+    if (q.indexOf(kn) !== -1) {
+      var score = kn.length + 10; // boost phrase matches
+      if (score > bestScore) { bestScore = score; best = {key:k, value:emaMemory[k]}; }
+    } else {
+      // Word match: most key words must appear in the query (not vice-versa)
+      var kw = kn.split(/\s+/).filter(function(w){ return w.length > 2; });
+      if (!kw.length) return;
+      var hits = kw.filter(function(w){ return q.indexOf(w) !== -1; }).length;
+      if (hits / kw.length >= 0.75) { // 75% of key words in query
+        if (hits > bestScore) { bestScore = hits; best = {key:k, value:emaMemory[k]}; }
+      }
+    }
   });
-  return bestScore > 0 ? best : null;
+  return best;
 }
 
 function emaTeach() {
