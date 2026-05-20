@@ -182,6 +182,13 @@ LINES = {
         "No fluids if confused or unconscious. "
         "Recovery position if unconscious. Keep cooling until the ambulance arrives."
     ),
+    "fainting": (
+        "Lay them flat on their back and raise their legs about twenty centimetres — "
+        "this restores blood flow to the brain. "
+        "Loosen any tight clothing and make sure they can breathe normally. "
+        "Do not give food or water until they are fully alert. "
+        "If they do not come around within two minutes, or they are not breathing, call for an ambulance."
+    ),
     "panic_attack": (
         "Stay with them and speak calmly — remind them it will pass and they are safe. "
         "Breathe together: in for four, hold for two, out for six. "

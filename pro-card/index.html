@@ -1974,7 +1974,8 @@ async function emaAskAI(question) {
   var name = ((p['First Name']||'') + ' ' + (p['Last Name']||'')).trim();
   var sys  = 'You are Emma, an AI emergency assistant for Innovat3 NFC safety tags in South Africa. ' +
     'Answer in 2-3 sentences. Lead with the most critical action. Plain sentences only — no bullet points or markdown. ' +
-    'Emergency numbers are already displayed on the card, so only mention a number if calling IS the action.' +
+    'IMPORTANT: Do NOT say "find the nearest hospital", "go to a doctor", or "call emergency services" — the card already shows emergency numbers and a Find Nearest button. ' +
+    'Focus ONLY on what the person standing there should physically do RIGHT NOW.' +
     (name    ? ' Tag owner: ' + name + '.'                      : '') +
     (p['Blood Type']     ? ' Blood type: ' + p['Blood Type'] + '.' : '') +
     (p['Medical Alerts'] ? ' Medical alerts: ' + p['Medical Alerts'] + '.' : '') +
@@ -2120,6 +2121,8 @@ function emaGetResponse(q) {
     return {key:'broken_bone', html:'<strong>Broken bone — do not move it.</strong> Immobilise in the position found using rolled clothing or padding. If bone through skin: cover loosely — do not push it back. Apply wrapped ice to reduce swelling. Suspected spine, hip or pelvis — do not move them at all. Call <strong>10177</strong>.', plain:'Do not move the limb. Immobilise and call 10177.'};
   if (/heat stroke|heat.stroke|overheating|hypertherm/.test(q))
     return {key:'heat_stroke', html:'<strong>Heat stroke — call 10177 immediately.</strong> Move to cool shade. Remove excess clothing. Cool fast: wet cloths to neck, armpits, groin. Fan vigorously. Small sips of cool water if conscious. Do not give fluids if confused. Recovery position if unconscious. Keep cooling until ambulance arrives.', plain:'Call 10177. Move to shade and cool them down fast.'};
+  if (/faint|fainted|fainting|pass.*out|passed out|collapse|fell down|fell over|lost conscious/.test(q))
+    return {key:'fainting', html:'<strong>Fainting.</strong> Lay them flat and raise their legs about 20cm — this restores blood flow to the brain. Loosen tight clothing and check they are breathing. Do not give food or water until fully alert. If they do not come around within 2 minutes or are not breathing normally, call 10177.', plain:'Lay them flat, raise their legs, loosen clothing and let them recover. Call for help if they do not come around within two minutes.'};
   if (/panic attack|panic|anxiety attack/.test(q))
     return {key:'panic_attack', html:'<strong>Panic attack.</strong> Stay with them. Speak slowly and calmly — remind them it will pass. Breathe with them: in for 4, hold for 2, out for 6. Ground them — feel feet on the floor, hold something solid. Do not say "calm down." If first time or severe chest pain — go to emergency.', plain:'Stay calm with them. Breathe slowly together. It will pass.'};
   if (/gunshot|shot|bullet/.test(q))
