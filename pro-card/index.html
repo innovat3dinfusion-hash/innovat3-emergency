@@ -581,7 +581,7 @@ body { font-family:'Exo 2',sans-serif; background:#050505; color:var(--text); mi
 <script>
 var GAS_URL        = 'https://api.innovat3.co.za';
 var EMA_AUDIO      = '/assist/audio/';
-var EMA_AUDIO_BUST = '?v=3'; // bump when audio files are regenerated
+var EMA_AUDIO_BUST = '?v=4'; // bump when audio files are regenerated
 
 // ── Redirect expired tag to reactivate page ──────────────────────
 function goReactivate() {
@@ -1401,6 +1401,10 @@ var subData = {};
   document.getElementById('sosBar').style.display        = 'block';
   document.getElementById('finderStatus').style.display  = 'block';
   setLang(window._currentLang||'en');
+
+  // Auto-play EMA greeting — works on Android; iOS requires a user gesture first
+  // so it will silently fail there (user can still tap Emma's face to hear it)
+  setTimeout(function() { try { emaSpeak('greeting'); } catch(e) {} }, 800);
 
   // ── Session timer ─────────────────────────────────────────────
   // Expires after 15 min total, or if tab is hidden for > 2 min.

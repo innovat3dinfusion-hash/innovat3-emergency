@@ -17,8 +17,8 @@ os.makedirs(OUT, exist_ok=True)
 
 LINES = {
     "greeting": (
-        "Hi, I'm Emma — and I'm here to help. "
-        "Just tap a card or tell me what's happening, and I'll walk you through it."
+        "Hi — I am your Emergency Medical Assistant, or Emma for short. "
+        "Ask me for assistance."
     ),
     "default": (
         "I'm Emma. Tell me what's happening and I'll help — "
