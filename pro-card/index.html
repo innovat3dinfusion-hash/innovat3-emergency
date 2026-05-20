@@ -2001,9 +2001,9 @@ function emaQuery(q) {
     emaAskAI(q).then(function(answer) {
       if (answer) {
         el.textContent = answer;
-        emaSpeakCustom(answer);
+        emaSpeak('custom', answer);
       } else {
-        el.innerHTML = '<span style="color:#aaa;font-size:13px">I\'m not sure about that one — try rephrasing or ask about a specific emergency.</span>';
+        el.innerHTML = '<span style="color:#aaa;font-size:13px">I\'m not connected right now — ask about one of the emergency cards above.</span>';
       }
     }).catch(function() {
       el.innerHTML = '<span style="color:#aaa;font-size:13px">No connection — try again when online.</span>';
@@ -2076,7 +2076,7 @@ function emaGetResponse(q) {
     return {key:'stroke', html:'<strong>Possible stroke — FAST:</strong> Face drooping · Arms unequal · Speech slurred · Time: call <strong>10177</strong> now.', plain:'Possible stroke. Call 10177.'};
   if (/chok|heimlich|can.?t breathe/.test(q))
     return {key:'choking', html:'<strong>Choking.</strong> 5 back blows between shoulder blades, then 5 abdominal thrusts. Alternate until clear. Unconscious → CPR + call <strong>10177</strong>.', plain:'Choking emergency.'};
-  if (/cpr|not breathing|no pulse|unconscious|resuscitat/.test(q))
+  if (/cpr|not breathing|no pulse|check.*pulse|pulse.*check|check for a pulse|how.*pulse|find.*pulse|feel.*pulse|unconscious|resuscitat/.test(q))
     return {key:'cpr', html:'<strong>CPR.</strong> Call <strong>10177</strong> first. Push hard on centre of chest — 100–120/min, 5–6cm deep. 30 compressions then 2 breaths.', plain:'Start CPR.'};
   if (/bleed|bleeding|severe cut/.test(q))
     return {key:'bleeding', html:'<strong>Severe bleeding.</strong> Press firmly, do not lift. Elevate the limb. Tourniquet 5cm above wound if life-threatening — note the time.', plain:'Apply direct pressure.'};
