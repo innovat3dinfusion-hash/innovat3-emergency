@@ -2087,6 +2087,11 @@ function emaSpeak(key, plainText) {
 }
 
 function emaGetResponse(q) {
+  // Diagnostic questions ("signs of", "symptoms of", "how do I know") are better answered by AI
+  if (/\b(signs?|symptoms?|how (do i|can i|to) (tell|know|identify|recognise|recognize)|what (does|is) .*(look like|feel like))\b/.test(q) &&
+      q.replace(/[^a-z]/g,'').length > 6) {
+    return {key:'unknown', html:'', plain:''};
+  }
   if (/nearest|nearby|find|hospital|clinic|doctor|gp\b/.test(q))
     return {key:'location_search', html:'Finding nearby facilities…', plain:'Finding nearby facilities now.'};
   if (/heart attack|chest pain|chest tight/.test(q))
@@ -2097,6 +2102,8 @@ function emaGetResponse(q) {
     return {key:'choking', html:'<strong>Choking.</strong> 5 back blows between shoulder blades, then 5 abdominal thrusts. Alternate until clear. Unconscious → CPR + call <strong>10177</strong>.', plain:'Choking emergency.'};
   if (/cpr|not breathing|no pulse|check.*pulse|pulse.*check|check for a pulse|how.*pulse|find.*pulse|feel.*pulse|unconscious|resuscitat/.test(q))
     return {key:'cpr', html:'<strong>CPR.</strong> Call <strong>10177</strong> first. Push hard on centre of chest — 100–120/min, 5–6cm deep. 30 compressions then 2 breaths.', plain:'Start CPR.'};
+  if (/internal.?bleed/.test(q))
+    return {key:'bleeding', html:'<strong>Internal bleeding.</strong> Signs: bruising without injury, swollen or rigid abdomen, pale cold clammy skin, rapid weak pulse, dizziness, vomiting blood. Keep them still and warm. Do not give food or water. Call <strong>10177</strong> immediately.', plain:'Keep them still and call 10177. Watch for pale cold skin, rapid weak pulse, and rigid abdomen.'};
   if (/bleed|bleeding|severe cut/.test(q))
     return {key:'bleeding', html:'<strong>Severe bleeding.</strong> Press firmly, do not lift. Elevate the limb. Tourniquet 5cm above wound if life-threatening — note the time.', plain:'Apply direct pressure.'};
   if (/seizure|epilep|fitting|convuls/.test(q))
