@@ -1392,7 +1392,8 @@ var subData = {};
   // Pass profile to EMA for context-aware responses
   window.emaProfile = subData;
   window._emaTagId  = tagId;
-  emaLoadMemory(subData['EMA Notes'] || '', tagId);
+  var _emaNotes = subData['EMA Notes'] || '';
+  setTimeout(function() { try { emaLoadMemory(_emaNotes, tagId); } catch(e) {} }, 0);
 
   // Show card
   document.getElementById('loadingScreen').style.display = 'none';
