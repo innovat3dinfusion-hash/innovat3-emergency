@@ -1967,16 +1967,51 @@ function emaToggleMore() {
   btn.classList.toggle('open', open);
 }
 
+async function emaAskAI(question) {
+  var p = window.emaProfile || {};
+  try {
+    var resp = await fetch('https://api.innovat3.co.za/ema', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        question: question,
+        profile: {
+          name:    ((p['First Name']||'') + ' ' + (p['Last Name']||'')).trim(),
+          blood:   p['Blood Type']     || '',
+          medical: p['Medical Alerts'] || '',
+          meds:    p['Medications']    || ''
+        }
+      })
+    });
+    var data = await resp.json();
+    return data.answer || null;
+  } catch(e) { return null; }
+}
+
 function emaQuery(q) {
   var r  = emaGetResponse(q.toLowerCase());
   var el = document.getElementById('emaResponse');
-  el.innerHTML = r.html;
   el.style.display = 'block';
   el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   if (/nearest|hospital|clinic|doctor/.test(q.toLowerCase())) emaFindFacilities();
-  emaSpeak(r.key, r.plain);
-  // Focus teach input if shown
-  setTimeout(function(){ var t = document.getElementById('emaTeachIn'); if(t) t.focus(); }, 300);
+
+  if (r.key === 'unknown') {
+    // Show thinking state then call AI
+    el.innerHTML = '<span style="color:#0ED2C8;font-style:italic;font-size:13px">Emma is thinking…</span>';
+    emaAskAI(q).then(function(answer) {
+      if (answer) {
+        el.textContent = answer;
+        emaSpeakCustom(answer);
+      } else {
+        el.innerHTML = '<span style="color:#aaa;font-size:13px">I\'m not sure about that one — try rephrasing or ask about a specific emergency.</span>';
+      }
+    }).catch(function() {
+      el.innerHTML = '<span style="color:#aaa;font-size:13px">No connection — try again when online.</span>';
+    });
+  } else {
+    el.innerHTML = r.html;
+    emaSpeak(r.key, r.plain);
+  }
 }
 
 function emaSpeak(key, plainText) {
@@ -2084,19 +2119,10 @@ function emaGetResponse(q) {
     return {key:'custom', html:'<strong>' + esc(_lbl) + ':</strong> ' + esc(_hit.value), plain: _lbl + ': ' + _hit.value};
   }
 
-  // Nothing matched — show teach form if a real question was asked
+  // Nothing matched — signal for AI to handle
   if (q.replace(/[^a-z]/g,'').length > 3) {
     _emaLastUnknown = q;
-    return {key:'unknown',
-      html: '<span style="color:#aaa;font-size:13px">I don\'t have that information yet.</span>' +
-        '<div style="margin-top:12px;background:rgba(14,210,200,0.04);border:1px solid rgba(14,210,200,0.2);border-radius:10px;padding:12px">' +
-        '<div style="font-size:10px;color:#0ED2C8;font-weight:900;letter-spacing:1px;margin-bottom:8px">TEACH EMMA</div>' +
-        '<input id="emaTeachIn" type="text" placeholder="Type the answer — I\'ll remember it…" ' +
-        'style="width:100%;background:rgba(0,20,20,0.8);border:1px solid rgba(14,210,200,0.25);border-radius:8px;padding:10px 12px;color:#e0e0e0;font-size:15px;outline:none;box-sizing:border-box;margin-bottom:8px;font-family:inherit" ' +
-        'onkeydown="if(event.key===\'Enter\')emaTeach()">' +
-        '<button onclick="emaTeach()" style="width:100%;background:linear-gradient(135deg,#003d3b,#0ED2C8);border:none;border-radius:8px;padding:10px;color:#fff;font-family:Orbitron,sans-serif;font-size:9px;font-weight:900;letter-spacing:1.5px;cursor:pointer">SAVE TO MEMORY</button>' +
-        '</div>',
-      plain: "I don't have that information yet."};
+    return {key:'unknown', html:'', plain:''};
   }
 
   return {key:'default', html:'Ask me about any emergency — tap a card above or type your question below.', plain:"Ask me about any emergency."};
