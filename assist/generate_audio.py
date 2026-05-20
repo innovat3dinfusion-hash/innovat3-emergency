@@ -203,6 +203,94 @@ LINES = {
         "Do not remove anything embedded. "
         "Maintain pressure until paramedics arrive. Call for an ambulance now."
     ),
+    "nosebleed": (
+        "Lean them slightly forward and pinch the soft part of the nose just below the bone. "
+        "Hold firm for ten minutes without releasing. "
+        "Do not tilt the head back — it sends blood down the throat. "
+        "Breathe through the mouth. "
+        "If it does not stop after twenty minutes, or it followed a head injury, seek medical attention."
+    ),
+    "concussion": (
+        "Do not leave them alone. "
+        "Watch closely for: confusion, repeated vomiting, unequal pupils, or a worsening headache — "
+        "these are signs of a serious brain injury. "
+        "Keep them calm and still. No food or water until assessed. "
+        "They must see a doctor even if they feel fine — symptoms can appear hours later."
+    ),
+    "sprain": (
+        "Rest the injured area immediately — stop all activity. "
+        "Apply a wrapped ice pack for twenty minutes every two hours. "
+        "Compress with a bandage — firm but not tight enough to cut circulation. "
+        "Elevate the limb above heart level to reduce swelling. "
+        "If there is severe swelling, visible deformity, or they cannot bear any weight, treat as a possible fracture."
+    ),
+    "eye_injury": (
+        "Do not rub the eye — this causes further damage. "
+        "For a chemical splash: flush with clean running water continuously for fifteen minutes. "
+        "For a foreign object: do not try to remove it. Cover loosely with a clean cloth without applying pressure. "
+        "For any puncture or cut to the eyeball: cover both eyes and go to emergency immediately."
+    ),
+    "dental": (
+        "For a knocked-out tooth: handle by the crown only — never the root. "
+        "Rinse very gently without scrubbing. "
+        "Re-insert into the socket if possible, or store in milk or between the cheek and gum. "
+        "Get to a dentist within thirty minutes — speed is critical. "
+        "For a severe toothache with facial swelling, see a dentist urgently — it may be an abscess."
+    ),
+    "vomiting": (
+        "Sit them upright or lean them forward to prevent choking. "
+        "If lying down, roll them onto their side. "
+        "Give small sips of water only once vomiting eases — not large amounts. "
+        "Seek urgent care if vomit contains blood, there is severe abdominal pain, "
+        "it follows a head injury, or it does not stop after several hours."
+    ),
+    "dehydration": (
+        "Give small, frequent sips of water or an oral rehydration solution. "
+        "Do not give large amounts at once — this causes further vomiting. "
+        "Move to a cool environment and rest. "
+        "Get medical help if the person is confused, has not urinated in eight hours, "
+        "or is an infant or elderly."
+    ),
+    "hypothermia": (
+        "Move them to warmth immediately and remove any wet clothing. "
+        "Cover with dry blankets, including the head. "
+        "Warm slowly — do not apply direct heat such as hot water or a heating pad. "
+        "Give warm sweet drinks only if they are fully conscious. "
+        "Handle very gently — sudden movement can trigger cardiac arrest."
+    ),
+    "dizziness": (
+        "Sit or lay them down immediately to prevent a fall. "
+        "Loosen any tight clothing and allow fresh air. "
+        "If it passes, have them rise very slowly. "
+        "See a doctor if dizziness is severe, recurring, "
+        "or comes with chest pain, hearing loss, or follows a head injury."
+    ),
+    "pregnancy": (
+        "Keep them calm and help them into the most comfortable position. "
+        "Time contractions from the start of one to the start of the next. "
+        "Call for help if contractions are five minutes apart or less, "
+        "there is heavy bleeding, the waters break, or they feel the urge to push. "
+        "Do not leave them alone."
+    ),
+    "allergic_mild": (
+        "For a mild reaction with hives or itching, "
+        "give an antihistamine such as Cetirizine or Loratadine at the correct dose. "
+        "Watch closely for thirty minutes. "
+        "If symptoms progress to throat tightness, difficulty breathing, or dizziness, "
+        "this is anaphylaxis — use the EpiPen immediately."
+    ),
+    "abdominal": (
+        "Do not give food, water, or pain medication until a doctor has assessed them. "
+        "Help them into the most comfortable position — usually lying with knees drawn up. "
+        "Get urgent care if the abdomen is rigid or board-hard, "
+        "the pain came on suddenly and severely, there is fever with the pain, "
+        "or they are vomiting blood."
+    ),
+    "not_found": (
+        "I don't have specific guidance for that scenario. "
+        "For any life-threatening emergency, call ten one seven seven immediately. "
+        "You can also tap one of the emergency cards for guidance on common emergencies."
+    ),
 }
 
 async def generate_one(key, text):

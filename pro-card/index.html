@@ -1968,52 +1968,6 @@ function emaToggleMore() {
   btn.classList.toggle('open', open);
 }
 
-var _EMA_GK = atob('QUl6YVN5Qk1hUnlqVG9zN0dxT1lUY1dfVXVSMkktY1lNVDRvZmFZ');
-
-async function emaAskAI(question) {
-  var p = window.emaProfile || {};
-  var name = ((p['First Name']||'') + ' ' + (p['Last Name']||'')).trim();
-  var sys  = 'You are Emma, an AI emergency assistant for Innovat3 NFC safety tags in South Africa. ' +
-    'Answer in 2-3 sentences. Lead with the most critical action. Plain sentences only — no bullet points or markdown. ' +
-    'IMPORTANT: Do NOT say "find the nearest hospital", "go to a doctor", or "call emergency services" — the card already shows emergency numbers and a Find Nearest button. ' +
-    'Focus ONLY on what the person standing there should physically do RIGHT NOW.' +
-    (name    ? ' Tag owner: ' + name + '.'                      : '') +
-    (p['Blood Type']     ? ' Blood type: ' + p['Blood Type'] + '.' : '') +
-    (p['Medical Alerts'] ? ' Medical alerts: ' + p['Medical Alerts'] + '.' : '') +
-    (p['Medications']    ? ' Medications: ' + p['Medications'] + '.' : '');
-  var body = JSON.stringify({
-    systemInstruction: { parts: [{ text: sys }] },
-    contents: [{ role: 'user', parts: [{ text: question }] }],
-    generationConfig: { temperature: 0.2, maxOutputTokens: 200 }
-  });
-  // Try models in order; retry once on 429 (rate limit) then move to next model
-  var MODELS = ['gemini-2.0-flash-lite', 'gemini-1.5-flash-8b', 'gemini-1.5-flash'];
-  for (var mi = 0; mi < MODELS.length; mi++) {
-    for (var attempt = 0; attempt < 2; attempt++) {
-      try {
-        var ctrl = new AbortController();
-        var _t = setTimeout(function(){ ctrl.abort(); }, 10000);
-        var resp = await fetch(
-          'https://generativelanguage.googleapis.com/v1beta/models/' + MODELS[mi] + ':generateContent?key=' + _EMA_GK,
-          { method:'POST', headers:{'Content-Type':'application/json'}, signal:ctrl.signal, body:body }
-        );
-        clearTimeout(_t);
-        if (resp.status === 429) {
-          console.warn('[EMA AI] 429 rate limit on', MODELS[mi], 'attempt', attempt);
-          if (attempt === 0) { await new Promise(function(r){ setTimeout(r, 2000); }); continue; }
-          break; // try next model
-        }
-        var data = await resp.json();
-        if (!resp.ok) { console.warn('[EMA AI] error', resp.status, MODELS[mi], data); break; }
-        return (data.candidates && data.candidates[0] &&
-                data.candidates[0].content && data.candidates[0].content.parts &&
-                data.candidates[0].content.parts[0].text) ?
-               data.candidates[0].content.parts[0].text.trim() : null;
-      } catch(e) { console.warn('[EMA AI] fetch failed:', MODELS[mi], e.message); break; }
-    }
-  }
-  return null;
-}
 
 function emaQuery(q) {
   var r  = emaGetResponse(q.toLowerCase());
@@ -2021,24 +1975,8 @@ function emaQuery(q) {
   el.style.display = 'block';
   el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   if (/nearest|hospital|clinic|doctor/.test(q.toLowerCase())) emaFindFacilities();
-
-  if (r.key === 'unknown') {
-    // Show thinking state then call AI
-    el.innerHTML = '<span style="color:#0ED2C8;font-style:italic;font-size:13px">Emma is thinking…</span>';
-    emaAskAI(q).then(function(answer) {
-      if (answer) {
-        el.textContent = answer;
-        emaSpeak('custom', answer);
-      } else {
-        el.innerHTML = '<span style="color:#aaa;font-size:13px">Emma is busy right now — please try again in a moment, or tap one of the emergency cards above.</span>';
-      }
-    }).catch(function() {
-      el.innerHTML = '<span style="color:#aaa;font-size:13px">No connection — try again when online, or tap one of the emergency cards above.</span>';
-    });
-  } else {
-    el.innerHTML = r.html;
-    emaSpeak(r.key, r.plain);
-  }
+  el.innerHTML = r.html;
+  emaSpeak(r.key, r.plain);
 }
 
 function emaSpeak(key, plainText) {
@@ -2054,8 +1992,8 @@ function emaSpeak(key, plainText) {
     document.getElementById('emaAvatarWrap').classList.remove('speaking');
   }
 
-  // Dynamic responses (memory hits, unknown) use device speechSynthesis
-  if (key === 'custom' || key === 'unknown') {
+  // Memory hits use device speechSynthesis (no pre-recorded file for custom content)
+  if (key === 'custom') {
     if (window.speechSynthesis && plainText) {
       window.speechSynthesis.cancel();
       var utt = new SpeechSynthesisUtterance(plainText);
@@ -2095,73 +2033,109 @@ function emaSpeak(key, plainText) {
 }
 
 function emaGetResponse(q) {
-  // Diagnostic questions ("signs of", "symptoms of", "how do I know") are better answered by AI
-  if (/\b(signs?|symptoms?|how (do i|can i|to) (tell|know|identify|recognise|recognize)|what (does|is) .*(look like|feel like))\b/.test(q) &&
-      q.replace(/[^a-z]/g,'').length > 6) {
-    return {key:'unknown', html:'', plain:''};
-  }
   if (/nearest|nearby|find|hospital|clinic|doctor|gp\b/.test(q))
     return {key:'location_search', html:'Finding nearby facilities…', plain:'Finding nearby facilities now.'};
-  if (/heart attack|chest pain|chest tight/.test(q))
-    return {key:'heart_attack', html:'<strong>Possible heart attack.</strong> Call <strong>10177</strong> now. Sit them down, loosen clothing, give aspirin 300mg to chew if not allergic.', plain:'Possible heart attack.'};
-  if (/stroke|face droop|slurred|fast test/.test(q))
-    return {key:'stroke', html:'<strong>Possible stroke — FAST:</strong> Face drooping · Arms unequal · Speech slurred · Time: call <strong>10177</strong> now.', plain:'Possible stroke. Call 10177.'};
-  if (/chok|heimlich|can.?t breathe/.test(q))
+
+  // ── Life-threatening emergencies ──────────────────────────────────
+  if (/heart attack|chest pain|chest tight|heart pain|my heart/.test(q))
+    return {key:'heart_attack', html:'<strong>Possible heart attack.</strong> Call <strong>10177</strong> now. Sit them down, loosen clothing, give aspirin 300mg to chew if not allergic. Keep them still.', plain:'Possible heart attack.'};
+  if (/stroke|face droop|slurred|fast test|facial droop/.test(q))
+    return {key:'stroke', html:'<strong>Possible stroke — FAST:</strong> Face drooping · Arms unequal · Speech slurred · Time: call <strong>10177</strong> now. Note the exact time it started.', plain:'Possible stroke. Call 10177.'};
+  if (/chok|heimlich|can.?t breathe|something.*throat|throat.*block/.test(q))
     return {key:'choking', html:'<strong>Choking.</strong> 5 back blows between shoulder blades, then 5 abdominal thrusts. Alternate until clear. Unconscious → CPR + call <strong>10177</strong>.', plain:'Choking emergency.'};
-  if (/cpr|not breathing|no pulse|check.*pulse|pulse.*check|check for a pulse|how.*pulse|find.*pulse|feel.*pulse|unconscious|resuscitat/.test(q))
-    return {key:'cpr', html:'<strong>CPR.</strong> Call <strong>10177</strong> first. Push hard on centre of chest — 100–120/min, 5–6cm deep. 30 compressions then 2 breaths.', plain:'Start CPR.'};
+  if (/cpr|not breathing|no pulse|check.*pulse|pulse.*check|check for a pulse|how.*pulse|find.*pulse|feel.*pulse|not.*waking|wont wake|unconscious|resuscitat/.test(q))
+    return {key:'cpr', html:'<strong>CPR.</strong> Call <strong>10177</strong> first. Push hard and fast on centre of chest — 100–120/min, 5–6cm deep. 30 compressions, 2 rescue breaths. Keep going until help arrives.', plain:'Start CPR.'};
+  if (/gunshot|shot|bullet|stab|stabbing/.test(q))
+    return {key:'gunshot', html:'<strong>Gunshot / stab — call 10177 immediately.</strong> Ensure scene is safe first. Apply firm pressure with cleanest cloth available — press hard, do not lift. Chest wound making sucking sound: cover 3 sides with plastic. Do not remove embedded objects.', plain:'Call 10177. Apply firm pressure. Keep pressing.'};
+  if (/drown|drowning|near.drown|underwater/.test(q))
+    return {key:'drowning', html:'<strong>Drowning — call 10177 now.</strong> Do not jump in unless trained. Throw something to grab. Once out: check breathing. Not breathing → CPR immediately. Even if they seem fine — delayed lung complications can be fatal.', plain:'Call 10177. Throw something to grab. CPR if not breathing.'};
+
+  // ── Bleeding ──────────────────────────────────────────────────────
+  if (/nosebleed|nose.*bleed|bleed.*nose/.test(q))
+    return {key:'nosebleed', html:'<strong>Nosebleed.</strong> Lean forward — not back. Pinch the soft part of the nose just below the bone. Hold firm for 10 minutes without releasing. Breathe through the mouth. If it does not stop after 20 minutes, seek medical attention.', plain:'Lean forward. Pinch the nose and hold for ten minutes.'};
   if (/internal.?bleed/.test(q))
-    return {key:'bleeding', html:'<strong>Internal bleeding.</strong> Signs: bruising without injury, swollen or rigid abdomen, pale cold clammy skin, rapid weak pulse, dizziness, vomiting blood. Keep them still and warm. Do not give food or water. Call <strong>10177</strong> immediately.', plain:'Keep them still and call 10177. Watch for pale cold skin, rapid weak pulse, and rigid abdomen.'};
-  if (/bleed|bleeding|severe cut/.test(q))
-    return {key:'bleeding', html:'<strong>Severe bleeding.</strong> Press firmly, do not lift. Elevate the limb. Tourniquet 5cm above wound if life-threatening — note the time.', plain:'Apply direct pressure.'};
+    return {key:'bleeding', html:'<strong>Possible internal bleeding.</strong> Signs: bruising without injury, rigid abdomen, pale cold clammy skin, rapid weak pulse, dizziness, vomiting blood. Keep them still and warm. Do not give food or water. Call <strong>10177</strong> immediately.', plain:'Keep them still and call 10177.'};
+  if (/bleed|bleeding|severe cut|lacerat|wound|hemorrh/.test(q))
+    return {key:'bleeding', html:'<strong>Severe bleeding.</strong> Press firmly on the wound — do not lift. Elevate the limb above heart level. Tourniquet 5cm above wound if life-threatening — note the time applied.', plain:'Apply direct pressure and do not lift.'};
+
+  // ── Respiratory & cardiac ─────────────────────────────────────────
+  if (/asthma|asthmatic|inhaler|wheez|can.?t breathe|difficulty breath|trouble breath/.test(q))
+    return {key:'asthma', html:'<strong>Asthma attack.</strong> Sit upright, leaning slightly forward. Use blue reliever inhaler — 1 puff every 30–60 seconds, up to 10 puffs. Loosen clothing. Call <strong>10177</strong> if no improvement in 10 minutes or lips turn blue.', plain:'Sit upright. Blue inhaler. Call 10177 if no improvement.'};
+
+  // ── Neurological ──────────────────────────────────────────────────
   if (/seizure|epilep|fitting|convuls/.test(q))
-    return {key:'seizure', html:'<strong>Seizure.</strong> Do not restrain. Clear area, soft padding under head, roll onto their side. Time it. Call <strong>10177</strong> if over 5 minutes.', plain:'Do not restrain.'};
-  if (/burn|scald/.test(q))
-    return {key:'burns', html:'<strong>Burns.</strong> Cool under running water — 20 minutes. No ice or butter. Cover loosely. Emergency if larger than your hand.', plain:'Cool with running water for 20 minutes.'};
-  if (/allerg|anaphylax|epipen|sting/.test(q))
-    return {key:'allergic', html:'<strong>Anaphylaxis.</strong> Call <strong>10177</strong>. EpiPen now — outer thigh. Lay flat, raise legs unless breathing is difficult.', plain:'Use the EpiPen and call 10177.'};
-  if (/overdose|poison/.test(q))
-    return {key:'overdose', html:'<strong>Poisoning.</strong> Call <strong>0800 333 444</strong> or <strong>10177</strong>. Do not induce vomiting. Recovery position if unconscious.', plain:'Call the Poison Helpline on 0800 333 444.'};
-  if (/fever|temperature/.test(q))
-    return {key:'fever', html:'<strong>Fever.</strong> Paracetamol and fluids. Doctor if above 39.5°C, any fever in babies under 3 months, or lasting more than 3 days.', plain:'Give paracetamol and fluids.'};
-  if (/diabet|low blood sugar|hypoglyc/.test(q))
-    return {key:'diabetic', html:'<strong>Low blood sugar.</strong> Conscious → 3 glucose tablets or 150ml juice, then snack. Unconscious → recovery position + call <strong>10177</strong>.', plain:'Give glucose if conscious.'};
-  if (/hijack|carjack/.test(q))
-    return {key:'hijacking', html:'<strong>Hijacking — do not resist.</strong> Comply with all demands. Hands visible, no sudden moves. If they want the car — step out slowly and step away. Once safe, call <strong>10111</strong>. Note vehicle, direction, descriptions.', plain:'Do not resist. Comply and call 10111 once safe.'};
-  if (/drown|drowning|near.drown/.test(q))
-    return {key:'drowning', html:'<strong>Drowning — call 10177 now.</strong> Do not jump in unless trained. Throw something to grab — rope, ring, any floating object. Once out: check breathing. Not breathing → CPR immediately. Even if they seem fine — hospital is required. Delayed lung complications can be fatal.', plain:'Call 10177. Throw something to grab. CPR if not breathing.'};
-  if (/burglar|burglary|home invasion|break.in/.test(q))
-    return {key:'burglary', html:'<strong>Burglary — do not confront them.</strong> If burglar may be inside — leave immediately, call <strong>10111</strong>. If trapped: lock yourself in a room, call <strong>10111</strong> silently. Do not touch anything after — preserve the scene. If injured, call <strong>10177</strong>.', plain:'Do not confront. Leave and call 10111.'};
-  if (/electro|electric shock|power line/.test(q))
-    return {key:'electrocution', html:'<strong>Electric shock — do not touch them.</strong> Switch off power at the mains first. If impossible, push source away with dry wood or plastic — never metal. Once free, call <strong>10177</strong>. Check breathing — CPR if needed. Cool burns with running water. They must go to hospital even if they seem fine.', plain:'Do not touch. Switch off power. Call 10177.'};
-  if (/snake|bite.*snake|snake.*bite/.test(q))
-    return {key:'snake_bite', html:'<strong>Snake bite — keep still.</strong> Call <strong>10177</strong> or Poison Helpline <strong>0800 333 444</strong>. Keep the bitten limb below heart level. Remove rings and tight clothing. Do not cut, suck, tourniquet, or apply ice. Photo the snake from a safe distance. Get to hospital immediately.', plain:'Keep still. Call 10177 or 0800 333 444.'};
-  if (/asthma|asthmatic|inhaler|wheez/.test(q))
-    return {key:'asthma', html:'<strong>Asthma attack.</strong> Sit them upright — leaning slightly forward. Use reliever inhaler (blue) — 1 puff every 30–60 seconds, up to 10 puffs. Loosen clothing. Encourage slow steady breathing. Call <strong>10177</strong> if: no improvement after 10 minutes, cannot speak in full sentences, lips turn blue.', plain:'Sit upright. Blue inhaler. Call 10177 if no improvement.'};
-  if (/broken.*bone|fracture|break.*arm|break.*leg/.test(q))
-    return {key:'broken_bone', html:'<strong>Broken bone — do not move it.</strong> Immobilise in the position found using rolled clothing or padding. If bone through skin: cover loosely — do not push it back. Apply wrapped ice to reduce swelling. Suspected spine, hip or pelvis — do not move them at all. Call <strong>10177</strong>.', plain:'Do not move the limb. Immobilise and call 10177.'};
-  if (/heat stroke|heat.stroke|overheating|hypertherm/.test(q))
-    return {key:'heat_stroke', html:'<strong>Heat stroke — call 10177 immediately.</strong> Move to cool shade. Remove excess clothing. Cool fast: wet cloths to neck, armpits, groin. Fan vigorously. Small sips of cool water if conscious. Do not give fluids if confused. Recovery position if unconscious. Keep cooling until ambulance arrives.', plain:'Call 10177. Move to shade and cool them down fast.'};
+    return {key:'seizure', html:'<strong>Seizure.</strong> Do not restrain. Clear the area, soft padding under head. Roll onto their side when it eases. Time it. Call <strong>10177</strong> if it goes beyond 5 minutes.', plain:'Do not restrain. Time it. Call 10177 if over 5 minutes.'};
+  if (/concussion|head.*injur|injur.*head|hit.*head|bump.*head|head.*trauma/.test(q))
+    return {key:'concussion', html:'<strong>Head injury / concussion.</strong> Do not leave them alone. Watch for: confusion, repeated vomiting, unequal pupils, worsening headache. Keep them still. They must see a doctor even if they feel fine — symptoms can appear hours later.', plain:'Watch for confusion, vomiting, unequal pupils. See a doctor.'};
   if (/faint|fainted|fainting|pass.*out|passed out|collapse|fell down|fell over|lost conscious/.test(q))
-    return {key:'fainting', html:'<strong>Fainting.</strong> Lay them flat and raise their legs about 20cm — this restores blood flow to the brain. Loosen tight clothing and check they are breathing. Do not give food or water until fully alert. If they do not come around within 2 minutes or are not breathing normally, call 10177.', plain:'Lay them flat, raise their legs, loosen clothing and let them recover. Call for help if they do not come around within two minutes.'};
-  if (/panic attack|panic|anxiety attack/.test(q))
-    return {key:'panic_attack', html:'<strong>Panic attack.</strong> Stay with them. Speak slowly and calmly — remind them it will pass. Breathe with them: in for 4, hold for 2, out for 6. Ground them — feel feet on the floor, hold something solid. Do not say "calm down." If first time or severe chest pain — go to emergency.', plain:'Stay calm with them. Breathe slowly together. It will pass.'};
-  if (/gunshot|shot|bullet/.test(q))
-    return {key:'gunshot', html:'<strong>Gunshot — call 10177 immediately.</strong> Ensure scene is safe before approaching. Apply firm pressure with cleanest cloth available — press hard, do not lift. Chest wound making sucking sound: cover 3 sides with plastic. Do not remove embedded objects. Keep pressure until paramedics arrive.', plain:'Call 10177. Apply firm pressure. Keep pressing.'};
-  // Check EMA memory (sheet notes + in-session taught items)
+    return {key:'fainting', html:'<strong>Fainting.</strong> Lay them flat and raise their legs about 20cm — restores blood flow to the brain. Loosen tight clothing. Do not give food or water until fully alert. If they do not come around within 2 minutes, call <strong>10177</strong>.', plain:'Lay them flat and raise their legs.'};
+  if (/stroke|fast check/.test(q))
+    return {key:'stroke', html:'<strong>Possible stroke — FAST:</strong> Face drooping · Arms unequal · Speech slurred · Time: call <strong>10177</strong> now.', plain:'Possible stroke. Call 10177.'};
+  if (/dizziness|dizzy|vertigo|lightheaded|light.headed|faint.*dizzy/.test(q))
+    return {key:'dizziness', html:'<strong>Dizziness.</strong> Sit or lay them down immediately — prevent a fall. Loosen clothing, allow fresh air. Rise slowly once it passes. See a doctor if recurring, severe, or comes with chest pain or follows a head injury.', plain:'Sit them down immediately. Rise slowly once it passes.'};
+  if (/panic attack|panic|anxiety attack|hyperventilat/.test(q))
+    return {key:'panic_attack', html:'<strong>Panic attack.</strong> Stay calm with them. Breathe together: in for 4, hold for 2, out for 6. Ground them — feel feet on the floor, hold something solid. Remind them it will pass. If first time or chest pain, go to emergency.', plain:'Stay calm. Breathe slowly together. It will pass.'};
+
+  // ── Burns, wounds, injuries ───────────────────────────────────────
+  if (/burn|scald/.test(q))
+    return {key:'burns', html:'<strong>Burns.</strong> Cool under running water — 20 minutes. No ice, butter, or toothpaste. Remove jewellery near the burn if not stuck. Cover loosely. Go to emergency if larger than your palm, or white/charred.', plain:'Cool with running water for 20 minutes.'};
+  if (/sprain|strain|twist.*ankle|rolled.*ankle|ankle.*twist|sprained/.test(q))
+    return {key:'sprain', html:'<strong>Sprain / strain.</strong> Rest immediately. Ice wrapped in cloth — 20 minutes every 2 hours. Compress with bandage — firm but not tight. Elevate above heart level. If severe swelling or they cannot bear weight, treat as a fracture.', plain:'Rest, ice, compress, elevate.'};
+  if (/broken.*bone|fracture|break.*arm|break.*leg|broken.*leg|broken.*arm|broken.*wrist/.test(q))
+    return {key:'broken_bone', html:'<strong>Broken bone — do not move it.</strong> Immobilise exactly as found using rolled clothing. If bone through skin: cover loosely, do not push back. Wrapped ice to reduce swelling. Suspected spine / hip — do not move them at all.', plain:'Do not move the limb. Immobilise and call 10177.'};
+  if (/eye.*injur|injur.*eye|chemical.*eye|eye.*chemical|something.*in.*eye|foreign.*eye|eye.*flush/.test(q))
+    return {key:'eye_injury', html:'<strong>Eye injury.</strong> Do not rub. Chemical splash → flush with running water for 15 minutes. Foreign object → cover loosely, do not remove. Puncture or cut to eyeball → cover both eyes and go to emergency immediately.', plain:'Do not rub. Flush with water for 15 minutes for chemical splash.'};
+  if (/tooth|dental|knocked.*tooth|tooth.*knocked|knocked.*out|abscess/.test(q))
+    return {key:'dental', html:'<strong>Dental emergency.</strong> Knocked-out tooth: handle by crown only, never the root. Rinse gently, re-insert in socket or store in milk. Get to dentist within 30 minutes. Toothache with swelling → urgent dental visit — may be abscess.', plain:'Handle by the crown. Store in milk. Dentist within 30 minutes.'};
+
+  // ── Allergic / toxic ──────────────────────────────────────────────
+  if (/anaphylax|epipen|throat.*swell|tongue.*swell|can.?t swallow/.test(q))
+    return {key:'allergic', html:'<strong>Anaphylaxis.</strong> Use EpiPen now — outer thigh, through clothing is fine. Lay flat, raise legs unless breathing is difficult. Call <strong>10177</strong>. Second EpiPen after 5 minutes if no improvement.', plain:'Use the EpiPen immediately and call 10177.'};
+  if (/allerg|hives|rash|itching|itchy|sting|insect.*bite|bee.*sting/.test(q))
+    return {key:'allergic_mild', html:'<strong>Allergic reaction.</strong> Give antihistamine (Cetirizine or Loratadine) at correct dose. Watch closely for 30 minutes. If throat tightening, difficulty breathing, or dizziness develops — use EpiPen immediately.', plain:'Give antihistamine and watch closely for 30 minutes.'};
+  if (/overdose|poison|took.*too much|swallow.*wrong|chemical.*swallow/.test(q))
+    return {key:'overdose', html:'<strong>Poisoning / overdose.</strong> Call <strong>0800 333 444</strong> (Poison Helpline) or <strong>10177</strong>. Note what was taken, how much, and when. Do not induce vomiting. Recovery position if unconscious.', plain:'Call 0800 333 444. Do not induce vomiting.'};
+  if (/snake|bite.*snake|snake.*bite|serpent/.test(q))
+    return {key:'snake_bite', html:'<strong>Snake bite — keep still.</strong> Call <strong>0800 333 444</strong> or <strong>10177</strong>. Bitten limb below heart level. Remove rings and tight clothing. Do not cut, suck, tourniquet, or apply ice. Photo the snake safely.', plain:'Keep completely still. Call 10177.'};
+
+  // ── Medical conditions ────────────────────────────────────────────
+  if (/fever|temperature|high temp|temp.*high/.test(q))
+    return {key:'fever', html:'<strong>Fever.</strong> Paracetamol or ibuprofen at correct dose. Encourage fluids. Cool room. Doctor if above 39.5°C, any fever in baby under 3 months, or fever with stiff neck or rash.', plain:'Give paracetamol and fluids.'};
+  if (/diabet|low blood sugar|hypoglyc|blood sugar/.test(q))
+    return {key:'diabetic', html:'<strong>Low blood sugar.</strong> Conscious → 3 glucose tablets or 150ml juice now, then a small snack. Unconscious → recovery position, do not give anything by mouth, call <strong>10177</strong>.', plain:'Give glucose immediately if conscious.'};
+  if (/vomit|nausea|throwing up|sick.*stomach|stomach.*sick/.test(q))
+    return {key:'vomiting', html:'<strong>Vomiting.</strong> Sit upright or lean forward. If lying, roll onto their side. Small sips of water once vomiting eases. Seek urgent care if vomit contains blood, there is severe abdominal pain, or it follows a head injury.', plain:'Sit them upright. Small sips of water once it eases.'};
+  if (/dehydrat|not.*drinking|no.*fluid|heat.*exhaus/.test(q))
+    return {key:'dehydration', html:'<strong>Dehydration.</strong> Small frequent sips of water or oral rehydration solution. Cool environment, rest. Seek medical help if confused, not urinated in 8 hours, or is an infant or elderly.', plain:'Small sips of water or rehydration solution.'};
+  if (/hypotherm|cold.*exposure|too.*cold|freezing|frost/.test(q))
+    return {key:'hypothermia', html:'<strong>Hypothermia.</strong> Move to warmth. Remove wet clothing. Cover with dry blankets including the head. Warm gradually — no direct heat. Warm sweet drinks only if fully conscious. Handle very gently — sudden movement can trigger cardiac arrest.', plain:'Move to warmth. Remove wet clothes. Warm slowly.'};
+  if (/abdom|stomach.*pain|pain.*stomach|belly.*pain|pain.*belly|cramp.*stomach/.test(q))
+    return {key:'abdominal', html:'<strong>Abdominal pain.</strong> No food, water, or painkillers until assessed. Comfortable position — knees drawn up. Urgent care if: abdomen is rigid, pain is sudden and severe, fever with pain, or vomiting blood.', plain:'No food or water. Seek urgent care if rigid abdomen or severe pain.'};
+  if (/pregnant|pregnancy|labor|labour|contractions|waters.*broke|water.*broke/.test(q))
+    return {key:'pregnancy', html:'<strong>Pregnancy emergency.</strong> Keep calm. Time contractions start-to-start. Call for help if contractions are 5 minutes apart or less, heavy bleeding, waters break, or urge to push. Do not leave them alone.', plain:'Time contractions. Call for help if 5 minutes apart or less.'};
+
+  // ── Trauma / crime ────────────────────────────────────────────────
+  if (/heat stroke|heat.stroke|overheating/.test(q))
+    return {key:'heat_stroke', html:'<strong>Heat stroke — life-threatening.</strong> Move to coolest shade. Remove excess clothing. Cool fast: wet cloths to neck, armpits, groin — fan hard. Small sips of cool water if conscious. Recovery position if unconscious. Call <strong>10177</strong>.', plain:'Call 10177. Move to shade and cool fast.'};
+  if (/electro|electric shock|power line|electrocute/.test(q))
+    return {key:'electrocution', html:'<strong>Electric shock — do not touch them.</strong> Switch off power at mains first. If impossible, push source away with dry wood or plastic — never metal. CPR if not breathing. Cool burns with water. Must go to hospital even if they seem fine.', plain:'Do not touch. Switch off power first.'};
+  if (/hijack|carjack/.test(q))
+    return {key:'hijacking', html:'<strong>Hijacking — do not resist.</strong> Comply with every demand. Hands visible, no sudden moves. If they want the car — step out slowly and walk away. Once safe, call <strong>10111</strong>. Note vehicle, direction, descriptions.', plain:'Do not resist. Comply and call 10111 once safe.'};
+  if (/burglar|burglary|home invasion|intruder|break.in/.test(q))
+    return {key:'burglary', html:'<strong>Burglary — do not confront.</strong> Leave immediately if they may still be inside, call <strong>10111</strong>. If trapped: lock yourself in a room, call <strong>10111</strong> quietly. Do not touch anything after — preserve the scene.', plain:'Do not confront. Leave and call 10111.'};
+
+  // ── Sheet memory (tag owner pre-configured notes) ──────────────────
   var _hit = emaMemorySearch(q);
   if (_hit) {
     var _lbl = _hit.key.charAt(0).toUpperCase() + _hit.key.slice(1);
     return {key:'custom', html:'<strong>' + esc(_lbl) + ':</strong> ' + esc(_hit.value), plain: _lbl + ': ' + _hit.value};
   }
 
-  // Nothing matched — signal for AI to handle
-  if (q.replace(/[^a-z]/g,'').length > 3) {
-    _emaLastUnknown = q;
-    return {key:'unknown', html:'', plain:''};
-  }
+  // ── Fallback ───────────────────────────────────────────────────────
+  if (q.replace(/[^a-z]/g,'').length > 3)
+    return {key:'not_found', html:'I don\'t have specific guidance for that. For any life-threatening emergency call <strong>10177</strong> immediately. Tap one of the emergency cards above for common scenarios.', plain:"I don't have specific guidance for that. For life-threatening emergencies call 10177."};
 
-  return {key:'default', html:'Ask me about any emergency — tap a card above or type your question below.', plain:"Ask me about any emergency."};
+  return {key:'default', html:'Ask me about any emergency — tap a card above or type your question below.', plain:'Ask me about any emergency.'};
 }
 
 async function emaFindFacilities() {
@@ -2237,9 +2211,8 @@ function emaMapsLinks() {
 
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-// ── EMA Memory ────────────────────────────────────────────────────
-var emaMemory = {};          // key → answer
-var _emaLastUnknown = '';    // last query that had no match
+// ── EMA Memory (sheet notes pre-loaded from Google Sheet EMA Notes field) ────
+var emaMemory = {};
 
 function emaLoadMemory(notes, tagId) {
   // Parse "Key: Value" lines from the sheet's EMA Notes field
@@ -2282,46 +2255,6 @@ function emaMemorySearch(query) {
   return best;
 }
 
-function emaTeach() {
-  var inp = document.getElementById('emaTeachIn');
-  var answer = inp ? inp.value.trim() : '';
-  if (!answer || !_emaLastUnknown) return;
-  var k = _emaLastUnknown.trim().toLowerCase();
-  emaMemory[k] = answer;
-  try {
-    var tagId = window._emaTagId || '';
-    var stored = {}; try { stored = JSON.parse(localStorage.getItem('ema_mem_' + tagId) || '{}'); } catch(e){}
-    stored[k] = answer;
-    localStorage.setItem('ema_mem_' + tagId, JSON.stringify(stored));
-  } catch(e) {}
-  document.getElementById('emaResponse').innerHTML =
-    '<strong style="color:#0ED2C8">Saved.</strong> I\'ll remember: <em style="color:#ddd">' + esc(answer) + '</em>';
-  _emaLastUnknown = '';
-  emaSpeakCustom('Got it. I\'ll remember that.');
-}
-
-function emaSpeakCustom(text) {
-  if (!window.speechSynthesis || !text) return;
-  var done = function() {
-    emaSpeaking = false;
-    document.getElementById('emaSpeakingBar').className = 'ema-speaking-bar';
-    document.getElementById('emaAvatarWrap').classList.remove('speaking');
-  };
-  emaSpeaking = true;
-  document.getElementById('emaSpeakingBar').className = 'ema-speaking-bar on';
-  document.getElementById('emaAvatarWrap').classList.add('speaking');
-  window.speechSynthesis.cancel();
-  var utt = new SpeechSynthesisUtterance(text);
-  utt.lang = navigator.language || 'en';
-  utt.rate = 0.92;
-  utt.onend = done; utt.onerror = done;
-  var voices = window.speechSynthesis.getVoices();
-  var pick = voices.find(function(v){ return /en.IE/i.test(v.lang); }) ||
-             voices.find(function(v){ return v.lang.startsWith('en') && /female/i.test(v.name); }) ||
-             voices.find(function(v){ return v.lang.startsWith('en'); });
-  if (pick) utt.voice = pick;
-  window.speechSynthesis.speak(utt);
-}
 
 function emaHaversine(a,b,c,d){
   if(c==null||d==null) return 9999;
