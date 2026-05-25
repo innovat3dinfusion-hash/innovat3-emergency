@@ -759,6 +759,11 @@ var referredByCode = '';
             <input type="text" id="telegram" placeholder="@username">
           </div>
         </div>
+        <div class="field" style="margin-top:10px">
+          <label>WhatsApp Alerts — CallMeBot API Key <span style="font-size:11px;font-weight:400;color:rgba(255,255,255,0.45)">(optional — alternative to Telegram)</span></label>
+          <input type="text" id="waApiKey" placeholder="Paste your CallMeBot API key here" autocomplete="off">
+          <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:4px">No Telegram? Activate CallMeBot once in WhatsApp to get your key — see the setup guide included with your tag.</div>
+        </div>
         <div id="err2" class="err-msg"></div>
       </div>
     </div>
@@ -904,6 +909,10 @@ var referredByCode = '';
             <label>Telegram Username</label>
             <input type="text" id="c1telegram" placeholder="@username">
           </div>
+          <div class="field" id="c1waField" style="display:none;margin-top:8px">
+            <label>CallMeBot API Key <span style="font-size:11px;font-weight:400;color:rgba(255,255,255,0.45)">(optional — for push alerts)</span></label>
+            <input type="text" id="c1waApiKey" placeholder="Contact's CallMeBot API key" autocomplete="off">
+          </div>
         </div>
 
         <div class="contact-card">
@@ -927,6 +936,10 @@ var referredByCode = '';
             <label>Telegram Username</label>
             <input type="text" id="c2telegram" placeholder="@username">
           </div>
+          <div class="field" id="c2waField" style="display:none;margin-top:8px">
+            <label>CallMeBot API Key <span style="font-size:11px;font-weight:400;color:rgba(255,255,255,0.45)">(optional — for push alerts)</span></label>
+            <input type="text" id="c2waApiKey" placeholder="Contact's CallMeBot API key" autocomplete="off">
+          </div>
         </div>
 
         <div class="contact-card">
@@ -949,6 +962,10 @@ var referredByCode = '';
           <div class="field" id="c3tgField" style="display:none;margin-top:10px">
             <label>Telegram Username</label>
             <input type="text" id="c3telegram" placeholder="@username">
+          </div>
+          <div class="field" id="c3waField" style="display:none;margin-top:8px">
+            <label>CallMeBot API Key <span style="font-size:11px;font-weight:400;color:rgba(255,255,255,0.45)">(optional — for push alerts)</span></label>
+            <input type="text" id="c3waApiKey" placeholder="Contact's CallMeBot API key" autocomplete="off">
           </div>
         </div>
 
@@ -2271,6 +2288,8 @@ function toggleCt(toggleEl, checkId, type) {
   var n = checkId.charAt(1);
   if (type === 'wa') {
     toggleEl.classList.toggle('active-wa', cb.checked);
+    var waField = document.getElementById('c'+n+'waField');
+    if (waField) waField.style.display = cb.checked ? 'block' : 'none';
   } else {
     toggleEl.classList.toggle('active-tg', cb.checked);
     var tgField = document.getElementById('c'+n+'tgField');
@@ -2418,6 +2437,7 @@ async function submitForm() {
     email:            v('email'),
     phone:            formatPhone(v('phone')),
     telegram:         v('telegram'),
+    waApiKey:         v('waApiKey'),
     plan:             planSelected + (billingCycle === 'annual' ? ' (Annual)' : ' (Monthly)'),
     blood:            blood,
     medical:          buildMedical(),
@@ -2436,9 +2456,9 @@ async function submitForm() {
     consentDate:      timestamp,
     bundleId:         bundleId,
     contacts: [
-      v('c1name') ? { name:v('c1name'), rel:v('c1rel'), phone:formatPhone(v('c1phone')), wa:document.getElementById('c1wa').checked, telegram:v('c1telegram') } : null,
-      v('c2name') ? { name:v('c2name'), rel:v('c2rel'), phone:formatPhone(v('c2phone')), wa:document.getElementById('c2wa').checked, telegram:v('c2telegram') } : null,
-      v('c3name') ? { name:v('c3name'), rel:v('c3rel'), phone:formatPhone(v('c3phone')), wa:document.getElementById('c3wa').checked, telegram:v('c3telegram') } : null,
+      v('c1name') ? { name:v('c1name'), rel:v('c1rel'), phone:formatPhone(v('c1phone')), wa:document.getElementById('c1wa').checked, telegram:v('c1telegram'), waApiKey:v('c1waApiKey') } : null,
+      v('c2name') ? { name:v('c2name'), rel:v('c2rel'), phone:formatPhone(v('c2phone')), wa:document.getElementById('c2wa').checked, telegram:v('c2telegram'), waApiKey:v('c2waApiKey') } : null,
+      v('c3name') ? { name:v('c3name'), rel:v('c3rel'), phone:formatPhone(v('c3phone')), wa:document.getElementById('c3wa').checked, telegram:v('c3telegram'), waApiKey:v('c3waApiKey') } : null,
     ].filter(Boolean)
   };
 
@@ -2667,7 +2687,7 @@ async function proceedToPayment() {
     tagId: tagId, bundleId: bundleId, timestamp: timestamp,
     dob: formatDob(dobRaw), firstName: v('firstName'), lastName: v('lastName'),
     name: v('firstName') + ' ' + v('lastName'),
-    email: v('email'), phone: formatPhone(v('phone')), telegram: v('telegram'),
+    email: v('email'), phone: formatPhone(v('phone')), telegram: v('telegram'), waApiKey: v('waApiKey'),
     plan: planSelected + (billingCycle === 'annual' ? ' (Annual)' : ' (Monthly)'),
     blood: blood, medical: buildMedical(), meds: v('meds'),
     address: v('address'), notes: v('notes'),
@@ -2680,9 +2700,9 @@ async function proceedToPayment() {
     referredBy: referredByCode,
     careType: careType || 'senior', careIdDocUrl: window._careIdUrl || '', careMedDocUrl: window._careMedUrl || '',
     contacts: [
-      v('c1name') ? {name:v('c1name'),rel:v('c1rel'),phone:formatPhone(v('c1phone')),wa:document.getElementById('c1wa').checked,telegram:v('c1telegram')} : null,
-      v('c2name') ? {name:v('c2name'),rel:v('c2rel'),phone:formatPhone(v('c2phone')),wa:document.getElementById('c2wa').checked,telegram:v('c2telegram')} : null,
-      v('c3name') ? {name:v('c3name'),rel:v('c3rel'),phone:formatPhone(v('c3phone')),wa:document.getElementById('c3wa').checked,telegram:v('c3telegram')} : null,
+      v('c1name') ? {name:v('c1name'),rel:v('c1rel'),phone:formatPhone(v('c1phone')),wa:document.getElementById('c1wa').checked,telegram:v('c1telegram'),waApiKey:v('c1waApiKey')} : null,
+      v('c2name') ? {name:v('c2name'),rel:v('c2rel'),phone:formatPhone(v('c2phone')),wa:document.getElementById('c2wa').checked,telegram:v('c2telegram'),waApiKey:v('c2waApiKey')} : null,
+      v('c3name') ? {name:v('c3name'),rel:v('c3rel'),phone:formatPhone(v('c3phone')),wa:document.getElementById('c3wa').checked,telegram:v('c3telegram'),waApiKey:v('c3waApiKey')} : null,
     ].filter(Boolean)
   };
 
