@@ -1053,6 +1053,12 @@
             ">
           </div>
 
+          <!-- Tag ID -->
+          <div style="margin-bottom:16px">
+            <label class="form-label">Tag ID <span style="color:#666;font-size:11px">(leave blank to auto-generate)</span></label>
+            <input type="text" id="cr_tagId" class="cash-input" placeholder="e.g. IN3-2026-A001">
+          </div>
+
           <!-- Personal details -->
           <div style="font-size:11px;letter-spacing:1px;color:#F97316;font-family:'Orbitron',sans-serif;margin-bottom:10px">PERSONAL DETAILS</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
@@ -1132,6 +1138,22 @@
               <label class="form-label">Tag Colour</label>
               <input type="text" id="cr_colours" class="cash-input" placeholder="Black, White…">
             </div>
+            <div>
+              <label class="form-label">Organ Donor</label>
+              <select id="cr_organDonor" class="cash-input">
+                <option value="">Unknown</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">DNR Status</label>
+              <select id="cr_dnr" class="cash-input">
+                <option value="">Not specified</option>
+                <option value="Yes">Yes — Do Not Resuscitate</option>
+                <option value="No">No — Full resuscitation</option>
+              </select>
+            </div>
           </div>
           <div style="margin-bottom:16px">
             <label class="form-label">Medical Conditions / Alerts</label>
@@ -1142,6 +1164,41 @@
             <textarea id="cr_medications" class="cash-input" rows="2" placeholder="Current medications…" style="resize:vertical"></textarea>
           </div>
 
+          <!-- Tag & Delivery -->
+          <div style="font-size:11px;letter-spacing:1px;color:#F97316;font-family:'Orbitron',sans-serif;margin-bottom:10px">TAG &amp; DELIVERY</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+            <div>
+              <label class="form-label">Form Factor</label>
+              <select id="cr_formFactor" class="cash-input">
+                <option value="">Select…</option>
+                <option value="Keyring">Keyring</option>
+                <option value="Sticker">Sticker</option>
+                <option value="Wristband">Wristband</option>
+                <option value="Card">Card</option>
+                <option value="Pet Tag">Pet Tag</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Referred By</label>
+              <input type="text" id="cr_referredBy" class="cash-input" placeholder="Name or ref code">
+            </div>
+          </div>
+          <div style="margin-bottom:16px">
+            <label class="form-label">Home Address</label>
+            <input type="text" id="cr_address" class="cash-input" placeholder="Street, City, Province">
+          </div>
+          <div style="margin-bottom:16px">
+            <label class="form-label">Delivery Address <span style="color:#666;font-size:11px">(if different from home)</span></label>
+            <textarea id="cr_delivery" class="cash-input" rows="2" placeholder="Delivery address…" style="resize:vertical"></textarea>
+          </div>
+
+          <!-- WhatsApp -->
+          <div style="font-size:11px;letter-spacing:1px;color:#F97316;font-family:'Orbitron',sans-serif;margin-bottom:10px">WHATSAPP NOTIFICATIONS</div>
+          <div style="margin-bottom:16px;padding:12px;background:#111;border:1px solid #222;border-radius:10px">
+            <label class="form-label">Owner WA API Key <span style="color:#666;font-size:11px">(CallMeBot key for subscriber's own number)</span></label>
+            <input type="text" id="cr_waApiKey" class="cash-input" placeholder="e.g. 1234567" style="margin-top:8px">
+          </div>
+
           <!-- Contacts -->
           <div style="font-size:11px;letter-spacing:1px;color:#F97316;font-family:'Orbitron',sans-serif;margin-bottom:10px">EMERGENCY CONTACTS</div>
           <div id="cr_contacts">
@@ -1149,30 +1206,36 @@
             <div style="background:#111;border:1px solid #222;border-radius:10px;padding:14px;margin-bottom:10px">
               <div style="font-size:12px;color:#aaa;margin-bottom:10px">Contact 1</div>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-                <input type="text" id="cr_c1Name" class="cash-input" placeholder="Full name">
-                <input type="text" id="cr_c1Rel" class="cash-input" placeholder="Relationship">
-                <input type="tel" id="cr_c1Phone" class="cash-input" placeholder="Phone">
-                <input type="text" id="cr_c1TG" class="cash-input" placeholder="Telegram @handle">
+                <input type="text"  id="cr_c1Name"  class="cash-input" placeholder="Full name">
+                <input type="text"  id="cr_c1Rel"   class="cash-input" placeholder="Relationship">
+                <input type="tel"   id="cr_c1Phone" class="cash-input" placeholder="Phone">
+                <input type="text"  id="cr_c1TG"    class="cash-input" placeholder="Telegram @handle">
+                <input type="tel"   id="cr_c1WA"    class="cash-input" placeholder="WhatsApp number (0821234567)">
+                <input type="text"  id="cr_c1WaKey" class="cash-input" placeholder="WA API Key (CallMeBot)">
               </div>
             </div>
             <!-- Contact 2 -->
             <div style="background:#111;border:1px solid #222;border-radius:10px;padding:14px;margin-bottom:10px">
               <div style="font-size:12px;color:#aaa;margin-bottom:10px">Contact 2</div>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-                <input type="text" id="cr_c2Name" class="cash-input" placeholder="Full name">
-                <input type="text" id="cr_c2Rel" class="cash-input" placeholder="Relationship">
-                <input type="tel" id="cr_c2Phone" class="cash-input" placeholder="Phone">
-                <input type="text" id="cr_c2TG" class="cash-input" placeholder="Telegram @handle">
+                <input type="text"  id="cr_c2Name"  class="cash-input" placeholder="Full name">
+                <input type="text"  id="cr_c2Rel"   class="cash-input" placeholder="Relationship">
+                <input type="tel"   id="cr_c2Phone" class="cash-input" placeholder="Phone">
+                <input type="text"  id="cr_c2TG"    class="cash-input" placeholder="Telegram @handle">
+                <input type="tel"   id="cr_c2WA"    class="cash-input" placeholder="WhatsApp number (0821234567)">
+                <input type="text"  id="cr_c2WaKey" class="cash-input" placeholder="WA API Key (CallMeBot)">
               </div>
             </div>
             <!-- Contact 3 -->
             <div style="background:#111;border:1px solid #222;border-radius:10px;padding:14px;margin-bottom:10px">
               <div style="font-size:12px;color:#aaa;margin-bottom:10px">Contact 3</div>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-                <input type="text" id="cr_c3Name" class="cash-input" placeholder="Full name">
-                <input type="text" id="cr_c3Rel" class="cash-input" placeholder="Relationship">
-                <input type="tel" id="cr_c3Phone" class="cash-input" placeholder="Phone">
-                <input type="text" id="cr_c3TG" class="cash-input" placeholder="Telegram @handle">
+                <input type="text"  id="cr_c3Name"  class="cash-input" placeholder="Full name">
+                <input type="text"  id="cr_c3Rel"   class="cash-input" placeholder="Relationship">
+                <input type="tel"   id="cr_c3Phone" class="cash-input" placeholder="Phone">
+                <input type="text"  id="cr_c3TG"    class="cash-input" placeholder="Telegram @handle">
+                <input type="tel"   id="cr_c3WA"    class="cash-input" placeholder="WhatsApp number (0821234567)">
+                <input type="text"  id="cr_c3WaKey" class="cash-input" placeholder="WA API Key (CallMeBot)">
               </div>
             </div>
           </div>
@@ -1901,7 +1964,7 @@ async function submitCashReg() {
     el.textContent = msg;
   };
 
-  const adminKey = g('cr_adminKey');
+  const adminKey  = g('cr_adminKey');
   const firstName = g('cr_firstName').trim();
   const lastName  = g('cr_lastName').trim();
   const email     = g('cr_email').trim();
@@ -1917,9 +1980,15 @@ async function submitCashReg() {
   btn.disabled = true;
   btn.textContent = 'Registering…';
 
+  // WA phone field non-empty means they use WhatsApp
+  const c1WA = g('cr_c1WA') ? g('cr_c1WA') : 'No';
+  const c2WA = g('cr_c2WA') ? g('cr_c2WA') : 'No';
+  const c3WA = g('cr_c3WA') ? g('cr_c3WA') : 'No';
+
   const payload = {
     type:        'CASH_REGISTRATION',
     _adminKey:   adminKey,
+    tagId:       g('cr_tagId').trim(),
     firstName:   firstName,
     lastName:    lastName,
     email:       email,
@@ -1933,13 +2002,20 @@ async function submitCashReg() {
     medicalAid:  g('cr_medicalAid'),
     medAidNo:    g('cr_medAidNo'),
     colours:     g('cr_colours'),
+    organDonor:  g('cr_organDonor'),
+    dnr:         g('cr_dnr'),
     conditions:  g('cr_conditions'),
     medications: g('cr_medications'),
+    address:     g('cr_address'),
+    formFactor:  g('cr_formFactor'),
+    delivery:    g('cr_delivery'),
+    referredBy:  g('cr_referredBy'),
+    waApiKey:    g('cr_waApiKey'),
     notes:       g('cr_notes'),
     extraNotes:  g('cr_extraNotes'),
-    c1Name:  g('cr_c1Name'), c1Rel: g('cr_c1Rel'), c1Phone: g('cr_c1Phone'), c1TG: g('cr_c1TG'), c1WA: 'No',
-    c2Name:  g('cr_c2Name'), c2Rel: g('cr_c2Rel'), c2Phone: g('cr_c2Phone'), c2TG: g('cr_c2TG'), c2WA: 'No',
-    c3Name:  g('cr_c3Name'), c3Rel: g('cr_c3Rel'), c3Phone: g('cr_c3Phone'), c3TG: g('cr_c3TG'), c3WA: 'No',
+    c1Name: g('cr_c1Name'), c1Rel: g('cr_c1Rel'), c1Phone: g('cr_c1Phone'), c1TG: g('cr_c1TG'), c1WA: c1WA, c1WaKey: g('cr_c1WaKey'),
+    c2Name: g('cr_c2Name'), c2Rel: g('cr_c2Rel'), c2Phone: g('cr_c2Phone'), c2TG: g('cr_c2TG'), c2WA: c2WA, c2WaKey: g('cr_c2WaKey'),
+    c3Name: g('cr_c3Name'), c3Rel: g('cr_c3Rel'), c3Phone: g('cr_c3Phone'), c3TG: g('cr_c3TG'), c3WA: c3WA, c3WaKey: g('cr_c3WaKey'),
   };
 
   try {
@@ -1952,12 +2028,13 @@ async function submitCashReg() {
     if (json.status === 'ok') {
       showMsg('✅ Registered! Tag ID: ' + json.tagId, true);
       // Clear the form
-      ['cr_firstName','cr_lastName','cr_email','cr_phone','cr_dob','cr_telegram',
+      ['cr_tagId','cr_firstName','cr_lastName','cr_email','cr_phone','cr_dob','cr_telegram',
        'cr_cashAmount','cr_medicalAid','cr_medAidNo','cr_colours','cr_conditions',
-       'cr_medications','cr_notes','cr_extraNotes',
-       'cr_c1Name','cr_c1Rel','cr_c1Phone','cr_c1TG',
-       'cr_c2Name','cr_c2Rel','cr_c2Phone','cr_c2TG',
-       'cr_c3Name','cr_c3Rel','cr_c3Phone','cr_c3TG'
+       'cr_medications','cr_address','cr_delivery','cr_referredBy','cr_waApiKey',
+       'cr_notes','cr_extraNotes',
+       'cr_c1Name','cr_c1Rel','cr_c1Phone','cr_c1TG','cr_c1WA','cr_c1WaKey',
+       'cr_c2Name','cr_c2Rel','cr_c2Phone','cr_c2TG','cr_c2WA','cr_c2WaKey',
+       'cr_c3Name','cr_c3Rel','cr_c3Phone','cr_c3TG','cr_c3WA','cr_c3WaKey'
       ].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
     } else {
       showMsg('Error: ' + (json.message || 'Unknown error'), false);
