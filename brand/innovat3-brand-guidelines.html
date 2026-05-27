@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Innovat3 — Brand Guidelines</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800;900&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+/* ── PRINT + PAGE SETUP ── */
+@page {
+  size: A4;
+  margin: 0;
+}
+@media print {
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  .page { page-break-after: always; page-break-inside: avoid; }
+  .page:last-child { page-break-after: auto; }
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Exo 2', Arial, sans-serif;
+  background: #fff;
+  color: #111;
+  font-size: 11pt;
+  line-height: 1.6;
+}
+
+/* ── PAGE SHELL ── */
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 0;
+  background: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── SHARED ── */
+.label {
+  font-family: 'Exo 2', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 7.5pt;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #F97316;
+  margin-bottom: 10px;
+}
+.section-title {
+  font-family: Orbitron, Arial, sans-serif;
+  font-weight: 800;
+  font-size: 18pt;
+  color: #111;
+  margin-bottom: 8px;
+  line-height: 1.15;
+}
+.body-text {
+  font-family: 'Exo 2', Arial, sans-serif;
+  font-weight: 400;
+  font-size: 10pt;
+  color: #444;
+  line-height: 1.7;
+}
+.inner { padding: 16mm 16mm; }
+
+/* ── RULES ── */
+.rule { height: 1px; background: #eee; margin: 14px 0; }
+.rule-orange { height: 3px; background: #F97316; margin: 0; }
+
+/* ─────────────────────────────────────────
+   PAGE 1 — COVER
+───────────────────────────────────────── */
+.cover {
+  background: #0A0A0A;
+  width: 210mm;
+  min-height: 297mm;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20mm 18mm;
+}
+.cover-accent {
+  width: 80px;
+  height: 4px;
+  background: #F97316;
+  margin-bottom: 40px;
+}
+.cover-logo-text {
+  font-family: Orbitron, Arial, sans-serif;
+  font-weight: 900;
+  font-size: 52pt;
+  letter-spacing: -1px;
+  line-height: 1;
+  color: #F97316;
+}
+.cover-logo-text span { color: #fff; }
+.cover-tagline {
+  font-family: 'Exo 2', Arial, sans-serif;
+  font-weight: 300;
+  font-size: 13pt;
+  color: #9CA3AF;
+  letter-spacing: 2px;
+  margin-top: 14px;
+}
+.cover-doc-title {
+  font-family: Orbitron, Arial, sans-serif;
+  font-weight: 700;
+  font-size: 9pt;
+  letter-spacing: 4px;
+  color: #F97316;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.cover-doc-sub {
+  font-size: 9pt;
+  color: #444;
+  letter-spacing: 1px;
+}
+.cover-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.cover-meta {
+  font-size: 8pt;
+  color: #333;
+  line-height: 2;
+}
+.cover-meta strong { color: #F97316; }
+.cover-badge {
+  background: rgba(249,115,22,0.1);
+  border: 1px solid rgba(249,115,22,0.3);
+  border-radius: 100px;
+  padding: 5px 14px;
+  font-size: 8pt;
+  color: #F97316;
+  letter-spacing: 1px;
+}
+
+/* ─────────────────────────────────────────
+   PAGE 2 — BRAND OVERVIEW
+───────────────────────────────────────── */
+.page-header {
+  background: #0A0A0A;
+  padding: 10mm 16mm 8mm;
+  border-bottom: 3px solid #F97316;
+}
+.page-header .brand {
+  font-family: Orbitron, Arial, sans-serif;
+  font-weight: 900;
+  font-size: 14pt;
+  color: #F97316;
+}
+.page-header .brand span { color: #fff; }
+.page-header .pg {
+  font-size: 8pt;
+  color: #444;
+  margin-top: 2px;
+}
+
+.overview-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: #eee;
+  margin: 14px 0;
+}
+.overview-cell {
+  background: #fff;
+  padding: 14px 16px;
+}
+.overview-cell .cell-label {
+  font-size: 7.5pt;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #bbb;
+  margin-bottom: 4px;
+}
+.overview-cell .cell-val {
+  font-size: 10.5pt;
+  font-weight: 600;
+  color: #111;
+}
+
+/* ─────────────────────────────────────────
+   PAGE 3 — COLOURS
+───────────────────────────────────────── */
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin: 12px 0;
+}
+.color-card {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #eee;
+}
+.color-swatch {
+  height: 68px;
+  width: 100%;
+}
+.color-info {
+  padding: 8px 10px;
+  background: #fff;
+}
+.color-name {
+  font-weight: 700;
+  font-size: 9pt;
+  color: #111;
+  margin-bottom: 2px;
+}
+.color-hex {
+  font-family: 'Courier New', monospace;
+  font-size: 9pt;
+  color: #F97316;
+  font-weight: 700;
+}
+.color-use {
+  font-size: 7.5pt;
+  color: #888;
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+.color-grid-sm {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin: 10px 0;
+}
+.color-card-sm .color-swatch { height: 44px; }
+
+/* gradient swatches */
+.gradient-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin: 10px 0;
+}
+.grad-card {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #eee;
+}
+.grad-swatch { height: 52px; }
+.grad-info { padding: 7px 10px; background: #fff; }
+.grad-name { font-size: 8.5pt; font-weight: 700; color: #111; }
+.grad-val  { font-size: 7pt; color: #888; font-family: 'Courier New', monospace; line-height: 1.5; margin-top: 2px; }
+
+/* ─────────────────────────────────────────
+   PAGE 4 — TYPOGRAPHY
+───────────────────────────────────────── */
+.type-row {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  padding: 14px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+.type-row:last-child { border-bottom: none; }
+.type-meta {
+  min-width: 130px;
+  flex-shrink: 0;
+}
+.type-meta .tm-label { font-size: 7.5pt; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #bbb; }
+.type-meta .tm-spec  { font-size: 8pt; color: #888; margin-top: 3px; line-height: 1.6; }
+.type-sample { flex: 1; line-height: 1.2; }
+
+.type-table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+.type-table th { font-size: 7.5pt; letter-spacing: 2px; text-transform: uppercase; color: #bbb; padding: 6px 8px; border-bottom: 1px solid #eee; text-align: left; }
+.type-table td { padding: 8px 8px; border-bottom: 1px solid #f5f5f5; font-size: 9pt; vertical-align: middle; }
+.type-table td:first-child { font-weight: 600; color: #333; }
+.type-table code { font-family: 'Courier New', monospace; background: #f5f5f5; padding: 1px 5px; border-radius: 3px; font-size: 8pt; }
+
+/* ─────────────────────────────────────────
+   PAGE 5 — LOGO USAGE
+───────────────────────────────────────── */
+.logo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 12px 0;
+}
+.logo-box {
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #eee;
+}
+.logo-display {
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 110px;
+}
+.logo-display.dark { background: #0A0A0A; }
+.logo-display.light { background: #F5F5F5; }
+.logo-caption {
+  padding: 8px 12px;
+  background: #fff;
+  border-top: 1px solid #eee;
+}
+.logo-caption strong { font-size: 8.5pt; font-weight: 700; display: block; }
+.logo-caption span   { font-size: 7.5pt; color: #888; }
+
+.logo-rules {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 10px 0;
+}
+.rule-box {
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-size: 8.5pt;
+  line-height: 1.5;
+}
+.rule-box.do   { background: #f0faf4; border: 1px solid #a7f3d0; }
+.rule-box.dont { background: #fff5f5; border: 1px solid #fecaca; }
+.rule-box .rt  { font-weight: 700; font-size: 8pt; letter-spacing: 1px; margin-bottom: 4px; }
+.rule-box.do .rt   { color: #16a34a; }
+.rule-box.dont .rt { color: #dc2626; }
+
+/* ─────────────────────────────────────────
+   PAGE 6 — BRAND VOICE + COPY
+───────────────────────────────────────── */
+.voice-block {
+  background: #0d0600;
+  border: 1px solid rgba(249,115,22,0.25);
+  border-left: 4px solid #F97316;
+  border-radius: 8px;
+  padding: 18px 20px;
+  margin: 12px 0;
+}
+.voice-block p {
+  font-size: 10.5pt;
+  color: #ccc;
+  line-height: 1.8;
+  font-style: italic;
+}
+.voice-block .vb-label {
+  font-size: 7.5pt;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #F97316;
+  margin-bottom: 8px;
+}
+
+.tagline-table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+.tagline-table th { font-size: 7.5pt; letter-spacing: 2px; text-transform: uppercase; color: #bbb; padding: 6px 8px; border-bottom: 1px solid #eee; text-align: left; }
+.tagline-table td { padding: 9px 8px; border-bottom: 1px solid #f5f5f5; font-size: 9.5pt; vertical-align: top; }
+.tagline-table td:first-child { font-size: 7.5pt; font-weight: 700; color: #bbb; letter-spacing: 1px; text-transform: uppercase; width: 80px; }
+.tagline-table td strong { color: #111; font-weight: 700; }
+
+/* footer bar */
+.footer-bar {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 10mm;
+  background: #0A0A0A;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16mm;
+}
+.footer-bar span {
+  font-size: 7.5pt;
+  color: #333;
+  letter-spacing: 1px;
+}
+.footer-bar .fb-brand {
+  font-family: Orbitron, Arial, sans-serif;
+  font-weight: 900;
+  font-size: 8pt;
+  color: #F97316;
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     PAGE 1 — COVER
+══════════════════════════════════════ -->
+<div class="page cover">
+  <div>
+    <div class="cover-accent"></div>
+    <div class="cover-doc-title">Brand Guidelines</div>
+    <div class="cover-doc-sub" style="color:#555;font-size:9pt;margin-top:4px;letter-spacing:1px">Version 1.0 · May 2026 · Confidential</div>
+    <div style="margin-top:60px">
+      <div class="cover-logo-text">innovat<span>3</span><span style="color:#F97316">.</span></div>
+      <div class="cover-tagline">Smart Tags. Real Protection. Always.</div>
+    </div>
+    <div style="margin-top:48px">
+      <div style="font-size:10pt;color:#9CA3AF;line-height:1.9;max-width:340px">
+        This document defines the Innovat3 visual identity system — including colours, typography, logo usage, and brand voice — for use across all media and platforms including Canva.
+      </div>
+    </div>
+  </div>
+
+  <div class="cover-bottom">
+    <div class="cover-meta">
+      <strong>Website</strong><br>innovat3.co.za<br>
+      <strong style="margin-top:4px;display:block">Email</strong><br>info@innovat3.co.za<br>
+      <strong style="margin-top:4px;display:block">Country</strong><br>South Africa<br>
+      <span style="color:#333;font-size:7.5pt;display:block;margin-top:8px">™ INNOVAT3 Trade Mark Pending · ZA 2026/1540827<br>⚡ Patent Pending · ZA 2026/1539553</span>
+    </div>
+    <div style="text-align:right">
+      <div class="cover-badge">NFC Emergency Tags</div>
+      <div style="font-size:7pt;color:#333;margin-top:8px;letter-spacing:1px">3D-printed · GPS alerts · No app needed</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE 2 — BRAND OVERVIEW
+══════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <div class="brand">innovat<span>3</span>.</div>
+    <div class="pg">Brand Overview — Page 2</div>
+  </div>
+
+  <div class="inner" style="padding-bottom: 15mm">
+    <div class="label">Who We Are</div>
+    <div class="section-title">Brand Overview</div>
+    <div class="body-text" style="max-width:480px">
+      Innovat3 manufactures 3D-printed NFC emergency tags that send instant GPS alerts to family via WhatsApp and Telegram the moment the tag is scanned — no app required on the finder's side. Made in South Africa.
+    </div>
+
+    <div class="rule" style="margin: 18px 0"></div>
+
+    <div class="overview-grid">
+      <div class="overview-cell">
+        <div class="cell-label">Brand Name</div>
+        <div class="cell-val" style="font-family:Orbitron,Arial,sans-serif;font-weight:900;color:#F97316">innovat3.</div>
+      </div>
+      <div class="overview-cell">
+        <div class="cell-label">Primary Tagline</div>
+        <div class="cell-val">"Smart Tags. Real Protection. Always."</div>
+      </div>
+      <div class="overview-cell">
+        <div class="cell-label">Category</div>
+        <div class="cell-val">IoT · Emergency Tech · Wearables</div>
+      </div>
+      <div class="overview-cell">
+        <div class="cell-label">Target Audience</div>
+        <div class="cell-val">Families, first responders, vehicle owners, pet owners</div>
+      </div>
+      <div class="overview-cell">
+        <div class="cell-label">Website</div>
+        <div class="cell-val" style="color:#F97316">innovat3.co.za</div>
+      </div>
+      <div class="overview-cell">
+        <div class="cell-label">Product</div>
+        <div class="cell-val">NFC tags + cloud emergency profile + Telegram/WhatsApp alerts</div>
+      </div>
+    </div>
+
+    <div class="rule" style="margin: 18px 0"></div>
+
+    <div class="label">Brand Personality</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:10px">
+      <div style="background:#fff8f0;border:1px solid #fde8cc;border-radius:8px;padding:12px 14px">
+        <div style="font-weight:700;font-size:9.5pt;color:#F97316;margin-bottom:4px">Bold</div>
+        <div style="font-size:8.5pt;color:#666">Direct communication. No fluff. Every second counts.</div>
+      </div>
+      <div style="background:#fff8f0;border:1px solid #fde8cc;border-radius:8px;padding:12px 14px">
+        <div style="font-weight:700;font-size:9.5pt;color:#F97316;margin-bottom:4px">Trustworthy</div>
+        <div style="font-size:8.5pt;color:#666">Life-saving product demands reliability and clarity.</div>
+      </div>
+      <div style="background:#fff8f0;border:1px solid #fde8cc;border-radius:8px;padding:12px 14px">
+        <div style="font-weight:700;font-size:9.5pt;color:#F97316;margin-bottom:4px">Urgent</div>
+        <div style="font-size:8.5pt;color:#666">Speed is the product. Design must feel instant.</div>
+      </div>
+    </div>
+
+    <div class="rule" style="margin: 18px 0"></div>
+
+    <div class="label">Sub-brands &amp; Plans</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px">
+      <div style="background:#1a0a2e;border:1px solid rgba(168,85,247,.3);border-radius:8px;padding:10px 12px;text-align:center">
+        <div style="font-family:Orbitron,sans-serif;font-weight:900;font-size:9pt;color:#A855F7">SOLO</div>
+        <div style="font-size:7.5pt;color:#888;margin-top:3px">R49/mo</div>
+      </div>
+      <div style="background:#1a0800;border:1px solid rgba(249,115,22,.3);border-radius:8px;padding:10px 12px;text-align:center">
+        <div style="font-family:Orbitron,sans-serif;font-weight:900;font-size:9pt;color:#F97316">FAMILY</div>
+        <div style="font-size:7.5pt;color:#888;margin-top:3px">R149/mo</div>
+      </div>
+      <div style="background:#001a1a;border:1px solid rgba(14,210,200,.3);border-radius:8px;padding:10px 12px;text-align:center">
+        <div style="font-family:Orbitron,sans-serif;font-weight:900;font-size:9pt;color:#0ED2C8">CARE</div>
+        <div style="font-size:7.5pt;color:#888;margin-top:3px">R199 once</div>
+      </div>
+      <div style="background:#001a08;border:1px solid rgba(34,197,94,.3);border-radius:8px;padding:10px 12px;text-align:center">
+        <div style="font-family:Orbitron,sans-serif;font-weight:900;font-size:9pt;color:#22C55E">PET</div>
+        <div style="font-size:7.5pt;color:#888;margin-top:3px">R299 once</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bar">
+    <span class="fb-brand">innovat3.</span>
+    <span>Brand Guidelines · Confidential</span>
+    <span>innovat3.co.za</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE 3 — COLOURS
+══════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <div class="brand">innovat<span>3</span>.</div>
+    <div class="pg">Colour Palette — Page 3</div>
+  </div>
+
+  <div class="inner" style="padding-bottom: 15mm">
+    <div class="label">Primary Brand Colours</div>
+    <div class="section-title">Colour System</div>
+    <div class="body-text">All brand colours are defined below with their hex values. Use these exact values in every design — no approximations.</div>
+
+    <!-- PRIMARY 4 -->
+    <div class="color-grid" style="margin-top:14px">
+      <div class="color-card">
+        <div class="color-swatch" style="background:#F97316"></div>
+        <div class="color-info">
+          <div class="color-name">Brand Orange</div>
+          <div class="color-hex">#F97316</div>
+          <div class="color-use">Primary accent, CTAs, logo, headings, glow effects</div>
+        </div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#0ED2C8"></div>
+        <div class="color-info">
+          <div class="color-name">Brand Teal</div>
+          <div class="color-hex">#0ED2C8</div>
+          <div class="color-use">Secondary accent, Care plan, badges</div>
+        </div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#0A0A0A;border:1px solid #ddd"></div>
+        <div class="color-info">
+          <div class="color-name">Brand Black</div>
+          <div class="color-hex">#0A0A0A</div>
+          <div class="color-use">Primary background, dark surfaces</div>
+        </div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#F0F0F0;border:1px solid #ddd"></div>
+        <div class="color-info">
+          <div class="color-name">Off-White</div>
+          <div class="color-hex">#F0F0F0</div>
+          <div class="color-use">Primary text on dark, logo "3" mark</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SURFACE COLOURS -->
+    <div class="label" style="margin-top:18px">Surface &amp; UI Colours</div>
+    <div class="color-grid">
+      <div class="color-card">
+        <div class="color-swatch" style="background:#1A1A1A"></div>
+        <div class="color-info">
+          <div class="color-name">Card Dark</div>
+          <div class="color-hex">#1A1A1A</div>
+          <div class="color-use">Card backgrounds, secondary surfaces</div>
+        </div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#2A2A2A"></div>
+        <div class="color-info">
+          <div class="color-name">Border</div>
+          <div class="color-hex">#2A2A2A</div>
+          <div class="color-use">Dividers, borders, subtle separators</div>
+        </div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#9CA3AF"></div>
+        <div class="color-info">
+          <div class="color-name">Muted Grey</div>
+          <div class="color-hex">#9CA3AF</div>
+          <div class="color-use">Secondary text, labels, fine print</div>
+        </div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#FB923C"></div>
+        <div class="color-info">
+          <div class="color-name">Orange Light</div>
+          <div class="color-hex">#FB923C</div>
+          <div class="color-use">Hover states, gradient end stops</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEMANTIC -->
+    <div class="label" style="margin-top:18px">Semantic &amp; Plan Colours</div>
+    <div class="color-grid-sm">
+      <div class="color-card">
+        <div class="color-swatch" style="background:#EF4444"></div>
+        <div class="color-info"><div class="color-name">Alert Red</div><div class="color-hex">#EF4444</div></div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#22C55E"></div>
+        <div class="color-info"><div class="color-name">Success Green</div><div class="color-hex">#22C55E</div></div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#A855F7"></div>
+        <div class="color-info"><div class="color-name">Solo Purple</div><div class="color-hex">#A855F7</div></div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#EAB308"></div>
+        <div class="color-info"><div class="color-name">Warning Yellow</div><div class="color-hex">#EAB308</div></div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#4DBBFF"></div>
+        <div class="color-info"><div class="color-name">Glow Blue</div><div class="color-hex">#4DBBFF</div></div>
+      </div>
+    </div>
+
+    <!-- GRADIENTS -->
+    <div class="label" style="margin-top:18px">Brand Gradients</div>
+    <div class="gradient-row">
+      <div class="grad-card">
+        <div class="grad-swatch" style="background:linear-gradient(135deg,#c45000,#f97316)"></div>
+        <div class="grad-info">
+          <div class="grad-name">Orange CTA</div>
+          <div class="grad-val">135deg · #C45000 → #F97316</div>
+        </div>
+      </div>
+      <div class="grad-card">
+        <div class="grad-swatch" style="background:linear-gradient(135deg,#5b21b6,#a855f7)"></div>
+        <div class="grad-info">
+          <div class="grad-name">Solo Purple</div>
+          <div class="grad-val">135deg · #5B21B6 → #A855F7</div>
+        </div>
+      </div>
+      <div class="grad-card">
+        <div class="grad-swatch" style="background:linear-gradient(135deg,#0a8f8a,#0ed2c8)"></div>
+        <div class="grad-info">
+          <div class="grad-name">Care Teal</div>
+          <div class="grad-val">135deg · #0A8F8A → #0ED2C8</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bar">
+    <span class="fb-brand">innovat3.</span>
+    <span>Brand Guidelines · Confidential</span>
+    <span>innovat3.co.za</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE 4 — TYPOGRAPHY
+══════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <div class="brand">innovat<span>3</span>.</div>
+    <div class="pg">Typography — Page 4</div>
+  </div>
+
+  <div class="inner" style="padding-bottom:15mm">
+    <div class="label">Typefaces</div>
+    <div class="section-title">Typography System</div>
+    <div class="body-text">Two typefaces only. Orbitron for all brand, heading, and display use. Exo 2 for all body, description, and UI text.</div>
+
+    <!-- FONT SPECIMENS -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0">
+      <div style="background:#0A0A0A;border-radius:10px;padding:18px 20px">
+        <div style="font-family:Orbitron,Arial,sans-serif;font-weight:900;font-size:28pt;color:#F97316;line-height:1">Aa</div>
+        <div style="font-weight:700;font-size:10pt;color:#fff;margin-top:10px">Orbitron</div>
+        <div style="font-size:8.5pt;color:#555;margin-top:3px">Heading · Display · Brand</div>
+        <div style="font-size:8pt;color:#444;margin-top:6px;line-height:1.6">Weights: 400 · 700 · 800 · 900<br>Google Fonts — free to use</div>
+        <div style="font-family:Orbitron,Arial,sans-serif;font-size:8pt;color:#F97316;margin-top:8px;letter-spacing:1px">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>0123456789</div>
+      </div>
+      <div style="background:#0A0A0A;border-radius:10px;padding:18px 20px">
+        <div style="font-family:'Exo 2',Arial,sans-serif;font-weight:400;font-size:28pt;color:#F0F0F0;line-height:1">Aa</div>
+        <div style="font-weight:700;font-size:10pt;color:#fff;margin-top:10px">Exo 2</div>
+        <div style="font-size:8.5pt;color:#555;margin-top:3px">Body · UI · Labels</div>
+        <div style="font-size:8pt;color:#444;margin-top:6px;line-height:1.6">Weights: 300 · 400 · 500 · 600 · 700<br>Google Fonts — free to use</div>
+        <div style="font-family:'Exo 2',Arial,sans-serif;font-size:8.5pt;color:#9CA3AF;margin-top:8px">AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz</div>
+      </div>
+    </div>
+
+    <!-- CANVA SETUP TABLE -->
+    <div class="label" style="margin-top:16px">Canva Brand Kit Font Settings</div>
+    <table class="type-table">
+      <thead><tr><th>Slot</th><th>Font Family</th><th>Weight</th><th>Size</th><th>Use</th></tr></thead>
+      <tbody>
+        <tr>
+          <td style="color:#F97316">Heading</td>
+          <td><strong>Orbitron</strong></td>
+          <td>900 Black</td>
+          <td><code>42pt</code></td>
+          <td>Page titles, hero headlines, brand name</td>
+        </tr>
+        <tr>
+          <td style="color:#0ED2C8">Subheading</td>
+          <td><strong>Orbitron</strong></td>
+          <td>800 ExtraBold</td>
+          <td><code>26pt</code></td>
+          <td>Section titles, plan names, stat numbers</td>
+        </tr>
+        <tr>
+          <td style="color:#9CA3AF">Body</td>
+          <td><strong>Exo 2</strong></td>
+          <td>400 Regular</td>
+          <td><code>15pt</code></td>
+          <td>Paragraphs, descriptions, lists</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- FULL SCALE -->
+    <div class="label" style="margin-top:14px">Full Typography Scale</div>
+    <table class="type-table">
+      <thead><tr><th>Element</th><th>Font</th><th>Weight</th><th>Size</th><th>Tracking</th><th>Transform</th></tr></thead>
+      <tbody>
+        <tr><td>Hero H1</td><td>Orbitron</td><td>900</td><td><code>72pt</code></td><td>-0.5px</td><td>—</td></tr>
+        <tr><td>Section H2</td><td>Orbitron</td><td>800</td><td><code>42pt</code></td><td>-0.5px</td><td>—</td></tr>
+        <tr><td>Sub-section H3</td><td>Orbitron</td><td>700</td><td><code>28pt</code></td><td>0</td><td>—</td></tr>
+        <tr><td>Navigation brand</td><td>Orbitron</td><td>900</td><td><code>22pt</code></td><td>0</td><td>lowercase</td></tr>
+        <tr><td>Button / CTA</td><td>Orbitron</td><td>700</td><td><code>14pt</code></td><td>1.5px</td><td>uppercase</td></tr>
+        <tr><td>Section label</td><td>Orbitron</td><td>700</td><td><code>10pt</code></td><td>3px</td><td>UPPERCASE</td></tr>
+        <tr><td>Body paragraph</td><td>Exo 2</td><td>400</td><td><code>15pt</code></td><td>0</td><td>—</td></tr>
+        <tr><td>Tagline / subtitle</td><td>Exo 2</td><td>300</td><td><code>15pt</code></td><td>0</td><td>—</td></tr>
+        <tr><td>Small label</td><td>Exo 2</td><td>600</td><td><code>13pt</code></td><td>1px</td><td>—</td></tr>
+        <tr><td>Badge / micro</td><td>Exo 2</td><td>700</td><td><code>10pt</code></td><td>2px</td><td>UPPERCASE</td></tr>
+      </tbody>
+    </table>
+
+    <!-- LIVE SPECIMENS -->
+    <div style="background:#0A0A0A;border-radius:10px;padding:16px 20px;margin-top:14px">
+      <div style="font-family:Orbitron,Arial,sans-serif;font-weight:900;font-size:22pt;color:#F97316;letter-spacing:-0.5px;line-height:1.1">innovat<span style="color:#fff">3</span>.</div>
+      <div style="font-family:Orbitron,Arial,sans-serif;font-weight:800;font-size:14pt;color:#F0F0F0;margin-top:6px">Smart Tags. Real Protection. Always.</div>
+      <div style="font-family:'Exo 2',Arial,sans-serif;font-weight:400;font-size:10pt;color:#9CA3AF;margin-top:8px;line-height:1.7">Your NFC tag sends GPS alerts to family in under 3 seconds. No app needed. Made in South Africa.</div>
+      <div style="font-family:'Exo 2',Arial,sans-serif;font-weight:700;font-size:8pt;letter-spacing:3px;color:#F97316;margin-top:10px;text-transform:uppercase">Scan · Alert · Respond</div>
+    </div>
+  </div>
+
+  <div class="footer-bar">
+    <span class="fb-brand">innovat3.</span>
+    <span>Brand Guidelines · Confidential</span>
+    <span>innovat3.co.za</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE 5 — LOGO USAGE
+══════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <div class="brand">innovat<span>3</span>.</div>
+    <div class="pg">Logo Usage — Page 5</div>
+  </div>
+
+  <div class="inner" style="padding-bottom:15mm">
+    <div class="label">Logo System</div>
+    <div class="section-title">Logo Usage</div>
+    <div class="body-text">The Innovat3 logo consists of three variants. Always use provided SVG files. The mascot is a turtle with a gear/cog on its shell — a symbol of innovation through persistence.</div>
+
+    <div class="logo-grid" style="margin-top:14px">
+      <div class="logo-box">
+        <div class="logo-display dark">
+          <!-- Inline mini lockup using text/CSS as SVG not embeddable in print easily -->
+          <div style="text-align:center">
+            <div style="font-family:Orbitron,Arial,sans-serif;font-weight:900;font-size:16pt;color:#F97316;line-height:1">innovat<span style="color:#fff">3</span>.</div>
+            <div style="font-family:'Exo 2',Arial,sans-serif;font-weight:300;font-size:7pt;color:#555;letter-spacing:2px;text-transform:uppercase;margin-top:4px">Smart Tags · Real Protection</div>
+          </div>
+        </div>
+        <div class="logo-caption">
+          <strong>Primary — Horizontal</strong>
+          <span>File: 04-logo-horizontal.svg · Use on dark backgrounds</span>
+        </div>
+      </div>
+      <div class="logo-box">
+        <div class="logo-display dark" style="flex-direction:column;gap:8px">
+          <div style="font-family:Orbitron,Arial,sans-serif;font-weight:900;font-size:22pt;color:#F97316;line-height:1;text-align:center">innovat<span style="color:#fff">3</span>.</div>
+          <div style="font-family:'Exo 2',Arial,sans-serif;font-weight:300;font-size:6.5pt;color:#555;letter-spacing:2px;text-transform:uppercase;text-align:center">Smart Tags · Real Protection</div>
+        </div>
+        <div class="logo-caption">
+          <strong>Stacked</strong>
+          <span>File: 05-logo-stacked.svg · Centred / square format</span>
+        </div>
+      </div>
+      <div class="logo-box">
+        <div class="logo-display dark">
+          <div style="font-family:Orbitron,Arial,sans-serif;font-weight:900;font-size:36pt;color:#F97316">i<span style="color:#fff">3</span></div>
+        </div>
+        <div class="logo-caption">
+          <strong>Symbol / Icon</strong>
+          <span>File: 02-symbol-dark.svg · Profile pictures, favicon, app icon</span>
+        </div>
+      </div>
+      <div class="logo-box">
+        <div class="logo-display light">
+          <div style="font-family:Orbitron,Arial,sans-serif;font-weight:900;font-size:16pt;color:#F97316;line-height:1">innovat<span style="color:#0A0A0A">3</span>.</div>
+        </div>
+        <div class="logo-caption">
+          <strong>On Light Background</strong>
+          <span>File: 01-symbol.svg · Transparent · use on white/light only</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="label" style="margin-top:16px">Logo Name Casing Rules</div>
+    <table class="type-table">
+      <thead><tr><th>Context</th><th>Format</th><th>Colour</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td>Logo / navigation</td><td style="font-family:Orbitron,sans-serif;font-weight:900;color:#F97316">innovat3.</td><td>#F97316</td><td>Lowercase + trailing period</td></tr>
+        <tr><td>Hero headings</td><td style="font-family:Orbitron,sans-serif;font-weight:900">Innovat3</td><td>#FFFFFF</td><td>Capital I — no period</td></tr>
+        <tr><td>Body / inline copy</td><td>Innovat3</td><td>contextual</td><td>Capital I — no period</td></tr>
+        <tr><td>Legal / trademark</td><td style="font-weight:700">INNOVAT3</td><td>#F97316</td><td>All-caps for legal references</td></tr>
+      </tbody>
+    </table>
+
+    <div class="label" style="margin-top:16px">Do &amp; Don't</div>
+    <div class="logo-rules">
+      <div class="rule-box do"><div class="rt">✓ DO</div>Use on dark (#0A0A0A) or very dark backgrounds<br>Maintain clear space equal to the logo height on all sides<br>Use SVG files for all digital applications<br>Apply orange glow: drop-shadow(0 0 12px rgba(249,115,22,0.55))</div>
+      <div class="rule-box dont"><div class="rt">✗ DON'T</div>Do not recolour the logo without brand approval<br>Do not stretch or distort proportions<br>Do not place on mid-grey or low-contrast backgrounds<br>Do not use the "3" in any colour other than white or orange</div>
+    </div>
+  </div>
+
+  <div class="footer-bar">
+    <span class="fb-brand">innovat3.</span>
+    <span>Brand Guidelines · Confidential</span>
+    <span>innovat3.co.za</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE 6 — BRAND VOICE + COPY
+══════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <div class="brand">innovat<span>3</span>.</div>
+    <div class="pg">Brand Voice &amp; Copy — Page 6</div>
+  </div>
+
+  <div class="inner" style="padding-bottom:15mm">
+    <div class="label">Tone &amp; Voice</div>
+    <div class="section-title">Brand Voice</div>
+    <div class="body-text">Every piece of Innovat3 communication must feel urgent, trustworthy, and direct. Lives depend on this product — the copy must reflect that.</div>
+
+    <div class="voice-block" style="margin-top:14px">
+      <div class="vb-label">Canva Brand Voice Field — paste this exactly</div>
+      <p>Bold, direct, urgent. We build NFC emergency tags that send GPS alerts in under 3 seconds — no app needed. Speak to first responders, families, and pet owners: clear, life-saving, trustworthy. No fluff. Use short sentences. Prioritise speed and reliability. Headlines in Orbitron. Body in Exo 2. Always: "Made in South Africa."</p>
+    </div>
+
+    <div class="label" style="margin-top:18px">Approved Taglines</div>
+    <table class="tagline-table">
+      <thead><tr><th>Tier</th><th>Copy</th><th>Where to use</th></tr></thead>
+      <tbody>
+        <tr><td>Primary</td><td><strong>"Smart Tags. Real Protection. Always."</strong></td><td>Hero, Facebook cover, posters</td></tr>
+        <tr><td>Secondary</td><td>"Scan. Alert. Respond."</td><td>Social posts, badges, motion graphics</td></tr>
+        <tr><td>Speed</td><td>"GPS alert to your family in under 3 seconds."</td><td>Feature callouts, testimonial captions</td></tr>
+        <tr><td>Simplicity</td><td>"No app needed. No delay."</td><td>CTA companion text, ad body</td></tr>
+        <tr><td>Safety</td><td>"Scan. Alert. Safe. In under 10 seconds."</td><td>Pet + emergency variant</td></tr>
+        <tr><td>Pet</td><td>"Tap. Alert. Home."</td><td>Pet tag designs, pet social posts</td></tr>
+        <tr><td>Origin</td><td>"Made in South Africa."</td><td>Footer, packaging, certificates</td></tr>
+        <tr><td>Legal</td><td>"⚡ Patent Pending · ZA 2026/1539553"</td><td>Legal badge, email footer, print</td></tr>
+        <tr><td>Legal</td><td>"™ INNOVAT3 Trade Mark Pending"</td><td>Fine print, terms footer</td></tr>
+      </tbody>
+    </table>
+
+    <div class="label" style="margin-top:18px">Voice Pillars</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+      <div style="background:#f9f9f9;border-radius:8px;padding:14px 16px">
+        <div style="font-weight:700;font-size:9.5pt;color:#F97316;margin-bottom:6px">Short sentences. Always.</div>
+        <div style="font-size:8.5pt;color:#555;line-height:1.6">✓ "No app. No battery. Instant access."<br>✗ "Our innovative solution requires no application installation and functions without any battery power, providing immediate access to information."</div>
+      </div>
+      <div style="background:#f9f9f9;border-radius:8px;padding:14px 16px">
+        <div style="font-weight:700;font-size:9.5pt;color:#F97316;margin-bottom:6px">Lead with speed &amp; outcome.</div>
+        <div style="font-size:8.5pt;color:#555;line-height:1.6">✓ "In under 3 seconds, your family knows where you are."<br>✗ "After someone scans your tag, a process is initiated that sends a notification..."</div>
+      </div>
+      <div style="background:#f9f9f9;border-radius:8px;padding:14px 16px">
+        <div style="font-weight:700;font-size:9.5pt;color:#F97316;margin-bottom:6px">Always mention origin.</div>
+        <div style="font-size:8.5pt;color:#555;line-height:1.6">Every final design should include "Made in South Africa." — in Exo 2, uppercase, muted colour.</div>
+      </div>
+      <div style="background:#f9f9f9;border-radius:8px;padding:14px 16px">
+        <div style="font-weight:700;font-size:9.5pt;color:#F97316;margin-bottom:6px">Numbers sell it.</div>
+        <div style="font-size:8.5pt;color:#555;line-height:1.6">Use specific numbers wherever possible: 3 seconds · R49/mo · 10 minutes setup · Patent ZA 2026/1539553.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bar">
+    <span class="fb-brand">innovat3.</span>
+    <span>Brand Guidelines · innovat3.co.za · info@innovat3.co.za</span>
+    <span>™ &amp; ⚡ Pending · ZA 2026</span>
+  </div>
+</div>
+
+</body>
+</html>

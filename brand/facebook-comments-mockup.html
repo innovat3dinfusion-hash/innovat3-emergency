@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Facebook Comments Mockup — Innovat3</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #f0f2f5;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  padding: 24px 16px 40px;
+}
+
+.fb-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.15), 0 0 0 1px rgba(0,0,0,.06);
+  width: 540px;
+  overflow: hidden;
+}
+
+/* ── POST HEADER ── */
+.post-header {
+  padding: 14px 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.post-avatar {
+  width: 42px; height: 42px; border-radius: 50%; overflow: hidden; flex-shrink: 0;
+  background: #F97316;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 15px; color: #fff;
+}
+.post-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.post-meta strong { font-size: 14px; font-weight: 700; color: #050505; display: block; }
+.post-meta span { font-size: 12px; color: #65676b; display: flex; align-items: center; gap: 4px; }
+
+.post-text {
+  padding: 10px 16px 12px;
+  font-size: 14.5px; color: #050505; line-height: 1.5;
+}
+.post-text strong { color: #050505; }
+
+/* post image placeholder */
+.post-image {
+  width: 100%; height: 230px;
+  background: linear-gradient(135deg, #0A0A0A 0%, #1a0800 50%, #0A0A0A 100%);
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 6px; position: relative; overflow: hidden;
+}
+.post-image::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 70% at 50% 50%, rgba(249,115,22,0.2) 0%, transparent 70%);
+}
+.post-image-logo {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-weight: 900; font-size: 32px; color: #F97316; position: relative; letter-spacing: -1px;
+}
+.post-image-logo span { color: #fff; }
+.post-image-tag {
+  font-size: 11px; letter-spacing: 3px; color: #555; text-transform: uppercase; position: relative;
+}
+
+/* reaction bar */
+.reaction-bar {
+  padding: 8px 16px;
+  display: flex; justify-content: space-between; align-items: center;
+  border-bottom: 1px solid #e4e6ea;
+}
+.reactions { display: flex; align-items: center; gap: 5px; }
+.reaction-icons { display: flex; }
+.ri {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid #fff; margin-left: -5px; font-size: 12px;
+  display: flex; align-items: center; justify-content: center;
+  line-height: 1;
+}
+.ri:first-child { margin-left: 0; }
+.reactions-count { font-size: 13.5px; color: #65676b; }
+.comment-share-count { font-size: 13.5px; color: #65676b; display: flex; gap: 12px; }
+
+/* action buttons */
+.action-btns {
+  display: flex; border-bottom: 1px solid #e4e6ea;
+}
+.action-btn {
+  flex: 1; padding: 6px 0; display: flex; align-items: center; justify-content: center;
+  gap: 6px; font-size: 14px; font-weight: 700; color: #65676b;
+  cursor: pointer; border-radius: 4px; transition: background .1s;
+}
+.action-btn:hover { background: #f0f2f5; }
+.action-btn svg { width: 18px; height: 18px; fill: #65676b; }
+
+/* ── COMMENTS ── */
+.comments-area { padding: 8px 16px 6px; }
+.view-more {
+  font-size: 14px; font-weight: 700; color: #050505;
+  cursor: pointer; padding: 4px 0 10px; display: block;
+}
+
+/* single comment */
+.comment { display: flex; gap: 8px; margin-bottom: 10px; }
+.comment.reply { margin-left: 40px; margin-bottom: 8px; }
+
+.c-avatar {
+  width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 12px; color: #fff;
+  background: #ccc; margin-top: 1px;
+}
+.comment.reply .c-avatar { width: 28px; height: 28px; font-size: 11px; }
+
+.c-body { flex: 1; }
+.c-bubble {
+  background: #f0f2f5; border-radius: 18px;
+  padding: 8px 12px; display: inline-block; max-width: 100%;
+}
+.comment.brand .c-bubble {
+  background: #fff8f0; border: 1px solid rgba(249,115,22,.25);
+}
+.c-name { font-size: 13px; font-weight: 700; color: #050505; display: block; margin-bottom: 1px; }
+.c-name.brand-name { color: #F97316; }
+.c-text { font-size: 14px; color: #050505; line-height: 1.45; }
+
+.c-actions {
+  display: flex; align-items: center; gap: 12px;
+  padding: 3px 4px 0; font-size: 12px; font-weight: 700; color: #65676b;
+}
+.c-actions .liked { color: #1877f2; }
+.c-actions span { cursor: pointer; }
+.c-actions span:hover { text-decoration: underline; }
+.c-likes {
+  display: flex; align-items: center; gap: 3px;
+  background: #fff; border-radius: 10px; padding: 2px 5px 2px 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.2); font-size: 12px; font-weight: 400;
+  color: #65676b; margin-left: auto; margin-top: 2px;
+  position: relative; float: right; clear: both;
+}
+
+/* brand verified badge */
+.verified { font-size: 11px; color: #F97316; margin-left: 3px; }
+
+/* comment input */
+.comment-input-row {
+  display: flex; gap: 8px; align-items: center; padding: 8px 16px 14px;
+}
+.me-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg,#667eea,#764ba2);
+  flex-shrink: 0;
+}
+.comment-input {
+  flex: 1; background: #f0f2f5; border-radius: 20px;
+  padding: 9px 14px; font-size: 14px; color: #65676b;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.input-icons { display: flex; gap: 8px; font-size: 16px; color: #65676b; }
+
+/* timestamp styles */
+.ts { color: #65676b; font-weight: 400; font-size: 11px; }
+</style>
+</head>
+<body>
+
+<div class="fb-card">
+
+  <!-- ── POST HEADER ── -->
+  <div class="post-header">
+    <div class="post-avatar">i3</div>
+    <div class="post-meta">
+      <strong>Innovat3 🐢</strong>
+      <span>
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="#65676b"><path d="M8 0a8 8 0 100 16A8 8 0 008 0zm0 14.5A6.5 6.5 0 118 1.5a6.5 6.5 0 010 13z"/><path d="M7.25 4.5h1.5v4.75l2.9 1.675-.75 1.3L7.25 10V4.5z"/></svg>
+        2 hours ago · 🌐
+      </span>
+    </div>
+  </div>
+
+  <!-- ── POST TEXT ── -->
+  <div class="post-text">
+    🚨 <strong>Your NFC tag is on its way to saving a life — maybe yours.</strong><br><br>
+    The Innovat3 smart tag gives first responders and good samaritans instant access to your emergency profile the moment they tap it. No app. No signal needed on their side. GPS alert straight to your family via WhatsApp &amp; Telegram — <strong>in under 3 seconds.</strong><br><br>
+    👇 Drop your questions below — we answer everything!<br><br>
+    🛒 Order at <strong>innovat3.co.za</strong> · Made in South Africa 🇿🇦
+  </div>
+
+  <!-- ── POST IMAGE ── -->
+  <div class="post-image">
+    <div class="post-image-logo">innovat<span>3</span>.</div>
+    <div class="post-image-tag">Smart NFC Emergency Tag · innovat3.co.za</div>
+  </div>
+
+  <!-- ── REACTION BAR ── -->
+  <div class="reaction-bar">
+    <div class="reactions">
+      <div class="reaction-icons">
+        <div class="ri" style="background:#1877f2">👍</div>
+        <div class="ri" style="background:#f02849">❤️</div>
+        <div class="ri" style="background:#f7b928">😮</div>
+      </div>
+      <span class="reactions-count">Zanele, Sipho and 847 others</span>
+    </div>
+    <div class="comment-share-count">
+      <span>214 comments</span>
+      <span>93 shares</span>
+    </div>
+  </div>
+
+  <!-- ── ACTION BUTTONS ── -->
+  <div class="action-btns">
+    <div class="action-btn">
+      <svg viewBox="0 0 24 24"><path d="M1 8.5C1 5.46 3.46 3 6.5 3c1.74 0 3.41.81 4.5 2.09C12.09 3.81 13.76 3 15.5 3 18.54 3 21 5.46 21 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35l-.45-.42C6.4 15.36 1 12.28 1 8.5z" fill="none" stroke="#65676b" stroke-width="1.5"/></svg>
+      Like
+    </div>
+    <div class="action-btn">
+      <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" fill="none" stroke="#65676b" stroke-width="1.5"/></svg>
+      Comment
+    </div>
+    <div class="action-btn">
+      <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z" fill="none" stroke="#65676b" stroke-width="1.5"/></svg>
+      Share
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       COMMENTS
+  ══════════════════════════════════ -->
+  <div class="comments-area">
+    <span class="view-more">View 186 more comments</span>
+
+    <!-- 1 -->
+    <div class="comment">
+      <div class="c-avatar" style="background:#6366f1">TM</div>
+      <div class="c-body">
+        <div class="c-bubble">
+          <span class="c-name">Thabo Molefe</span>
+          <span class="c-text">Okay so if someone finds me passed out on the side of the road — they just tap the tag with their phone and my wife gets a message?? 😳 No app needed on their side?</span>
+        </div>
+        <div class="c-actions">
+          <span class="liked">Like</span>
+          <span>Reply</span>
+          <span class="ts">1h</span>
+          <div class="c-likes">👍 34</div>
+        </div>
+
+        <!-- Brand reply -->
+        <div class="comment reply brand" style="margin-top:6px">
+          <div class="c-avatar" style="background:#F97316;width:28px;height:28px;font-size:10px">i3</div>
+          <div class="c-body">
+            <div class="c-bubble">
+              <span class="c-name brand-name">Innovat3 🐢 <span class="verified">✔</span></span>
+              <span class="c-text">Exactly right, Thabo! 🙌 They just tap — any modern smartphone works, no app download required. Instantly your emergency profile opens on their screen AND your wife gets a WhatsApp/Telegram alert with your GPS location. The whole thing takes under 3 seconds. Order yours at innovat3.co.za 🔗</span>
+            </div>
+            <div class="c-actions">
+              <span>Like</span>
+              <span>Reply</span>
+              <span class="ts">58m</span>
+              <div class="c-likes">👍 61</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="comment">
+      <div class="c-avatar" style="background:#ec4899">SK</div>
+      <div class="c-body">
+        <div class="c-bubble">
+          <span class="c-name">Samantha Kruger</span>
+          <span class="c-text">My mom is 68 and lives alone in Pretoria 😰 this is EXACTLY what I've been looking for. How long does delivery take and do you ship to Gauteng?</span>
+        </div>
+        <div class="c-actions">
+          <span>Like</span>
+          <span>Reply</span>
+          <span class="ts">1h</span>
+          <div class="c-likes">👍 52</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="comment">
+      <div class="c-avatar" style="background:#0ea5e9">KvdB</div>
+      <div class="c-body">
+        <div class="c-bubble">
+          <span class="c-name">Kyle van den Berg</span>
+          <span class="c-text">Does it work without signal/data? Like if there's no network in the area?</span>
+        </div>
+        <div class="c-actions">
+          <span>Like</span>
+          <span>Reply</span>
+          <span class="ts">1h</span>
+          <div class="c-likes">👍 29</div>
+        </div>
+
+        <!-- Brand reply -->
+        <div class="comment reply brand" style="margin-top:6px">
+          <div class="c-avatar" style="background:#F97316;width:28px;height:28px;font-size:10px">i3</div>
+          <div class="c-body">
+            <div class="c-bubble">
+              <span class="c-name brand-name">Innovat3 🐢 <span class="verified">✔</span></span>
+              <span class="c-text">Great question Kyle! The person scanning only needs basic mobile data to load your profile — it works on any 3G/4G network. Your emergency profile also caches so it can display even in low signal. The GPS alert does need a data connection on your end to send 📡</span>
+            </div>
+            <div class="c-actions">
+              <span>Like</span>
+              <span>Reply</span>
+              <span class="ts">52m</span>
+              <div class="c-likes">👍 18</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 -->
+    <div class="comment">
+      <div class="c-avatar" style="background:#d946ef">PN</div>
+      <div class="c-body">
+        <div class="c-bubble">
+          <span class="c-name">Priya Naidoo</span>
+          <span class="c-text">Can I put this on my dog's collar?? 😅 Our golden retriever escapes the yard every second week and the neighbours have no idea who he belongs to 😭</span>
+        </div>
+        <div class="c-actions">
+          <span>Like</span>
+          <span>Reply</span>
+          <span class="ts">58m</span>
+          <div class="c-likes">❤️ 78</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="comment">
+      <div class="c-avatar" style="background:#14b8a6">AI</div>
+      <div class="c-body">
+        <div class="c-bubble">
+          <span class="c-name">Ahmed Ismail</span>
+          <span class="c-text">What info can I put on the tag? Is it just name and number or can I add medical conditions, blood type, allergies etc?</span>
+        </div>
+        <div class="c-actions">
+          <span>Like</span>
+          <span>Reply</span>
+          <span class="ts">55m</span>
+          <div class="c-likes">👍 41</div>
+        </div>
+
+        <!-- Brand reply -->
+        <div class="comment reply brand" style="margin-top:6px">
+          <div class="c-avatar" style="background:#F97316;width:28px;height:28px;font-size:10px">i3</div>
+          <div class="c-body">
+            <div class="c-bubble">
+              <span class="c-name brand-name">Innovat3 🐢 <span class="verified">✔</span></span>
+              <span class="c-text">Yes to all of that Ahmed! 🩺 Your emergency profile includes: full name, ID number, blood type, allergies, chronic conditions, medications, emergency contacts, and a custom medical notes field. Everything a first responder or ER doctor needs — displayed the moment your tag is tapped 💊</span>
+            </div>
+            <div class="c-actions">
+              <span>Like</span>
+              <span>Reply</span>
+              <span class="ts">48m</span>
+              <div class="c-likes">👍 55</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6 -->
+    <div class="comment">
+      <div class="c-avatar" style="background:#f59e0b">ZD</div>
+      <div class="c-body">
+        <div class="c-bubble">
+          <span class="c-name">Zanele Dlamini</span>
+          <span class="c-text">Hi! Does it work if I'm travelling overseas? Going to the UK in July and I always worry about medical emergencies abroad 🤞🏾</span>
+        </div>
+        <div class="c-actions">
+          <span>Like</span>
+          <span>Reply</span>
+          <span class="ts">50m</span>
+          <div class="c-likes">👍 23</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7 -->
+    <div class="comment">
+      <div class="c-avatar" style="background:#ef4444">MdP</div>
+      <div class="c-body">
+        <div class="c-bubble">
+          <span class="c-name">Michelle du Plessis</span>
+          <span class="c-text">My husband was in a car accident on the N1 last year and paramedics didn't know who to call for 40 minutes 😢 We didn't even know he was in hospital. THIS is exactly what we need. WHERE DO I ORDER???</span>
+        </div>
+        <div class="c-actions">
+          <span class="liked">Like</span>
+          <span>Reply</span>
+          <span class="ts">47m</span>
+          <div class="c-likes">❤️ 214</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8 -->
+    <div class="comment">
+      <div class="c-avatar" style="background:#8b5cf6">RB</div>
+      <div class="c-body">
+        <div class="c-bubble">
+          <span class="c-name">Ryan Botha</span>
+          <span class="c-text">Genuine question — what's the difference between this and just writing your info on a card in your wallet? Why NFC?</span>
+        </div>
+        <div class="c-actions">
+          <span>Like</span>
+          <span>Reply</span>
+          <span class="ts">45m</span>
+          <div class="c-likes">👍 12</div>
+        </div>
+
+        <!-- Brand reply -->
+        <div class="comment reply brand" style="margin-top:6px">
+          <div class="c-avatar" style="background:#F97316;width:28px;height:28px;font-size:10px">i3</div>
+          <div class="c-body">
+            <div class="c-bubble">
+              <span class="c-name brand-name">Innovat3 🐢 <span class="verified">✔</span></span>
+              <span class="c-text">Love this question Ryan! A card in your wallet: ✗ doesn't alert anyone ✗ can't update ✗ no GPS ✗ can get lost or stolen. Innovat3 tag: ✅ instantly alerts your family with your GPS location ✅ you update your info anytime from your phone ✅ waterproof &amp; durable ✅ works on any smartphone, no app. It's the difference between someone knowing to call 082-xxx and your wife getting a WhatsApp with exactly where you are 📍</span>
+            </div>
+            <div class="c-actions">
+              <span>Like</span>
+              <span>Reply</span>
+              <span class="ts">40m</span>
+              <div class="c-likes">👍 89</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9 -->
+    <div class="comment">
+      <div class="c-avatar" style="background:#22c55e">SK2</div>
+      <div class="c-body">
+        <div class="c-bubble">
+          <span class="c-name">Sipho Khumalo</span>
+          <span class="c-text">Is there a monthly fee or is it a once-off purchase? And what's the price? 🙏</span>
+        </div>
+        <div class="c-actions">
+          <span>Like</span>
+          <span>Reply</span>
+          <span class="ts">42m</span>
+          <div class="c-likes">👍 37</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10 -->
+    <div class="comment">
+      <div class="c-avatar" style="background:#06b6d4">LP</div>
+      <div class="c-body">
+        <div class="c-bubble">
+          <span class="c-name">Liezl Pretorius</span>
+          <span class="c-text">Hoe lank hou die battery? 😊</span>
+        </div>
+        <div class="c-actions">
+          <span>Like</span>
+          <span>Reply</span>
+          <span class="ts">38m</span>
+          <div class="c-likes">👍 8</div>
+        </div>
+
+        <!-- Brand reply funny -->
+        <div class="comment reply brand" style="margin-top:6px">
+          <div class="c-avatar" style="background:#F97316;width:28px;height:28px;font-size:10px">i3</div>
+          <div class="c-body">
+            <div class="c-bubble">
+              <span class="c-name brand-name">Innovat3 🐢 <span class="verified">✔</span></span>
+              <span class="c-text">Haha Liezl — die goeie nuus is, NFC het geen battery nie! 😄 Die tag trek power van die foon wat dit scan, so dit werk letterlik vir ewig. Geen laai, geen battery vervang, niks. Dis een van die beste goed van die tegnologie 🔋❌</span>
+            </div>
+            <div class="c-actions">
+              <span>Like</span>
+              <span>Reply</span>
+              <span class="ts">34m</span>
+              <div class="c-likes">😂 47</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 11 -->
+    <div class="comment">
+      <div class="c-avatar" style="background:#f97316">TZ</div>
+      <div class="c-body">
+        <div class="c-bubble">
+          <span class="c-name">Thandeka Zulu</span>
+          <span class="c-text">Saw this on TikTok!! 😍 Can I get one for my whole family? Do you do bulk discounts? We're a family of 6</span>
+        </div>
+        <div class="c-actions">
+          <span>Like</span>
+          <span>Reply</span>
+          <span class="ts">35m</span>
+          <div class="c-likes">👍 19</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 12 -->
+    <div class="comment">
+      <div class="c-avatar" style="background:#64748b">LM</div>
+      <div class="c-body">
+        <div class="c-bubble">
+          <span class="c-name">Lungelo Mkhize</span>
+          <span class="c-text">I'm a paramedic and I'm sharing this with all my colleagues. You wouldn't believe how many accidents we attend where we have NO idea who the person is or who to call. This could genuinely save lives 🙏🏾</span>
+        </div>
+        <div class="c-actions">
+          <span class="liked">Like</span>
+          <span>Reply</span>
+          <span class="ts">28m</span>
+          <div class="c-likes">❤️ 389</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 13 -->
+    <div class="comment">
+      <div class="c-avatar" style="background:#e11d48">AS</div>
+      <div class="c-body">
+        <div class="c-bubble">
+          <span class="c-name">Anri Swanepoel</span>
+          <span class="c-text">Can I put this on my kid's school bag? My son is 7 and I worry about him not knowing my number if something happens 😰</span>
+        </div>
+        <div class="c-actions">
+          <span>Like</span>
+          <span>Reply</span>
+          <span class="ts">22m</span>
+          <div class="c-likes">👍 44</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 14 -->
+    <div class="comment">
+      <div class="c-avatar" style="background:#7c3aed">FM</div>
+      <div class="c-body">
+        <div class="c-bubble">
+          <span class="c-name">Dr. Fatima Moosa</span>
+          <span class="c-text">As a GP I've been recommending MedicAlert bracelets for years but they're expensive and outdated. This is a game changer for our elderly patients especially. What's the turnaround time from order to delivery? 🏥</span>
+        </div>
+        <div class="c-actions">
+          <span class="liked">Like</span>
+          <span>Reply</span>
+          <span class="ts">18m</span>
+          <div class="c-likes">❤️ 127</div>
+        </div>
+
+        <!-- Brand reply -->
+        <div class="comment reply brand" style="margin-top:6px">
+          <div class="c-avatar" style="background:#F97316;width:28px;height:28px;font-size:10px">i3</div>
+          <div class="c-body">
+            <div class="c-bubble">
+              <span class="c-name brand-name">Innovat3 🐢 <span class="verified">✔</span></span>
+              <span class="c-text">Thank you Dr. Moosa — that means a lot coming from you! 🩺 Delivery is 3–5 business days nationwide. We'd love to chat about bulk orders for your practice — send us a DM or email info@innovat3.co.za and we'll sort you out 🙌</span>
+            </div>
+            <div class="c-actions">
+              <span>Like</span>
+              <span>Reply</span>
+              <span class="ts">12m</span>
+              <div class="c-likes">👍 73</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /comments-area -->
+
+  <!-- ── COMMENT INPUT ── -->
+  <div class="comment-input-row">
+    <div class="me-avatar"></div>
+    <div class="comment-input">
+      <span>Write a comment…</span>
+      <div class="input-icons">
+        <span>😊</span>
+        <span>📷</span>
+        <span>🎁</span>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /fb-card -->
+
+</body>
+</html>

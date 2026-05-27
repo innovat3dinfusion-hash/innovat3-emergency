@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Innovat3 Safety Tag — WhatsApp (CallMeBot) Setup Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', Arial, sans-serif;
+    background: #fff;
+    color: #1a1a1a;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 40px 44px 48px;
+  }
+
+  /* ── Header ── */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 16px;
+    border-bottom: 3px solid #25D366;
+    margin-bottom: 28px;
+  }
+  .logo-block { display: flex; align-items: center; gap: 12px; }
+  .logo-dot {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: #25D366;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .brand { font-size: 18px; font-weight: 900; color: #1a1a1a; letter-spacing: -0.5px; }
+  .brand span { color: #F97316; }
+  .guide-label {
+    font-size: 11px; font-weight: 700; color: #25D366;
+    background: #f0fff4; border: 1px solid #25D366;
+    padding: 4px 10px; border-radius: 20px; letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* ── Title ── */
+  .title { font-size: 22px; font-weight: 900; color: #1a1a1a; margin-bottom: 4px; }
+  .subtitle { font-size: 13px; color: #555; margin-bottom: 24px; }
+
+  /* ── Intro box ── */
+  .intro-box {
+    background: #f0fff4;
+    border-left: 4px solid #25D366;
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 28px;
+    font-size: 12.5px;
+    color: #1b5e20;
+  }
+
+  /* ── Steps ── */
+  .section-title {
+    font-size: 12px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; color: #25D366;
+    margin-bottom: 14px; margin-top: 8px;
+  }
+
+  .steps { display: flex; flex-direction: column; gap: 14px; margin-bottom: 28px; }
+
+  .step {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    background: #f9f9f9;
+    border-radius: 10px;
+    padding: 14px 16px;
+    border: 1px solid #eee;
+  }
+  .step-num {
+    width: 28px; height: 28px; min-width: 28px;
+    background: #25D366; color: #fff;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px; margin-top: 1px;
+  }
+  .step-num.orange { background: #F97316; }
+  .step-body { flex: 1; }
+  .step-title { font-weight: 700; font-size: 13px; margin-bottom: 4px; }
+  .step-desc { color: #555; font-size: 12.5px; }
+  .step-desc code {
+    background: #f0f0f0; border-radius: 4px;
+    padding: 1px 6px; font-size: 12px; color: #d14;
+    word-break: break-all;
+  }
+
+  /* ── Key box — highlight the API key entry ── */
+  .key-box {
+    background: #fff8f0;
+    border: 2px dashed #F97316;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-top: 10px;
+    font-size: 12.5px;
+  }
+  .key-box strong { color: #F97316; }
+
+  /* ── Number box ── */
+  .number-box {
+    background: #e8f5e9;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-top: 8px;
+    font-size: 12.5px;
+    color: #1b5e20;
+  }
+  .number-box strong { font-size: 15px; letter-spacing: 1px; }
+
+  /* ── Tip box ── */
+  .tip-box {
+    background: #e8f5e9;
+    border-left: 4px solid #4caf50;
+    padding: 10px 14px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 20px;
+    font-size: 12px;
+    color: #2e7d32;
+  }
+
+  /* ── Warning box ── */
+  .warn-box {
+    background: #fff8e1;
+    border-left: 4px solid #ffc107;
+    padding: 10px 14px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 20px;
+    font-size: 12px;
+    color: #795548;
+  }
+
+  /* ── Divider ── */
+  hr { border: none; border-top: 1px solid #eee; margin: 22px 0; }
+
+  /* ── Footer ── */
+  .footer {
+    text-align: center; font-size: 11px; color: #aaa;
+    border-top: 1px solid #eee; padding-top: 14px; margin-top: 28px;
+  }
+  .footer strong { color: #F97316; }
+
+  @media print {
+    body { font-size: 12px; }
+    .page { padding: 20px 28px; }
+    .step { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo-block">
+      <div class="logo-dot">💬</div>
+      <div class="brand">innovat3<span>.</span></div>
+    </div>
+    <div class="guide-label">Setup Guide</div>
+  </div>
+
+  <div class="title">WhatsApp Alert Setup</div>
+  <div class="subtitle">Receive an instant WhatsApp message when your safety tag is tapped — no Telegram required.</div>
+
+  <div class="intro-box">
+    <strong>How it works:</strong> CallMeBot is a free service that lets apps send WhatsApp messages to your number. You activate it once by sending a single WhatsApp message — then every time your Innovat3 tag is tapped, you receive a WhatsApp alert with the name, GPS location, and a Google Maps link.
+  </div>
+
+  <!-- Part 1: Activate -->
+  <div class="section-title">Part 1 — Activate CallMeBot (One-Time Setup — 2 Minutes)</div>
+  <div class="steps">
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Add the CallMeBot Number to Your Contacts</div>
+        <div class="step-desc">
+          Save the following number in your phone contacts under any name (e.g. "CallMeBot"):
+          <div class="number-box">
+            WhatsApp number: <strong>+34 644 59 72 93</strong>
+          </div>
+          This is the official CallMeBot WhatsApp service number. You must save it as a contact before WhatsApp will allow you to message it.
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Send the Activation Message</div>
+        <div class="step-desc">
+          Open WhatsApp, find the <strong>CallMeBot</strong> contact you just saved, and send <strong>exactly</strong> this message:
+          <div class="key-box">
+            <strong>I allow callmebot to send me messages</strong>
+          </div>
+          Send it as a WhatsApp chat message — not SMS. Within a few seconds you will receive a reply containing your personal API key.
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Copy Your API Key</div>
+        <div class="step-desc">
+          CallMeBot will reply with a message like:<br>
+          <code>Your phone is now connected to CallMeBot. Your API key is: 1234567</code><br><br>
+          The number at the end (e.g. <strong>1234567</strong>) is your personal API key. Copy it and keep it safe — you will need it in the next step.
+          <div class="key-box">
+            <strong>My API Key:</strong> ___________________________
+            <br><span style="font-size:11px;color:#888">(write it here for safe-keeping)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Part 2: Enter into registration -->
+  <div class="section-title">Part 2 — Enter Your Key in the Innovat3 Registration Form</div>
+  <div class="steps">
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Open the Registration Form</div>
+        <div class="step-desc">
+          Go to <code>innovat3.co.za/register</code> on your phone or computer.<br>
+          Complete your personal details as normal.
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <div class="step-title">Paste Your API Key</div>
+        <div class="step-desc">
+          In <strong>Step 2 — Personal Info</strong>, scroll to the field labelled <strong>"WhatsApp Alerts — CallMeBot API Key"</strong>.<br>
+          Paste the API key you received in Step 3.<br>
+          Your registered phone number is automatically used — no need to enter it again.
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">6</div>
+      <div class="step-body">
+        <div class="step-title">Add Your Emergency Contacts (Optional)</div>
+        <div class="step-desc">
+          In the <strong>Emergency Contacts</strong> section, for each contact:<br>
+          1. Enter their name and phone number.<br>
+          2. Tick the <strong>WhatsApp</strong> toggle.<br>
+          3. A new field appears — <strong>"CallMeBot API Key"</strong>.<br>
+          4. Your contact must follow Steps 1–3 above on their own phone to get their key, then share it with you to enter here.<br><br>
+          This allows your emergency contacts to also receive a WhatsApp alert when your tag is scanned.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="tip-box">
+    ✅ <strong>Tip:</strong> You can use both WhatsApp AND Telegram at the same time — just fill in both fields. Alerts will be sent to both apps simultaneously.
+  </div>
+
+  <div class="warn-box">
+    ⚠️ <strong>Important:</strong> Your API key is personal — it is linked to your WhatsApp number and cannot be shared or reused on a different number. Each person (including emergency contacts) needs their own key.
+  </div>
+
+  <hr>
+
+  <!-- Part 3: What you will receive -->
+  <div class="section-title">Part 3 — What the Alert Looks Like</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num" style="background:#128C7E">💬</div>
+      <div class="step-body">
+        <div class="step-title">Example WhatsApp Alert</div>
+        <div class="step-desc">
+          When your tag is tapped, you will receive a WhatsApp message like this:<br><br>
+          <code>
+            🚨 TAG SCANNED — IN3-2025-4821<br><br>
+            👤 Jan Smith<br>
+            📍 14 Oak Avenue, Sunridge Park, Port Elizabeth<br>
+            🗺️ https://maps.google.com/?q=-33.97,25.61<br>
+            🕐 14:32, 18 May 2025<br><br>
+            ⚕️ This person may need help. Please respond.
+          </code>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- Troubleshooting -->
+  <div class="section-title">Troubleshooting</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">?</div>
+      <div class="step-body">
+        <div class="step-title">I never received a reply from CallMeBot</div>
+        <div class="step-desc">Make sure you saved <strong>+34 644 59 72 93</strong> as a contact first. WhatsApp blocks messages to unsaved numbers. Try deleting and re-adding the contact, then send the activation message again.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">?</div>
+      <div class="step-body">
+        <div class="step-title">My tag was scanned but I got no WhatsApp message</div>
+        <div class="step-desc">Confirm your API key is entered correctly in the registration form (no spaces or extra characters). You can email <strong>support@innovat3.co.za</strong> with your tag ID and we will verify the key on file.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">?</div>
+      <div class="step-body">
+        <div class="step-title">I changed my phone number</div>
+        <div class="step-desc">Your CallMeBot API key is linked to your old number. You must repeat Steps 1–3 with your new number to get a new key, then update it in your Innovat3 profile by emailing support.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">?</div>
+      <div class="step-body">
+        <div class="step-title">I prefer Telegram</div>
+        <div class="step-desc">See the separate <strong>Telegram Setup Guide</strong> included with your tag. Both systems work the same way once configured — use whichever app you prefer, or both.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <strong>innovat3.</strong> Safety Tag System &nbsp;|&nbsp; support@innovat3.co.za &nbsp;|&nbsp; innovat3.co.za<br>
+    Keep this guide for future reference.
+  </div>
+
+</div>
+</body>
+</html>

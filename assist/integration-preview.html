@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Innovat3 — Medical Assistant Integration Preview</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --orange:#F97316; --teal:#0ED2C8; --black:#0A0A0A;
+  --red:#EF4444; --green:#22C55E; --blue:#3B82F6;
+  --purple:#A855F7; --muted:#777;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Exo 2',sans-serif;background:#030303;color:#F0F0F0;min-height:100vh;padding:24px 16px 40px;}
+
+h1{font-family:'Orbitron',sans-serif;font-size:13px;color:var(--orange);letter-spacing:3px;text-transform:uppercase;text-align:center;margin-bottom:6px;}
+.subtitle{text-align:center;font-size:11px;color:var(--muted);letter-spacing:1px;margin-bottom:32px;}
+
+/* ── FLOW DIAGRAM ── */
+.flow{display:flex;flex-direction:column;align-items:center;gap:0;margin-bottom:40px;}
+.flow-step{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.flow-box{
+  background:#111;border:2px solid #222;border-radius:14px;
+  padding:14px 20px;text-align:center;width:260px;
+}
+.flow-icon{font-size:28px;margin-bottom:6px;}
+.flow-label{font-family:'Orbitron',sans-serif;font-size:9px;color:var(--orange);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;}
+.flow-desc{font-size:11px;color:#aaa;line-height:1.6;}
+.flow-arrow{font-size:22px;color:#333;line-height:1;padding:4px 0;}
+.flow-box.highlight{border-color:rgba(14,210,200,0.6);box-shadow:0 0 24px rgba(14,210,200,0.12);}
+.flow-box.highlight .flow-label{color:var(--teal);}
+
+/* ── CARD MOCKUP ── */
+.section-title{font-family:'Orbitron',sans-serif;font-size:9px;color:var(--muted);letter-spacing:3px;text-transform:uppercase;text-align:center;margin-bottom:16px;}
+
+.phone-frame{
+  max-width:340px;margin:0 auto;
+  background:#0a0a0a;border-radius:36px;
+  border:2px solid #1e1e1e;
+  box-shadow:0 0 60px rgba(0,0,0,0.8),0 0 0 6px #0d0d0d;
+  overflow:hidden;
+  position:relative;
+}
+.phone-notch{height:28px;background:#0a0a0a;display:flex;align-items:center;justify-content:center;}
+.phone-notch-bar{width:80px;height:14px;background:#111;border-radius:8px;}
+.phone-screen{background:#050505;overflow:hidden;}
+
+/* Simulated card content */
+.sim-banner{background:linear-gradient(135deg,#0d0d0d,#1a0a00);border-bottom:3px solid var(--orange);padding:10px 14px;display:flex;align-items:center;gap:10px;}
+.sim-logo{width:36px;height:36px;border-radius:8px;border:2px solid var(--orange);background:#111;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:900;color:var(--orange);flex-shrink:0;}
+.sim-brand{font-family:'Orbitron',sans-serif;font-size:15px;font-weight:900;color:var(--orange);}
+.sim-brand span{color:#fff;}
+.sim-badge{margin-left:auto;background:#130000;border:2px solid var(--red);color:var(--red);font-family:'Orbitron',sans-serif;font-size:6px;padding:4px 8px;border-radius:6px;letter-spacing:1px;}
+
+.sim-identity{margin:8px;border-radius:12px;overflow:hidden;border:2px solid rgba(249,115,22,0.6);}
+.sim-id-hdr{background:linear-gradient(90deg,#c45000,#f97316);padding:8px 12px;font-family:'Orbitron',sans-serif;font-size:7px;font-weight:900;color:#000;letter-spacing:1px;}
+.sim-id-body{background:#0e0e0e;padding:10px 12px;display:flex;align-items:center;gap:10px;}
+.sim-avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#2a2a2a,#111);border:2px solid var(--orange);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.sim-name{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:#fff;}
+.sim-dob{font-size:10px;color:var(--muted);margin-top:2px;}
+.sim-blood{font-family:'Orbitron',sans-serif;font-size:28px;font-weight:900;color:#fff;text-shadow:0 0 20px rgba(239,68,68,0.5);}
+
+.sim-tabs{padding:0 8px;display:flex;flex-direction:column;gap:6px;margin-top:6px;}
+.sim-tab{border-radius:10px;overflow:hidden;}
+.sim-tab-hdr{padding:7px 12px;font-size:7px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;}
+.sim-tab-body{background:#111;padding:10px 12px;font-size:11px;color:#ccc;line-height:1.6;}
+.sim-tab-alert .sim-tab-hdr{background:linear-gradient(90deg,#b85200,#f97316);color:#000;}
+.sim-tab-contacts .sim-tab-hdr{background:linear-gradient(90deg,#082a16,#15803D,#22c55e);color:#fff;}
+
+.sim-contact{display:flex;align-items:center;gap:8px;background:#0d0d0d;border-radius:8px;padding:8px;margin-bottom:6px;border:1px solid #1e1e1e;}
+.sim-ct-badge{width:28px;height:28px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
+.sim-ct-info{flex:1;}
+.sim-ct-name{font-size:11px;font-weight:700;color:#fff;}
+.sim-ct-rel{font-size:9px;color:var(--muted);}
+.sim-ct-call{background:linear-gradient(135deg,#15803D,#166534);border-radius:6px;padding:5px 10px;font-size:10px;font-weight:700;color:#fff;}
+
+.sim-enums{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:8px;}
+.sim-enum{background:linear-gradient(135deg,#160404,#0d0000);border:1px solid rgba(239,68,68,0.35);border-bottom:2px solid var(--red);border-radius:10px;text-align:center;padding:10px 4px;}
+.sim-enum .lbl{font-size:6px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
+.sim-enum .num{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;color:#fff;}
+
+/* ── THE NEW BUTTON ── */
+.sim-assist-btn{
+  margin:8px;border-radius:12px;overflow:hidden;
+  border:2px solid rgba(14,210,200,0.7);
+  box-shadow:0 0 20px rgba(14,210,200,0.15);
+}
+.sim-assist-hdr{
+  background:linear-gradient(90deg,#003d3b,#0ED2C8,#00b8b0);
+  padding:11px 14px;
+  display:flex;align-items:center;gap:10px;
+}
+.sim-assist-icon{font-size:20px;flex-shrink:0;}
+.sim-assist-lbl{font-family:'Orbitron',sans-serif;font-size:8px;font-weight:900;color:#000;letter-spacing:1.5px;text-transform:uppercase;}
+.sim-assist-sub{font-size:9px;color:rgba(0,0,0,0.6);margin-top:1px;}
+.sim-assist-body{background:linear-gradient(135deg,#001a1a,#002020);padding:10px 14px;display:flex;align-items:center;gap:10px;}
+.sim-assist-desc{font-size:10px;color:#5eead4;line-height:1.6;flex:1;}
+.sim-assist-arrow{font-size:18px;color:var(--teal);flex-shrink:0;}
+
+.sim-footer{text-align:center;padding:8px;background:#030303;font-family:'Orbitron',sans-serif;font-size:6px;color:#1e1e1e;letter-spacing:2px;border-top:1px solid #0f0f0f;}
+.sim-footer span{color:var(--orange);}
+
+/* ── ARROW BETWEEN PHONES ── */
+.phones-row{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;}
+.between-arrow{display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;}
+.between-arrow .line{width:2px;height:60px;background:linear-gradient(to bottom,var(--teal),transparent);display:none;}
+.between-arrow .arr{font-size:28px;color:var(--teal);}
+.between-arrow .arr-label{font-size:9px;color:var(--teal);letter-spacing:1.5px;text-transform:uppercase;text-align:center;max-width:70px;line-height:1.4;}
+
+/* ── ASSIST SCREEN MOCKUP ── */
+.sim-assist-screen{background:#050505;}
+.sim-as-banner{background:linear-gradient(135deg,#0d0d0d,#001a1a);border-bottom:3px solid var(--teal);padding:10px 14px;display:flex;align-items:center;gap:10px;}
+.sim-as-brand{font-family:'Orbitron',sans-serif;font-size:15px;font-weight:900;color:var(--teal);}
+.sim-as-brand span{color:#fff;}
+.sim-as-sub{font-size:7px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:2px;}
+
+.sim-as-estrip{background:#001a1a;border-bottom:1px solid rgba(14,210,200,0.2);padding:6px 8px;display:flex;gap:5px;overflow:hidden;}
+.sim-as-ebtn{background:#001e1e;border:1px solid rgba(14,210,200,0.3);border-radius:8px;padding:5px 8px;text-align:center;flex-shrink:0;}
+.sim-as-ebtn .l{font-size:6px;color:var(--muted);letter-spacing:1px;}
+.sim-as-ebtn .n{font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:#fff;}
+
+.sim-as-chat{background:#0d0d0d;margin:8px;border-radius:10px;padding:10px;min-height:80px;border:1px solid #1e1e1e;display:flex;flex-direction:column;gap:8px;}
+.sim-as-msg-user{align-self:flex-end;background:linear-gradient(135deg,#1a0a00,#2a1000);border:1px solid rgba(249,115,22,0.3);border-radius:10px 10px 2px 10px;padding:7px 10px;font-size:10px;color:#fff;max-width:80%;}
+.sim-as-msg-ai{align-self:flex-start;background:linear-gradient(135deg,#001a2a,#001020);border:1px solid rgba(14,210,200,0.2);border-radius:10px 10px 10px 2px;padding:7px 10px;font-size:10px;color:#ccc;max-width:85%;}
+.sim-as-msg-ai strong{color:var(--teal);}
+
+.sim-as-mic{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px;}
+.sim-as-mic-btn{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#001a1a,#003030);border:2px solid var(--teal);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 0 20px rgba(14,210,200,0.25);}
+.sim-as-mic-hint{font-size:8px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;}
+
+.sim-as-find{margin:0 8px 8px;background:linear-gradient(135deg,#0b2818,#14532D);border:1px solid rgba(34,197,94,0.35);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:8px;}
+.sim-as-find-icon{font-size:18px;}
+.sim-as-find-label{font-size:11px;font-weight:700;color:#fff;}
+.sim-as-find-sub{font-size:9px;color:rgba(255,255,255,0.4);}
+
+/* ── NOTES SECTION ── */
+.notes-section{max-width:480px;margin:40px auto 0;}
+.notes-title{font-family:'Orbitron',sans-serif;font-size:9px;color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+.note-item{display:flex;gap:12px;margin-bottom:14px;align-items:flex-start;}
+.note-num{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#003d3b,#0ED2C8);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:900;color:#000;flex-shrink:0;margin-top:1px;}
+.note-body{font-size:12px;color:#aaa;line-height:1.7;}
+.note-body strong{color:#fff;}
+</style>
+</head>
+<body>
+
+<h1>Medical Assistant Integration</h1>
+<div class="subtitle">How it plugs into your existing NFC tag cards</div>
+
+<!-- FLOW DIAGRAM -->
+<div class="flow">
+  <div class="flow-step">
+    <div class="flow-box">
+      <div class="flow-icon">🏷️</div>
+      <div class="flow-label">NFC Tag</div>
+      <div class="flow-desc">Someone scans the tag with their phone. No app needed — opens instantly in any browser.</div>
+    </div>
+  </div>
+  <div class="flow-arrow">↓</div>
+  <div class="flow-step">
+    <div class="flow-box">
+      <div class="flow-icon">🪪</div>
+      <div class="flow-label">Emergency Card</div>
+      <div class="flow-desc">The existing card loads — blood type, medications, emergency contacts, alerts. Everything they need first.</div>
+    </div>
+  </div>
+  <div class="flow-arrow">↓</div>
+  <div class="flow-step">
+    <div class="flow-box highlight">
+      <div class="flow-icon">🤖</div>
+      <div class="flow-label">AI Medical Assistant</div>
+      <div class="flow-desc">New teal button at the bottom of the card. Tap it to open the assistant — first aid guidance, voice answers, nearest hospital finder.</div>
+    </div>
+  </div>
+</div>
+
+<!-- PHONE MOCKUPS -->
+<div class="section-title" style="margin-bottom:20px;">What it looks like on the phone</div>
+
+<div class="phones-row">
+
+  <!-- CARD SCREEN -->
+  <div style="flex-shrink:0;">
+    <div class="section-title">Emergency Card  <span style="color:#444">← existing</span></div>
+    <div class="phone-frame">
+      <div class="phone-notch"><div class="phone-notch-bar"></div></div>
+      <div class="phone-screen">
+
+        <div class="sim-banner">
+          <div class="sim-logo">IN<span style="color:#fff">3</span></div>
+          <div>
+            <div class="sim-brand">innovat<span>3</span></div>
+            <div style="font-size:7px;color:var(--muted);letter-spacing:2px;">EMERGENCY CARD</div>
+          </div>
+          <div class="sim-badge">EMERGENCY</div>
+        </div>
+
+        <div class="sim-identity">
+          <div class="sim-id-hdr">IDENTITY — HUMAN TAG</div>
+          <div class="sim-id-body">
+            <div class="sim-avatar">👤</div>
+            <div style="flex:1;">
+              <div class="sim-name">John Smith</div>
+              <div class="sim-dob">DOB: 15 Mar 1985 · Male</div>
+            </div>
+            <div style="text-align:center;padding-left:10px;border-left:1px solid #222;">
+              <div style="font-size:6px;color:var(--red);letter-spacing:1px;margin-bottom:2px;">BLOOD</div>
+              <div class="sim-blood">A+</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sim-tabs">
+          <div class="sim-tab sim-tab-alert">
+            <div class="sim-tab-hdr">Medical Alerts</div>
+            <div class="sim-tab-body">Penicillin allergy · Diabetic Type 2 · Asthma</div>
+          </div>
+          <div class="sim-tab sim-tab-contacts">
+            <div class="sim-tab-hdr">Emergency Contacts</div>
+            <div class="sim-tab-body">
+              <div class="sim-contact">
+                <div class="sim-ct-badge">👩</div>
+                <div class="sim-ct-info">
+                  <div class="sim-ct-name">Sarah Smith</div>
+                  <div class="sim-ct-rel">Wife · +27 82 555 0101</div>
+                </div>
+                <div class="sim-ct-call">Call</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sim-enums">
+          <div class="sim-enum"><div class="lbl">Police</div><div class="num">10111</div></div>
+          <div class="sim-enum"><div class="lbl">Ambulance</div><div class="num">10177</div></div>
+          <div class="sim-enum"><div class="lbl">Emergency</div><div class="num">112</div></div>
+        </div>
+
+        <!-- ★ THE NEW BUTTON ★ -->
+        <div class="sim-assist-btn">
+          <div class="sim-assist-hdr">
+            <span class="sim-assist-icon">🤖</span>
+            <div>
+              <div class="sim-assist-lbl">AI Medical Assistant</div>
+              <div class="sim-assist-sub">Voice guidance · Find nearest help</div>
+            </div>
+          </div>
+          <div class="sim-assist-body">
+            <div class="sim-assist-desc">
+              Ask about symptoms, first aid steps, or find the nearest hospital or pharmacy — with voice answers.
+            </div>
+            <div class="sim-assist-arrow">›</div>
+          </div>
+        </div>
+
+        <div class="sim-footer"><span>innovat3.</span> · Smart NFC Emergency Tags</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARROW -->
+  <div class="between-arrow">
+    <div class="arr">→</div>
+    <div class="arr-label">Tap the button</div>
+  </div>
+
+  <!-- ASSISTANT SCREEN -->
+  <div style="flex-shrink:0;">
+    <div class="section-title">Medical Assistant  <span style="color:rgba(14,210,200,0.5)">← new</span></div>
+    <div class="phone-frame">
+      <div class="phone-notch"><div class="phone-notch-bar"></div></div>
+      <div class="phone-screen sim-assist-screen">
+
+        <div class="sim-as-banner">
+          <div class="sim-logo" style="border-color:var(--teal);box-shadow:0 0 16px rgba(14,210,200,0.3);">IN<span style="color:#fff">3</span></div>
+          <div>
+            <div class="sim-as-brand">innovat<span>3</span></div>
+            <div class="sim-as-sub">Medical Assistant</div>
+          </div>
+        </div>
+
+        <div class="sim-as-estrip">
+          <div class="sim-as-ebtn"><div class="l">Ambulance</div><div class="n">10177</div></div>
+          <div class="sim-as-ebtn"><div class="l">Police</div><div class="n">10111</div></div>
+          <div class="sim-as-ebtn"><div class="l">Emergency</div><div class="n">112</div></div>
+          <div class="sim-as-ebtn"><div class="l">Poison</div><div class="n">0800</div></div>
+        </div>
+
+        <div class="sim-as-chat">
+          <div class="sim-as-msg-user">Signs of a stroke?</div>
+          <div class="sim-as-msg-ai"><strong>FAST test:</strong> Face drooping · Arms uneven · Slurred speech · Time — call 10177 now.</div>
+        </div>
+
+        <div class="sim-as-mic">
+          <div class="sim-as-mic-btn">🎙️</div>
+          <div class="sim-as-mic-hint">Tap to speak</div>
+        </div>
+
+        <div class="sim-as-find">
+          <div class="sim-as-find-icon">📍</div>
+          <div>
+            <div class="sim-as-find-label">Find Nearest Medical Facility</div>
+            <div class="sim-as-find-sub">Hospital · Pharmacy · Clinic · GP</div>
+          </div>
+        </div>
+
+        <div style="padding:0 8px 8px;">
+          <div style="font-size:9px;color:var(--muted);margin-bottom:6px;letter-spacing:1px;">QUICK ASK</div>
+          <div style="display:flex;gap:5px;flex-wrap:wrap;">
+            <span style="background:#111;border:1px solid #2a2a2a;border-radius:20px;padding:4px 10px;font-size:9px;color:#888;">Heart attack</span>
+            <span style="background:#111;border:1px solid #2a2a2a;border-radius:20px;padding:4px 10px;font-size:9px;color:#888;">CPR guide</span>
+            <span style="background:#111;border:1px solid #2a2a2a;border-radius:20px;padding:4px 10px;font-size:9px;color:#888;">Choking</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- HOW IT WORKS NOTES -->
+<div class="notes-section">
+  <div class="notes-title">How it works</div>
+
+  <div class="note-item">
+    <div class="note-num">1</div>
+    <div class="note-body"><strong>Tag is scanned</strong> — the emergency card opens exactly as it does today. Nothing about the card changes. Blood type, contacts, medical alerts are all still front and centre.</div>
+  </div>
+  <div class="note-item">
+    <div class="note-num">2</div>
+    <div class="note-body"><strong>Teal "AI Medical Assistant" button</strong> appears below the emergency numbers. A bystander, paramedic, or the tag owner can tap it if they need guidance or want to find nearby help.</div>
+  </div>
+  <div class="note-item">
+    <div class="note-num">3</div>
+    <div class="note-body"><strong>Assistant opens</strong> — voice-guided first aid for 12+ emergencies, tap-to-call emergency numbers, and a real-time facility finder using GPS. No app, no login, works on any phone.</div>
+  </div>
+  <div class="note-item">
+    <div class="note-num">4</div>
+    <div class="note-body"><strong>Works on pet tags too</strong> — the same assistant button can be added to the pet card for owners who find a lost or injured animal and need vet finder or animal emergency guidance.</div>
+  </div>
+  <div class="note-item">
+    <div class="note-num">5</div>
+    <div class="note-body"><strong>Zero extra cost</strong> — voice is pre-recorded (committed to the repo as MP3 files), facility search uses OpenStreetMap (free), no API calls at runtime.</div>
+  </div>
+</div>
+
+</body>
+</html>

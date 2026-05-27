@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Innovat3 Safety Tag — Telegram Setup Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', Arial, sans-serif;
+    background: #fff;
+    color: #1a1a1a;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 40px 44px 48px;
+  }
+
+  /* ── Header ── */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 16px;
+    border-bottom: 3px solid #F97316;
+    margin-bottom: 28px;
+  }
+  .logo-block { display: flex; align-items: center; gap: 12px; }
+  .logo-dot {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: #F97316;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .brand { font-size: 18px; font-weight: 900; color: #1a1a1a; letter-spacing: -0.5px; }
+  .brand span { color: #F97316; }
+  .guide-label {
+    font-size: 11px; font-weight: 700; color: #F97316;
+    background: #fff5eb; border: 1px solid #F97316;
+    padding: 4px 10px; border-radius: 20px; letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* ── Title ── */
+  .title { font-size: 22px; font-weight: 900; color: #1a1a1a; margin-bottom: 4px; }
+  .subtitle { font-size: 13px; color: #555; margin-bottom: 24px; }
+
+  /* ── Intro box ── */
+  .intro-box {
+    background: #fffbf5;
+    border-left: 4px solid #F97316;
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 28px;
+    font-size: 12.5px;
+    color: #444;
+  }
+
+  /* ── Steps ── */
+  .section-title {
+    font-size: 12px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; color: #F97316;
+    margin-bottom: 14px; margin-top: 8px;
+  }
+
+  .steps { display: flex; flex-direction: column; gap: 14px; margin-bottom: 28px; }
+
+  .step {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    background: #f9f9f9;
+    border-radius: 10px;
+    padding: 14px 16px;
+    border: 1px solid #eee;
+  }
+  .step-num {
+    width: 28px; height: 28px; min-width: 28px;
+    background: #F97316; color: #fff;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px; margin-top: 1px;
+  }
+  .step-body { flex: 1; }
+  .step-title { font-weight: 700; font-size: 13px; margin-bottom: 4px; }
+  .step-desc { color: #555; font-size: 12.5px; }
+  .step-desc code {
+    background: #f0f0f0; border-radius: 4px;
+    padding: 1px 6px; font-size: 12px; color: #d14;
+  }
+  .step-img-placeholder {
+    width: 100%; height: 54px;
+    background: #f0f0f0; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: #aaa; margin-top: 8px;
+    border: 1px dashed #ccc;
+  }
+
+  /* ── Tip box ── */
+  .tip-box {
+    background: #e8f5e9;
+    border-left: 4px solid #4caf50;
+    padding: 10px 14px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 20px;
+    font-size: 12px;
+    color: #2e7d32;
+  }
+
+  /* ── Warning box ── */
+  .warn-box {
+    background: #fff8e1;
+    border-left: 4px solid #ffc107;
+    padding: 10px 14px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 20px;
+    font-size: 12px;
+    color: #795548;
+  }
+
+  /* ── Divider ── */
+  hr { border: none; border-top: 1px solid #eee; margin: 22px 0; }
+
+  /* ── Footer ── */
+  .footer {
+    text-align: center; font-size: 11px; color: #aaa;
+    border-top: 1px solid #eee; padding-top: 14px; margin-top: 28px;
+  }
+  .footer strong { color: #F97316; }
+
+  @media print {
+    body { font-size: 12px; }
+    .page { padding: 20px 28px; }
+    .step { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo-block">
+      <div class="logo-dot">🏷️</div>
+      <div class="brand">innovat3<span>.</span></div>
+    </div>
+    <div class="guide-label">Setup Guide</div>
+  </div>
+
+  <div class="title">Telegram Alert Setup</div>
+  <div class="subtitle">Receive an instant push notification on your phone the moment your safety tag is tapped.</div>
+
+  <div class="intro-box">
+    <strong>How it works:</strong> When someone taps your Innovat3 NFC tag, our system instantly sends you a Telegram message with the person's name, GPS location, and a Google Maps link — so you or your emergency contacts can respond immediately.
+  </div>
+
+  <!-- Part 1: Install -->
+  <div class="section-title">Part 1 — Install Telegram &amp; Create an Account</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Download Telegram</div>
+        <div class="step-desc">
+          Open the <strong>App Store</strong> (iPhone) or <strong>Google Play Store</strong> (Android) on your phone.<br>
+          Search for <strong>"Telegram"</strong> and tap <strong>Install</strong>.<br>
+          Telegram is completely <strong>free</strong> to download and use.
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Create Your Account</div>
+        <div class="step-desc">
+          Open Telegram → tap <strong>Start Messaging</strong> → enter your mobile number.<br>
+          You will receive a 5-digit SMS code — enter it to confirm.<br>
+          Set a <strong>First Name</strong> and choose a <strong>Username</strong> (e.g. <code>@jansmith</code>).<br>
+          <em>Your username is what you will enter in the Innovat3 registration form.</em>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Find Your Username</div>
+        <div class="step-desc">
+          Tap the <strong>☰ menu</strong> (top-left) → <strong>Settings</strong>.<br>
+          Your username is shown in grey below your name — it starts with <code>@</code>.<br>
+          Note it down exactly — you will need it in Step 4.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Part 2: Link to Innovat3 -->
+  <div class="section-title">Part 2 — Link Your Username to Your Innovat3 Tag</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Start the Innovat3 Bot</div>
+        <div class="step-desc">
+          In Telegram, tap the search icon (🔍) and search for <code>@Innovat3Bot</code>.<br>
+          Open the bot and tap <strong>Start</strong> (or type <code>/start</code>).<br>
+          This registers your chat ID with our system.
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <div class="step-title">Enter Your Username When Registering</div>
+        <div class="step-desc">
+          On the Innovat3 registration form (Step 2 — Personal Info), enter your Telegram username in the <strong>"Telegram Username"</strong> field.<br>
+          Include the <code>@</code> symbol, e.g. <code>@jansmith</code>.<br>
+          Your emergency contacts can do the same in the <strong>Emergency Contacts</strong> section — tick the Telegram toggle and enter their username.
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">6</div>
+      <div class="step-body">
+        <div class="step-title">Test Your Alerts</div>
+        <div class="step-desc">
+          After registering, tap your tag with your phone to trigger a test scan.<br>
+          You should receive a Telegram message within seconds containing the scan location.<br>
+          If you do not receive a message, re-check that you messaged the bot in Step 4 and your username is spelled correctly.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip-box">
+    ✅ <strong>Tip:</strong> Add your emergency contacts' Telegram usernames in the registration form so they also receive instant alerts when your tag is scanned — not just you.
+  </div>
+
+  <div class="warn-box">
+    ⚠️ <strong>Important:</strong> You must send at least one message to <code>@Innovat3Bot</code> before alerts will work. If you only enter your username without messaging the bot, the system cannot send you messages.
+  </div>
+
+  <hr>
+
+  <!-- Troubleshooting -->
+  <div class="section-title">Troubleshooting</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">?</div>
+      <div class="step-body">
+        <div class="step-title">I'm not receiving messages</div>
+        <div class="step-desc">Open Telegram → search <code>@Innovat3Bot</code> → tap <strong>Start</strong>. Then email <strong>support@innovat3.co.za</strong> with your tag ID and we will manually link your account.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">?</div>
+      <div class="step-body">
+        <div class="step-title">I changed my Telegram username</div>
+        <div class="step-desc">Log in to your Innovat3 account and update your Telegram username, or email support with your tag ID and new username.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">?</div>
+      <div class="step-body">
+        <div class="step-title">I prefer WhatsApp over Telegram</div>
+        <div class="step-desc">No problem — see the separate <strong>WhatsApp (CallMeBot) Setup Guide</strong> included with your tag. You can use WhatsApp instead of or alongside Telegram.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <strong>innovat3.</strong> Safety Tag System &nbsp;|&nbsp; support@innovat3.co.za &nbsp;|&nbsp; innovat3.co.za<br>
+    Keep this guide for future reference.
+  </div>
+
+</div>
+</body>
+</html>

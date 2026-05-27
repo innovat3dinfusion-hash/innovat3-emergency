@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Innovat3 — Canva Brand Kit Setup Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800;900&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --orange:#F97316; --teal:#0ED2C8; --black:#0A0A0A; --card:#1A1A1A;
+  --border:#2A2A2A; --text:#F0F0F0; --muted:#9CA3AF; --red:#EF4444;
+  --green:#22C55E; --purple:#A855F7; --yellow:#EAB308;
+}
+body{background:var(--black);color:var(--text);font-family:'Exo 2',sans-serif;font-size:15px;line-height:1.7;padding:0 0 80px}
+
+/* ── NAV ── */
+nav{background:#111;border-bottom:2px solid var(--orange);padding:14px 32px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100}
+.nav-logo{font-family:Orbitron,sans-serif;font-weight:900;font-size:18px;color:var(--orange)}
+.nav-logo span{color:#fff}
+.nav-sub{font-size:10px;letter-spacing:3px;color:#555;text-transform:uppercase}
+
+/* ── LAYOUT ── */
+.wrap{max-width:880px;margin:0 auto;padding:40px 24px}
+
+/* ── STEP CARDS ── */
+.step{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;margin-bottom:28px;position:relative}
+.step-num{
+  position:absolute;top:-16px;left:28px;
+  font-family:Orbitron,sans-serif;font-weight:900;font-size:11px;letter-spacing:2px;
+  background:var(--orange);color:#000;padding:4px 14px;border-radius:100px;text-transform:uppercase
+}
+.step h2{font-family:Orbitron,sans-serif;font-weight:800;font-size:18px;color:#fff;margin-bottom:16px}
+.step p{color:var(--muted);margin-bottom:12px}
+.step p:last-child{margin-bottom:0}
+
+/* ── TABLES ── */
+table{width:100%;border-collapse:collapse;margin:16px 0}
+th{font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:2px;color:#555;text-align:left;padding:8px 12px;border-bottom:1px solid #2a2a2a;text-transform:uppercase}
+td{padding:10px 12px;border-bottom:1px solid #1e1e1e;font-size:13px;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+code{font-family:monospace;background:#111;border:1px solid #2a2a2a;border-radius:4px;padding:2px 8px;font-size:12px;color:var(--orange)}
+
+/* ── SWATCHES ── */
+.palette{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}
+.sw{display:flex;flex-direction:column;align-items:center;gap:6px;width:80px}
+.sw-dot{width:64px;height:64px;border-radius:10px;border:1px solid #2a2a2a}
+.sw-name{font-size:9px;letter-spacing:1px;color:#777;text-transform:uppercase;text-align:center}
+.sw-hex{font-family:monospace;font-size:9px;color:#555}
+
+/* ── FONT PREVIEWS ── */
+.font-block{background:#111;border:1px solid #1e1e1e;border-radius:10px;padding:20px 22px;margin-bottom:12px}
+.font-meta{font-size:10px;letter-spacing:2px;color:#555;margin-top:8px;text-transform:uppercase}
+
+/* ── FILE LIST ── */
+.file-list{list-style:none;display:flex;flex-direction:column;gap:8px;margin:12px 0}
+.file-list li{background:#111;border:1px solid #2a2a2a;border-radius:8px;padding:10px 16px;display:flex;align-items:center;gap:12px;font-size:13px}
+.file-tag{font-family:Orbitron,sans-serif;font-size:9px;letter-spacing:1px;background:rgba(249,115,22,.12);border:1px solid rgba(249,115,22,.3);color:var(--orange);padding:3px 10px;border-radius:100px;white-space:nowrap}
+
+/* ── VOICE BOX ── */
+.voice-box{background:#0d0600;border:1px solid rgba(249,115,22,.3);border-radius:10px;padding:20px 22px;font-size:14px;color:#ccc;line-height:1.8;font-style:italic;margin:12px 0}
+.voice-chars{font-size:10px;color:#555;letter-spacing:1px;margin-top:8px}
+
+/* ── CHECKLIST ── */
+.checklist{list-style:none;display:flex;flex-direction:column;gap:8px;margin:12px 0}
+.checklist li{display:flex;align-items:flex-start;gap:12px;font-size:13px;color:var(--muted)}
+.check{width:20px;height:20px;border:1px solid #333;border-radius:5px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center}
+.check svg{display:none}
+
+/* ── SECTION LABEL ── */
+.section-label{font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:4px;color:var(--orange);text-transform:uppercase;margin-bottom:24px;margin-top:48px;padding-bottom:10px;border-bottom:1px solid #1a1a1a}
+.section-label:first-child{margin-top:0}
+
+/* ── BADGE ── */
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:1px;border-radius:100px;padding:3px 12px;font-weight:600;text-transform:uppercase}
+.badge.orange{background:rgba(249,115,22,.12);border:1px solid rgba(249,115,22,.3);color:var(--orange)}
+.badge.teal{background:rgba(14,210,200,.1);border:1px solid rgba(14,210,200,.25);color:var(--teal)}
+
+/* ── NAV PATH ── */
+.nav-path{display:inline-flex;align-items:center;gap:6px;background:#0d0d0d;border:1px solid #2a2a2a;border-radius:8px;padding:8px 16px;font-family:Orbitron,sans-serif;font-size:11px;letter-spacing:1px;color:#aaa;margin:10px 0}
+.nav-path span{color:var(--orange)}
+.nav-path .sep{color:#444}
+</style>
+</head>
+<body>
+
+<nav>
+  <div>
+    <div class="nav-logo">innovat3<span>.</span></div>
+    <div class="nav-sub">Canva Brand Kit — Setup Guide</div>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <div class="section-label">How to open your brand kit</div>
+  <div class="nav-path">Canva Home <span class="sep">→</span> <span>More</span> <span class="sep">→</span> <span>Brand</span> <span class="sep">→</span> Select Kit <span class="sep">→</span> Edit</div>
+  <p style="color:#555;font-size:13px;margin-top:8px">Your existing kit ID is <code>kAGxLajozDY</code></p>
+
+  <!-- ════════════════ STEP 1 ════════════════ -->
+  <div style="margin-top:40px"></div>
+  <div class="section-label">Step 1 — Logos</div>
+
+  <div class="step">
+    <div class="step-num">Step 01</div>
+    <h2>Upload Logos</h2>
+    <p>Upload the three SVG files from your <code>brand/</code> folder. Canva accepts SVG, PNG, and JPG. Upload in this order so the <strong>primary logo</strong> appears first.</p>
+
+    <ul class="file-list">
+      <li>
+        <span class="file-tag">Primary</span>
+        <strong>04-logo-horizontal.svg</strong>
+        <span style="color:#555;margin-left:auto">Symbol + INNOVAT3 + tagline · dark bg</span>
+      </li>
+      <li>
+        <span class="file-tag">Stacked</span>
+        <strong>05-logo-stacked.svg</strong>
+        <span style="color:#555;margin-left:auto">Centred lockup · dark bg · square format</span>
+      </li>
+      <li>
+        <span class="file-tag">Icon</span>
+        <strong>02-symbol-dark.svg</strong>
+        <span style="color:#555;margin-left:auto">Symbol only · dark bg · for profile pics / favicons</span>
+      </li>
+    </ul>
+
+    <p style="margin-top:4px">All SVG files use CSS <code>--primary</code> and <code>--light</code> variables — colours can be changed without re-exporting.</p>
+  </div>
+
+  <!-- ════════════════ STEP 2 ════════════════ -->
+  <div class="section-label">Step 2 — Colours</div>
+
+  <div class="step">
+    <div class="step-num">Step 02</div>
+    <h2>Add Colour Palette</h2>
+    <p>Create <strong>two palettes</strong> inside the Brand Kit colours section: a Primary palette and a Support palette.</p>
+
+    <p style="margin-top:16px;font-family:Orbitron,sans-serif;font-size:11px;letter-spacing:2px;color:var(--orange)">PRIMARY PALETTE</p>
+    <div class="palette">
+      <div class="sw">
+        <div class="sw-dot" style="background:#F97316;box-shadow:0 0 14px rgba(249,115,22,.4)"></div>
+        <div class="sw-name">Orange</div>
+        <div class="sw-hex">#F97316</div>
+      </div>
+      <div class="sw">
+        <div class="sw-dot" style="background:#0ED2C8;box-shadow:0 0 14px rgba(14,210,200,.3)"></div>
+        <div class="sw-name">Teal</div>
+        <div class="sw-hex">#0ED2C8</div>
+      </div>
+      <div class="sw">
+        <div class="sw-dot" style="background:#0A0A0A;border-color:#333"></div>
+        <div class="sw-name">Black</div>
+        <div class="sw-hex">#0A0A0A</div>
+      </div>
+      <div class="sw">
+        <div class="sw-dot" style="background:#F0F0F0"></div>
+        <div class="sw-name">Off-White</div>
+        <div class="sw-hex">#F0F0F0</div>
+      </div>
+      <div class="sw">
+        <div class="sw-dot" style="background:#1A1A1A;border-color:#333"></div>
+        <div class="sw-name">Card</div>
+        <div class="sw-hex">#1A1A1A</div>
+      </div>
+      <div class="sw">
+        <div class="sw-dot" style="background:#2A2A2A;border-color:#333"></div>
+        <div class="sw-name">Border</div>
+        <div class="sw-hex">#2A2A2A</div>
+      </div>
+      <div class="sw">
+        <div class="sw-dot" style="background:#9CA3AF"></div>
+        <div class="sw-name">Muted</div>
+        <div class="sw-hex">#9CA3AF</div>
+      </div>
+    </div>
+
+    <p style="margin-top:20px;font-family:Orbitron,sans-serif;font-size:11px;letter-spacing:2px;color:#555">PLAN / SUPPORT PALETTE</p>
+    <div class="palette">
+      <div class="sw">
+        <div class="sw-dot" style="background:#EF4444"></div>
+        <div class="sw-name">Alert Red</div>
+        <div class="sw-hex">#EF4444</div>
+      </div>
+      <div class="sw">
+        <div class="sw-dot" style="background:#22C55E"></div>
+        <div class="sw-name">Success</div>
+        <div class="sw-hex">#22C55E</div>
+      </div>
+      <div class="sw">
+        <div class="sw-dot" style="background:#A855F7"></div>
+        <div class="sw-name">Solo Purple</div>
+        <div class="sw-hex">#A855F7</div>
+      </div>
+      <div class="sw">
+        <div class="sw-dot" style="background:#EAB308"></div>
+        <div class="sw-name">Warning</div>
+        <div class="sw-hex">#EAB308</div>
+      </div>
+      <div class="sw">
+        <div class="sw-dot" style="background:#FB923C"></div>
+        <div class="sw-name">Orange 2</div>
+        <div class="sw-hex">#FB923C</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════ STEP 3 ════════════════ -->
+  <div class="section-label">Step 3 — Fonts &amp; Text Styles</div>
+
+  <div class="step">
+    <div class="step-num">Step 03</div>
+    <h2>Set Fonts in Brand Kit</h2>
+    <p>In the Fonts section, set three text style slots. Both fonts are available in Canva's library — search by name.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Slot</th>
+          <th>Font</th>
+          <th>Weight</th>
+          <th>Size</th>
+          <th>Used for</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge orange">Heading</span></td>
+          <td><strong>Orbitron</strong></td>
+          <td>900 (Black)</td>
+          <td><strong>42 pt</strong></td>
+          <td>Page titles, hero h1, brand name, CTAs</td>
+        </tr>
+        <tr>
+          <td><span class="badge teal">Subheading</span></td>
+          <td><strong>Orbitron</strong></td>
+          <td>800 (ExtraBold)</td>
+          <td><strong>26 pt</strong></td>
+          <td>Section titles, plan names, stat numbers</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#1a1a1a;border:1px solid #333;color:#9CA3AF">Body</span></td>
+          <td><strong>Exo 2</strong></td>
+          <td>400 (Regular)</td>
+          <td><strong>15 pt</strong></td>
+          <td>Paragraphs, descriptions, feature lists</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p style="margin-top:4px;font-size:13px">Canva won't show font weights in the size picker — after selecting Orbitron for Heading, manually set Bold/Extra Bold in the text panel. For Exo 2 body, leave at Regular.</p>
+  </div>
+
+  <!-- Extended typography ref -->
+  <div class="step">
+    <div class="step-num">Reference</div>
+    <h2>Full Typography Scale (for your designs)</h2>
+    <p>Use these sizes consistently across all Canva designs to match the website.</p>
+
+    <table>
+      <thead>
+        <tr><th>Element</th><th>Font</th><th>Weight</th><th>Size</th><th>Letter Spacing</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Hero H1</td><td>Orbitron</td><td>900</td><td>72 pt</td><td>-0.5</td></tr>
+        <tr><td>Section H2</td><td>Orbitron</td><td>800</td><td>42 pt</td><td>-0.5</td></tr>
+        <tr><td>Sub-section H3</td><td>Orbitron</td><td>700</td><td>28 pt</td><td>0</td></tr>
+        <tr><td>Navigation brand</td><td>Orbitron</td><td>900</td><td>22 pt</td><td>0</td></tr>
+        <tr><td>Button / CTA</td><td>Orbitron</td><td>700–900</td><td>14 pt</td><td>1.5</td></tr>
+        <tr><td>Section label</td><td>Orbitron</td><td>700</td><td>10 pt</td><td>3</td></tr>
+        <tr><td>Body paragraph</td><td>Exo 2</td><td>400</td><td>15–16 pt</td><td>0</td></tr>
+        <tr><td>Tagline / subtitle</td><td>Exo 2</td><td>300</td><td>15 pt</td><td>0</td></tr>
+        <tr><td>Small label</td><td>Exo 2</td><td>600</td><td>13 pt</td><td>1</td></tr>
+        <tr><td>Micro / badge</td><td>Exo 2</td><td>700</td><td>10 pt</td><td>2</td></tr>
+        <tr><td>Stat number</td><td>Orbitron</td><td>900</td><td>42 pt</td><td>0</td></tr>
+      </tbody>
+    </table>
+
+    <p style="margin-top:8px;font-size:13px">All uppercase labels: <code>text-transform: uppercase</code> · Orange label: colour <code>#F97316</code></p>
+  </div>
+
+  <!-- ════════════════ STEP 4 ════════════════ -->
+  <div class="section-label">Step 4 — Brand Voice</div>
+
+  <div class="step">
+    <div class="step-num">Step 04</div>
+    <h2>Paste Brand Voice (500 char max)</h2>
+    <p>In the Brand Voice field, paste exactly this text:</p>
+
+    <div class="voice-box">
+      Bold, direct, urgent. We build NFC emergency tags that send GPS alerts in under 3 seconds — no app needed. Speak to first responders, families, and pet owners: clear, life-saving, trustworthy. No fluff. Use short sentences. Prioritise speed and reliability. Headlines in Orbitron. Body in Exo 2. Always: "Made in South Africa."
+    </div>
+    <div class="voice-chars">324 characters · max 500</div>
+  </div>
+
+  <!-- ════════════════ STEP 5 ════════════════ -->
+  <div class="section-label">Step 5 — Brand Name Rules</div>
+
+  <div class="step">
+    <div class="step-num">Step 05</div>
+    <h2>Brand Name Styling Rules</h2>
+    <p>How "Innovat3" appears depends on context. Use the table below whenever writing the name in Canva designs.</p>
+
+    <table>
+      <thead>
+        <tr><th>Context</th><th>Casing</th><th>Colour</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Logo / nav</td><td><code>innovat3.</code></td><td>#F97316</td><td>Lowercase + trailing period</td></tr>
+        <tr><td>Hero headings</td><td><code>Innovat3</code></td><td>#FFFFFF</td><td>Capital I — no period</td></tr>
+        <tr><td>Inline / copy</td><td><code>Innovat3</code></td><td>contextual</td><td>Capital I — no period</td></tr>
+        <tr><td>Legal / trademark</td><td><code>INNOVAT3</code></td><td>#F97316</td><td>All caps</td></tr>
+        <tr><td>Tagline pairing</td><td><code>innovat3.</code></td><td>#F97316</td><td>Always paired with tagline below</td></tr>
+      </tbody>
+    </table>
+
+    <p style="margin-top:12px">The "3" replaces the letter <strong>e</strong> in "innovate" — it is always the digit 3, never the letter e. In two-colour treatments, "INNOVAT" is orange and "3" is white.</p>
+  </div>
+
+  <!-- ════════════════ STEP 6 ════════════════ -->
+  <div class="section-label">Step 6 — Taglines &amp; Copy Bank</div>
+
+  <div class="step">
+    <div class="step-num">Step 06</div>
+    <h2>Approved Taglines (use in templates)</h2>
+    <p>Copy these into Canva templates or the Brand Voice notes field. All approved for use on social posts, print, and ads.</p>
+
+    <table>
+      <thead><tr><th>Tier</th><th>Copy</th><th>Use</th></tr></thead>
+      <tbody>
+        <tr><td>Primary</td><td><strong>"Smart Tags. Real Protection. Always."</strong></td><td>Hero, cover images</td></tr>
+        <tr><td>Secondary</td><td>"Scan. Alert. Respond."</td><td>Badges, social posts</td></tr>
+        <tr><td>Detail</td><td>"GPS alert to your family in under 3 seconds."</td><td>Feature callouts</td></tr>
+        <tr><td>Action</td><td>"No app needed. No delay."</td><td>CTA companion</td></tr>
+        <tr><td>Origin</td><td>"Made in South Africa."</td><td>Footer, packaging</td></tr>
+        <tr><td>Legal</td><td>"⚡ Patent Pending · ZA 2026/1539553"</td><td>Legal badge, footer</td></tr>
+        <tr><td>Legal</td><td>"™ INNOVAT3 Trade Mark Pending"</td><td>Footer fine print</td></tr>
+        <tr><td>Pet</td><td>"Tap. Alert. Home."</td><td>Pet tag designs</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════════════════ STEP 7 ════════════════ -->
+  <div class="section-label">Step 7 — Final Checklist</div>
+
+  <div class="step">
+    <div class="step-num">Step 07</div>
+    <h2>Brand Kit Completion Checklist</h2>
+
+    <ul class="checklist">
+      <li><div class="check"></div><strong>Logos:</strong> 04-logo-horizontal.svg uploaded as primary</li>
+      <li><div class="check"></div><strong>Logos:</strong> 05-logo-stacked.svg uploaded</li>
+      <li><div class="check"></div><strong>Logos:</strong> 02-symbol-dark.svg uploaded (icon version)</li>
+      <li><div class="check"></div><strong>Colour palette 1:</strong> 7 primary colours added (#F97316, #0ED2C8, #0A0A0A, #F0F0F0, #1A1A1A, #2A2A2A, #9CA3AF)</li>
+      <li><div class="check"></div><strong>Colour palette 2:</strong> 5 support colours added (#EF4444, #22C55E, #A855F7, #EAB308, #FB923C)</li>
+      <li><div class="check"></div><strong>Heading font:</strong> Orbitron · 42 pt · set</li>
+      <li><div class="check"></div><strong>Subheading font:</strong> Orbitron · 26 pt · set</li>
+      <li><div class="check"></div><strong>Body font:</strong> Exo 2 · 15 pt · set</li>
+      <li><div class="check"></div><strong>Brand Voice:</strong> 324-char description pasted</li>
+      <li><div class="check"></div><strong>Test:</strong> Create a new design — brand colours, fonts, and logo appear in the Brand panel</li>
+    </ul>
+  </div>
+
+  <!-- ════════════════ FONT PREVIEWS ════════════════ -->
+  <div class="section-label">Visual Reference</div>
+
+  <div class="font-block">
+    <div style="font-family:Orbitron,sans-serif;font-weight:900;font-size:48px;color:#F97316;letter-spacing:-0.5px">innovat<span style="color:#fff">3</span>.</div>
+    <div class="font-meta">Orbitron 900 · 48pt · Hero / Brand name</div>
+  </div>
+  <div class="font-block">
+    <div style="font-family:Orbitron,sans-serif;font-weight:800;font-size:32px;color:#F0F0F0;letter-spacing:-0.5px">Smart Tags. Real Protection.</div>
+    <div class="font-meta">Orbitron 800 · 32pt · Section headings</div>
+  </div>
+  <div class="font-block">
+    <div style="font-family:Orbitron,sans-serif;font-weight:700;font-size:14px;letter-spacing:3px;color:#F97316;text-transform:uppercase">Scan · Alert · Respond</div>
+    <div class="font-meta">Orbitron 700 · 14pt · uppercase · 3px tracking · Labels / CTAs</div>
+  </div>
+  <div class="font-block">
+    <div style="font-family:'Exo 2',sans-serif;font-weight:400;font-size:16px;color:#F0F0F0;line-height:1.75">Your NFC tag sends GPS alerts to family in under 3 seconds. No app needed. Made in South Africa.</div>
+    <div class="font-meta">Exo 2 400 · 16pt · Body text</div>
+  </div>
+  <div class="font-block">
+    <div style="font-family:'Exo 2',sans-serif;font-weight:300;font-size:13px;letter-spacing:3px;color:#9CA3AF;text-transform:uppercase">Made in South Africa · Patent Pending</div>
+    <div class="font-meta">Exo 2 300 · 13pt · uppercase · 3px tracking · Taglines / footers</div>
+  </div>
+
+</div>
+</body>
+</html>
