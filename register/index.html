@@ -504,12 +504,13 @@ var TG_IMG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcv
 var currentStep      = 1;
 var bloodSelected    = '';
 var planSelected     = 'Solo';
-var billingCycle     = 'annual';  // 'annual' or 'monthly'
+var billingCycle     = 'monthly';  // 'annual' or 'monthly'
 var familyMembers    = [];
 var coloursSelected  = ['Surprise Me'];
 // Initialise tag preview once DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
   if (typeof updateTagPreview === 'function') updateTagPreview();
+  if (typeof setBilling === 'function') setBilling('monthly');
 });
 var photoDataUrl     = '';
 var photoUploadedUrl = '';
@@ -572,10 +573,10 @@ var referredByCode = '';
     <!-- Billing Toggle -->
     <div style="text-align:center;margin-bottom:6px">
       <div class="billing-toggle">
-        <button class="billing-btn active" id="billAnnual" onclick="setBilling('annual')">Annual</button>
-        <button class="billing-btn" id="billMonthly" onclick="setBilling('monthly')">Monthly</button>
+        <button class="billing-btn active" id="billMonthly" onclick="setBilling('monthly')">Monthly</button>
+        <button class="billing-btn" id="billAnnual" onclick="setBilling('annual')">Annual</button>
       </div>
-      <div style="font-size:11px;color:var(--green);font-weight:700;" id="savingNote">💰 Save 20% with annual billing</div>
+      <div style="font-size:11px;color:var(--muted);font-weight:700;" id="savingNote">Switch to annual and save 20%</div>
     </div>
 
     <!-- Plan Cards -->
@@ -598,8 +599,8 @@ var referredByCode = '';
             </div>
             <div class="plan-price-wrap">
               <div class="plan-price-was" id="soloWas"></div>
-              <div class="plan-price-main" id="soloPrice">R470</div>
-              <div class="plan-price-per" id="soloPer">/year</div>
+              <div class="plan-price-main" id="soloPrice">R49</div>
+              <div class="plan-price-per" id="soloPer">/month</div>
             </div>
           </div>
 
@@ -638,8 +639,8 @@ var referredByCode = '';
             </div>
             <div class="plan-price-wrap">
               <div class="plan-price-was" id="familyWas"></div>
-              <div class="plan-price-main" id="familyPrice">R1,435</div>
-              <div class="plan-price-per" id="familyPer">/year</div>
+              <div class="plan-price-main" id="familyPrice">R149</div>
+              <div class="plan-price-per" id="familyPer">/month</div>
             </div>
           </div>
 
@@ -2736,20 +2737,21 @@ function showPaymentSection(tagId, firstName, lastName, email, phone, plan, bill
     billingLabel = 'Annual';
   }
 
-  var hardwareAmount = (tagCount || 1) * 199;
-  var totalAmount    = subAmount + hardwareAmount;
+  var totalAmount = subAmount;
 
   var summary = document.getElementById('paymentSummary');
   if (summary) {
     var renewalNote = billing === 'monthly'
       ? '<div style="margin-top:10px;padding:8px 12px;background:rgba(14,210,200,0.07);border:1px solid rgba(14,210,200,0.2);border-radius:8px;font-size:12px;color:#0ED2C8">🔁 <strong>Auto-recurring:</strong> R' + subAmount.toFixed(2) + '/month charged automatically. Cancel anytime via PayFast dashboard.</div>'
       : '';
+    var shippingNote = '<div style="margin-top:10px;padding:8px 12px;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.25);border-radius:8px;font-size:12px;color:#22C55E;text-align:center">'
+      + (totalAmount > 200 ? '🚚 <strong>Free shipping</strong> — your order qualifies!' : '🚚 Free shipping on orders over R200')
+      + '</div>';
     summary.innerHTML =
       '<div style="font-family:\'Orbitron\',sans-serif;font-size:10px;letter-spacing:2px;color:#F97316;margin-bottom:14px">PAYMENT SUMMARY</div>' +
-      '<div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:14px"><span style="color:#aaa">' + planData.label + ' (' + billingLabel + ')</span><span style="color:#fff;font-weight:600">R' + subAmount.toFixed(2) + '</span></div>' +
-      '<div style="display:flex;justify-content:space-between;margin-bottom:14px;font-size:14px"><span style="color:#aaa">Tag Hardware (' + (tagCount||1) + ' tag' + (tagCount>1?'s':'') + ') — once-off</span><span style="color:#fff;font-weight:600">R' + hardwareAmount.toFixed(2) + '</span></div>' +
+      '<div style="display:flex;justify-content:space-between;margin-bottom:14px;font-size:14px"><span style="color:#aaa">' + planData.label + ' (' + billingLabel + ')</span><span style="color:#fff;font-weight:600">R' + subAmount.toFixed(2) + '</span></div>' +
       '<div style="border-top:1px solid rgba(249,115,22,0.3);padding-top:12px;display:flex;justify-content:space-between"><span style="color:#fff;font-weight:700;font-size:16px">Total</span><span style="color:#F97316;font-weight:900;font-size:22px;font-family:\'Orbitron\',sans-serif">R' + totalAmount.toFixed(2) + '</span></div>' +
-      renewalNote;
+      renewalNote + shippingNote;
   }
 
   window._paymentData = {
