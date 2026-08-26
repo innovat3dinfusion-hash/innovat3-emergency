@@ -700,14 +700,14 @@ footer{background:#070707;border-top:1px solid var(--border);padding:60px 40px 3
   <div class="section-inner">
     <div class="section-label">Pricing</div>
     <div class="section-title">One tag. One person.<br>One subscription.</div>
-    <p class="section-sub" style="margin-bottom:16px">Every plan includes a physical Innovat3 tag, emergency profile, Telegram &amp; WhatsApp alerts, and scan history. One-time tag fee: <strong style="color:var(--orange)">R199 per tag.</strong></p>
+    <p class="section-sub" style="margin-bottom:16px">Every plan includes a physical Innovat3 tag, emergency profile, Telegram &amp; WhatsApp alerts, and scan history. <strong style="color:var(--green)">Free shipping on orders over R200.</strong></p>
 
     <!-- Billing toggle -->
     <div class="billing-toggle">
-      <button class="billing-btn active" id="billAnnual" onclick="setBilling('annual')">Annual</button>
-      <button class="billing-btn" id="billMonthly" onclick="setBilling('monthly')">Monthly</button>
+      <button class="billing-btn active" id="billMonthly" onclick="setBilling('monthly')">Monthly</button>
+      <button class="billing-btn" id="billAnnual" onclick="setBilling('annual')">Annual</button>
     </div>
-    <div class="saving-note" id="savingNote">💰 Save 20% with annual billing</div>
+    <div class="saving-note" id="savingNote">Switch to annual and save 20%</div>
 
     <div class="plans-grid">
 
@@ -719,11 +719,11 @@ footer{background:#070707;border-top:1px solid var(--border);padding:60px 40px 3
         </div>
         <div class="plan-body">
           <div class="plan-icon">👤</div>
-          <div class="plan-was" id="soloWas">R588/yr</div>
+          <div class="plan-was" id="soloWas"></div>
           <div class="plan-price-row">
-            <sup>R</sup><span class="plan-price-num" id="soloPrice">470</span>
+            <sup>R</sup><span class="plan-price-num" id="soloPrice">49</span>
           </div>
-          <div class="plan-price-per" id="soloPer">/year</div>
+          <div class="plan-price-per" id="soloPer">/month</div>
           <div class="plan-tag-note">1 person · 1 NFC tag</div>
         </div>
       </div>
@@ -737,11 +737,11 @@ footer{background:#070707;border-top:1px solid var(--border);padding:60px 40px 3
         <div class="plan-body">
           <div class="plan-badge">⭐ MOST POPULAR</div>
           <div class="plan-icon">👨‍👩‍👧‍👦</div>
-          <div class="plan-was" id="familyWas">R1,788/yr</div>
+          <div class="plan-was" id="familyWas"></div>
           <div class="plan-price-row">
-            <sup>R</sup><span class="plan-price-num" id="familyPrice">1,435</span>
+            <sup>R</sup><span class="plan-price-num" id="familyPrice">149</span>
           </div>
-          <div class="plan-price-per" id="familyPer">/year</div>
+          <div class="plan-price-per" id="familyPer">/month</div>
           <div class="plan-tag-note">Up to 4 members · 1 account</div>
         </div>
       </div>
@@ -768,7 +768,7 @@ footer{background:#070707;border-top:1px solid var(--border);padding:60px 40px 3
     <!-- Single CTA -->
     <div class="plans-cta">
       <a href="https://innovat3dinfusion-hash.github.io/innovat3-emergency/register/" class="plans-cta-btn">Get Your Tag →</a>
-      <div class="plans-cta-note">Choose your plan on the next page &nbsp;·&nbsp; R199 once-off tag fee &nbsp;·&nbsp; Cancel anytime</div>
+      <div class="plans-cta-note">Choose your plan on the next page &nbsp;·&nbsp; Free shipping over R200 &nbsp;·&nbsp; Cancel anytime</div>
     </div>
   </div>
 </section>
@@ -1095,7 +1095,7 @@ footer{background:#070707;border-top:1px solid var(--border);padding:60px 40px 3
           <a href="https://innovat3dinfusion-hash.github.io/innovat3-emergency/register/?plan=solo">Solo — R49/mo</a>
           <a href="https://innovat3dinfusion-hash.github.io/innovat3-emergency/register/?plan=family">Family — R149/mo</a>
           <a href="https://innovat3dinfusion-hash.github.io/innovat3-emergency/register/?plan=care">Care — R199 once-off</a>
-          <a href="https://innovat3dinfusion-hash.github.io/innovat3-emergency/register/">Tag fee — R199 once-off</a>
+          <a href="https://innovat3dinfusion-hash.github.io/innovat3-emergency/register/">Free shipping over R200</a>
         </div>
       </div>
       <div>
@@ -1201,7 +1201,7 @@ document.addEventListener('keydown', function(e) {
 
 <script>
 // Billing toggle — matches register form logic exactly
-var billingCycle = 'annual';
+var billingCycle = 'monthly';
 function setBilling(cycle) {
   billingCycle = cycle;
   document.getElementById('billAnnual').classList.toggle('active', cycle === 'annual');
@@ -1225,6 +1225,7 @@ function setBilling(cycle) {
     if (note) { note.textContent = 'Switch to annual and save 20%'; note.style.color = 'var(--mid)'; }
   }
 }
+document.addEventListener('DOMContentLoaded', function() { setBilling('monthly'); });
 
 function openModal(id) {
   var modal = document.getElementById(id);
@@ -1297,7 +1298,7 @@ document.addEventListener('keydown', function(e) {
       <h3 style="font-family:Orbitron,sans-serif;font-size:14px;font-weight:700;color:#F97316;margin:24px 0 10px;padding-bottom:8px;border-bottom:1px solid #1e1e1e">2. Service Description</h3>
       <p style="font-size:14px;color:#9CA3AF;line-height:1.75;font-weight:300">Innovat3 provides 3D-printed NFC emergency ID tags paired with a cloud-based emergency profile and real-time GPS alert system delivered via Telegram and WhatsApp when your tag is scanned.</p>
       <h3 style="font-family:Orbitron,sans-serif;font-size:14px;font-weight:700;color:#F97316;margin:24px 0 10px;padding-bottom:8px;border-bottom:1px solid #1e1e1e">3. Subscriptions &amp; Payments</h3>
-      <p style="font-size:14px;color:#9CA3AF;line-height:1.75;font-weight:300">Subscriptions are billed monthly (Solo R49/mo, Family R149/mo) or annually with a 20% saving (Solo R470/yr, Family R1,435/yr). A once-off hardware fee of R199 per tag applies to all plans. The Care plan (adults 55+ and persons with disabilities) is a once-off lifetime payment of R199 with no ongoing subscription. You may cancel at any time — no refunds for partial billing periods.</p>
+      <p style="font-size:14px;color:#9CA3AF;line-height:1.75;font-weight:300">Subscriptions are billed monthly (Solo R49/mo, Family R149/mo) or annually with a 20% saving (Solo R470/yr, Family R1,435/yr). The Care plan (adults 55+ and persons with disabilities) is a once-off lifetime payment of R199 with no ongoing subscription. Shipping is free on orders over R200. You may cancel at any time — no refunds for partial billing periods.</p>
       <h3 style="font-family:Orbitron,sans-serif;font-size:14px;font-weight:700;color:#F97316;margin:24px 0 10px;padding-bottom:8px;border-bottom:1px solid #1e1e1e">4. User Responsibilities</h3>
       <p style="font-size:14px;color:#9CA3AF;line-height:1.75;font-weight:300">You are responsible for keeping your emergency profile accurate and up to date. You must obtain consent from emergency contacts before adding them to your profile. Innovat3 is not liable for harm arising from inaccurate information.</p>
       <h3 style="font-family:Orbitron,sans-serif;font-size:14px;font-weight:700;color:#F97316;margin:24px 0 10px;padding-bottom:8px;border-bottom:1px solid #1e1e1e">5. Limitation of Liability</h3>
