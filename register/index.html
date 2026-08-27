@@ -2703,19 +2703,24 @@ function showPaymentSection(tagId, firstName, lastName, email, phone, plan, bill
     billingLabel = 'Annual';
   }
 
-  var totalAmount = subAmount;
+  var shippingFee = subAmount < 200 ? 100 : 0;
+  var totalAmount = subAmount + shippingFee;
 
   var summary = document.getElementById('paymentSummary');
   if (summary) {
     var renewalNote = billing === 'monthly'
       ? '<div style="margin-top:10px;padding:8px 12px;background:rgba(14,210,200,0.07);border:1px solid rgba(14,210,200,0.2);border-radius:8px;font-size:12px;color:#0ED2C8">🔁 <strong>Auto-recurring:</strong> R' + subAmount.toFixed(2) + '/month charged automatically. Cancel anytime via PayFast dashboard.</div>'
       : '';
+    var shippingRow = shippingFee > 0
+      ? '<div style="display:flex;justify-content:space-between;margin-bottom:14px;font-size:14px"><span style="color:#aaa">Shipping</span><span style="color:#fff;font-weight:600">R' + shippingFee.toFixed(2) + '</span></div>'
+      : '';
     var shippingNote = '<div style="margin-top:10px;padding:8px 12px;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.25);border-radius:8px;font-size:12px;color:#22C55E;text-align:center">'
-      + (totalAmount > 200 ? '🚚 <strong>Free shipping</strong> — your order qualifies!' : '🚚 Free shipping on orders over R200')
+      + (shippingFee > 0 ? '🚚 Free shipping on orders over R200 — this order includes R100 shipping' : '🚚 <strong>Free shipping</strong> — your order qualifies!')
       + '</div>';
     summary.innerHTML =
       '<div style="font-family:\'Orbitron\',sans-serif;font-size:10px;letter-spacing:2px;color:#F97316;margin-bottom:14px">PAYMENT SUMMARY</div>' +
       '<div style="display:flex;justify-content:space-between;margin-bottom:14px;font-size:14px"><span style="color:#aaa">' + planData.label + ' (' + billingLabel + ')</span><span style="color:#fff;font-weight:600">R' + subAmount.toFixed(2) + '</span></div>' +
+      shippingRow +
       '<div style="border-top:1px solid rgba(249,115,22,0.3);padding-top:12px;display:flex;justify-content:space-between"><span style="color:#fff;font-weight:700;font-size:16px">Total</span><span style="color:#F97316;font-weight:900;font-size:22px;font-family:\'Orbitron\',sans-serif">R' + totalAmount.toFixed(2) + '</span></div>' +
       renewalNote + shippingNote;
   }
