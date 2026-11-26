@@ -611,6 +611,18 @@ var isWatch = /Watch|watchOS/i.test(navigator.userAgent);
     document.getElementById('errorScreen').style.display = 'flex';
     var el = document.getElementById('errorMsg');
     if (el) el.textContent = msg;
+    // New, not-yet-activated tag: offer activation
+    try {
+      var _t = (window._finderTagId || '').toUpperCase();
+      if (el && /not found/i.test(msg) && /^IN3-20\d\d-[A-Z0-9]{4,8}$/.test(_t)) {
+        var a = document.createElement('a');
+        a.href = '/register/?tag=' + encodeURIComponent(_t);
+        a.textContent = 'Is this your new innovat3 tag? Activate it here \u2192';
+        a.style.cssText = 'display:inline-block;margin-top:14px;padding:12px 18px;background:#FF5F00;color:#fff;border-radius:8px;font-weight:700;text-decoration:none';
+        el.appendChild(document.createElement('br'));
+        el.appendChild(a);
+      }
+    } catch(e) {}
     console.error('[IN3]', msg);
   }
 

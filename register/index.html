@@ -2285,10 +2285,20 @@ function buildMedical() {
 }
 
 // ── GENERATE TAG ID ──
-function genTagId() {
+// Tag IDs: pre-printed tag (?tag=IN3-2026-XXXXXX) is used for the main member;
+// otherwise a random 6-char code (~1 billion combinations, not guessable).
+function genTagId(forceRandom) {
+  if (!forceRandom) {
+    try {
+      var pre = (new URLSearchParams(window.location.search).get('tag') || '').trim().toUpperCase();
+      if (/^IN3-20\d\d-[A-Z0-9]{4,8}$/.test(pre)) return pre;
+    } catch(e) {}
+  }
   var y = new Date().getFullYear();
-  var n = String(Math.floor(Math.random()*9000)+1000);
-  return 'IN3-' + y + '-B' + n;
+  var chars = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789', r = '';
+  var a = new Uint32Array(6); crypto.getRandomValues(a);
+  for (var i = 0; i < 6; i++) r += chars[a[i] % chars.length];
+  return 'IN3-' + y + '-' + r;
 }
 
 function genBundleId() {
@@ -2483,7 +2493,7 @@ async function submitForm() {
     for (var mi = 0; mi < familyMembersData.length; mi++) {
       var md = familyMembersData[mi];
       if (!md) continue;
-      var memberTagId = genTagId();
+      var memberTagId = genTagId(true);
       var isSame = md.sameAsMain;
       // Build member registration — copy main member medical fields if sameAsMain
       var memberReg = {
