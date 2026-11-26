@@ -11,7 +11,7 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://innovat3.co.za/register/">
 <meta property="og:title" content="Register — Innovat3 Smart NFC Safety Tags">
-<meta property="og:description" content="Sign up for your Innovat3 NFC safety tag. Scan. Alert. Respond. Your GPS location sent to family in under 3 seconds. No app needed.">
+<meta property="og:description" content="Sign up for your Innovat3 NFC safety tag. Scan. Alert. Respond. Your GPS location sent to family within seconds. No app needed.">
 <meta property="og:image" content="https://innovat3.co.za/assets/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1148,17 +1148,29 @@ var referredByCode = '';
             <strong>I have read and agree to all of the following</strong><span class="consent-req">*</span>
             <div class="consent-text-scroll">
               <div class="consent-clause"><strong>Terms &amp; Conditions</strong> — I have read and agree to the <a href="https://innovat3.co.za/terms.html" target="_blank">innovat3. Terms and Conditions of Service</a>. I understand this is a legally binding agreement.</div>
-              <div class="consent-clause"><strong>Privacy &amp; Data Processing (POPIA)</strong> — I consent to innovat3. collecting and processing my personal information, including special personal information (medical and health data), in accordance with the <a href="https://innovat3.co.za/privacy.html" target="_blank">innovat3. Privacy Policy</a> and POPIA.</div>
-              <div class="consent-clause"><strong>Refund &amp; Cancellation Policy</strong> — I have read and accept the <a href="https://innovat3.co.za/cancellation/" target="_blank">innovat3. Refund &amp; Cancellation Policy</a>. I understand I may cancel my subscription at any time and that a 5-day cooling-off period applies under the Consumer Protection Act.</div>
-              <div class="consent-clause"><strong>Public Emergency Profile Disclosure</strong> — I understand and consent that my emergency profile — including my name, blood type, medical conditions, medications, and emergency contact details — will be <strong>visible to any person who scans my NFC Tag</strong>, including members of the public, paramedics, and emergency services.</div>
+              <div class="consent-clause"><strong>Privacy &amp; Data Processing (POPIA)</strong> — I consent to innovat3. collecting and processing my personal information, including special personal information (medical and health data), in accordance with the <a href="https://innovat3.co.za/privacy.html" target="_blank">innovat3. Privacy Policy</a> and POPIA. I understand my data is stored with Google and Cloudflare, whose servers may be outside South Africa.</div>
+              <div class="consent-clause"><strong>Refund &amp; Cancellation Policy</strong> — I have read and accept the <a href="https://innovat3.co.za/cancellation/" target="_blank">innovat3. Refund &amp; Cancellation Policy</a>. I understand I may cancel my subscription at any time, and that I may cancel this online purchase within 7 days of receiving my tag for a full refund (ECTA section 44).</div>
               <div class="consent-clause"><strong>GPS Location Capture</strong> — I consent to the GPS location of any person who scans my tag being automatically captured and sent as an emergency alert to my nominated emergency contacts via Telegram and WhatsApp.</div>
               <div class="consent-clause"><strong>Information Accuracy</strong> — I confirm that all information I have provided is accurate and complete. I accept full responsibility for keeping my emergency profile up to date and understand that innovat3. is not liable for harm arising from inaccurate or outdated profile information.</div>
             </div>
           </div>
         </label>
 
+
+        <label class="consent-row" onclick="toggleConsent(this,'consentSafety')" style="margin-top:12px">
+          <input type="checkbox" id="consentSafety">
+          <div class="consent-check"></div>
+          <div class="consent-text">
+            <strong>Public profile &amp; safety notice</strong><span class="consent-req">*</span>
+            <div class="consent-text-scroll">
+              <div class="consent-clause"><strong>Public Emergency Profile</strong> — I consent that my emergency profile — including my name, photo, blood type, medical conditions, medications and emergency contact details — will be <strong>visible to any person who scans my tag</strong>, including members of the public, paramedics and emergency services. Where I register a child or another person, I confirm I am their parent, guardian or have their permission.</div>
+              <div class="consent-clause"><strong>Not an emergency service</strong> — I understand that innovat3. tags are an <strong>information aid, not a medical device or an emergency service</strong>. A scan depends on the finder's phone, mobile signal and battery, and alerts can be delayed or fail. In an emergency I will always call <strong>112</strong> or <strong>10177</strong>.</div>
+            </div>
+          </div>
+        </label>
+
         <div class="consent-note">⚠️ Ticking this box confirms all consents above. Required under South African law (POPIA) and for the safety of yourself and your emergency contacts.</div>
-        <div id="consentErr">Please tick the consent box before submitting.</div>
+        <div id="consentErr">Please tick both consent boxes before submitting.</div>
       </div>
     </div>
 
@@ -1368,7 +1380,8 @@ function validateStep(s) {
   }
   if (s===5) {
     if (!v('delivery')) { var e5=document.getElementById('err5'); if(e5){e5.textContent='Please enter a delivery address.';e5.style.display='block';} return false; }
-    var allConsent = document.getElementById('consentAll') && document.getElementById('consentAll').checked;
+    var allConsent = document.getElementById('consentAll') && document.getElementById('consentAll').checked
+      && document.getElementById('consentSafety') && document.getElementById('consentSafety').checked;
     var cErr = document.getElementById('consentErr');
     if (!allConsent) { if(cErr){cErr.style.display='block';} return false; }
     if (cErr) cErr.style.display='none';
