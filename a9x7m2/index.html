@@ -1305,7 +1305,7 @@ function saveTasks() {
 async function gvizQuery(sheetName, query = 'select *') {
   const url = 'https://api.innovat3.co.za/admin?sheet=' + encodeURIComponent(sheetName);
   let res;
-  try { res = await fetch(url); } catch(e) { throw new Error('Network error: ' + e.message); }
+  try { res = await adminFetch(url); } catch(e) { throw new Error('Network error: ' + e.message); }
   if (!res.ok) throw new Error('Worker HTTP ' + res.status);
   const json = await res.json();
   if (json.status !== 'ok') throw new Error(json.message || 'Error fetching data');
@@ -1808,26 +1808,43 @@ function showSection(id) {
   document.getElementById('page-title').textContent = titles[id] || id.toUpperCase();
 }
 
-// ── AUTH ──
-const ADMIN_PW_HASH = '52f4377d872e0096b33aa94877f5435ccf6f1da88f03f91bc460473a41b672b0'; // SHA-256 hashed
+// ── AUTH (server-side: password checked by the Worker, never stored in this page) ──
 const SESSION_KEY = 'in3_admin_auth';
+const API = 'https://api.innovat3.co.za';
+
+function adminToken() { try { return sessionStorage.getItem(SESSION_KEY) || ''; } catch(e) { return ''; } }
+
+// fetch() for admin-only API calls: adds the login token, logs out if it expired
+async function adminFetch(url, opts) {
+  opts = opts || {};
+  opts.headers = Object.assign({}, opts.headers || {}, { 'Authorization': 'Bearer ' + adminToken() });
+  const res = await fetch(url, opts);
+  if (res.status === 401) { doLogout(); throw new Error('Session expired — please log in again'); }
+  return res;
+}
 
 async function doLogin() {
   const entered = document.getElementById('login-pw').value;
   const errEl = document.getElementById('login-error');
-  // Hash the entered password and compare
-  const enteredHash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(entered))
-    .then(buf => Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join(''));
-  if (enteredHash === ADMIN_PW_HASH) {
-    sessionStorage.setItem(SESSION_KEY, '1');
+  errEl.textContent = '';
+  let json = {};
+  try {
+    const res = await fetch(API + '/auth/login-admin', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: entered })
+    });
+    json = await res.json().catch(() => ({}));
+  } catch(e) { json = { message: 'Network error — check internet connection' }; }
+  document.getElementById('login-pw').value = '';
+  if (json.status === 'ok' && json.token) {
+    sessionStorage.setItem(SESSION_KEY, json.token);
     sessionStorage.setItem(SESSION_KEY + '_time', Date.now().toString());
     document.getElementById('login-screen').classList.add('hidden');
     loadAll();
   } else {
-    errEl.textContent = 'Incorrect password. Try again.';
-    document.getElementById('login-pw').value = '';
+    errEl.textContent = json.message || 'Incorrect password. Try again.';
     document.getElementById('login-pw').focus();
-    setTimeout(() => { errEl.textContent = ''; }, 3000);
+    setTimeout(() => { errEl.textContent = ''; }, 4000);
   }
 }
 
@@ -1840,7 +1857,7 @@ function doLogout() {
 function checkAuth() {
   const authTime = parseInt(sessionStorage.getItem(SESSION_KEY + '_time') || '0');
   const fourHours = 4 * 60 * 60 * 1000;
-  if (sessionStorage.getItem(SESSION_KEY) === '1' && (Date.now() - authTime) < fourHours) {
+  if (adminToken().length > 20 && (Date.now() - authTime) < fourHours) {
     document.getElementById('login-screen').classList.add('hidden');
     loadAll();
   }
@@ -1905,7 +1922,7 @@ async function submitCashReg() {
   };
 
   try {
-    const resp = await fetch('https://api.innovat3.co.za/cash-register', {
+    const resp = await adminFetch('https://api.innovat3.co.za/cash-register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
