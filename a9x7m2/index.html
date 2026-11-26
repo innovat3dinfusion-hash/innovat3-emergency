@@ -761,6 +761,8 @@
     <div class="topbar-right">
       <span class="last-updated" id="last-updated">Loading…</span>
       <button class="refresh-btn" onclick="loadAll()">↺ Refresh</button>
+      <button class="refresh-btn" onclick="openPwModal()">🔑 Password</button>
+      <button class="refresh-btn" onclick="doLogout()">⏻ Log out</button>
       <span class="admin-badge">ADMIN</span>
     </div>
   </div>
@@ -1947,6 +1949,37 @@ async function submitCashReg() {
     btn.disabled = false;
     btn.textContent = '💵 Register as Cash Payment';
   }
+}
+</script>
+
+<!-- Change admin password -->
+<div id="pw-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center;padding:16px">
+  <div style="background:#141414;border:1px solid #333;border-radius:12px;padding:22px;width:100%;max-width:360px;color:#eee;font-family:inherit">
+    <div style="font-weight:700;font-size:16px;margin-bottom:12px">Change admin password</div>
+    <input id="pw-cur" type="password" autocomplete="current-password" placeholder="Current password" style="width:100%;padding:10px;margin-bottom:8px;border-radius:8px;border:1px solid #444;background:#0b0b0b;color:#eee">
+    <input id="pw-new" type="password" autocomplete="new-password" placeholder="New password (12+ characters)" style="width:100%;padding:10px;margin-bottom:8px;border-radius:8px;border:1px solid #444;background:#0b0b0b;color:#eee">
+    <input id="pw-new2" type="password" autocomplete="new-password" placeholder="Repeat new password" style="width:100%;padding:10px;margin-bottom:10px;border-radius:8px;border:1px solid #444;background:#0b0b0b;color:#eee">
+    <div id="pw-msg" style="font-size:13px;min-height:18px;margin-bottom:10px"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="refresh-btn" onclick="closePwModal()">Cancel</button>
+      <button class="refresh-btn" onclick="changePw()" style="background:#f97316;color:#000;border-color:#f97316">Save</button>
+    </div>
+  </div>
+</div>
+<script>
+function openPwModal(){ ['pw-cur','pw-new','pw-new2'].forEach(function(i){document.getElementById(i).value='';}); document.getElementById('pw-msg').textContent=''; document.getElementById('pw-modal').style.display='flex'; document.getElementById('pw-cur').focus(); }
+function closePwModal(){ document.getElementById('pw-modal').style.display='none'; }
+async function changePw(){
+  var m=document.getElementById('pw-msg'), cur=document.getElementById('pw-cur').value, n1=document.getElementById('pw-new').value, n2=document.getElementById('pw-new2').value;
+  m.style.color='#f87171';
+  if (n1.length < 12) { m.textContent='New password must be at least 12 characters.'; return; }
+  if (n1 !== n2) { m.textContent='The new passwords do not match.'; return; }
+  try {
+    var res = await adminFetch('https://api.innovat3.co.za/auth/admin-change-password', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ currentPassword: cur, newPassword: n1 }) });
+    var j = await res.json().catch(function(){return {};});
+    if (j.status === 'ok') { m.style.color='#4ade80'; m.textContent='Password changed. Use the new one next time you log in.'; setTimeout(closePwModal, 2500); }
+    else m.textContent = j.message || 'Could not change password.';
+  } catch(e) { m.textContent = e.message; }
 }
 </script>
 </body>
